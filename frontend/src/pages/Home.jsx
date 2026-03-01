@@ -1,10 +1,48 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Briefcase, Building2, TrendingUp, MapPin, Briefcase as BriefcaseIcon, ChevronLeft, ChevronRight, ShoppingBag, PenTool, Users, BarChart2, Laptop, DollarSign, TrendingUp as TrendingUpIcon, Megaphone } from 'lucide-react';
 import './Home.css';
 
+// Hook personalizado para animaciones de scroll
+const useScrollAnimation = () => {
+  const elementRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+      }
+    );
+
+    const currentElement = elementRef.current;
+    if (currentElement) {
+      observer.observe(currentElement);
+    }
+
+    return () => {
+      if (currentElement) {
+        observer.unobserve(currentElement);
+      }
+    };
+  }, []);
+
+  return [elementRef, isVisible];
+};
+
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [heroRef, heroVisible] = useScrollAnimation();
+  const [categoriesRef, categoriesVisible] = useScrollAnimation();
+  const [featuresRef, featuresVisible] = useScrollAnimation();
+  const [ctaRef, ctaVisible] = useScrollAnimation();
+  const [statsRef, statsVisible] = useScrollAnimation();
 
   const categories = [
     { id: 1, name: 'Retail & Producto', icon: ShoppingBag, jobs: 3, color: '#e0f2fe' },
@@ -30,7 +68,7 @@ export default function Home() {
 
   return (
     <div className="home-container">
-      <section className="home-hero">
+      <section ref={heroRef} className={`home-hero animate-on-scroll ${heroVisible ? 'animate-visible' : ''}`}>
         <div className="home-hero-content">
           <div className="home-hero-left">
             <h1 className="home-hero-title">
@@ -103,7 +141,7 @@ export default function Home() {
       </section>
 
       {/* Categories Carousel Section */}
-      <section className="home-categories">
+      <section ref={categoriesRef} className={`home-categories animate-on-scroll ${categoriesVisible ? 'animate-visible' : ''}`}>
         <div className="home-categories-container">
           <h2 className="categories-title">Navegá por categoría</h2>
           <p className="categories-subtitle">Encontrá el trabajo perfecto para vos. más de 800 trabajos nuevos cada día</p>
@@ -157,7 +195,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="home-features">
+      <section ref={featuresRef} className={`home-features animate-on-scroll ${featuresVisible ? 'animate-visible' : ''}`}>
         <div className="home-features-container">
           <h2>¿Cómo Funciona?</h2>
           <div className="home-features-grid">
@@ -188,7 +226,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="home-cta">
+      <section ref={ctaRef} className={`home-cta animate-on-scroll ${ctaVisible ? 'animate-visible' : ''}`}>
         <div className="home-cta-container">
           <div className="home-cta-grid">
             <div className="card">
@@ -220,7 +258,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="home-stats">
+      <section ref={statsRef} className={`home-stats animate-on-scroll ${statsVisible ? 'animate-visible' : ''}`}>
         <div className="home-stats-container">
           <div className="home-stats-grid">
             <div>
