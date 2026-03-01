@@ -1,0 +1,251 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Modelo de Usuario (candidatos)
+model User {
+  id            String        @id @default(uuid())
+  email         String        @unique
+  password      String?       // Nullable para login con Google
+  firstName     String
+  lastName      String
+  phone         String?
+  profileImage  String?
+  googleId      String?       @unique
+  
+  // Datos profesionales
+  title         String?       // Ej: "Desarrollador Full Stack"
+  bio           String?       @db.Text
+  experience    Json?         // Array de experiencias laborales
+  education     Json?         // Array de formación académica
+  skills        String[]      // Array de habilidades
+  cvUrl         String?       // URL del CV subido
+  
+  location      String?
+  linkedinUrl   String?
+  portfolioUrl  String?
+  
+  // Relaciones
+  applications  Application[]
+  
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  
+  @@map("users")
+}
+
+// Modelo de Empresa
+model Company {
+  id            String        @id @default(uuid())
+  email         String        @unique
+  password      String?
+  companyName   String
+  companyLogo   String?
+  description   String?       @db.Text
+  website       String?
+  googleId      String?       @unique
+  
+  location      String?
+  industry      String?       // Industria/Sector
+  size          String?       // Tamaño de empresa (1-10, 11-50, etc)
+  
+  // Estado de cuenta
+  isActive      Boolean       @default(true)
+  isBlocked     Boolean       @default(false)  // Bloqueado por falta de pago
+  
+  // Relaciones
+  jobOffers     JobOffer[]
+  subscriptions Subscription[]
+  
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  
+  @@map("companies")
+}
+
+// Modelo de Administrador
+model Admin {
+  id            String        @id @default(uuid())
+  email         String        @unique
+  password      String
+  firstName     String
+  lastName      String
+  role          AdminRole     @default(ADMIN)
+  
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  
+  @@map("admins")
+}
+
+enum AdminRole {
+  SUPER_ADMIN
+  ADMIN
+}
+
+// Modelo de Categoría
+model Category {
+  id            String        @id @default(uuid())
+  name          String        @unique
+  slug          String        @unique
+  description   String?
+  icon          String?
+  
+  jobOffers     JobOffer[]
+  
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  
+  @@map("categories")
+}
+
+// Modelo de Ofertas Laborales
+model JobOffer {
+  id              String        @id @default(uuid())
+  title           String
+  description     String        @db.Text
+  requirements    String[]      // Array de requisitos
+  responsibilities String[]     // Array de responsabilidades
+  
+  // Detalles del trabajo
+  location        String
+  salaryMin       Decimal?      @db.Decimal(10, 2)
+  salaryMax       Decimal?      @db.Decimal(10, 2)
+  salaryPeriod    String?       // "monthly", "annual", "hourly"
+  workType        WorkType      @default(FULL_TIME)
+  workMode        WorkMode      @default(PRESENCIAL)
+  experienceLevel ExperienceLevel @default(MID)
+  
+  // Contacto
+  whatsappNumber  String?       // Número de WhatsApp para contacto directo
+  contactEmail    String?
+  
+  // Idiomas requeridos
+  languages       String[]
+  
+  // Estado
+  isActive        Boolean       @default(true)
+  expiresAt       DateTime?     // Fecha de expiración de la oferta
+  
+  // Relaciones
+  company         Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId       String
+  
+  category        Category      @relation(fields: [categoryId], references: [id])
+  categoryId      String
+  
+  applications    Application[]
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  
+  @@index([companyId])
+  @@index([categoryId])
+  @@index([isActive])
+  @@map("job_offers")
+}
+
+enum WorkType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  FREELANCE
+  INTERNSHIP
+}
+
+enum WorkMode {
+  PRESENCIAL
+  REMOTO
+  HIBRIDO
+}
+
+enum ExperienceLevel {
+  ENTRY
+  JUNIOR
+  MID
+  SENIOR
+  LEAD
+}
+
+// Modelo de Postulaciones
+model Application {
+  id              String            @id @default(uuid())
+  coverLetter     String?           @db.Text
+  status          ApplicationStatus @default(PENDING)
+  
+  // Relaciones
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String
+  
+  jobOffer        JobOffer          @relation(fields: [jobOfferId], references: [id], onDelete: Cascade)
+  jobOfferId      String
+  
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  
+  @@unique([userId, jobOfferId])  // Un usuario solo puede postular una vez a cada oferta
+  @@index([userId])
+  @@index([jobOfferId])
+  @@map("applications")
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWING
+  SHORTLISTED
+  INTERVIEWED
+  REJECTED
+  ACCEPTED
+}
+
+// Modelo de Suscripciones
+model Subscription {
+  id              String              @id @default(uuid())
+  
+  // Detalles de suscripción
+  plan            SubscriptionPlan    @default(MONTHLY)
+  status          SubscriptionStatus  @default(ACTIVE)
+  
+  startDate       DateTime
+  endDate         DateTime
+  
+  // Pago
+  amount          Decimal             @db.Decimal(10, 2)
+  currency        String              @default("ARS")
+  
+  // Integración con Mercado Pago
+  paymentId       String?             @unique  // ID del pago en Mercado Pago
+  paymentStatus   String?             // status del pago
+  paymentMethod   String?
+  
+  // Relaciones
+  company         Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId       String
+  
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  
+  @@index([companyId])
+  @@index([status])
+  @@map("subscriptions")
+}
+
+enum SubscriptionPlan {
+  MONTHLY
+  QUARTERLY
+  ANNUAL
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+  PENDING
+}
