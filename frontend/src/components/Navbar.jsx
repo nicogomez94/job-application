@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../context/authStore';
-import { Briefcase, User, LogOut, Building2, LayoutDashboard } from 'lucide-react';
+import { Briefcase, User, LogOut, Building2, LayoutDashboard, ChevronDown } from 'lucide-react';
 import './Navbar.css';
 
 export default function Navbar() {
@@ -32,22 +32,37 @@ export default function Navbar() {
           <div>
             <Link to="/" className="navbar-logo">
               <Briefcase className="navbar-logo-icon" />
-              <span className="navbar-logo-text">JobPlatform</span>
+              <span className="navbar-logo-text">JobBox</span>
             </Link>
           </div>
 
           <div className="navbar-links">
+            <Link to="/" className="navbar-link">
+              Home <ChevronDown size={16} />
+            </Link>
             <Link to="/jobs" className="navbar-link">
-              Buscar Empleos
+              Find a Job <ChevronDown size={16} />
+            </Link>
+            <Link to="/companies" className="navbar-link">
+              Recruiters <ChevronDown size={16} />
+            </Link>
+            <Link to="/candidates" className="navbar-link">
+              Candidates <ChevronDown size={16} />
+            </Link>
+            <Link to="/blog" className="navbar-link">
+              Blog <ChevronDown size={16} />
+            </Link>
+            <Link to="/pages" className="navbar-link">
+              Pages <ChevronDown size={16} />
             </Link>
 
             {!isAuthenticated ? (
               <>
-                <Link to="/login" className="navbar-link">
-                  Iniciar Sesión
+                <Link to="/register/user" className="btn btn-outline">
+                  Register
                 </Link>
-                <Link to="/register/user" className="btn btn-primary">
-                  Registrarse
+                <Link to="/login" className="btn btn-primary">
+                  Sign in
                 </Link>
                 <Link to="/register/company" className="btn btn-outline">
                   Publicar Empleo

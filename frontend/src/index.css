@@ -60,16 +60,16 @@ body {
 }
 
 .btn-primary {
-  background-color: var(--primary-600);
+  background-color: #3b82f6;
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: var(--primary-700);
+  background-color: #2563eb;
 }
 
 .btn-primary:active {
-  background-color: var(--primary-800);
+  background-color: #1d4ed8;
 }
 
 .btn-secondary {

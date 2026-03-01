@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Search, Briefcase, Building2, TrendingUp } from 'lucide-react';
+import { Search, Briefcase, Building2, TrendingUp, MapPin, Briefcase as BriefcaseIcon } from 'lucide-react';
 import './Home.css';
 
 export default function Home() {
@@ -7,22 +7,71 @@ export default function Home() {
     <div className="home-container">
       <section className="home-hero">
         <div className="home-hero-content">
-          <div>
-            <h1>Encuentra el Trabajo de tus Sueños</h1>
+          <div className="home-hero-left">
+            <h1 className="home-hero-title">
+              The <span className="text-highlight">Easiest Way</span><br />
+              to Get Your New Job
+            </h1>
             <p className="home-hero-subtitle">
-              Miles de ofertas laborales esperando por ti. Conecta con las mejores empresas.
+              Each month, more than 3 million job seekers turn to website in their search for work, making over 140,000 applications every single day
             </p>
 
-            <div className="home-search-bar">
-              <input
-                type="text"
-                placeholder="Buscar empleos por título, empresa o palabra clave..."
-                className="home-search-input"
-              />
-              <Link to="/jobs" className="btn btn-primary home-search-btn">
-                <Search />
-                <span>Buscar</span>
-              </Link>
+            <div className="home-search-container">
+              <div className="home-search-bar">
+                <div className="home-search-field">
+                  <BriefcaseIcon size={20} className="search-icon" />
+                  <select className="home-search-select">
+                    <option>Industry</option>
+                    <option>Technology</option>
+                    <option>Marketing</option>
+                    <option>Finance</option>
+                    <option>Healthcare</option>
+                  </select>
+                </div>
+                <div className="home-search-divider"></div>
+                <div className="home-search-field">
+                  <MapPin size={20} className="search-icon" />
+                  <select className="home-search-select">
+                    <option>Location</option>
+                    <option>Buenos Aires</option>
+                    <option>Córdoba</option>
+                    <option>Rosario</option>
+                    <option>Remote</option>
+                  </select>
+                </div>
+                <div className="home-search-divider"></div>
+                <div className="home-search-field home-search-field-input">
+                  <input
+                    type="text"
+                    placeholder="Keywords"
+                    className="home-search-input"
+                  />
+                </div>
+                <Link to="/jobs" className="btn btn-primary home-search-btn">
+                  <Search size={20} />
+                  <span>Search</span>
+                </Link>
+              </div>
+            </div>
+
+            <div className="home-popular-searches">
+              <span className="popular-label">Popular Searches:</span>
+              <a href="#" className="popular-link">Content Writer</a>,
+              <a href="#" className="popular-link">Finance</a>,
+              <a href="#" className="popular-link">Human Resource</a>,
+              <a href="#" className="popular-link">Management</a>
+            </div>
+          </div>
+
+          <div className="home-hero-right">
+            <div className="hero-image-container">
+              <div className="hero-image-wrapper hero-image-top">
+                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600" alt="Team collaboration" />
+              </div>
+              <div className="hero-image-wrapper hero-image-bottom">
+                <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=600" alt="Business meeting" />
+              </div>
+              <div className="hero-dots-pattern"></div>
             </div>
           </div>
         </div>
