@@ -163,7 +163,7 @@
 .hero-image-wrapper::before {
   content: '';
   position: absolute;
-  inset: -2px;
+  inset: 0;
   border-radius: 1rem;
   padding: 3px;
   background: linear-gradient(135deg, #3b82f6, #2563eb);
@@ -254,6 +254,198 @@
     justify-content: center;
   }
 }
+
+/* Categories Section */
+.home-categories {
+  padding: 5rem 0;
+  background: #f8fafc;
+}
+
+.home-categories-container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.categories-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  color: #1e293b;
+  margin-bottom: 1rem;
+}
+
+.categories-subtitle {
+  font-size: 1.125rem;
+  text-align: center;
+  color: #64748b;
+  margin-bottom: 3rem;
+}
+
+.categories-carousel {
+  position: relative;
+  padding: 0 3rem;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: white;
+  border: none;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+  color: #64748b;
+}
+
+.carousel-btn:hover {
+  background: #f8fafc;
+  color: #3b82f6;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-btn-prev {
+  left: 0;
+}
+
+.carousel-btn-next {
+  right: 0;
+}
+
+.categories-slider {
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+
+.categories-track {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+
+.categories-slide {
+  min-width: 100%;
+  padding: 0.5rem;
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.category-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+  transition: all 0.3s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.category-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.category-icon-wrapper {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.category-icon {
+  color: #3b82f6;
+}
+
+.category-info {
+  flex: 1;
+}
+
+.category-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
+}
+
+.category-jobs {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+
+.indicator-dot {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  background: #cbd5e1;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  padding: 0;
+}
+
+.indicator-dot.active {
+  background: #3b82f6;
+  width: 2rem;
+  border-radius: 0.5rem;
+}
+
+/* Responsive Categories */
+@media (max-width: 1024px) {
+  .categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .home-categories {
+    padding: 3rem 0;
+  }
+
+  .categories-title {
+    font-size: 2rem;
+  }
+
+  .categories-subtitle {
+    font-size: 1rem;
+  }
+
+  .categories-carousel {
+    padding: 0 2.5rem;
+  }
+
+  .categories-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .carousel-btn {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
 }
 
 /* Features Section */

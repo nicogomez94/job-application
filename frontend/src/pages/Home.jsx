@@ -1,19 +1,44 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Briefcase, Building2, TrendingUp, MapPin, Briefcase as BriefcaseIcon } from 'lucide-react';
+import { Search, Briefcase, Building2, TrendingUp, MapPin, Briefcase as BriefcaseIcon, ChevronLeft, ChevronRight, ShoppingBag, PenTool, Users, BarChart2, Laptop, DollarSign, TrendingUp as TrendingUpIcon, Megaphone } from 'lucide-react';
 import './Home.css';
 
 export default function Home() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const categories = [
+    { id: 1, name: 'Retail & Producto', icon: ShoppingBag, jobs: 3, color: '#e0f2fe' },
+    { id: 2, name: 'Redactor de Contenido', icon: PenTool, jobs: 8, color: '#dbeafe' },
+    { id: 3, name: 'Recursos Humanos', icon: Users, jobs: 3, color: '#e0f2fe' },
+    { id: 4, name: 'Investigación de Mercado', icon: BarChart2, jobs: 4, color: '#dbeafe' },
+    { id: 5, name: 'Software', icon: Laptop, jobs: 4, color: '#e0f2fe' },
+    { id: 6, name: 'Finanzas', icon: DollarSign, jobs: 5, color: '#dbeafe' },
+    { id: 7, name: 'Gestión', icon: TrendingUpIcon, jobs: 5, color: '#e0f2fe' },
+    { id: 8, name: 'Marketing & Ventas', icon: Megaphone, jobs: 4, color: '#dbeafe' },
+  ];
+
+  const itemsPerSlide = 4;
+  const totalSlides = Math.ceil(categories.length / itemsPerSlide);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % totalSlides);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
+  };
+
   return (
     <div className="home-container">
       <section className="home-hero">
         <div className="home-hero-content">
           <div className="home-hero-left">
             <h1 className="home-hero-title">
-              The <span className="text-highlight">Easiest Way</span><br />
-              to Get Your New Job
+              La <span className="text-highlight">Forma Más Fácil</span><br />
+              de Conseguir Tu Nuevo Trabajo
             </h1>
             <p className="home-hero-subtitle">
-              Each month, more than 3 million job seekers turn to website in their search for work, making over 140,000 applications every single day
+              Cada mes, más de 3 millones de personas buscan trabajo en nuestra plataforma, realizando más de 140.000 postulaciones cada día
             </p>
 
             <div className="home-search-container">
@@ -21,45 +46,45 @@ export default function Home() {
                 <div className="home-search-field">
                   <BriefcaseIcon size={20} className="search-icon" />
                   <select className="home-search-select">
-                    <option>Industry</option>
-                    <option>Technology</option>
+                    <option>Industria</option>
+                    <option>Tecnología</option>
                     <option>Marketing</option>
-                    <option>Finance</option>
-                    <option>Healthcare</option>
+                    <option>Finanzas</option>
+                    <option>Salud</option>
                   </select>
                 </div>
                 <div className="home-search-divider"></div>
                 <div className="home-search-field">
                   <MapPin size={20} className="search-icon" />
                   <select className="home-search-select">
-                    <option>Location</option>
+                    <option>Ubicación</option>
                     <option>Buenos Aires</option>
                     <option>Córdoba</option>
                     <option>Rosario</option>
-                    <option>Remote</option>
+                    <option>Remoto</option>
                   </select>
                 </div>
                 <div className="home-search-divider"></div>
                 <div className="home-search-field home-search-field-input">
                   <input
                     type="text"
-                    placeholder="Keywords"
+                    placeholder="Palabras clave"
                     className="home-search-input"
                   />
                 </div>
                 <Link to="/jobs" className="btn btn-primary home-search-btn">
                   <Search size={20} />
-                  <span>Search</span>
+                  <span>Buscar</span>
                 </Link>
               </div>
             </div>
 
             <div className="home-popular-searches">
-              <span className="popular-label">Popular Searches:</span>
-              <a href="#" className="popular-link">Content Writer</a>,
-              <a href="#" className="popular-link">Finance</a>,
-              <a href="#" className="popular-link">Human Resource</a>,
-              <a href="#" className="popular-link">Management</a>
+              <span className="popular-label">Búsquedas Populares:</span>
+              <a href="#" className="popular-link">Redactor de Contenido</a>,
+              <a href="#" className="popular-link">Finanzas</a>,
+              <a href="#" className="popular-link">Recursos Humanos</a>,
+              <a href="#" className="popular-link">Gestión</a>
             </div>
           </div>
 
@@ -73,6 +98,61 @@ export default function Home() {
               </div>
               <div className="hero-dots-pattern"></div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Categories Carousel Section */}
+      <section className="home-categories">
+        <div className="home-categories-container">
+          <h2 className="categories-title">Navegá por categoría</h2>
+          <p className="categories-subtitle">Encontrá el trabajo perfecto para vos. más de 800 trabajos nuevos cada día</p>
+          
+          <div className="categories-carousel">
+            <button className="carousel-btn carousel-btn-prev" onClick={prevSlide}>
+              <ChevronLeft size={24} />
+            </button>
+
+            <div className="categories-slider">
+              <div 
+                className="categories-track"
+                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+              >
+                {Array.from({ length: totalSlides }).map((_, slideIndex) => (
+                  <div key={slideIndex} className="categories-slide">
+                    <div className="categories-grid">
+                      {categories
+                        .slice(slideIndex * itemsPerSlide, (slideIndex + 1) * itemsPerSlide)
+                        .map((category) => (
+                          <Link to={`/jobs?category=${category.id}`} key={category.id} className="category-card">
+                            <div className="category-icon-wrapper" style={{ backgroundColor: category.color }}>
+                              <category.icon size={24} className="category-icon" />
+                            </div>
+                            <div className="category-info">
+                              <h3 className="category-name">{category.name}</h3>
+                              <p className="category-jobs">{category.jobs} Trabajos Disponibles</p>
+                            </div>
+                          </Link>
+                        ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <button className="carousel-btn carousel-btn-next" onClick={nextSlide}>
+              <ChevronRight size={24} />
+            </button>
+          </div>
+
+          <div className="carousel-indicators">
+            {Array.from({ length: totalSlides }).map((_, index) => (
+              <button
+                key={index}
+                className={`indicator-dot ${index === currentSlide ? 'active' : ''}`}
+                onClick={() => setCurrentSlide(index)}
+              />
+            ))}
           </div>
         </div>
       </section>
@@ -118,6 +198,7 @@ export default function Home() {
                 Crea tu perfil profesional, sube tu CV y empieza a postular a
                 las mejores ofertas laborales.
               </p>
+              <br />
               <Link to="/register/user" className="btn btn-primary">
                 Crear Cuenta de Candidato
               </Link>
@@ -130,6 +211,7 @@ export default function Home() {
                 Publica ofertas laborales, gestiona postulantes y encuentra a
                 los mejores profesionales para tu empresa.
               </p>
+              <br />
               <Link to="/register/company" className="btn btn-primary">
                 Registrar Empresa
               </Link>
