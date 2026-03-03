@@ -32,7 +32,7 @@ export default function Navbar() {
           <div>
             <Link to="/" className="navbar-logo">
               <Briefcase className="navbar-logo-icon" />
-              <span className="navbar-logo-text">JobBox</span>
+              <span className="navbar-logo-text">Professionals at Home</span>
             </Link>
           </div>
 
