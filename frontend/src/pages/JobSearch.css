@@ -1,0 +1,45 @@
+/* Responsive styles for JobSearch page */
+
+@media (max-width: 1024px) {
+  .job-search-container {
+    grid-template-columns: 1fr !important;
+  }
+
+  .job-search-filters {
+    display: none;
+  }
+
+  .job-search-header {
+    grid-template-columns: 1fr !important;
+    gap: 0.5rem !important;
+  }
+
+  .job-search-header > div {
+    border-left: none !important;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  .job-search-header > div:first-child {
+    border-top: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .job-card {
+    flex-direction: column !important;
+  }
+
+  .job-card-content {
+    gap: 1rem !important;
+  }
+
+  .job-card-footer {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 1rem !important;
+  }
+
+  .job-card-meta {
+    flex-wrap: wrap !important;
+  }
+}

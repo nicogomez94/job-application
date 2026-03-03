@@ -8,6 +8,7 @@ import Layout from './components/Layout';
 import Home from './pages/Home';
 import JobSearch from './pages/JobSearch';
 import JobDetail from './pages/JobDetail';
+import Blog from './pages/Blog';
 
 // Auth
 import Login from './pages/auth/Login';
@@ -58,6 +59,7 @@ function App() {
         <Route index element={<Home />} />
         <Route path="jobs" element={<JobSearch />} />
         <Route path="jobs/:id" element={<JobDetail />} />
+        <Route path="blog" element={<Blog />} />
         
         {/* Auth */}
         <Route path="login" element={<Login />} />
