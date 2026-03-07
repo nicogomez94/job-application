@@ -5,6 +5,15 @@ import { applicationService, categoryService, jobOfferService } from '../service
 import { useAuthStore } from '../context/authStore';
 import './JobSearch.css';
 
+const apiBaseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const backendBaseURL = apiBaseURL.replace(/\/api\/?$/, '');
+
+const toAssetUrl = (assetPath) => {
+  if (!assetPath) return null;
+  if (assetPath.startsWith('http://') || assetPath.startsWith('https://')) return assetPath;
+  return `${backendBaseURL}${assetPath}`;
+};
+
 const formatDate = (date) => {
   if (!date) return 'Sin fecha';
   return new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(date));
@@ -171,7 +180,10 @@ export default function JobSearch() {
             >
               <div className="job-card-content" style={{ display: 'flex', gap: '1rem' }}>
                 <img
-                  src={job.company?.companyLogo || `https://ui-avatars.com/api/?name=${encodeURIComponent(job.company?.companyName || 'Empresa')}&background=2563eb&color=fff`}
+                  src={
+                    toAssetUrl(job.company?.companyLogo) ||
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(job.company?.companyName || 'Empresa')}&background=2563eb&color=fff`
+                  }
                   alt={job.company?.companyName || 'Empresa'}
                   style={{ width: '64px', height: '64px', borderRadius: '0.5rem', objectFit: 'cover' }}
                 />
