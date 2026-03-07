@@ -14,6 +14,7 @@ import Blog from './pages/Blog';
 import Login from './pages/auth/Login';
 import RegisterUser from './pages/auth/RegisterUser';
 import RegisterCompany from './pages/auth/RegisterCompany';
+import OAuthCallback from './pages/auth/OAuthCallback';
 
 // User Dashboard
 import UserDashboard from './pages/user/Dashboard';
@@ -65,6 +66,7 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="register/user" element={<RegisterUser />} />
         <Route path="register/company" element={<RegisterCompany />} />
+        <Route path="auth/callback" element={<OAuthCallback />} />
 
         {/* User Routes */}
         <Route

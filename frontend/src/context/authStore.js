@@ -24,10 +24,11 @@ export const useAuthStore = create(
       },
 
       updateUser: (userData) => {
-        set((state) => ({
-          user: { ...state.user, ...userData },
-        }));
-        localStorage.setItem('user', JSON.stringify({ ...state.user, ...userData }));
+        set((state) => {
+          const updatedUser = { ...state.user, ...userData };
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+          return { user: updatedUser };
+        });
       },
     }),
     {

@@ -13,6 +13,7 @@ export default function Login() {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const { setAuth } = useAuthStore();
   const navigate = useNavigate();
+  const apiBaseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -162,7 +163,7 @@ export default function Login() {
                   type="button"
                   className="btn btn-outline login-google-btn"
                   onClick={() => {
-                    window.location.href = `${import.meta.env.VITE_API_URL}/auth/${userType}/google`;
+                    window.location.href = `${apiBaseURL}/auth/${userType}/google`;
                   }}
                 >
                   <svg className="login-google-icon" viewBox="0 0 24 24">

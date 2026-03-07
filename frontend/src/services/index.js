@@ -15,7 +15,8 @@ export const authService = {
   loginAdmin: (data) => api.post('/auth/admin/login', data),
 
   // Perfil
-  getProfile: () => api.get('/auth/profile'),
+  getProfile: (token) =>
+    api.get('/auth/profile', token ? { headers: { Authorization: `Bearer ${token}` } } : undefined),
 };
 
 // ==================== USERS ====================

@@ -1,8 +1,146 @@
+import { useEffect, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { applicationService, jobOfferService } from '../services';
+import { useAuthStore } from '../context/authStore';
+
+const formatDate = (date) =>
+  new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(date));
+
 export default function JobDetail() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { isAuthenticated, userType } = useAuthStore();
+
+  const [job, setJob] = useState(null);
+  const [coverLetter, setCoverLetter] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    const loadJob = async () => {
+      setLoading(true);
+      try {
+        const response = await jobOfferService.getById(id);
+        setJob(response.data);
+      } catch (error) {
+        toast.error(error.response?.data?.error || 'No se pudo cargar la oferta');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadJob();
+  }, [id]);
+
+  const handleApply = async () => {
+    if (!isAuthenticated) {
+      toast.error('Iniciá sesión para postularte');
+      navigate('/login');
+      return;
+    }
+
+    if (userType !== 'user') {
+      toast.error('Solo los candidatos pueden postularse');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await applicationService.apply(job.id, coverLetter);
+      toast.success('Postulación enviada');
+      setCoverLetter('');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'No se pudo enviar la postulación');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div style={{ minHeight: '50vh', display: 'grid', placeItems: 'center' }}>
+        <p>Cargando detalle...</p>
+      </div>
+    );
+  }
+
+  if (!job) {
+    return (
+      <div style={{ minHeight: '50vh', display: 'grid', placeItems: 'center', padding: '2rem' }}>
+        <div className="card">
+          <p style={{ marginBottom: '1rem' }}>No se encontró la oferta.</p>
+          <Link to="/jobs" className="btn btn-primary">
+            Volver a búsqueda
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Detalle del Empleo</h1>
-      <p>Detalle de la oferta laboral (en construcción)</p>
+    <div style={{ background: '#f8fafc', minHeight: '100vh', padding: '1.5rem 1rem 2rem' }}>
+      <div style={{ maxWidth: '960px', margin: '0 auto' }}>
+        <Link to="/jobs" style={{ color: '#2563eb', textDecoration: 'none', display: 'inline-block', marginBottom: '1rem' }}>
+          ← Volver a ofertas
+        </Link>
+
+        <div className="card" style={{ marginBottom: '1rem' }}>
+          <h1 style={{ marginBottom: '0.3rem', color: '#0f172a' }}>{job.title}</h1>
+          <p style={{ color: '#334155', marginBottom: '0.8rem' }}>{job.company?.companyName}</p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.9rem', color: '#475569', fontSize: '0.92rem' }}>
+            <span>{job.location}</span>
+            <span>{job.workType}</span>
+            <span>{job.workMode}</span>
+            <span>{job.experienceLevel}</span>
+            <span>Publicada: {formatDate(job.createdAt)}</span>
+          </div>
+        </div>
+
+        <div className="card" style={{ marginBottom: '1rem' }}>
+          <h2 style={{ marginBottom: '0.6rem' }}>Descripción</h2>
+          <p style={{ color: '#334155', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{job.description}</p>
+        </div>
+
+        <div className="card" style={{ marginBottom: '1rem' }}>
+          <h2 style={{ marginBottom: '0.6rem' }}>Requisitos</h2>
+          <ul style={{ paddingLeft: '1.2rem', color: '#334155', lineHeight: 1.6 }}>
+            {(job.requirements || []).map((item, idx) => (
+              <li key={`${item}-${idx}`}>{item}</li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="card" style={{ marginBottom: '1rem' }}>
+          <h2 style={{ marginBottom: '0.6rem' }}>Responsabilidades</h2>
+          <ul style={{ paddingLeft: '1.2rem', color: '#334155', lineHeight: 1.6 }}>
+            {(job.responsibilities || []).map((item, idx) => (
+              <li key={`${item}-${idx}`}>{item}</li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="card">
+          <h2 style={{ marginBottom: '0.8rem' }}>Postularme</h2>
+          {userType === 'company' || userType === 'admin' ? (
+            <p style={{ color: '#b91c1c' }}>Solo usuarios candidatos pueden postularse.</p>
+          ) : (
+            <>
+              <textarea
+                className="input"
+                rows={5}
+                placeholder="Carta de presentación (opcional)"
+                value={coverLetter}
+                onChange={(e) => setCoverLetter(e.target.value)}
+                style={{ resize: 'vertical', marginBottom: '0.8rem' }}
+              />
+              <button className="btn btn-primary" disabled={submitting} onClick={handleApply}>
+                {submitting ? 'Enviando...' : 'Enviar postulación'}
+              </button>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

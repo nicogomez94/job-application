@@ -1,385 +1,229 @@
-import { MapPin, Briefcase, DollarSign, Clock, Building2, Search, Filter } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { applicationService, categoryService, jobOfferService } from '../services';
+import { useAuthStore } from '../context/authStore';
+import './JobSearch.css';
+
+const formatDate = (date) => {
+  if (!date) return 'Sin fecha';
+  return new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(date));
+};
+
+const formatSalary = (min, max, period) => {
+  if (!min && !max) return 'A convenir';
+  const range = [min, max]
+    .filter(Boolean)
+    .map((value) => Number(value).toLocaleString('es-AR'))
+    .join(' - ');
+  return `${range} ${period ? `(${period})` : ''}`.trim();
+};
 
 export default function JobSearch() {
-  const jobs = [
-    {
-      id: 1,
-      title: "Desarrollador Full Stack",
-      company: "TechCorp SA",
-      location: "Buenos Aires, Argentina",
-      salary: "$120.000 - $180.000",
-      type: "Tiempo Completo",
-      posted: "Hace 2 días",
-      logo: "https://ui-avatars.com/api/?name=TechCorp&background=3b82f6&color=fff&size=80",
-      description: "Buscamos un desarrollador full stack con experiencia en React y Node.js para unirse a nuestro equipo.",
-      tags: ["JavaScript", "React", "Node.js", "MongoDB"]
-    },
-    {
-      id: 2,
-      title: "Diseñador UX/UI Senior",
-      company: "Creative Studio",
-      location: "Córdoba, Argentina",
-      salary: "$100.000 - $150.000",
-      type: "Tiempo Completo",
-      posted: "Hace 3 días",
-      logo: "https://ui-avatars.com/api/?name=Creative+Studio&background=8b5cf6&color=fff&size=80",
-      description: "Diseñador experimentado para liderar proyectos de experiencia de usuario en aplicaciones web y móviles.",
-      tags: ["Figma", "Adobe XD", "UI Design", "Prototyping"]
-    },
-    {
-      id: 3,
-      title: "Analista de Datos",
-      company: "DataInsights Ltd",
-      location: "Remoto",
-      salary: "$90.000 - $130.000",
-      type: "Tiempo Completo",
-      posted: "Hace 1 día",
-      logo: "https://ui-avatars.com/api/?name=DataInsights&background=10b981&color=fff&size=80",
-      description: "Únete a nuestro equipo de análisis para transformar datos en insights estratégicos.",
-      tags: ["Python", "SQL", "Power BI", "Excel"]
-    },
-    {
-      id: 4,
-      title: "Marketing Digital Manager",
-      company: "Marketing Pro",
-      location: "Rosario, Argentina",
-      salary: "$95.000 - $140.000",
-      type: "Tiempo Completo",
-      posted: "Hace 4 días",
-      logo: "https://ui-avatars.com/api/?name=Marketing+Pro&background=f59e0b&color=fff&size=80",
-      description: "Gestiona campañas digitales y estrategias de marketing para marcas líderes.",
-      tags: ["SEO", "Google Ads", "Social Media", "Analytics"]
-    },
-    {
-      id: 5,
-      title: "Redactor de Contenido",
-      company: "ContentHub",
-      location: "Remoto",
-      salary: "$60.000 - $85.000",
-      type: "Medio Tiempo",
-      posted: "Hace 5 días",
-      logo: "https://ui-avatars.com/api/?name=ContentHub&background=ec4899&color=fff&size=80",
-      description: "Crea contenido atractivo y optimizado para SEO para diversos clientes.",
-      tags: ["Copywriting", "SEO", "Content Strategy", "WordPress"]
-    },
-    {
-      id: 6,
-      title: "Gerente de Recursos Humanos",
-      company: "PeopleFirst Inc",
-      location: "Mendoza, Argentina",
-      salary: "$110.000 - $160.000",
-      type: "Tiempo Completo",
-      posted: "Hace 1 semana",
-      logo: "https://ui-avatars.com/api/?name=PeopleFirst&background=6366f1&color=fff&size=80",
-      description: "Lidera el departamento de RRHH y desarrolla estrategias de talento.",
-      tags: ["Reclutamiento", "Gestión de Talento", "Cultura Organizacional"]
+  const [filters, setFilters] = useState({
+    search: '',
+    location: '',
+    categoryId: '',
+    workMode: '',
+    page: 1,
+    limit: 9,
+  });
+  const [jobs, setJobs] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [pagination, setPagination] = useState({ page: 1, pages: 1, total: 0 });
+  const [loading, setLoading] = useState(false);
+
+  const { isAuthenticated, userType } = useAuthStore();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await categoryService.getAll();
+        setCategories(response.data || []);
+      } catch (error) {
+        toast.error(error.response?.data?.error || 'No se pudieron cargar categorías');
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      setLoading(true);
+      try {
+        const params = Object.fromEntries(
+          Object.entries(filters).filter(([_, value]) => value !== '' && value !== null && value !== undefined)
+        );
+        const response = await jobOfferService.search(params);
+        setJobs(response.data?.jobOffers || []);
+        setPagination(response.data?.pagination || { page: 1, pages: 1, total: 0 });
+      } catch (error) {
+        toast.error(error.response?.data?.error || 'No se pudieron cargar ofertas');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJobs();
+  }, [filters]);
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value, page: 1 }));
+  };
+
+  const handleApply = async (jobId) => {
+    if (!isAuthenticated) {
+      toast.error('Iniciá sesión para postularte');
+      navigate('/login');
+      return;
     }
-  ];
+
+    if (userType !== 'user') {
+      toast.error('Solo los candidatos pueden postularse');
+      return;
+    }
+
+    const coverLetter = window.prompt('Carta de presentación (opcional):') ?? '';
+    try {
+      await applicationService.apply(jobId, coverLetter);
+      toast.success('Postulación enviada');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'No se pudo enviar la postulación');
+    }
+  };
+
+  const goToPage = (nextPage) => {
+    if (nextPage < 1 || nextPage > (pagination.pages || 1)) return;
+    setFilters((prev) => ({ ...prev, page: nextPage }));
+  };
 
   return (
-    <div style={{ background: '#f8fafc', minHeight: '100vh', paddingBottom: '4rem' }}>
-      {/* Search Header */}
-      <div style={{ 
-        background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', 
-        padding: '3rem 0',
-        color: 'white'
-      }}>
-        <div style={{ maxWidth: '1320px', margin: '0 auto', padding: '0 2rem' }}>
-          <h1 style={{ fontSize: '2.5rem', fontWeight: '700', marginBottom: '1rem' }}>
-            Encuentra Tu Próximo Empleo
-          </h1>
-          <p style={{ fontSize: '1.125rem', opacity: 0.9, marginBottom: '2rem' }}>
-            {jobs.length} oportunidades laborales disponibles
-          </p>
-          
-          {/* Search Bar */}
-          <div style={{
-            background: 'white',
-            borderRadius: '0.75rem',
-            padding: '0.75rem',
-            display: 'grid',
-            gridTemplateColumns: '2fr 1fr 1fr auto',
-            gap: '0.75rem',
-            boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0 1rem' }}>
-              <Search size={20} style={{ color: '#94a3b8' }} />
-              <input 
-                type="text"
-                placeholder="Título del trabajo, palabras clave..."
-                style={{
-                  border: 'none',
-                  outline: 'none',
-                  fontSize: '0.9375rem',
-                  width: '100%',
-                  color: '#1e293b'
-                }}
-              />
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0 1rem', borderLeft: '1px solid #e2e8f0' }}>
-              <MapPin size={20} style={{ color: '#94a3b8' }} />
-              <select style={{
-                border: 'none',
-                outline: 'none',
-                fontSize: '0.9375rem',
-                width: '100%',
-                color: '#1e293b',
-                background: 'transparent',
-                cursor: 'pointer'
-              }}>
-                <option>Todas las ubicaciones</option>
-                <option>Buenos Aires</option>
-                <option>Córdoba</option>
-                <option>Rosario</option>
-                <option>Remoto</option>
-              </select>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0 1rem', borderLeft: '1px solid #e2e8f0' }}>
-              <Briefcase size={20} style={{ color: '#94a3b8' }} />
-              <select style={{
-                border: 'none',
-                outline: 'none',
-                fontSize: '0.9375rem',
-                width: '100%',
-                color: '#1e293b',
-                background: 'transparent',
-                cursor: 'pointer'
-              }}>
-                <option>Todas las categorías</option>
-                <option>Tecnología</option>
-                <option>Diseño</option>
-                <option>Marketing</option>
-                <option>RRHH</option>
-              </select>
-            </div>
-            <button style={{
-              background: '#3b82f6',
-              color: 'white',
-              border: 'none',
-              borderRadius: '0.5rem',
-              padding: '0.875rem 2rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              transition: 'all 0.2s'
-            }}>
-              <Search size={18} />
-              Buscar
-            </button>
-          </div>
+    <div style={{ minHeight: '100vh', background: '#f8fafc', paddingBottom: '3rem' }}>
+      <div style={{ background: 'linear-gradient(135deg, #0284c7 0%, #2563eb 100%)', padding: '2.5rem 0' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem', color: '#fff' }}>
+          <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Buscar Empleo</h1>
+          <p style={{ opacity: 0.9 }}>Encontrá ofertas activas y postulá en pocos pasos.</p>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div style={{ maxWidth: '1320px', margin: '0 auto', padding: '3rem 2rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: '2rem' }}>
-          {/* Filters Sidebar */}
-          <div>
-            <div style={{
-              background: 'white',
-              borderRadius: '0.75rem',
-              padding: '1.5rem',
-              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
-                <Filter size={20} style={{ color: '#3b82f6' }} />
-                <h3 style={{ fontSize: '1.125rem', fontWeight: '700', color: '#1e293b' }}>
-                  Filtros
-                </h3>
-              </div>
+      <div style={{ maxWidth: '1200px', margin: '1.5rem auto 0', padding: '0 1rem' }}>
+        <div
+          className="job-search-header"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '2fr 1.3fr 1.3fr 1fr',
+            gap: '0.75rem',
+            background: '#fff',
+            padding: '1rem',
+            borderRadius: '0.75rem',
+            boxShadow: '0 2px 6px rgba(15, 23, 42, 0.08)',
+          }}
+        >
+          <input
+            className="input"
+            name="search"
+            placeholder="Título o palabra clave"
+            value={filters.search}
+            onChange={handleFilterChange}
+          />
+          <input
+            className="input"
+            name="location"
+            placeholder="Ubicación"
+            value={filters.location}
+            onChange={handleFilterChange}
+          />
+          <select className="input" name="categoryId" value={filters.categoryId} onChange={handleFilterChange}>
+            <option value="">Todas las categorías</option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+          <select className="input" name="workMode" value={filters.workMode} onChange={handleFilterChange}>
+            <option value="">Modalidad</option>
+            <option value="PRESENCIAL">Presencial</option>
+            <option value="REMOTO">Remoto</option>
+            <option value="HIBRIDO">Híbrido</option>
+          </select>
+        </div>
 
-              <div style={{ marginBottom: '1.5rem' }}>
-                <h4 style={{ fontSize: '0.875rem', fontWeight: '600', color: '#64748b', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  Tipo de Empleo
-                </h4>
-                {['Tiempo Completo', 'Medio Tiempo', 'Freelance', 'Contrato'].map(type => (
-                  <label key={type} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', cursor: 'pointer' }}>
-                    <input type="checkbox" style={{ cursor: 'pointer' }} />
-                    <span style={{ fontSize: '0.9375rem', color: '#475569' }}>{type}</span>
-                  </label>
-                ))}
-              </div>
+        <div style={{ marginTop: '1rem', color: '#475569', fontSize: '0.95rem' }}>
+          {loading ? 'Cargando ofertas...' : `${pagination.total || 0} ofertas encontradas`}
+        </div>
 
-              <div style={{ marginBottom: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0' }}>
-                <h4 style={{ fontSize: '0.875rem', fontWeight: '600', color: '#64748b', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  Experiencia
-                </h4>
-                {['Sin experiencia', 'Junior', 'Semi-Senior', 'Senior'].map(level => (
-                  <label key={level} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', cursor: 'pointer' }}>
-                    <input type="checkbox" style={{ cursor: 'pointer' }} />
-                    <span style={{ fontSize: '0.9375rem', color: '#475569' }}>{level}</span>
-                  </label>
-                ))}
-              </div>
-
-              <button style={{
-                width: '100%',
-                padding: '0.75rem',
-                background: '#f1f5f9',
-                color: '#475569',
-                border: 'none',
-                borderRadius: '0.5rem',
-                fontWeight: '600',
-                cursor: 'pointer',
-                marginTop: '1rem'
-              }}>
-                Limpiar Filtros
-              </button>
+        <div style={{ marginTop: '1rem', display: 'grid', gap: '1rem' }}>
+          {!loading && jobs.length === 0 && (
+            <div className="card">
+              <p>No hay resultados para los filtros seleccionados.</p>
             </div>
-          </div>
+          )}
 
-          {/* Jobs List */}
-          <div>
-            <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <p style={{ color: '#64748b', fontSize: '0.9375rem' }}>
-                Mostrando <strong>{jobs.length}</strong> empleos
-              </p>
-              <select style={{
-                padding: '0.5rem 1rem',
-                border: '1px solid #e2e8f0',
-                borderRadius: '0.5rem',
-                fontSize: '0.9375rem',
-                color: '#475569',
-                cursor: 'pointer'
-              }}>
-                <option>Más recientes</option>
-                <option>Salario más alto</option>
-                <option>Más relevantes</option>
-              </select>
-            </div>
+          {jobs.map((job) => (
+            <article
+              key={job.id}
+              className="card job-card"
+              style={{ border: '1px solid #e2e8f0', padding: '1.25rem' }}
+            >
+              <div className="job-card-content" style={{ display: 'flex', gap: '1rem' }}>
+                <img
+                  src={job.company?.companyLogo || `https://ui-avatars.com/api/?name=${encodeURIComponent(job.company?.companyName || 'Empresa')}&background=2563eb&color=fff`}
+                  alt={job.company?.companyName || 'Empresa'}
+                  style={{ width: '64px', height: '64px', borderRadius: '0.5rem', objectFit: 'cover' }}
+                />
+                <div style={{ flex: 1 }}>
+                  <h2 style={{ color: '#0f172a', marginBottom: '0.25rem' }}>{job.title}</h2>
+                  <p style={{ color: '#334155', marginBottom: '0.5rem' }}>{job.company?.companyName || 'Empresa'}</p>
+                  <p style={{ color: '#64748b', marginBottom: '0.7rem', lineHeight: 1.5 }}>
+                    {(job.description || '').slice(0, 180)}
+                    {(job.description || '').length > 180 ? '...' : ''}
+                  </p>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              {jobs.map(job => (
-                <article 
-                  key={job.id}
-                  style={{
-                    background: 'white',
-                    borderRadius: '0.75rem',
-                    padding: '1.5rem',
-                    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-                    transition: 'all 0.3s',
-                    cursor: 'pointer',
-                    border: '2px solid transparent'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.1)';
-                    e.currentTarget.style.borderColor = '#3b82f6';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
-                    e.currentTarget.style.borderColor = 'transparent';
-                  }}
-                >
-                  <div style={{ display: 'flex', gap: '1.5rem' }}>
-                    <img 
-                      src={job.logo} 
-                      alt={job.company}
-                      style={{ 
-                        width: '80px', 
-                        height: '80px', 
-                        borderRadius: '0.5rem',
-                        objectFit: 'cover'
-                      }}
-                    />
-                    <div style={{ flex: 1 }}>
-                      <div style={{ marginBottom: '0.75rem' }}>
-                        <h3 style={{ 
-                          fontSize: '1.375rem', 
-                          fontWeight: '700', 
-                          color: '#1e293b',
-                          marginBottom: '0.375rem' 
-                        }}>
-                          {job.title}
-                        </h3>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                          <Building2 size={16} style={{ color: '#64748b' }} />
-                          <span style={{ color: '#64748b', fontSize: '0.9375rem', fontWeight: '500' }}>
-                            {job.company}
-                          </span>
-                        </div>
-                      </div>
-                      
-                      <p style={{ 
-                        color: '#64748b', 
-                        marginBottom: '1rem',
-                        fontSize: '0.9375rem',
-                        lineHeight: '1.6'
-                      }}>
-                        {job.description}
-                      </p>
-
-                      <div style={{ 
-                        display: 'flex', 
-                        flexWrap: 'wrap',
-                        gap: '0.5rem',
-                        marginBottom: '1rem'
-                      }}>
-                        {job.tags.map(tag => (
-                          <span 
-                            key={tag}
-                            style={{
-                              padding: '0.25rem 0.75rem',
-                              background: '#f1f5f9',
-                              color: '#475569',
-                              borderRadius: '9999px',
-                              fontSize: '0.8125rem',
-                              fontWeight: '500'
-                            }}
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        paddingTop: '1rem',
-                        borderTop: '1px solid #e2e8f0'
-                      }}>
-                        <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.875rem' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', color: '#64748b' }}>
-                            <MapPin size={16} />
-                            <span>{job.location}</span>
-                          </div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', color: '#64748b' }}>
-                            <DollarSign size={16} />
-                            <span>{job.salary}</span>
-                          </div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', color: '#64748b' }}>
-                            <Clock size={16} />
-                            <span>{job.type}</span>
-                          </div>
-                        </div>
-                        <div style={{ display: 'flex', gap: '0.75rem' }}>
-                          <button style={{
-                            padding: '0.5rem 1.25rem',
-                            background: '#3b82f6',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '0.5rem',
-                            fontWeight: '600',
-                            cursor: 'pointer',
-                            fontSize: '0.875rem',
-                            transition: 'all 0.2s'
-                          }}>
-                            Postular
-                          </button>
-                        </div>
-                      </div>
-                    </div>
+                  <div className="job-card-meta" style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', color: '#475569', fontSize: '0.9rem' }}>
+                    <span>{job.location}</span>
+                    <span>{job.workMode}</span>
+                    <span>{job.experienceLevel}</span>
+                    <span>{formatSalary(job.salaryMin, job.salaryMax, job.salaryPeriod)}</span>
+                    <span>Publicada: {formatDate(job.createdAt)}</span>
                   </div>
-                </article>
-              ))}
-            </div>
-          </div>
+                </div>
+              </div>
+
+              <div
+                className="job-card-footer"
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}
+              >
+                <Link to={`/jobs/${job.id}`} className="btn btn-outline">
+                  Ver detalle
+                </Link>
+                <button className="btn btn-primary" onClick={() => handleApply(job.id)}>
+                  Postularme
+                </button>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <div style={{ marginTop: '1.5rem', display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+          <button className="btn btn-outline" disabled={(pagination.page || 1) <= 1} onClick={() => goToPage((pagination.page || 1) - 1)}>
+            Anterior
+          </button>
+          <span style={{ alignSelf: 'center', color: '#334155' }}>
+            Página {pagination.page || 1} de {pagination.pages || 1}
+          </span>
+          <button
+            className="btn btn-outline"
+            disabled={(pagination.page || 1) >= (pagination.pages || 1)}
+            onClick={() => goToPage((pagination.page || 1) + 1)}
+          >
+            Siguiente
+          </button>
         </div>
       </div>
     </div>
   );
 }
-
