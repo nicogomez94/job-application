@@ -9,6 +9,7 @@ import Home from './pages/Home';
 import JobSearch from './pages/JobSearch';
 import JobDetail from './pages/JobDetail';
 import Blog from './pages/Blog';
+import QuienesSomos from './pages/QuienesSomos';
 
 // Auth
 import Login from './pages/auth/Login';
@@ -29,6 +30,9 @@ import CreateJob from './pages/company/CreateJob';
 import EditJob from './pages/company/EditJob';
 import JobApplicants from './pages/company/JobApplicants';
 import CompanySubscription from './pages/company/Subscription';
+
+// Legal
+import TermsAndConditions from './pages/TermsAndConditions';
 
 // Admin Dashboard
 import AdminDashboard from './pages/admin/Dashboard';
@@ -61,6 +65,8 @@ function App() {
         <Route path="jobs" element={<JobSearch />} />
         <Route path="jobs/:id" element={<JobDetail />} />
         <Route path="blog" element={<Blog />} />
+        <Route path="quienes-somos" element={<QuienesSomos />} />
+        <Route path="terminos-y-condiciones" element={<TermsAndConditions />} />
         
         {/* Auth */}
         <Route path="login" element={<Login />} />

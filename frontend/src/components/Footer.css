@@ -104,6 +104,20 @@
   font-size: 0.875rem;
 }
 
+.footer-legal {
+  margin-top: 0.5rem;
+}
+
+.footer-legal a {
+  color: #9ca3af;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-legal a:hover {
+  color: white;
+}
+
 /* Responsive Footer */
 @media (max-width: 768px) {
   .footer-container {

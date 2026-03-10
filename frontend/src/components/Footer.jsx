@@ -32,6 +32,7 @@ export default function Footer() {
               <li><Link to="/register/company">Registrar Empresa</Link></li>
               <li><Link to="/company/subscription">Planes y Precios</Link></li>
               <li><Link to="/company/jobs/create">Publicar Oferta</Link></li>
+              <li><Link to="/quienes-somos">Quiénes Somos</Link></li>
             </ul>
           </div>
 
@@ -51,6 +52,9 @@ export default function Footer() {
 
         <div className="footer-bottom">
           <p>&copy; {new Date().getFullYear()} JobPlatform. Todos los derechos reservados.</p>
+          <p className="footer-legal">
+            <Link to="/terminos-y-condiciones">Términos y Condiciones</Link>
+          </p>
         </div>
       </div>
     </footer>
