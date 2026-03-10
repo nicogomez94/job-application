@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../context/authStore';
-import { Briefcase, User, LogOut, Building2, LayoutDashboard, ChevronDown, Menu, X } from 'lucide-react';
+import { Briefcase, User, LogOut, Building2, ChevronDown, Menu, X, Search } from 'lucide-react';
 import { useState } from 'react';
 import './Navbar.css';
 
@@ -8,6 +8,7 @@ export default function Navbar() {
   const { isAuthenticated, user, userType, logout } = useAuthStore();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleLogout = () => {
     logout();
@@ -21,6 +22,17 @@ export default function Navbar() {
 
   const closeMenu = () => {
     setIsMenuOpen(false);
+  };
+
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    const query = searchTerm.trim();
+    closeMenu();
+    if (!query) {
+      navigate('/jobs');
+      return;
+    }
+    navigate(`/jobs?search=${encodeURIComponent(query)}`);
   };
 
   const getDashboardLink = () => {
@@ -52,11 +64,19 @@ export default function Navbar() {
           </button>
 
           <div className={`navbar-links ${isMenuOpen ? 'navbar-links-open' : ''}`}>
-            <Link to="/" className="navbar-link" onClick={closeMenu}>
-              Inicio <ChevronDown size={16} />
-            </Link>
+            <form className="navbar-search" onSubmit={handleSearchSubmit}>
+              <Search className="navbar-search-icon" size={16} />
+              <input
+                type="text"
+                className="navbar-search-input"
+                placeholder="Buscar empleo..."
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+              />
+            </form>
+
             <Link to="/jobs" className="navbar-link" onClick={closeMenu}>
-              Buscar Empleo <ChevronDown size={16} />
+              Ver Ofertas <ChevronDown size={16} />
             </Link>
             {/* <Link to="/companies" className="navbar-link" onClick={closeMenu}>
               Reclutadores <ChevronDown size={16} />
@@ -64,13 +84,6 @@ export default function Navbar() {
             <Link to="/candidates" className="navbar-link" onClick={closeMenu}>
               Candidatos <ChevronDown size={16} />
             </Link> */}
-            <Link to="/blog" className="navbar-link" onClick={closeMenu}>
-              Blog <ChevronDown size={16} />
-            </Link>
-            <Link to="/pages" className="navbar-link" onClick={closeMenu}>
-              Páginas <ChevronDown size={16} />
-            </Link>
-
             {!isAuthenticated ? (
               <>
                 <Link to="/register/user" className="btn btn-outline" onClick={closeMenu}>
@@ -85,17 +98,12 @@ export default function Navbar() {
               </>
             ) : (
               <div className="navbar-user-section">
-                <Link to={getDashboardLink()} className="navbar-dashboard-link" onClick={closeMenu}>
-                  <LayoutDashboard className="navbar-icon-small" />
-                  <span>Dashboard</span>
-                </Link>
-
                 <div className="navbar-user-info">
                   {userType === 'user' && <User className="navbar-user-icon" />}
                   {userType === 'company' && <Building2 className="navbar-user-icon" />}
-                  <span className="navbar-user-name">
+                  <Link to={getDashboardLink()} className="navbar-user-name-link" onClick={closeMenu}>
                     {user?.firstName || user?.companyName || 'Usuario'}
-                  </span>
+                  </Link>
                 </div>
 
                 <button onClick={handleLogout} className="navbar-logout-btn">
