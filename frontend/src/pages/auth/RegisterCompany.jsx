@@ -3,9 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { authService, companyService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
+import { DEBUG_FORM_DATA, DEBUG_MODE } from '../../config/debug';
 import './Register.css';
 
-const initialForm = {
+const getInitialForm = () => (DEBUG_MODE ? { ...DEBUG_FORM_DATA.registerCompany } : {
   companyName: '',
   email: '',
   password: '',
@@ -16,10 +17,10 @@ const initialForm = {
   location: '',
   description: '',
   logo: null,
-};
+});
 
 export default function RegisterCompany() {
-  const [formData, setFormData] = useState(initialForm);
+  const [formData, setFormData] = useState(getInitialForm);
   const [loading, setLoading] = useState(false);
   const { setAuth } = useAuthStore();
   const navigate = useNavigate();

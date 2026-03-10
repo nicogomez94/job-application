@@ -2,25 +2,29 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { categoryService, companyService, jobOfferService } from '../../services';
+import { DEBUG_FORM_DATA, DEBUG_MODE } from '../../config/debug';
 
-const initialForm = {
-  title: '',
-  description: '',
-  location: '',
-  categoryId: '',
-  requirementsText: '',
-  responsibilitiesText: '',
-  languagesText: '',
-  salaryMin: '',
-  salaryMax: '',
-  salaryPeriod: 'monthly',
-  workType: 'FULL_TIME',
-  workMode: 'PRESENCIAL',
-  experienceLevel: 'MID',
-  whatsappNumber: '',
-  contactEmail: '',
-  expiresAt: '',
-};
+const getInitialForm = () =>
+  DEBUG_MODE
+    ? { ...DEBUG_FORM_DATA.createJob }
+    : {
+        title: '',
+        description: '',
+        location: '',
+        categoryId: '',
+        requirementsText: '',
+        responsibilitiesText: '',
+        languagesText: '',
+        salaryMin: '',
+        salaryMax: '',
+        salaryPeriod: 'monthly',
+        workType: 'FULL_TIME',
+        workMode: 'PRESENCIAL',
+        experienceLevel: 'MID',
+        whatsappNumber: '',
+        contactEmail: '',
+        expiresAt: '',
+      };
 
 const parseTextToArray = (text) =>
   text
@@ -35,7 +39,7 @@ const parseCommaToArray = (text) =>
     .filter(Boolean);
 
 export default function CreateJob() {
-  const [formData, setFormData] = useState(initialForm);
+  const [formData, setFormData] = useState(getInitialForm);
   const [categories, setCategories] = useState([]);
   const [isBlocked, setIsBlocked] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -50,8 +54,12 @@ export default function CreateJob() {
           categoryService.getAll(),
           companyService.checkSubscription(),
         ]);
-        setCategories(categoriesResponse.data || []);
+        const loadedCategories = categoriesResponse.data || [];
+        setCategories(loadedCategories);
         setIsBlocked(Boolean(subscriptionResponse.data?.isBlocked));
+        if (DEBUG_MODE && loadedCategories.length > 0 && !formData.categoryId) {
+          setFormData((prev) => ({ ...prev, categoryId: loadedCategories[0].id }));
+        }
       } catch (error) {
         toast.error(error.response?.data?.error || 'No se pudieron cargar datos para crear la oferta');
       } finally {

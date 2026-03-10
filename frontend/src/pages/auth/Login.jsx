@@ -1,19 +1,27 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { authService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
+import { DEBUG_MODE, getDebugLoginData } from '../../config/debug';
 import { Briefcase, Mail, Lock } from 'lucide-react';
 import './Login.css';
 
 export default function Login() {
   const [userType, setUserType] = useState('user'); // 'user', 'company', 'admin'
   const [loading, setLoading] = useState(false);
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+    defaultValues: DEBUG_MODE ? getDebugLoginData('user') : { email: '', password: '' },
+  });
   const { setAuth } = useAuthStore();
   const navigate = useNavigate();
   const apiBaseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+  useEffect(() => {
+    if (!DEBUG_MODE) return;
+    reset(getDebugLoginData(userType));
+  }, [userType, reset]);
 
   const onSubmit = async (data) => {
     setLoading(true);
