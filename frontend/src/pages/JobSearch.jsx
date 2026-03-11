@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { categoryService, jobOfferService } from '../services';
 import './JobSearch.css';
@@ -28,18 +28,24 @@ const formatSalary = (min, max, period) => {
 };
 
 export default function JobSearch() {
-  const [filters, setFilters] = useState({
-    search: '',
-    location: '',
-    categoryId: '',
-    workMode: '',
-    page: 1,
-    limit: 9,
+  const [searchParams, setSearchParams] = useSearchParams();
+  const getFiltersFromParams = () => ({
+    search: searchParams.get('search') || '',
+    location: searchParams.get('location') || '',
+    categoryId: searchParams.get('categoryId') || searchParams.get('category') || '',
+    workMode: searchParams.get('workMode') || '',
+    page: Number(searchParams.get('page') || 1),
+    limit: Number(searchParams.get('limit') || 9),
   });
+  const [filters, setFilters] = useState(getFiltersFromParams);
   const [jobs, setJobs] = useState([]);
   const [categories, setCategories] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, pages: 1, total: 0 });
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setFilters(getFiltersFromParams());
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -76,12 +82,38 @@ export default function JobSearch() {
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilters((prev) => ({ ...prev, [name]: value, page: 1 }));
+    setFilters((prev) => {
+      const nextFilters = { ...prev, [name]: value, page: 1 };
+      const nextParams = new URLSearchParams();
+
+      Object.entries(nextFilters).forEach(([key, filterValue]) => {
+        if (filterValue === '' || filterValue === null || filterValue === undefined) return;
+        if (key === 'page' && Number(filterValue) === 1) return;
+        if (key === 'limit' && Number(filterValue) === 9) return;
+        nextParams.set(key, String(filterValue));
+      });
+
+      setSearchParams(nextParams);
+      return nextFilters;
+    });
   };
 
   const goToPage = (nextPage) => {
     if (nextPage < 1 || nextPage > (pagination.pages || 1)) return;
-    setFilters((prev) => ({ ...prev, page: nextPage }));
+    setFilters((prev) => {
+      const nextFilters = { ...prev, page: nextPage };
+      const nextParams = new URLSearchParams();
+
+      Object.entries(nextFilters).forEach(([key, filterValue]) => {
+        if (filterValue === '' || filterValue === null || filterValue === undefined) return;
+        if (key === 'page' && Number(filterValue) === 1) return;
+        if (key === 'limit' && Number(filterValue) === 9) return;
+        nextParams.set(key, String(filterValue));
+      });
+
+      setSearchParams(nextParams);
+      return nextFilters;
+    });
   };
 
   return (
