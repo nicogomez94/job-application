@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Briefcase, Building2, TrendingUp, MapPin, Briefcase as BriefcaseIcon, ChevronLeft, ChevronRight, ShoppingBag, PenTool, Users, BarChart2, Laptop, DollarSign, TrendingUp as TrendingUpIcon, Megaphone } from 'lucide-react';
+import { Search, Briefcase, Building2, TrendingUp, MapPin, Briefcase as BriefcaseIcon, ChevronLeft, ChevronRight, ChevronDown, ShoppingBag, PenTool, Users, BarChart2, Laptop, DollarSign, TrendingUp as TrendingUpIcon, Megaphone } from 'lucide-react';
 import { useI18n } from '../context/i18nStore';
 import './Home.css';
 
@@ -92,6 +92,7 @@ export default function Home() {
                     <option>{t('Finanzas')}</option>
                     <option>{t('Salud')}</option>
                   </select>
+                  <ChevronDown size={16} className="home-search-chevron" />
                 </div>
                 <div className="home-search-divider"></div>
                 <div className="home-search-field">
@@ -103,6 +104,7 @@ export default function Home() {
                     <option>{t('Rosario')}</option>
                     <option>{t('Remoto')}</option>
                   </select>
+                  <ChevronDown size={16} className="home-search-chevron" />
                 </div>
                 <div className="home-search-divider"></div>
                 <div className="home-search-field home-search-field-input">

@@ -94,9 +94,6 @@ export default function Navbar() {
                 <Link to="/login" className="btn btn-primary" onClick={closeMenu}>
                   {t('Ingresar')}
                 </Link>
-                <Link to="/register/company" className="btn btn-outline" onClick={closeMenu}>
-                  {t('Publicar Empleo')}
-                </Link>
               </>
             ) : (
               <div className="navbar-user-section">
