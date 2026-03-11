@@ -4,6 +4,9 @@ import { Search, Briefcase, Building2, TrendingUp, MapPin, Briefcase as Briefcas
 import { useI18n } from '../context/i18nStore';
 import './Home.css';
 
+const heroImageTop = '/675d0da6-25a1-489f-8b1a-a65243dc0322.jfif';
+const heroImageBottom = '/7cf502a2-e693-4721-9f3c-278d72577747.jfif';
+
 // Hook personalizado para animaciones de scroll
 const useScrollAnimation = () => {
   const elementRef = useRef(null);
@@ -133,10 +136,10 @@ export default function Home() {
           <div className="home-hero-right">
             <div className="hero-image-container">
               <div className="hero-image-wrapper hero-image-top">
-                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600" alt="Team collaboration" />
+                <img src={heroImageTop} alt="Equipo trabajando" />
               </div>
               <div className="hero-image-wrapper hero-image-bottom">
-                <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=600" alt="Business meeting" />
+                <img src={heroImageBottom} alt="Reunión de trabajo" />
               </div>
               <div className="hero-dots-pattern"></div>
             </div>

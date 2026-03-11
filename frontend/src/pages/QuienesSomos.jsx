@@ -1,5 +1,8 @@
 import './QuienesSomos.css';
 
+const aboutImageTop = '/675d0da6-25a1-489f-8b1a-a65243dc0322.jfif';
+const aboutImageBottom = '/7cf502a2-e693-4721-9f3c-278d72577747.jfif';
+
 export default function QuienesSomos() {
   return (
     <div className="about-page">
@@ -7,6 +10,14 @@ export default function QuienesSomos() {
         <div className="about-container">
           <h1>Quiénes Somos</h1>
           <p>Conectamos oportunidades con personas y empresas que quieren crecer.</p>
+          <div className="about-image-grid">
+            <div className="about-image-card about-image-card-large">
+              <img src={aboutImageTop} alt="Equipo de trabajo" />
+            </div>
+            <div className="about-image-card">
+              <img src={aboutImageBottom} alt="Encuentro profesional" />
+            </div>
+          </div>
         </div>
       </section>
 
