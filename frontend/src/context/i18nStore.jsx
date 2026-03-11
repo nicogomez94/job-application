@@ -206,13 +206,15 @@ const normalizeLanguage = (language) => (language === 'en' ? 'en' : 'es');
 
 const sortByLengthDesc = (values) => values.sort((a, b) => b.length - a.length);
 
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 const replaceByDictionary = (text, dictionary, sortedKeys) => {
   if (!text || typeof text !== 'string') return text;
   let next = text;
   for (const key of sortedKeys) {
-    if (next.includes(key)) {
-      next = next.split(key).join(dictionary[key]);
-    }
+    if (!next.includes(key)) continue;
+    const pattern = new RegExp(`(^|[^\\p{L}\\p{N}])(${escapeRegExp(key)})(?=$|[^\\p{L}\\p{N}])`, 'gu');
+    next = next.replace(pattern, (_, prefix) => `${prefix}${dictionary[key]}`);
   }
   return next;
 };
