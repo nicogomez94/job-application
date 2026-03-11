@@ -2,10 +2,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../context/authStore';
 import { Briefcase, User, LogOut, Building2, ChevronDown, Menu, X, Search } from 'lucide-react';
 import { useState } from 'react';
+import { useI18n } from '../context/i18nStore';
 import './Navbar.css';
 
 export default function Navbar() {
   const { isAuthenticated, user, userType, logout } = useAuthStore();
+  const { t } = useI18n();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -69,14 +71,14 @@ export default function Navbar() {
               <input
                 type="text"
                 className="navbar-search-input"
-                placeholder="Buscar empleo..."
+                placeholder={t('Buscar empleo...')}
                 value={searchTerm}
                 onChange={(event) => setSearchTerm(event.target.value)}
               />
             </form>
 
             <Link to="/jobs" className="navbar-link" onClick={closeMenu}>
-              Ver Ofertas <ChevronDown size={16} />
+              {t('Ver Ofertas')} <ChevronDown size={16} />
             </Link>
             {/* <Link to="/companies" className="navbar-link" onClick={closeMenu}>
               Reclutadores <ChevronDown size={16} />
@@ -87,13 +89,13 @@ export default function Navbar() {
             {!isAuthenticated ? (
               <>
                 <Link to="/register/user" className="btn btn-outline" onClick={closeMenu}>
-                  Registrarse
+                  {t('Registrarse')}
                 </Link>
                 <Link to="/login" className="btn btn-primary" onClick={closeMenu}>
-                  Ingresar
+                  {t('Ingresar')}
                 </Link>
                 <Link to="/register/company" className="btn btn-outline" onClick={closeMenu}>
-                  Publicar Empleo
+                  {t('Publicar Empleo')}
                 </Link>
               </>
             ) : (
@@ -102,13 +104,13 @@ export default function Navbar() {
                   {userType === 'user' && <User className="navbar-user-icon" />}
                   {userType === 'company' && <Building2 className="navbar-user-icon" />}
                   <Link to={getDashboardLink()} className="navbar-user-name-link" onClick={closeMenu}>
-                    {user?.firstName || user?.companyName || 'Usuario'}
+                    {user?.firstName || user?.companyName || t('Usuario')}
                   </Link>
                 </div>
 
                 <button onClick={handleLogout} className="navbar-logout-btn">
                   <LogOut className="navbar-icon-small" />
-                  <span>Salir</span>
+                  <span>{t('Salir')}</span>
                 </button>
               </div>
             )}

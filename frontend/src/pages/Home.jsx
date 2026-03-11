@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Briefcase, Building2, TrendingUp, MapPin, Briefcase as BriefcaseIcon, ChevronLeft, ChevronRight, ShoppingBag, PenTool, Users, BarChart2, Laptop, DollarSign, TrendingUp as TrendingUpIcon, Megaphone } from 'lucide-react';
+import { useI18n } from '../context/i18nStore';
 import './Home.css';
 
 // Hook personalizado para animaciones de scroll
@@ -37,6 +38,7 @@ const useScrollAnimation = () => {
 };
 
 export default function Home() {
+  const { t } = useI18n();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [heroRef, heroVisible] = useScrollAnimation();
   const [categoriesRef, categoriesVisible] = useScrollAnimation();
@@ -72,11 +74,11 @@ export default function Home() {
         <div className="home-hero-content">
           <div className="home-hero-left">
             <h1 className="home-hero-title">
-              La <span className="text-highlight">Forma Más Fácil</span><br />
-              de Conseguir Tu Nuevo Trabajo
+              {t('La')} <span className="text-highlight">{t('Forma Más Fácil')}</span><br />
+              {t('de Conseguir Tu Nuevo Trabajo')}
             </h1>
             <p className="home-hero-subtitle">
-              Cada mes, más de 3 millones de personas buscan trabajo en nuestra plataforma, realizando más de 140.000 postulaciones cada día
+              {t('Cada mes, más de 3 millones de personas buscan trabajo en nuestra plataforma, realizando más de 140.000 postulaciones cada día')}
             </p>
 
             <div className="home-search-container">
@@ -84,45 +86,45 @@ export default function Home() {
                 <div className="home-search-field">
                   <BriefcaseIcon size={20} className="search-icon" />
                   <select className="home-search-select">
-                    <option>Industria</option>
-                    <option>Tecnología</option>
-                    <option>Marketing</option>
-                    <option>Finanzas</option>
-                    <option>Salud</option>
+                    <option>{t('Industria')}</option>
+                    <option>{t('Tecnología')}</option>
+                    <option>{t('Marketing')}</option>
+                    <option>{t('Finanzas')}</option>
+                    <option>{t('Salud')}</option>
                   </select>
                 </div>
                 <div className="home-search-divider"></div>
                 <div className="home-search-field">
                   <MapPin size={20} className="search-icon" />
                   <select className="home-search-select">
-                    <option>Ubicación</option>
+                    <option>{t('Ubicación')}</option>
                     <option>Buenos Aires</option>
-                    <option>Córdoba</option>
-                    <option>Rosario</option>
-                    <option>Remoto</option>
+                    <option>{t('Córdoba')}</option>
+                    <option>{t('Rosario')}</option>
+                    <option>{t('Remoto')}</option>
                   </select>
                 </div>
                 <div className="home-search-divider"></div>
                 <div className="home-search-field home-search-field-input">
                   <input
                     type="text"
-                    placeholder="Palabras clave"
+                    placeholder={t('Palabras clave')}
                     className="home-search-input"
                   />
                 </div>
                 <Link to="/jobs" className="btn btn-primary home-search-btn">
                   <Search size={20} />
-                  <span>Buscar</span>
+                  <span>{t('Buscar')}</span>
                 </Link>
               </div>
             </div>
 
             <div className="home-popular-searches">
-              <span className="popular-label">Búsquedas Populares:</span>
-              <a href="#" className="popular-link">Redactor de Contenido</a>,
-              <a href="#" className="popular-link">Finanzas</a>,
-              <a href="#" className="popular-link">Recursos Humanos</a>,
-              <a href="#" className="popular-link">Gestión</a>
+              <span className="popular-label">{t('Búsquedas Populares:')}</span>
+              <a href="#" className="popular-link">{t('Redactor de Contenido')}</a>,
+              <a href="#" className="popular-link">{t('Finanzas')}</a>,
+              <a href="#" className="popular-link">{t('Recursos Humanos')}</a>,
+              <a href="#" className="popular-link">{t('Gestión')}</a>
             </div>
           </div>
 
@@ -143,8 +145,8 @@ export default function Home() {
       {/* Categories Carousel Section */}
       <section ref={categoriesRef} className={`home-categories animate-on-scroll ${categoriesVisible ? 'animate-visible' : ''}`}>
         <div className="home-categories-container">
-          <h2 className="categories-title">Navegá por categoría</h2>
-          <p className="categories-subtitle">Encontrá el trabajo perfecto para vos. más de 800 trabajos nuevos cada día</p>
+          <h2 className="categories-title">{t('Navegá por categoría')}</h2>
+          <p className="categories-subtitle">{t('Encontrá el trabajo perfecto para vos. más de 800 trabajos nuevos cada día')}</p>
           
           <div className="categories-carousel">
             <button className="carousel-btn carousel-btn-prev" onClick={prevSlide}>
@@ -167,8 +169,8 @@ export default function Home() {
                               <category.icon size={24} className="category-icon" />
                             </div>
                             <div className="category-info">
-                              <h3 className="category-name">{category.name}</h3>
-                              <p className="category-jobs">{category.jobs} Trabajos Disponibles</p>
+                              <h3 className="category-name">{t(category.name)}</h3>
+                              <p className="category-jobs">{category.jobs} {t('Trabajos Disponibles')}</p>
                             </div>
                           </Link>
                         ))}
@@ -197,30 +199,30 @@ export default function Home() {
 
       <section ref={featuresRef} className={`home-features animate-on-scroll ${featuresVisible ? 'animate-visible' : ''}`}>
         <div className="home-features-container">
-          <h2>¿Cómo Funciona?</h2>
+          <h2>{t('¿Cómo Funciona?')}</h2>
           <div className="home-features-grid">
             <div className="home-feature-item">
               <div className="home-feature-icon">
                 <Search />
               </div>
-              <h3>Busca</h3>
-              <p>Explora miles de ofertas laborales de empresas verificadas</p>
+              <h3>{t('Busca')}</h3>
+              <p>{t('Explora miles de ofertas laborales de empresas verificadas')}</p>
             </div>
 
             <div className="home-feature-item">
               <div className="home-feature-icon">
                 <Briefcase />
               </div>
-              <h3>Postula</h3>
-              <p>Envía tu CV y carta de presentación con un solo click</p>
+              <h3>{t('Postula')}</h3>
+              <p>{t('Envía tu CV y carta de presentación con un solo click')}</p>
             </div>
 
             <div className="home-feature-item">
               <div className="home-feature-icon">
                 <TrendingUp />
               </div>
-              <h3>Crece</h3>
-              <p>Consigue el trabajo ideal y desarrolla tu carrera profesional</p>
+              <h3>{t('Crece')}</h3>
+              <p>{t('Consigue el trabajo ideal y desarrolla tu carrera profesional')}</p>
             </div>
           </div>
         </div>
@@ -231,27 +233,25 @@ export default function Home() {
           <div className="home-cta-grid">
             <div className="card">
               <Briefcase className="home-cta-card-icon" />
-              <h3>¿Buscas trabajo?</h3>
+              <h3>{t('¿Buscas trabajo?')}</h3>
               <p>
-                Crea tu perfil profesional, sube tu CV y empieza a postular a
-                las mejores ofertas laborales.
+                {t('Crea tu perfil profesional, sube tu CV y empieza a postular a las mejores ofertas laborales.')}
               </p>
               <br />
               <Link to="/register/user" className="btn btn-primary">
-                Crear Cuenta de Candidato
+                {t('Crear Cuenta de Candidato')}
               </Link>
             </div>
 
             <div className="card">
               <Building2 className="home-cta-card-icon" />
-              <h3>¿Contratas talento?</h3>
+              <h3>{t('¿Contratas talento?')}</h3>
               <p>
-                Publica ofertas laborales, gestiona postulantes y encuentra a
-                los mejores profesionales para tu empresa.
+                {t('Publica ofertas laborales, gestiona postulantes y encuentra a los mejores profesionales para tu empresa.')}
               </p>
               <br />
               <Link to="/register/company" className="btn btn-primary">
-                Registrar Empresa
+                {t('Registrar Empresa')}
               </Link>
             </div>
           </div>
@@ -263,19 +263,19 @@ export default function Home() {
           <div className="home-stats-grid">
             <div>
               <div className="home-stat-number">10,000+</div>
-              <div className="home-stat-label">Ofertas Laborales</div>
+              <div className="home-stat-label">{t('Ofertas Laborales')}</div>
             </div>
             <div>
               <div className="home-stat-number">5,000+</div>
-              <div className="home-stat-label">Empresas Registradas</div>
+              <div className="home-stat-label">{t('Empresas Registradas')}</div>
             </div>
             <div>
               <div className="home-stat-number">50,000+</div>
-              <div className="home-stat-label">Candidatos Activos</div>
+              <div className="home-stat-label">{t('Candidatos Activos')}</div>
             </div>
             <div>
               <div className="home-stat-number">95%</div>
-              <div className="home-stat-label">Tasa de Éxito</div>
+              <div className="home-stat-label">{t('Tasa de Éxito')}</div>
             </div>
           </div>
         </div>

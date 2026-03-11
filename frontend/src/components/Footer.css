@@ -118,6 +118,36 @@
   color: white;
 }
 
+.footer-language-toggle {
+  margin-top: 1rem;
+  display: inline-flex;
+  border: 1px solid #374151;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #111827;
+}
+
+.footer-language-btn {
+  border: none;
+  background: transparent;
+  color: #d1d5db;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.footer-language-btn:hover {
+  background: #1f2937;
+  color: #fff;
+}
+
+.footer-language-btn-active {
+  background: #2563eb;
+  color: #fff;
+}
+
 /* Responsive Footer */
 @media (max-width: 768px) {
   .footer-container {
@@ -162,6 +192,10 @@
     margin-top: 1.5rem;
     padding-top: 1.5rem;
     font-size: 0.8125rem;
+  }
+
+  .footer-language-toggle {
+    margin-top: 0.85rem;
   }
 }
 
