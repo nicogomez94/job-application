@@ -208,6 +208,11 @@ const sortByLengthDesc = (values) => values.sort((a, b) => b.length - a.length);
 
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
+const isTranslationExcluded = (node) => {
+  const element = node?.nodeType === Node.ELEMENT_NODE ? node : node?.parentElement;
+  return Boolean(element?.closest?.('[translate="no"], .notranslate'));
+};
+
 const replaceByDictionary = (text, dictionary, sortedKeys) => {
   if (!text || typeof text !== 'string') return text;
   let next = text;
@@ -227,7 +232,7 @@ const skipParentTag = (node) => {
 const applyTranslationOnNode = (node, dictionary, sortedKeys) => {
   if (!node || !dictionary) return;
   if (node.nodeType === Node.TEXT_NODE) {
-    if (skipParentTag(node) || !node.nodeValue?.trim()) return;
+    if (skipParentTag(node) || isTranslationExcluded(node) || !node.nodeValue?.trim()) return;
     const translated = replaceByDictionary(node.nodeValue, dictionary, sortedKeys);
     if (translated !== node.nodeValue) {
       node.nodeValue = translated;
@@ -235,12 +240,12 @@ const applyTranslationOnNode = (node, dictionary, sortedKeys) => {
     return;
   }
 
-  if (node.nodeType !== Node.ELEMENT_NODE) return;
+  if (node.nodeType !== Node.ELEMENT_NODE || isTranslationExcluded(node)) return;
 
   const textWalker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
   let currentTextNode = textWalker.nextNode();
   while (currentTextNode) {
-    if (!skipParentTag(currentTextNode) && currentTextNode.nodeValue?.trim()) {
+    if (!skipParentTag(currentTextNode) && !isTranslationExcluded(currentTextNode) && currentTextNode.nodeValue?.trim()) {
       const translated = replaceByDictionary(currentTextNode.nodeValue, dictionary, sortedKeys);
       if (translated !== currentTextNode.nodeValue) {
         currentTextNode.nodeValue = translated;
@@ -251,6 +256,7 @@ const applyTranslationOnNode = (node, dictionary, sortedKeys) => {
 
   const elements = node.querySelectorAll('[placeholder],[title],[aria-label],input[type="button"],input[type="submit"]');
   for (const element of elements) {
+    if (isTranslationExcluded(element)) continue;
     const placeholder = element.getAttribute('placeholder');
     if (placeholder) {
       element.setAttribute('placeholder', replaceByDictionary(placeholder, dictionary, sortedKeys));
