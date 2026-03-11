@@ -103,10 +103,15 @@
   height: 1.25rem;
   width: 1.25rem;
   color: var(--gray-400);
+  pointer-events: none;
 }
 
 .login-input-with-icon {
   padding-left: 2.5rem;
+}
+
+.login-input-wrapper .login-input-with-icon {
+  padding-left: 2.75rem;
 }
 
 .login-error {

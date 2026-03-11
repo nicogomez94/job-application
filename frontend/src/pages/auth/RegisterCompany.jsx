@@ -24,6 +24,7 @@ export default function RegisterCompany() {
   const [loading, setLoading] = useState(false);
   const { setAuth } = useAuthStore();
   const navigate = useNavigate();
+  const userType = 'company';
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -112,6 +113,31 @@ export default function RegisterCompany() {
         </div>
 
         <form className="register-form" style={{ padding: '2rem' }} onSubmit={handleSubmit}>
+          <div className="register-user-type-selector">
+            <button
+              type="button"
+              onClick={() => navigate('/register/user')}
+              className={`register-user-type-btn ${
+                userType === 'user'
+                  ? 'register-user-type-btn-active'
+                  : 'register-user-type-btn-inactive'
+              }`}
+            >
+              Candidato
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate('/register/company')}
+              className={`register-user-type-btn ${
+                userType === 'company'
+                  ? 'register-user-type-btn-active'
+                  : 'register-user-type-btn-inactive'
+              }`}
+            >
+              Empresa
+            </button>
+          </div>
+
           <div style={{ marginBottom: '1rem' }}>
             <input
               className="input"

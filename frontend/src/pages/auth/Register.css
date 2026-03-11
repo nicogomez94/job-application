@@ -1,5 +1,36 @@
 /* Register Forms Responsive Styles */
 
+.register-user-type-selector {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.register-user-type-btn {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+  font-size: 1rem;
+}
+
+.register-user-type-btn-inactive {
+  background-color: var(--gray-100);
+  color: var(--gray-700);
+}
+
+.register-user-type-btn-inactive:hover {
+  background-color: var(--gray-200);
+}
+
+.register-user-type-btn-active {
+  background-color: var(--primary-600);
+  color: white;
+}
+
 /* Hover effects for inputs */
 input:focus,
 textarea:focus,
