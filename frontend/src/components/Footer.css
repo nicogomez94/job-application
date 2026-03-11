@@ -32,10 +32,11 @@
   margin-bottom: 1rem;
 }
 
-.footer-logo-icon {
-  height: 2rem;
-  width: 2rem;
-  color: var(--primary-500);
+.footer-logo-img {
+  height: 2.25rem;
+  width: auto;
+  object-fit: contain;
+  border-radius: 0.25rem;
 }
 
 .footer-logo-text {
@@ -144,7 +145,7 @@
 }
 
 .footer-language-btn-active {
-  background: #2563eb;
+  background: #C9A227;
   color: #fff;
 }
 
@@ -212,9 +213,8 @@
     font-size: 1.125rem;
   }
 
-  .footer-logo-icon {
-    height: 1.75rem;
-    width: 1.75rem;
+  .footer-logo-img {
+    height: 2rem;
   }
 
   .footer-description {

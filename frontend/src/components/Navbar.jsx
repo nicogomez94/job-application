@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../context/authStore';
-import { Briefcase, User, LogOut, Building2, ChevronDown, Menu, X, Search } from 'lucide-react';
+import { User, LogOut, Building2, ChevronDown, Menu, X, Search } from 'lucide-react';
 import { useState } from 'react';
 import { useI18n } from '../context/i18nStore';
 import './Navbar.css';
@@ -56,7 +56,7 @@ export default function Navbar() {
         <div className="navbar-content">
           <div>
             <Link to="/" className="navbar-logo" onClick={closeMenu}>
-              <Briefcase className="navbar-logo-icon" />
+              <img src="/logo.png" alt="Professionals at Home" className="navbar-logo-img" />
               <span className="navbar-logo-text">Professionals at Home</span>
             </Link>
           </div>

@@ -86,7 +86,7 @@ export default function JobSearch() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#f8fafc', paddingBottom: '3rem' }}>
-      <div style={{ background: 'linear-gradient(135deg, #0284c7 0%, #2563eb 100%)', padding: '2.5rem 0' }}>
+      <div style={{ background: 'linear-gradient(135deg, #b8911f 0%, #C9A227 100%)', padding: '2.5rem 0' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem', color: '#fff' }}>
           <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Buscar Empleo</h1>
           <p style={{ opacity: 0.9 }}>Encontrá ofertas activas y postulá en pocos pasos.</p>
@@ -157,7 +157,7 @@ export default function JobSearch() {
                 <img
                   src={
                     toAssetUrl(job.company?.companyLogo) ||
-                    `https://ui-avatars.com/api/?name=${encodeURIComponent(job.company?.companyName || 'Empresa')}&background=2563eb&color=fff`
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(job.company?.companyName || 'Empresa')}&background=C9A227&color=fff`
                   }
                   alt={job.company?.companyName || 'Empresa'}
                   style={{ width: '64px', height: '64px', borderRadius: '0.5rem', objectFit: 'cover' }}

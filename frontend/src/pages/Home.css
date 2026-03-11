@@ -163,7 +163,7 @@
 
 /* Hero Section */
 .home-hero {
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #dbeafe 100%);
+  background: linear-gradient(135deg, #fdf8ec 0%, #fdefc3 50%, #fdf3d0 100%);
   padding: 4rem 0 6rem;
   position: relative;
   overflow: hidden;
@@ -192,7 +192,7 @@
 }
 
 .text-highlight {
-  color: #3b82f6;
+  color: #C9A227;
 }
 
 .home-hero-subtitle {
@@ -320,7 +320,7 @@
 }
 
 .popular-link:hover {
-  color: #3b82f6;
+  color: #C9A227;
   text-decoration: underline;
 }
 
@@ -349,7 +349,7 @@
   inset: 0;
   border-radius: 1rem;
   padding: 3px;
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  background: linear-gradient(135deg, #C9A227, #b8911f);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -366,7 +366,7 @@
 }
 
 .hero-image-bottom {
-  bottom: 0;
+  bottom: 25px;
   right: 0;
   width: 450px;
   height: 320px;
@@ -583,8 +583,8 @@
 }
 
 .carousel-btn:hover {
-  background: #f8fafc;
-  color: #3b82f6;
+  background: #fdf8ec;
+  color: #C9A227;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
@@ -645,7 +645,7 @@
 }
 
 .category-icon {
-  color: #3b82f6;
+  color: #C9A227;
 }
 
 .category-info {
@@ -684,7 +684,7 @@
 }
 
 .indicator-dot.active {
-  background: #3b82f6;
+  background: #C9A227;
   width: 2rem;
   border-radius: 0.5rem;
 }

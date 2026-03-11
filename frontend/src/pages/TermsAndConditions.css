@@ -1,6 +1,6 @@
 .terms-page {
   min-height: 100vh;
-  background: linear-gradient(180deg, #eff6ff 0%, #f8fafc 45%, #ffffff 100%);
+  background: linear-gradient(180deg, #fdf8ec 0%, #f8fafc 45%, #ffffff 100%);
   color: #1e293b;
 }
 
@@ -57,7 +57,7 @@
 .terms-section h2 {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #1d4ed8;
+  color: #C9A227;
   margin-bottom: 1rem;
 }
 

@@ -1,6 +1,6 @@
 .about-page {
   min-height: 100vh;
-  background: linear-gradient(180deg, #eff6ff 0%, #f8fafc 45%, #ffffff 100%);
+  background: linear-gradient(180deg, #fdf8ec 0%, #f8fafc 45%, #ffffff 100%);
   color: #1e293b;
 }
 
@@ -40,7 +40,7 @@
   margin-top: 1.75rem;
   margin-bottom: 0.8rem;
   font-size: 1.45rem;
-  color: #1d4ed8;
+  color: #C9A227;
 }
 
 .about-card h2:first-child {

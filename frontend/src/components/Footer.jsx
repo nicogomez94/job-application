@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Briefcase, Github, Twitter, Linkedin } from 'lucide-react';
+import { Github, Twitter, Linkedin } from 'lucide-react';
 import { useI18n } from '../context/i18nStore';
 import './Footer.css';
 
@@ -12,7 +12,7 @@ export default function Footer() {
         <div className="footer-grid">
           <div className="footer-logo-section">
             <div className="footer-logo">
-              <Briefcase className="footer-logo-icon" />
+              <img src="/logo.png" alt="Professionals at Home" className="footer-logo-img" />
               <span className="footer-logo-text">JobPlatform</span>
             </div>
             <p className="footer-description">
