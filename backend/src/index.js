@@ -34,6 +34,14 @@ app.use((req, res, next) => {
 
 // ==================== RUTAS ====================
 
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    message: 'Job Platform API is running',
+    timestamp: new Date().toISOString(),
+  });
+});
+
 app.use('/api', routes);
 
 // Ruta raíz
