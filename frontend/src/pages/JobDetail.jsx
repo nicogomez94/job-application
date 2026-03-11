@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { applicationService, jobOfferService } from '../services';
+import { applicationService, jobOfferService, userService } from '../services';
 import { useAuthStore } from '../context/authStore';
 
 const formatDate = (date) =>
@@ -16,13 +16,27 @@ export default function JobDetail() {
   const [coverLetter, setCoverLetter] = useState('');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [hasApplied, setHasApplied] = useState(false);
 
   useEffect(() => {
     const loadJob = async () => {
       setLoading(true);
       try {
-        const response = await jobOfferService.getById(id);
-        setJob(response.data);
+        const [jobResponse, applicationsResponse] = await Promise.all([
+          jobOfferService.getById(id),
+          isAuthenticated && userType === 'user' ? userService.getMyApplications() : Promise.resolve(null),
+        ]);
+
+        setJob(jobResponse.data);
+
+        if (applicationsResponse) {
+          const alreadyApplied = (applicationsResponse.data || []).some(
+            (application) => application.jobOfferId === jobResponse.data.id || application.jobOffer?.id === jobResponse.data.id,
+          );
+          setHasApplied(alreadyApplied);
+        } else {
+          setHasApplied(false);
+        }
       } catch (error) {
         toast.error(error.response?.data?.error || 'No se pudo cargar la oferta');
       } finally {
@@ -31,7 +45,7 @@ export default function JobDetail() {
     };
 
     loadJob();
-  }, [id]);
+  }, [id, isAuthenticated, userType]);
 
   const handleApply = async () => {
     if (!isAuthenticated) {
@@ -50,6 +64,7 @@ export default function JobDetail() {
       await applicationService.apply(job.id, coverLetter);
       toast.success('Postulación enviada');
       setCoverLetter('');
+      setHasApplied(true);
     } catch (error) {
       toast.error(error.response?.data?.error || 'No se pudo enviar la postulación');
     } finally {
@@ -124,6 +139,8 @@ export default function JobDetail() {
           <h2 style={{ marginBottom: '0.8rem' }}>Postularme</h2>
           {userType === 'company' || userType === 'admin' ? (
             <p style={{ color: '#b91c1c' }}>Solo usuarios candidatos pueden postularse.</p>
+          ) : hasApplied ? (
+            <p style={{ color: '#7d6012', fontWeight: 600 }}>Ya te postulaste a esta oferta.</p>
           ) : (
             <>
               <textarea
