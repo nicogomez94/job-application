@@ -17,6 +17,10 @@ router.post('/', [
   body('plan').isIn(['MONTHLY', 'QUARTERLY', 'ANNUAL']).withMessage('Plan inválido'),
   body('amount').isDecimal().withMessage('El monto debe ser un número'),
   body('paymentId').optional().isString(),
+  // paymentMethod: 'free' = período gratuito | 'mercadopago' = pago real
+  body('paymentMethod').optional().isIn(['free', 'mercadopago', 'manual']).withMessage('Método de pago inválido'),
+  // paymentStatus: 'free' = gratuito | 'approved' = aprobado por MP
+  body('paymentStatus').optional().isIn(['free', 'approved', 'pending', 'rejected']).withMessage('Estado de pago inválido'),
   validate,
 ], subscriptionController.createSubscription);
 

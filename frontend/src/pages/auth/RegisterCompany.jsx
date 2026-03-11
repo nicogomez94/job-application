@@ -70,7 +70,7 @@ export default function RegisterCompany() {
       }
 
       toast.success('Empresa registrada exitosamente');
-      navigate('/company/dashboard');
+      navigate('/register/company/plan');
     } catch (error) {
       toast.error(error.response?.data?.error || 'No se pudo registrar la empresa');
     } finally {

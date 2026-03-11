@@ -455,6 +455,8 @@ VITE_GOOGLE_CLIENT_ID
 - ✅ CRUD completo de todas las entidades
 - ✅ Sistema de roles y permisos
 - ✅ Sistema de suscripciones
+- ✅ Flujo obligatorio de selección de membresía al registrarse/loguear como empresa
+- ✅ Estructura lista para integración con Mercado Pago (ver sección abajo)
 - ✅ Middleware de verificación de suscripción
 - ✅ Upload de archivos (CV, logos, fotos)
 - ✅ Búsqueda y filtrado de ofertas
@@ -470,6 +472,24 @@ VITE_GOOGLE_CLIENT_ID
 - 🚧 Dashboards con datos reales
 - 🚧 Panel de administración completo
 - 🚧 Integración completa Mercado Pago
+
+### 💳 Estructura lista para Mercado Pago
+
+El sistema de suscripciones está preparado para activar pagos reales con Mercado Pago con cambios mínimos:
+
+#### Estado actual (modo gratuito / lanzamiento)
+- Al registrarse o loguearse como empresa, se obliga a seleccionar un plan en `/register/company/plan`
+- Al hacer login, si la empresa no tiene suscripción activa, se redirige automáticamente a esa pantalla
+- El plan se activa con `amount: 0`, `paymentMethod: 'free'`, `paymentStatus: 'free'`
+- No se requiere tarjeta de crédito
+
+#### Para activar pagos con Mercado Pago
+1. **Backend** — `subscription.controller.js`, función `getPlans`: cambiar `isFreeMode = true` → `isFreeMode = false`
+2. **Frontend** — `SelectPlan.jsx`: descomentar el bloque marcado con `MERCADO PAGO INTEGRATION POINT` y reemplazar la llamada gratuita por un redirect al `init_point` de la preferencia de pago
+3. **Backend** — agregar el servicio de Mercado Pago SDK y completar el webhook en `mercadoPagoWebhook()` (ya existe el endpoint `/api/subscriptions/webhook/mercadopago`)
+4. **Variables de entorno** — activar `MERCADO_PAGO_ACCESS_TOKEN` en el backend
+
+El modelo de base de datos (`Subscription`) ya tiene los campos `paymentId`, `paymentStatus` y `paymentMethod` listos para almacenar la información del pago.
 
 ### 📋 Por Hacer
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { authService } from '../../services';
+import { authService, subscriptionService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
 import { DEBUG_MODE, getDebugLoginData } from '../../config/debug';
 import { Briefcase, Mail, Lock } from 'lucide-react';
@@ -41,12 +41,21 @@ export default function Login() {
       
       setAuth(userData, userType, token);
       toast.success('¡Bienvenido!');
-      
-      // Redirigir según tipo de usuario
+
       if (userType === 'user') {
         navigate('/user/dashboard');
       } else if (userType === 'company') {
-        navigate('/company/dashboard');
+        // Si la empresa no tiene suscripción activa, redirigir a selección de plan
+        try {
+          await subscriptionService.getActive();
+          navigate('/company/dashboard');
+        } catch (err) {
+          if (err.response?.status === 404) {
+            navigate('/register/company/plan');
+          } else {
+            navigate('/company/dashboard');
+          }
+        }
       } else {
         navigate('/admin/dashboard');
       }

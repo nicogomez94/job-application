@@ -15,6 +15,7 @@ import QuienesSomos from './pages/QuienesSomos';
 import Login from './pages/auth/Login';
 import RegisterUser from './pages/auth/RegisterUser';
 import RegisterCompany from './pages/auth/RegisterCompany';
+import SelectPlan from './pages/auth/SelectPlan';
 import OAuthCallback from './pages/auth/OAuthCallback';
 
 // User Dashboard
@@ -72,6 +73,14 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="register/user" element={<RegisterUser />} />
         <Route path="register/company" element={<RegisterCompany />} />
+        <Route
+          path="register/company/plan"
+          element={
+            <ProtectedRoute allowedTypes={['company']}>
+              <SelectPlan />
+            </ProtectedRoute>
+          }
+        />
         <Route path="auth/callback" element={<OAuthCallback />} />
 
         {/* User Routes */}

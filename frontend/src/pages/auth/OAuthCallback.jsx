@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { authService } from '../../services';
+import { authService, subscriptionService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
 
 const getDashboardPath = (type) => {
-  if (type === 'company') return '/company/dashboard';
   if (type === 'admin') return '/admin/dashboard';
-  return '/user/dashboard';
+  if (type === 'user') return '/user/dashboard';
+  return null; // companies need subscription check
 };
 
 export default function OAuthCallback() {
@@ -43,7 +43,22 @@ export default function OAuthCallback() {
 
         setAuth(profile, resolvedType, token);
         toast.success('Sesión iniciada con Google');
-        navigate(getDashboardPath(resolvedType), { replace: true });
+
+        if (resolvedType === 'company') {
+          // Si la empresa no tiene suscripción activa, redirigir a selección de plan
+          try {
+            await subscriptionService.getActive();
+            navigate('/company/dashboard', { replace: true });
+          } catch (err) {
+            if (err.response?.status === 404) {
+              navigate('/register/company/plan', { replace: true });
+            } else {
+              navigate('/company/dashboard', { replace: true });
+            }
+          }
+        } else {
+          navigate(getDashboardPath(resolvedType), { replace: true });
+        }
       } catch (error) {
         toast.error(error.response?.data?.error || 'No se pudo completar el login con Google');
         navigate('/login', { replace: true });

@@ -194,6 +194,11 @@ exports.mercadoPagoWebhook = async (req, res) => {
 // Obtener planes disponibles
 exports.getPlans = async (req, res) => {
   try {
+    // isFreeMode: cuando es true, el frontend activa el plan sin pago.
+    // Cuando se integre Mercado Pago, cambiar isFreeMode a false en cada plan
+    // y conectar el flujo de checkout en SelectPlan.jsx.
+    const isFreeMode = true;
+
     const plans = [
       {
         id: 'MONTHLY',
@@ -201,6 +206,7 @@ exports.getPlans = async (req, res) => {
         price: 9999,
         currency: 'ARS',
         duration: '1 mes',
+        isFreeMode,
         features: [
           'Publicar ofertas ilimitadas',
           'Ver postulantes',
@@ -215,6 +221,7 @@ exports.getPlans = async (req, res) => {
         currency: 'ARS',
         duration: '3 meses',
         discount: '17% de descuento',
+        isFreeMode,
         features: [
           'Publicar ofertas ilimitadas',
           'Ver postulantes',
@@ -229,6 +236,7 @@ exports.getPlans = async (req, res) => {
         currency: 'ARS',
         duration: '12 meses',
         discount: '25% de descuento',
+        isFreeMode,
         features: [
           'Publicar ofertas ilimitadas',
           'Ver postulantes',
