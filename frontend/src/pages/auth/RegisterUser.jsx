@@ -78,7 +78,7 @@ export default function RegisterUser() {
       className="register-container"
       style={{
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%)',
+        background: 'linear-gradient(135deg, #d8b24b 0%, #b8911f 100%)',
         padding: '2rem 1rem',
         display: 'grid',
         placeItems: 'center',
@@ -91,14 +91,14 @@ export default function RegisterUser() {
           maxWidth: '680px',
           background: '#fff',
           borderRadius: '1rem',
-          boxShadow: '0 20px 60px rgba(15, 23, 42, 0.25)',
+          boxShadow: '0 20px 60px rgba(60, 42, 18, 0.22)',
           overflow: 'hidden',
         }}
       >
         <div
           className="register-header"
           style={{
-            background: 'linear-gradient(135deg, #0284c7 0%, #1d4ed8 100%)',
+            background: 'linear-gradient(135deg, #c79b2b 0%, #8f6b12 100%)',
             color: '#fff',
             padding: '2rem',
           }}
@@ -198,7 +198,7 @@ export default function RegisterUser() {
           </div>
 
           <div style={{ marginTop: '1rem' }}>
-            <label style={{ display: 'block', color: '#334155', marginBottom: '0.35rem' }}>CV PDF (opcional)</label>
+            <label style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem' }}>CV PDF (opcional)</label>
             <input type="file" accept="application/pdf" onChange={handleFileChange} />
           </div>
 
@@ -206,7 +206,7 @@ export default function RegisterUser() {
             {loading ? 'Creando cuenta...' : 'Crear Cuenta'}
           </button>
 
-          <p style={{ marginTop: '1rem', textAlign: 'center', color: '#475569' }}>
+          <p style={{ marginTop: '1rem', textAlign: 'center', color: '#6f604b' }}>
             ¿Ya tenés cuenta? <Link to="/login">Iniciá sesión</Link>
           </p>
         </form>

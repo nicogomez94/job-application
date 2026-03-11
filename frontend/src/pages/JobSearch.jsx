@@ -85,7 +85,7 @@ export default function JobSearch() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f8fafc', paddingBottom: '3rem' }}>
+    <div style={{ minHeight: '100vh', background: '#fcf7ef', paddingBottom: '3rem' }}>
       <div style={{ background: 'linear-gradient(135deg, #b8911f 0%, #C9A227 100%)', padding: '2.5rem 0' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem', color: '#fff' }}>
           <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Buscar Empleo</h1>
@@ -103,7 +103,7 @@ export default function JobSearch() {
             background: '#fff',
             padding: '1rem',
             borderRadius: '0.75rem',
-            boxShadow: '0 2px 6px rgba(15, 23, 42, 0.08)',
+            boxShadow: '0 2px 6px rgba(60, 42, 18, 0.08)',
           }}
         >
           <input
@@ -136,7 +136,7 @@ export default function JobSearch() {
           </select>
         </div>
 
-        <div style={{ marginTop: '1rem', color: '#475569', fontSize: '0.95rem' }}>
+        <div style={{ marginTop: '1rem', color: '#6f604b', fontSize: '0.95rem' }}>
           {loading ? 'Cargando ofertas...' : `${pagination.total || 0} ofertas encontradas`}
         </div>
 
@@ -151,7 +151,7 @@ export default function JobSearch() {
             <article
               key={job.id}
               className="card job-card"
-              style={{ border: '1px solid #e2e8f0', padding: '1.25rem' }}
+              style={{ border: '1px solid #e7dcc6', padding: '1.25rem' }}
             >
               <div className="job-card-content" style={{ display: 'flex', gap: '1rem' }}>
                 <img
@@ -163,14 +163,14 @@ export default function JobSearch() {
                   style={{ width: '64px', height: '64px', borderRadius: '0.5rem', objectFit: 'cover' }}
                 />
                 <div style={{ flex: 1 }}>
-                  <h2 style={{ color: '#0f172a', marginBottom: '0.25rem' }}>{job.title}</h2>
-                  <p style={{ color: '#334155', marginBottom: '0.5rem' }}>{job.company?.companyName || 'Empresa'}</p>
-                  <p style={{ color: '#64748b', marginBottom: '0.7rem', lineHeight: 1.5 }}>
+                  <h2 style={{ color: '#2f2416', marginBottom: '0.25rem' }}>{job.title}</h2>
+                  <p style={{ color: '#5e4d38', marginBottom: '0.5rem' }}>{job.company?.companyName || 'Empresa'}</p>
+                  <p style={{ color: '#7e705c', marginBottom: '0.7rem', lineHeight: 1.5 }}>
                     {(job.description || '').slice(0, 180)}
                     {(job.description || '').length > 180 ? '...' : ''}
                   </p>
 
-                  <div className="job-card-meta" style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', color: '#475569', fontSize: '0.9rem' }}>
+                  <div className="job-card-meta" style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', color: '#6f604b', fontSize: '0.9rem' }}>
                     <span>{job.location}</span>
                     <span>{job.workMode}</span>
                     <span>{job.experienceLevel}</span>
@@ -196,7 +196,7 @@ export default function JobSearch() {
           <button className="btn btn-outline" disabled={(pagination.page || 1) <= 1} onClick={() => goToPage((pagination.page || 1) - 1)}>
             Anterior
           </button>
-          <span style={{ alignSelf: 'center', color: '#334155' }}>
+          <span style={{ alignSelf: 'center', color: '#5e4d38' }}>
             Página {pagination.page || 1} de {pagination.pages || 1}
           </span>
           <button

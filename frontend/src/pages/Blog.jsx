@@ -69,10 +69,10 @@ export default function Blog() {
   const regularPosts = blogPosts.slice(1);
 
   return (
-    <div style={{ background: '#f8fafc', minHeight: '100vh', paddingBottom: '4rem' }}>
+    <div style={{ background: '#fcf7ef', minHeight: '100vh', paddingBottom: '4rem' }}>
       {/* Hero Section */}
       <div style={{ 
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
+        background: 'linear-gradient(135deg, #d7b24c 0%, #8f6b12 100%)', 
         padding: '4rem 0',
         color: 'white'
       }}>
@@ -108,8 +108,8 @@ export default function Blog() {
             <span style={{
               display: 'inline-block',
               padding: '0.25rem 1rem',
-              background: '#dbeafe',
-              color: '#1e40af',
+              background: '#f7e7b8',
+              color: '#8f6b12',
               borderRadius: '9999px',
               fontSize: '0.875rem',
               fontWeight: '600',
@@ -120,13 +120,13 @@ export default function Blog() {
             <h2 style={{ 
               fontSize: '2rem', 
               fontWeight: '700', 
-              color: '#1e293b',
+              color: '#2f2416',
               marginBottom: '1rem' 
             }}>
               {featuredPost.title}
             </h2>
             <p style={{ 
-              color: '#64748b', 
+              color: '#7e705c', 
               lineHeight: '1.75',
               marginBottom: '1.5rem' 
             }}>
@@ -138,7 +138,7 @@ export default function Blog() {
               gap: '1.5rem',
               marginBottom: '1.5rem',
               fontSize: '0.875rem',
-              color: '#64748b'
+              color: '#7e705c'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <User size={16} />
@@ -160,7 +160,7 @@ export default function Blog() {
                 alignItems: 'center',
                 gap: '0.5rem',
                 padding: '0.75rem 1.5rem',
-                background: '#3b82f6',
+                background: '#c79b2b',
                 color: 'white',
                 textDecoration: 'none',
                 borderRadius: '0.5rem',
@@ -209,8 +209,8 @@ export default function Blog() {
                 <span style={{
                   display: 'inline-block',
                   padding: '0.25rem 0.75rem',
-                  background: '#e0f2fe',
-                  color: '#0369a1',
+                  background: '#fbefc9',
+                  color: '#9e7b18',
                   borderRadius: '9999px',
                   fontSize: '0.8125rem',
                   fontWeight: '600',
@@ -221,14 +221,14 @@ export default function Blog() {
                 <h3 style={{
                   fontSize: '1.25rem',
                   fontWeight: '700',
-                  color: '#1e293b',
+                  color: '#2f2416',
                   marginBottom: '0.75rem',
                   lineHeight: '1.4'
                 }}>
                   {post.title}
                 </h3>
                 <p style={{
-                  color: '#64748b',
+                  color: '#7e705c',
                   fontSize: '0.9375rem',
                   lineHeight: '1.6',
                   marginBottom: '1rem'
@@ -240,9 +240,9 @@ export default function Blog() {
                   alignItems: 'center',
                   gap: '1rem',
                   fontSize: '0.8125rem',
-                  color: '#94a3b8',
+                  color: '#aa9a7f',
                   paddingTop: '1rem',
-                  borderTop: '1px solid #e2e8f0'
+                  borderTop: '1px solid #e7dcc6'
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
                     <User size={14} />

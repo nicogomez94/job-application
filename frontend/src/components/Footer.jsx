@@ -13,7 +13,7 @@ export default function Footer() {
           <div className="footer-logo-section">
             <div className="footer-logo">
               <img src="/logo.png" alt="Professionals at Home" className="footer-logo-img" />
-              <span className="footer-logo-text">JobPlatform</span>
+              <span className="footer-logo-text"></span>
             </div>
             <p className="footer-description">
               {t('Conectamos talento con oportunidades. La plataforma líder en búsqueda de empleo.')}

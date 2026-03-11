@@ -74,7 +74,7 @@ export default function JobApplicants() {
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.8rem', marginBottom: '1rem' }}>
         <div>
           <h1>Postulantes</h1>
-          <p style={{ color: '#475569' }}>{jobOffer?.title || 'Oferta'}</p>
+          <p style={{ color: '#6f604b' }}>{jobOffer?.title || 'Oferta'}</p>
         </div>
         <Link className="btn btn-outline" to="/company/jobs">
           Volver a ofertas
@@ -88,17 +88,17 @@ export default function JobApplicants() {
       ) : (
         <div style={{ display: 'grid', gap: '0.9rem' }}>
           {applications.map((application) => (
-            <article key={application.id} className="card" style={{ border: '1px solid #e2e8f0' }}>
+            <article key={application.id} className="card" style={{ border: '1px solid #e7dcc6' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
                 <div>
                   <h2 style={{ marginBottom: '0.2rem' }}>
                     {application.user?.firstName} {application.user?.lastName}
                   </h2>
-                  <p style={{ color: '#334155', marginBottom: '0.4rem' }}>{application.user?.email}</p>
-                  <p style={{ color: '#64748b', fontSize: '0.88rem' }}>Postulado: {formatDate(application.createdAt)}</p>
+                  <p style={{ color: '#5e4d38', marginBottom: '0.4rem' }}>{application.user?.email}</p>
+                  <p style={{ color: '#7e705c', fontSize: '0.88rem' }}>Postulado: {formatDate(application.createdAt)}</p>
                 </div>
                 <div style={{ minWidth: '220px' }}>
-                  <label style={{ display: 'block', color: '#475569', marginBottom: '0.3rem' }}>Estado</label>
+                  <label style={{ display: 'block', color: '#6f604b', marginBottom: '0.3rem' }}>Estado</label>
                   <select
                     className="input"
                     value={application.status}
@@ -115,8 +115,8 @@ export default function JobApplicants() {
               </div>
 
               {application.coverLetter && (
-                <div style={{ marginTop: '0.8rem', padding: '0.7rem', background: '#f8fafc', borderRadius: '0.5rem' }}>
-                  <p style={{ color: '#334155', whiteSpace: 'pre-wrap' }}>{application.coverLetter}</p>
+                <div style={{ marginTop: '0.8rem', padding: '0.7rem', background: '#fcf7ef', borderRadius: '0.5rem' }}>
+                  <p style={{ color: '#5e4d38', whiteSpace: 'pre-wrap' }}>{application.coverLetter}</p>
                 </div>
               )}
 

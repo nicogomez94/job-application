@@ -55,7 +55,7 @@ export default function Navbar() {
       <div className="navbar-container">
         <div className="navbar-content">
           <div>
-            <Link to="/" className="navbar-logo" onClick={closeMenu}>
+            <Link to="/" className="navbar-logo" onClick={closeMenu} translate="no">
               <img src="/logo.png" alt="Professionals at Home" className="navbar-logo-img" />
               <span className="navbar-logo-text">Professionals at Home</span>
             </Link>

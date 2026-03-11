@@ -5,13 +5,13 @@
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  color: #64748b;
+  color: #7e705c;
 }
 
 .select-plan-spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid #e2e8f0;
+  border: 3px solid #e7dcc6;
   border-top-color: #C9A227;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
@@ -144,20 +144,20 @@
 .select-plan-name {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #1e293b;
+  color: #2f2416;
   margin-bottom: 0.25rem;
 }
 
 .select-plan-subtitle-card {
   font-size: 0.875rem;
-  color: #64748b;
+  color: #7e705c;
 }
 
 /* Price section */
 .select-plan-price-section {
   margin-bottom: 1.5rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid #f3ebde;
 }
 
 .select-plan-free-tag {
@@ -174,7 +174,7 @@
 
 .select-plan-original-price {
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: #aa9a7f;
   text-decoration: line-through;
 }
 
@@ -201,7 +201,7 @@
   align-items: flex-start;
   gap: 0.5rem;
   font-size: 0.875rem;
-  color: #374151;
+  color: #5e4d38;
 }
 
 .select-plan-check {

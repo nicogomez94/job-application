@@ -47,14 +47,14 @@ export default function Home() {
   const [statsRef, statsVisible] = useScrollAnimation();
 
   const categories = [
-    { id: 1, name: 'Retail & Producto', icon: ShoppingBag, jobs: 3, color: '#e0f2fe' },
-    { id: 2, name: 'Redactor de Contenido', icon: PenTool, jobs: 8, color: '#dbeafe' },
-    { id: 3, name: 'Recursos Humanos', icon: Users, jobs: 3, color: '#e0f2fe' },
-    { id: 4, name: 'Investigación de Mercado', icon: BarChart2, jobs: 4, color: '#dbeafe' },
-    { id: 5, name: 'Software', icon: Laptop, jobs: 4, color: '#e0f2fe' },
-    { id: 6, name: 'Finanzas', icon: DollarSign, jobs: 5, color: '#dbeafe' },
-    { id: 7, name: 'Gestión', icon: TrendingUpIcon, jobs: 5, color: '#e0f2fe' },
-    { id: 8, name: 'Marketing & Ventas', icon: Megaphone, jobs: 4, color: '#dbeafe' },
+    { id: 1, name: 'Retail & Producto', icon: ShoppingBag, jobs: 3, color: '#fbefc9' },
+    { id: 2, name: 'Redactor de Contenido', icon: PenTool, jobs: 8, color: '#f7e7b8' },
+    { id: 3, name: 'Recursos Humanos', icon: Users, jobs: 3, color: '#fbefc9' },
+    { id: 4, name: 'Investigación de Mercado', icon: BarChart2, jobs: 4, color: '#f7e7b8' },
+    { id: 5, name: 'Software', icon: Laptop, jobs: 4, color: '#fbefc9' },
+    { id: 6, name: 'Finanzas', icon: DollarSign, jobs: 5, color: '#f7e7b8' },
+    { id: 7, name: 'Gestión', icon: TrendingUpIcon, jobs: 5, color: '#fbefc9' },
+    { id: 8, name: 'Marketing & Ventas', icon: Megaphone, jobs: 4, color: '#f7e7b8' },
   ];
 
   const itemsPerSlide = 4;

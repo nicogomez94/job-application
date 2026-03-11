@@ -79,16 +79,16 @@ export default function JobDetail() {
   }
 
   return (
-    <div style={{ background: '#f8fafc', minHeight: '100vh', padding: '1.5rem 1rem 2rem' }}>
+    <div style={{ background: '#fcf7ef', minHeight: '100vh', padding: '1.5rem 1rem 2rem' }}>
       <div style={{ maxWidth: '960px', margin: '0 auto' }}>
-        <Link to="/jobs" style={{ color: '#2563eb', textDecoration: 'none', display: 'inline-block', marginBottom: '1rem' }}>
+        <Link to="/jobs" style={{ color: '#b8911f', textDecoration: 'none', display: 'inline-block', marginBottom: '1rem' }}>
           ← Volver a ofertas
         </Link>
 
         <div className="card" style={{ marginBottom: '1rem' }}>
-          <h1 style={{ marginBottom: '0.3rem', color: '#0f172a' }}>{job.title}</h1>
-          <p style={{ color: '#334155', marginBottom: '0.8rem' }}>{job.company?.companyName}</p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.9rem', color: '#475569', fontSize: '0.92rem' }}>
+          <h1 style={{ marginBottom: '0.3rem', color: '#2f2416' }}>{job.title}</h1>
+          <p style={{ color: '#5e4d38', marginBottom: '0.8rem' }}>{job.company?.companyName}</p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.9rem', color: '#6f604b', fontSize: '0.92rem' }}>
             <span>{job.location}</span>
             <span>{job.workType}</span>
             <span>{job.workMode}</span>
@@ -99,12 +99,12 @@ export default function JobDetail() {
 
         <div className="card" style={{ marginBottom: '1rem' }}>
           <h2 style={{ marginBottom: '0.6rem' }}>Descripción</h2>
-          <p style={{ color: '#334155', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{job.description}</p>
+          <p style={{ color: '#5e4d38', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{job.description}</p>
         </div>
 
         <div className="card" style={{ marginBottom: '1rem' }}>
           <h2 style={{ marginBottom: '0.6rem' }}>Requisitos</h2>
-          <ul style={{ paddingLeft: '1.2rem', color: '#334155', lineHeight: 1.6 }}>
+          <ul style={{ paddingLeft: '1.2rem', color: '#5e4d38', lineHeight: 1.6 }}>
             {(job.requirements || []).map((item, idx) => (
               <li key={`${item}-${idx}`}>{item}</li>
             ))}
@@ -113,7 +113,7 @@ export default function JobDetail() {
 
         <div className="card" style={{ marginBottom: '1rem' }}>
           <h2 style={{ marginBottom: '0.6rem' }}>Responsabilidades</h2>
-          <ul style={{ paddingLeft: '1.2rem', color: '#334155', lineHeight: 1.6 }}>
+          <ul style={{ paddingLeft: '1.2rem', color: '#5e4d38', lineHeight: 1.6 }}>
             {(job.responsibilities || []).map((item, idx) => (
               <li key={`${item}-${idx}`}>{item}</li>
             ))}

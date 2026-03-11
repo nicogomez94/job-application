@@ -1,7 +1,7 @@
 .terms-page {
   min-height: 100vh;
-  background: linear-gradient(180deg, #fdf8ec 0%, #f8fafc 45%, #ffffff 100%);
-  color: #1e293b;
+  background: linear-gradient(180deg, #fdf8ec 0%, #fcf7ef 45%, #ffffff 100%);
+  color: #2f2416;
 }
 
 .terms-hero {
@@ -16,18 +16,18 @@
 .terms-hero h1 {
   font-size: clamp(1.75rem, 4.5vw, 2.75rem);
   margin-bottom: 0.75rem;
-  color: #0f172a;
+  color: #2f2416;
 }
 
 .terms-subtitle {
   font-size: clamp(1rem, 2.5vw, 1.15rem);
-  color: #475569;
+  color: #6f604b;
   margin-bottom: 0.35rem;
 }
 
 .terms-updated {
   font-size: 0.875rem;
-  color: #94a3b8;
+  color: #aa9a7f;
 }
 
 .terms-content {
@@ -38,14 +38,14 @@
   background: #ffffff;
   border-radius: 1rem;
   padding: 2.5rem;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.08);
+  border: 1px solid #e7dcc6;
+  box-shadow: 0 14px 36px rgba(60, 42, 18, 0.08);
 }
 
 .terms-section {
   margin-bottom: 2.25rem;
   padding-bottom: 2.25rem;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid #f3ebde;
 }
 
 .terms-section:last-child {
@@ -64,7 +64,7 @@
 .terms-section p {
   font-size: 1rem;
   line-height: 1.8;
-  color: #334155;
+  color: #5e4d38;
   margin-bottom: 0.875rem;
 }
 
@@ -91,7 +91,7 @@
 .terms-list li {
   font-size: 1rem;
   line-height: 1.8;
-  color: #334155;
+  color: #5e4d38;
   margin-bottom: 0.875rem;
 }
 
@@ -108,7 +108,7 @@
 .terms-bullet-list li {
   font-size: 1rem;
   line-height: 1.8;
-  color: #334155;
+  color: #5e4d38;
   margin-bottom: 0.625rem;
 }
 

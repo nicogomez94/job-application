@@ -83,7 +83,7 @@ export default function RegisterCompany() {
       className="register-container"
       style={{
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #0284c7 0%, #1d4ed8 100%)',
+        background: 'linear-gradient(135deg, #d4ad45 0%, #a87f17 100%)',
         padding: '2rem 1rem',
         display: 'grid',
         placeItems: 'center',
@@ -96,14 +96,14 @@ export default function RegisterCompany() {
           maxWidth: '760px',
           background: '#fff',
           borderRadius: '1rem',
-          boxShadow: '0 20px 60px rgba(15, 23, 42, 0.25)',
+          boxShadow: '0 20px 60px rgba(60, 42, 18, 0.22)',
           overflow: 'hidden',
         }}
       >
         <div
           className="register-header"
           style={{
-            background: 'linear-gradient(135deg, #0369a1 0%, #1e3a8a 100%)',
+            background: 'linear-gradient(135deg, #b8911f 0%, #7d6012 100%)',
             color: '#fff',
             padding: '2rem',
           }}
@@ -232,7 +232,7 @@ export default function RegisterCompany() {
           </div>
 
           <div style={{ marginTop: '1rem' }}>
-            <label style={{ display: 'block', color: '#334155', marginBottom: '0.35rem' }}>Logo (opcional)</label>
+            <label style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem' }}>Logo (opcional)</label>
             <input type="file" accept="image/*" onChange={handleFileChange} />
           </div>
 
@@ -240,7 +240,7 @@ export default function RegisterCompany() {
             {loading ? 'Registrando empresa...' : 'Crear Cuenta de Empresa'}
           </button>
 
-          <p style={{ marginTop: '1rem', textAlign: 'center', color: '#475569' }}>
+          <p style={{ marginTop: '1rem', textAlign: 'center', color: '#6f604b' }}>
             ¿Ya tenés cuenta? <Link to="/login">Iniciá sesión</Link>
           </p>
         </form>

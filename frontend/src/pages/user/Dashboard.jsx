@@ -39,17 +39,17 @@ export default function UserDashboard() {
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '2rem 1rem' }}>
       <h1 style={{ marginBottom: '0.5rem' }}>Dashboard de Candidato</h1>
-      <p style={{ color: '#475569', marginBottom: '1.5rem' }}>
+      <p style={{ color: '#6f604b', marginBottom: '1.5rem' }}>
         Bienvenido{profile?.firstName ? `, ${profile.firstName}` : ''}. Desde acá podés seguir tus postulaciones.
       </p>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
         <div className="card">
-          <h3 style={{ fontSize: '0.95rem', color: '#475569' }}>Postulaciones Totales</h3>
+          <h3 style={{ fontSize: '0.95rem', color: '#6f604b' }}>Postulaciones Totales</h3>
           <p style={{ fontSize: '1.8rem', marginTop: '0.4rem' }}>{applications.length}</p>
         </div>
         <div className="card">
-          <h3 style={{ fontSize: '0.95rem', color: '#475569' }}>Estado Pendiente/Revisión</h3>
+          <h3 style={{ fontSize: '0.95rem', color: '#6f604b' }}>Estado Pendiente/Revisión</h3>
           <p style={{ fontSize: '1.8rem', marginTop: '0.4rem' }}>
             {applications.filter((item) => ['PENDING', 'REVIEWING'].includes(item.status)).length}
           </p>

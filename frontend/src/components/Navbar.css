@@ -4,7 +4,7 @@
   background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   box-shadow: none;
-  border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+  border-bottom: 1px solid rgba(220, 205, 179, 0.55);
   position: sticky;
   top: 0;
   z-index: 1100;
@@ -43,7 +43,7 @@
   font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-weight: 800;
   letter-spacing: 0.01em;
-  color: #1e293b;
+  color: #2f2416;
 }
 
 .navbar-links {
@@ -57,14 +57,14 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 0.75rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #e7dcc6;
   border-radius: 999px;
   min-width: 360px;
   background: #fff;
 }
 
 .navbar-search-icon {
-  color: #94a3b8;
+  color: #aa9a7f;
   flex-shrink: 0;
 }
 
@@ -73,16 +73,16 @@
   outline: none;
   width: 100%;
   font-size: 0.875rem;
-  color: #334155;
+  color: #5e4d38;
   background: transparent;
 }
 
 .navbar-search-input::placeholder {
-  color: #94a3b8;
+  color: #aa9a7f;
 }
 
 .navbar-link {
-  color: #64748b;
+  color: #7e705c;
   text-decoration: none;
   padding: 0.5rem 0;
   font-size: 0.9375rem;
@@ -98,9 +98,9 @@
 }
 
 .btn-outline {
-  background: transparent;
-  color: #64748b;
-  border: 1px solid #e2e8f0;
+  background: #fffaf0;
+  color: #b8911f;
+  border: 1px solid #c79b2b;
   padding: 0.625rem 1.5rem;
   border-radius: 0.375rem;
   font-weight: 500;
@@ -109,8 +109,8 @@
 }
 
 .btn-outline:hover {
-  background: #f8fafc;
-  border-color: #cbd5e1;
+  background: #fdf1d2;
+  border-color: #b8911f;
 }
 
 .navbar-user-section {
@@ -176,7 +176,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #64748b;
+  color: #7e705c;
   padding: 0.5rem;
   border-radius: 0.375rem;
   transition: all 0.2s;
@@ -255,7 +255,7 @@
   .navbar-link {
     width: 100%;
     padding: 0.75rem 1rem;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f3ebde;
   }
 
   .navbar-search {
@@ -280,7 +280,7 @@
     width: 100%;
     gap: 0.75rem;
     padding-top: 1rem;
-    border-top: 1px solid #f1f5f9;
+    border-top: 1px solid #f3ebde;
   }
 
   .navbar-logout-btn {

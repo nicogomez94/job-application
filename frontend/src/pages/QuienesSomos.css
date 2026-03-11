@@ -1,7 +1,7 @@
 .about-page {
   min-height: 100vh;
-  background: linear-gradient(180deg, #fdf8ec 0%, #f8fafc 45%, #ffffff 100%);
-  color: #1e293b;
+  background: linear-gradient(180deg, #fdf8ec 0%, #fcf7ef 45%, #ffffff 100%);
+  color: #2f2416;
 }
 
 .about-hero {
@@ -16,12 +16,12 @@
 .about-hero h1 {
   font-size: clamp(2rem, 5vw, 3rem);
   margin-bottom: 0.75rem;
-  color: #0f172a;
+  color: #2f2416;
 }
 
 .about-hero p {
   font-size: clamp(1rem, 2.5vw, 1.2rem);
-  color: #475569;
+  color: #6f604b;
 }
 
 .about-content {
@@ -32,8 +32,8 @@
   background: #ffffff;
   border-radius: 1rem;
   padding: 2rem;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.08);
+  border: 1px solid #e7dcc6;
+  box-shadow: 0 14px 36px rgba(60, 42, 18, 0.08);
 }
 
 .about-card h2 {
@@ -51,7 +51,7 @@
   margin-bottom: 1rem;
   font-size: 1.03rem;
   line-height: 1.75;
-  color: #334155;
+  color: #5e4d38;
 }
 
 @media (max-width: 768px) {

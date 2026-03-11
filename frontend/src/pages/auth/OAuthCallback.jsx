@@ -70,7 +70,7 @@ export default function OAuthCallback() {
 
   return (
     <div style={{ minHeight: '60vh', display: 'grid', placeItems: 'center', padding: '2rem' }}>
-      <p style={{ color: '#475569', fontSize: '1rem' }}>Completando autenticación...</p>
+      <p style={{ color: '#6f604b', fontSize: '1rem' }}>Completando autenticación...</p>
     </div>
   );
 }

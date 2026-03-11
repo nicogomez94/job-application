@@ -45,25 +45,25 @@ export default function CompanyDashboard() {
   return (
     <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '2rem 1rem' }}>
       <h1 style={{ marginBottom: '0.4rem' }}>Dashboard de Empresa</h1>
-      <p style={{ color: '#475569', marginBottom: '1.2rem' }}>
+      <p style={{ color: '#6f604b', marginBottom: '1.2rem' }}>
         {company?.companyName || 'Empresa'} {subscriptionStatus?.isBlocked ? '(Cuenta bloqueada)' : ''}
       </p>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
         <div className="card">
-          <p style={{ color: '#475569', fontSize: '0.92rem' }}>Ofertas activas</p>
+          <p style={{ color: '#6f604b', fontSize: '0.92rem' }}>Ofertas activas</p>
           <h2 style={{ marginTop: '0.4rem' }}>{activeOffers}</h2>
         </div>
         <div className="card">
-          <p style={{ color: '#475569', fontSize: '0.92rem' }}>Ofertas totales</p>
+          <p style={{ color: '#6f604b', fontSize: '0.92rem' }}>Ofertas totales</p>
           <h2 style={{ marginTop: '0.4rem' }}>{offers.length}</h2>
         </div>
         <div className="card">
-          <p style={{ color: '#475569', fontSize: '0.92rem' }}>Postulaciones recibidas</p>
+          <p style={{ color: '#6f604b', fontSize: '0.92rem' }}>Postulaciones recibidas</p>
           <h2 style={{ marginTop: '0.4rem' }}>{totalApplications}</h2>
         </div>
         <div className="card">
-          <p style={{ color: '#475569', fontSize: '0.92rem' }}>Suscripción</p>
+          <p style={{ color: '#6f604b', fontSize: '0.92rem' }}>Suscripción</p>
           <h2 style={{ marginTop: '0.4rem' }}>
             {subscriptionStatus?.hasActiveSubscription ? subscriptionStatus?.subscription?.plan : 'Inactiva'}
           </h2>

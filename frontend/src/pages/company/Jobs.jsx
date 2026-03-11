@@ -71,9 +71,9 @@ export default function CompanyJobs() {
       ) : (
         <div style={{ display: 'grid', gap: '0.9rem' }}>
           {jobs.map((job) => (
-            <article key={job.id} className="card" style={{ border: '1px solid #e2e8f0' }}>
-              <h2 style={{ marginBottom: '0.3rem', color: '#0f172a' }}>{job.title}</h2>
-              <p style={{ color: '#475569', marginBottom: '0.5rem', fontSize: '0.92rem' }}>
+            <article key={job.id} className="card" style={{ border: '1px solid #e7dcc6' }}>
+              <h2 style={{ marginBottom: '0.3rem', color: '#2f2416' }}>{job.title}</h2>
+              <p style={{ color: '#6f604b', marginBottom: '0.5rem', fontSize: '0.92rem' }}>
                 {job.location} | {job.workMode} | {job.experienceLevel}
               </p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.8rem', marginBottom: '0.7rem' }}>
@@ -81,7 +81,7 @@ export default function CompanyJobs() {
                   {job.isActive ? 'Activa' : 'Inactiva'}
                 </span>
                 <span className="badge badge-info">Postulaciones: {job._count?.applications || 0}</span>
-                <span style={{ color: '#64748b', fontSize: '0.88rem' }}>Creada: {formatDate(job.createdAt)}</span>
+                <span style={{ color: '#7e705c', fontSize: '0.88rem' }}>Creada: {formatDate(job.createdAt)}</span>
               </div>
 
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>

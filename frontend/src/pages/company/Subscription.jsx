@@ -90,13 +90,13 @@ export default function CompanySubscription() {
         <h2 style={{ marginBottom: '0.7rem' }}>Estado actual</h2>
         {status?.hasActiveSubscription ? (
           <>
-            <p style={{ color: '#334155' }}>
+            <p style={{ color: '#5e4d38' }}>
               Plan: <strong>{status.subscription?.plan}</strong>
             </p>
-            <p style={{ color: '#334155' }}>
+            <p style={{ color: '#5e4d38' }}>
               Vigencia: {formatDate(status.subscription?.startDate)} - {formatDate(status.subscription?.endDate)}
             </p>
-            <p style={{ color: '#334155', marginBottom: '0.8rem' }}>
+            <p style={{ color: '#5e4d38', marginBottom: '0.8rem' }}>
               Monto: {formatAmount(status.subscription?.amount, status.subscription?.currency)}
             </p>
             <button className="btn" style={{ background: '#fee2e2', color: '#991b1b' }} onClick={handleCancel} disabled={cancellingId === status.subscription?.id}>
@@ -112,10 +112,10 @@ export default function CompanySubscription() {
         <h2 style={{ marginBottom: '0.8rem' }}>Planes disponibles</h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '1rem' }}>
           {plans.map((plan) => (
-            <div key={plan.id} style={{ border: '1px solid #e2e8f0', borderRadius: '0.7rem', padding: '1rem' }}>
+            <div key={plan.id} style={{ border: '1px solid #e7dcc6', borderRadius: '0.7rem', padding: '1rem' }}>
               <h3 style={{ marginBottom: '0.4rem' }}>{plan.name}</h3>
-              <p style={{ color: '#334155', marginBottom: '0.4rem' }}>{formatAmount(plan.price, plan.currency)}</p>
-              <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '0.8rem' }}>{plan.duration}</p>
+              <p style={{ color: '#5e4d38', marginBottom: '0.4rem' }}>{formatAmount(plan.price, plan.currency)}</p>
+              <p style={{ color: '#7e705c', fontSize: '0.9rem', marginBottom: '0.8rem' }}>{plan.duration}</p>
               <button className="btn btn-primary" onClick={() => handleActivatePlan(plan)} disabled={processingPlanId === plan.id}>
                 {processingPlanId === plan.id ? 'Procesando...' : 'Activar plan'}
               </button>
@@ -127,18 +127,18 @@ export default function CompanySubscription() {
       <div className="card">
         <h2 style={{ marginBottom: '0.8rem' }}>Historial</h2>
         {history.length === 0 ? (
-          <p style={{ color: '#64748b' }}>Sin historial de suscripciones.</p>
+          <p style={{ color: '#7e705c' }}>Sin historial de suscripciones.</p>
         ) : (
           <div style={{ display: 'grid', gap: '0.7rem' }}>
             {history.map((item) => (
-              <div key={item.id} style={{ border: '1px solid #e2e8f0', borderRadius: '0.5rem', padding: '0.8rem' }}>
-                <p style={{ color: '#0f172a' }}>
+              <div key={item.id} style={{ border: '1px solid #e7dcc6', borderRadius: '0.5rem', padding: '0.8rem' }}>
+                <p style={{ color: '#2f2416' }}>
                   <strong>{item.plan}</strong> - {item.status}
                 </p>
-                <p style={{ color: '#475569', fontSize: '0.9rem' }}>
+                <p style={{ color: '#6f604b', fontSize: '0.9rem' }}>
                   {formatDate(item.startDate)} a {formatDate(item.endDate)}
                 </p>
-                <p style={{ color: '#475569', fontSize: '0.9rem' }}>{formatAmount(item.amount, item.currency)}</p>
+                <p style={{ color: '#6f604b', fontSize: '0.9rem' }}>{formatAmount(item.amount, item.currency)}</p>
               </div>
             ))}
           </div>
