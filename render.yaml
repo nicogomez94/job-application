@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: ruben-backend
+    runtime: node
+    rootDir: backend
+    plan: free
+    region: oregon
+    buildCommand: npm install && npm run prisma:generate && npx prisma migrate deploy
+    startCommand: npm run start:deploy:seed
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # DATABASE_URL must include ?schema=ruben_jobs to isolate tables from other apps.
+      # Full value to set in Render dashboard:
+      # postgresql://bsdc_user:<password>@dpg-d6ktoufafjfc73emvbtg-a/bsdc?schema=ruben_jobs
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
