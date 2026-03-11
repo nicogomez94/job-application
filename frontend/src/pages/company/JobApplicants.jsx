@@ -71,7 +71,7 @@ export default function JobApplicants() {
 
   return (
     <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '2rem 1rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.8rem', marginBottom: '1rem' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.8rem', marginBottom: '1rem' }}>
         <div>
           <h1>Postulantes</h1>
           <p style={{ color: '#475569' }}>{jobOffer?.title || 'Oferta'}</p>

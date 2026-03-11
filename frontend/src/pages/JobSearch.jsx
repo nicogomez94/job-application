@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { applicationService, categoryService, jobOfferService } from '../services';
-import { useAuthStore } from '../context/authStore';
+import { categoryService, jobOfferService } from '../services';
 import './JobSearch.css';
 
 const apiBaseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -42,9 +41,6 @@ export default function JobSearch() {
   const [pagination, setPagination] = useState({ page: 1, pages: 1, total: 0 });
   const [loading, setLoading] = useState(false);
 
-  const { isAuthenticated, userType } = useAuthStore();
-  const navigate = useNavigate();
-
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -81,27 +77,6 @@ export default function JobSearch() {
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value, page: 1 }));
-  };
-
-  const handleApply = async (jobId) => {
-    if (!isAuthenticated) {
-      toast.error('Iniciá sesión para postularte');
-      navigate('/login');
-      return;
-    }
-
-    if (userType !== 'user') {
-      toast.error('Solo los candidatos pueden postularse');
-      return;
-    }
-
-    const coverLetter = window.prompt('Carta de presentación (opcional):') ?? '';
-    try {
-      await applicationService.apply(jobId, coverLetter);
-      toast.success('Postulación enviada');
-    } catch (error) {
-      toast.error(error.response?.data?.error || 'No se pudo enviar la postulación');
-    }
   };
 
   const goToPage = (nextPage) => {
@@ -212,9 +187,6 @@ export default function JobSearch() {
                 <Link to={`/jobs/${job.id}`} className="btn btn-outline">
                   Ver detalle
                 </Link>
-                <button className="btn btn-primary" onClick={() => handleApply(job.id)}>
-                  Postularme
-                </button>
               </div>
             </article>
           ))}
