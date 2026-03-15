@@ -83,7 +83,10 @@ export default function RegisterCompany() {
       className="register-container"
       style={{
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #d4ad45 0%, #a87f17 100%)',
+        backgroundImage: "url('/fondo2.jfif')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
         padding: '2rem 1rem',
         display: 'grid',
         placeItems: 'center',
@@ -103,7 +106,7 @@ export default function RegisterCompany() {
         <div
           className="register-header"
           style={{
-            background: 'linear-gradient(135deg, #b8911f 0%, #7d6012 100%)',
+            background: 'linear-gradient(135deg, var(--primary-600) 0%, var(--primary-800) 100%)',
             color: '#fff',
             padding: '2rem',
           }}

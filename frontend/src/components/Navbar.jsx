@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../context/authStore';
 import { User, LogOut, Building2, ChevronDown, Menu, X, Search } from 'lucide-react';
 import { useState } from 'react';
@@ -9,6 +9,7 @@ export default function Navbar() {
   const { isAuthenticated, user, userType, logout } = useAuthStore();
   const { t } = useI18n();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -66,6 +67,14 @@ export default function Navbar() {
           </button>
 
           <div className={`navbar-links ${isMenuOpen ? 'navbar-links-open' : ''}`}>
+            <Link
+              to="/"
+              className={`navbar-link navbar-link-home ${location.pathname === '/' ? 'navbar-link-active' : ''}`}
+              onClick={closeMenu}
+            >
+              Home
+            </Link>
+
             <form className="navbar-search" onSubmit={handleSearchSubmit}>
               <Search className="navbar-search-icon" size={16} />
               <input

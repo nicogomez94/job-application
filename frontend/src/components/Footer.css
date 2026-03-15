@@ -145,7 +145,7 @@
 }
 
 .footer-language-btn-active {
-  background: #C9A227;
+  background: var(--primary-500);
   color: #fff;
 }
 

@@ -72,7 +72,7 @@ export default function Blog() {
     <div style={{ background: '#fcf7ef', minHeight: '100vh', paddingBottom: '4rem' }}>
       {/* Hero Section */}
       <div style={{ 
-        background: 'linear-gradient(135deg, #d7b24c 0%, #8f6b12 100%)', 
+        background: 'linear-gradient(135deg, var(--primary-500) 0%, var(--primary-800) 100%)', 
         padding: '4rem 0',
         color: 'white'
       }}>
@@ -109,7 +109,7 @@ export default function Blog() {
               display: 'inline-block',
               padding: '0.25rem 1rem',
               background: '#f7e7b8',
-              color: '#8f6b12',
+              color: 'var(--primary-800)',
               borderRadius: '9999px',
               fontSize: '0.875rem',
               fontWeight: '600',
@@ -160,7 +160,7 @@ export default function Blog() {
                 alignItems: 'center',
                 gap: '0.5rem',
                 padding: '0.75rem 1.5rem',
-                background: '#c79b2b',
+                background: 'var(--primary-500)',
                 color: 'white',
                 textDecoration: 'none',
                 borderRadius: '0.5rem',
@@ -210,7 +210,7 @@ export default function Blog() {
                   display: 'inline-block',
                   padding: '0.25rem 0.75rem',
                   background: '#fbefc9',
-                  color: '#9e7b18',
+                  color: 'var(--primary-700)',
                   borderRadius: '9999px',
                   fontSize: '0.8125rem',
                   fontWeight: '600',

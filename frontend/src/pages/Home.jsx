@@ -4,8 +4,7 @@ import { Search, Briefcase, Building2, TrendingUp, MapPin, Briefcase as Briefcas
 import { useI18n } from '../context/i18nStore';
 import './Home.css';
 
-const heroImageTop = '/675d0da6-25a1-489f-8b1a-a65243dc0322.jfif';
-const heroImageBottom = '/7cf502a2-e693-4721-9f3c-278d72577747.jfif';
+const heroImageMain = '/herohome.png';
 
 // Hook personalizado para animaciones de scroll
 const useScrollAnimation = () => {
@@ -77,72 +76,63 @@ export default function Home() {
         <div className="home-hero-content">
           <div className="home-hero-left">
             <h1 className="home-hero-title">
-              {t('La')} <span className="text-highlight">{t('Forma Más Fácil')}</span><br />
-              {t('de Conseguir Tu Nuevo Trabajo')}
+              {t('Gana mas')}<br />
+              {t('Haciendo menos')}
             </h1>
             <p className="home-hero-subtitle">
-              {t('Cada mes, más de 3 millones de personas buscan trabajo en nuestra plataforma, realizando más de 140.000 postulaciones cada día')}
+              {t('Cada mes, más de 3 millones de personas buscan trabajo en línea, realizando más de 140.000 postulaciones')}
             </p>
-
-            <div className="home-search-container">
-              <div className="home-search-bar">
-                <div className="home-search-field">
-                  <BriefcaseIcon size={20} className="search-icon" />
-                  <select className="home-search-select">
-                    <option>{t('Industria')}</option>
-                    <option>{t('Tecnología')}</option>
-                    <option>{t('Marketing')}</option>
-                    <option>{t('Finanzas')}</option>
-                    <option>{t('Salud')}</option>
-                  </select>
-                  <ChevronDown size={16} className="home-search-chevron" />
-                </div>
-                <div className="home-search-divider"></div>
-                <div className="home-search-field">
-                  <MapPin size={20} className="search-icon" />
-                  <select className="home-search-select">
-                    <option>{t('Ubicación')}</option>
-                    <option>Buenos Aires</option>
-                    <option>{t('Córdoba')}</option>
-                    <option>{t('Rosario')}</option>
-                    <option>{t('Remoto')}</option>
-                  </select>
-                  <ChevronDown size={16} className="home-search-chevron" />
-                </div>
-                <div className="home-search-divider"></div>
-                <div className="home-search-field home-search-field-input">
-                  <input
-                    type="text"
-                    placeholder={t('Palabras clave')}
-                    className="home-search-input"
-                  />
-                </div>
-                <Link to="/jobs" className="btn btn-primary home-search-btn">
-                  <Search size={20} />
-                  <span>{t('Buscar')}</span>
-                </Link>
-              </div>
-            </div>
-
-            <div className="home-popular-searches">
-              <span className="popular-label">{t('Búsquedas Populares:')}</span>
-              <a href="#" className="popular-link">{t('Redactor de Contenido')}</a>,
-              <a href="#" className="popular-link">{t('Finanzas')}</a>,
-              <a href="#" className="popular-link">{t('Recursos Humanos')}</a>,
-              <a href="#" className="popular-link">{t('Gestión')}</a>
-            </div>
           </div>
 
           <div className="home-hero-right">
+            <h2 className="home-hero-brand notranslate" translate="no" lang="en">
+              Professionals at home
+            </h2>
             <div className="hero-image-container">
-              <div className="hero-image-wrapper hero-image-top">
-                <img src={heroImageTop} alt="Equipo trabajando" />
+              <div className="hero-image-wrapper hero-image-main">
+                <img src={heroImageMain} alt="Persona trabajando desde casa" />
               </div>
-              <div className="hero-image-wrapper hero-image-bottom">
-                <img src={heroImageBottom} alt="Reunión de trabajo" />
-              </div>
-              <div className="hero-dots-pattern"></div>
             </div>
+          </div>
+        </div>
+
+        <div className="home-search-container">
+          <div className="home-search-bar">
+            <div className="home-search-field">
+              <BriefcaseIcon size={20} className="search-icon" />
+              <select className="home-search-select">
+                <option>{t('Industria')}</option>
+                <option>{t('Tecnología')}</option>
+                <option>{t('Marketing')}</option>
+                <option>{t('Finanzas')}</option>
+                <option>{t('Salud')}</option>
+              </select>
+              <ChevronDown size={16} className="home-search-chevron" />
+            </div>
+            <div className="home-search-divider"></div>
+            <div className="home-search-field">
+              <MapPin size={20} className="search-icon" />
+              <select className="home-search-select">
+                <option>{t('Ubicación')}</option>
+                <option>Buenos Aires</option>
+                <option>{t('Córdoba')}</option>
+                <option>{t('Rosario')}</option>
+                <option>{t('Remoto')}</option>
+              </select>
+              <ChevronDown size={16} className="home-search-chevron" />
+            </div>
+            <div className="home-search-divider"></div>
+            <div className="home-search-field home-search-field-input">
+              <input
+                type="text"
+                placeholder={t('Palabras clave')}
+                className="home-search-input"
+              />
+            </div>
+            <Link to="/jobs" className="btn btn-primary home-search-btn">
+              <Search size={20} />
+              <span>{t('Buscar')}</span>
+            </Link>
           </div>
         </div>
       </section>
@@ -161,7 +151,7 @@ export default function Home() {
             <div className="categories-slider">
               <div 
                 className="categories-track"
-                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                style={{ transform: `translateX(-${currentSlide * (100 / totalSlides)}%)` }}
               >
                 {Array.from({ length: totalSlides }).map((_, slideIndex) => (
                   <div key={slideIndex} className="categories-slide">

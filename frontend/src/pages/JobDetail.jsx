@@ -96,7 +96,7 @@ export default function JobDetail() {
   return (
     <div style={{ background: '#fcf7ef', minHeight: '100vh', padding: '1.5rem 1rem 2rem' }}>
       <div style={{ maxWidth: '960px', margin: '0 auto' }}>
-        <Link to="/jobs" style={{ color: '#b8911f', textDecoration: 'none', display: 'inline-block', marginBottom: '1rem' }}>
+        <Link to="/jobs" style={{ color: 'var(--primary-700)', textDecoration: 'none', display: 'inline-block', marginBottom: '1rem' }}>
           ← Volver a ofertas
         </Link>
 
@@ -140,7 +140,7 @@ export default function JobDetail() {
           {userType === 'company' || userType === 'admin' ? (
             <p style={{ color: '#b91c1c' }}>Solo usuarios candidatos pueden postularse.</p>
           ) : hasApplied ? (
-            <p style={{ color: '#7d6012', fontWeight: 600 }}>Ya te postulaste a esta oferta.</p>
+            <p style={{ color: 'var(--primary-800)', fontWeight: 600 }}>Ya te postulaste a esta oferta.</p>
           ) : (
             <>
               <textarea

@@ -27,7 +27,7 @@
 }
 
 .register-user-type-btn-active {
-  background-color: #c79b2b;
+  background-color: var(--primary-500);
   color: white;
 }
 
@@ -35,21 +35,21 @@
 input:focus,
 textarea:focus,
 select:focus {
-  border-color: #c79b2b !important;
-  box-shadow: 0 0 0 3px rgba(199, 155, 43, 0.15) !important;
+  border-color: var(--primary-500) !important;
+  box-shadow: 0 0 0 3px rgba(239, 200, 154, 0.22) !important;
 }
 
 .register-form button[type="submit"] {
-  background-color: #c79b2b !important;
-  border-color: #c79b2b !important;
+  background-color: var(--primary-500) !important;
+  border-color: var(--primary-500) !important;
 }
 
 /* Button hover effect */
 .register-form button[type="submit"]:hover {
-  background-color: #b1871d !important;
-  border-color: #b1871d !important;
+  background-color: var(--primary-600) !important;
+  border-color: var(--primary-600) !important;
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(177, 135, 29, 0.35) !important;
+  box-shadow: 0 6px 12px rgba(191, 155, 114, 0.35) !important;
 }
 
 .register-form button[type="submit"]:active {
@@ -58,7 +58,7 @@ select:focus {
 
 /* File upload hover */
 .file-upload-area:hover {
-  border-color: #c79b2b !important;
+  border-color: var(--primary-500) !important;
   background: #fff8e1 !important;
 }
 

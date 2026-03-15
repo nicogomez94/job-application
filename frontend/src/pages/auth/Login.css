@@ -1,6 +1,9 @@
 .login-container {
   min-height: 100vh;
-  background-color: var(--gray-50);
+  background-image: url('/fondo.jfif');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -28,13 +31,13 @@
   margin-top: 1.5rem;
   font-size: 1.875rem;
   font-weight: bold;
-  color: var(--gray-900);
+  color: white;
 }
 
 .login-subtitle {
   margin-top: 0.5rem;
   font-size: 0.875rem;
-  color: var(--gray-600);
+  color: rgb(197, 197, 197);
 }
 
 .login-card {
@@ -179,7 +182,7 @@
 
 .login-register-text {
   font-size: 0.875rem;
-  color: var(--gray-600);
+  color: lightgray;
 }
 
 .login-register-link {

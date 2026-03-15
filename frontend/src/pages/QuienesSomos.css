@@ -67,7 +67,7 @@
   margin-top: 1.75rem;
   margin-bottom: 0.8rem;
   font-size: 1.45rem;
-  color: #C9A227;
+  color: var(--primary-500);
 }
 
 .about-card h2:first-child {
