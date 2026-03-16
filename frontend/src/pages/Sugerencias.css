@@ -3,97 +3,125 @@
   padding: 4rem 1rem 4.5rem;
 }
 
-.tips-container {
-  max-width: 1120px;
+/* Document layout */
+.tips-doc-container {
+  max-width: 860px;
   margin: 0 auto;
 }
 
-.tips-header {
-  text-align: center;
-  max-width: 760px;
-  margin: 0 auto 2.25rem;
+.tips-doc-header {
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #e8dbc7;
+  padding-bottom: 1.25rem;
 }
 
-.tips-header h1 {
+.tips-doc-header h1 {
   color: #2f2416;
-  font-size: clamp(1.9rem, 4vw, 2.8rem);
-  margin: 0 0 0.75rem;
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  margin: 0 0 0.5rem;
+  line-height: 1.25;
 }
 
-.tips-header p {
+.tips-doc-subtitle {
   color: #74624b;
-  line-height: 1.6;
+  font-size: 1.05rem;
   margin: 0;
+  font-style: italic;
 }
 
-.tips-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.2rem;
+.tips-doc-intro {
+  color: #4a3b28;
+  line-height: 1.75;
+  margin: 0 0 1rem;
+  font-size: 0.97rem;
 }
 
-.tips-card {
-  background: #fffdfa;
-  border: 1px solid #e8dbc7;
-  border-radius: 1rem;
-  padding: 1.4rem;
-  box-shadow: 0 8px 22px rgba(79, 53, 20, 0.08);
+.tips-doc-section {
+  margin: 2rem 0;
 }
 
-.tips-card-title {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  margin-bottom: 0.95rem;
+.tips-doc-section h2 {
   color: #5f3916;
+  font-size: 1.25rem;
+  margin: 0 0 0.85rem;
+  border-left: 4px solid #cda455;
+  padding-left: 0.75rem;
 }
 
-.tips-card-title h2 {
-  margin: 0;
-  font-size: 1.3rem;
+.tips-doc-section p {
+  color: #4a3b28;
+  line-height: 1.75;
+  margin: 0 0 0.85rem;
+  font-size: 0.97rem;
 }
 
-.tips-card ul {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 1.2rem;
+.tips-doc-list {
+  list-style: disc;
+  padding-left: 1.4rem;
+  margin: 0.5rem 0 0.85rem;
   display: flex;
   flex-direction: column;
-  gap: 0.72rem;
+  gap: 0.65rem;
 }
 
-.tips-card li {
+.tips-doc-list li {
+  color: #4a3b28;
+  line-height: 1.7;
+  font-size: 0.97rem;
+}
+
+.tips-doc-ordered-list {
+  padding-left: 1.4rem;
+  margin: 0.5rem 0 0.85rem;
   display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-  color: #5f4d35;
-  line-height: 1.45;
-  font-size: 0.96rem;
+  flex-direction: column;
+  gap: 0.65rem;
 }
 
-.tips-card li svg {
-  color: #208246;
-  flex-shrink: 0;
-  margin-top: 0.18rem;
+.tips-doc-ordered-list li {
+  color: #4a3b28;
+  line-height: 1.7;
+  font-size: 0.97rem;
 }
 
-.tips-link {
-  display: inline-block;
-  text-decoration: none;
-  color: #fff;
-  background: #cda455;
-  border: 1px solid #cda455;
-  border-radius: 0.65rem;
-  padding: 0.62rem 1rem;
+.tips-doc-note {
+  background: #fffbf2;
+  border: 1px solid #e8dbc7;
+  border-left: 4px solid #cda455;
+  border-radius: 0.5rem;
+  padding: 1.1rem 1.25rem;
+  margin: 1rem 0;
+}
+
+.tips-doc-note-title {
   font-weight: 700;
+  color: #5f3916;
+  margin: 0 0 0.5rem !important;
+  font-size: 0.95rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
-.tips-link:hover {
-  background: #b88f42;
+.tips-doc-note p:last-child {
+  margin-bottom: 0;
 }
 
-@media (max-width: 920px) {
-  .tips-grid {
-    grid-template-columns: 1fr;
+.tips-doc-closing {
+  margin-top: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e8dbc7;
+  color: #74624b;
+  font-style: italic;
+  line-height: 1.7;
+  font-size: 0.97rem;
+}
+
+@media (max-width: 640px) {
+  .tips-doc-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .tips-doc-section h2 {
+    font-size: 1.1rem;
   }
 }
