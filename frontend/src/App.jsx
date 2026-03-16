@@ -10,6 +10,8 @@ import JobSearch from './pages/JobSearch';
 import JobDetail from './pages/JobDetail';
 import Blog from './pages/Blog';
 import QuienesSomos from './pages/QuienesSomos';
+import PlanesYPrecios from './pages/PlanesYPrecios';
+import Sugerencias from './pages/Sugerencias';
 
 // Auth
 import Login from './pages/auth/Login';
@@ -48,6 +50,9 @@ function App() {
   // Componente de ruta protegida
   const ProtectedRoute = ({ children, allowedTypes }) => {
     if (!isAuthenticated) {
+      if (allowedTypes?.length === 1 && allowedTypes[0] === 'admin') {
+        return <Navigate to="/acceso-admin" replace />;
+      }
       return <Navigate to="/login" replace />;
     }
 
@@ -67,10 +72,19 @@ function App() {
         <Route path="jobs/:id" element={<JobDetail />} />
         <Route path="blog" element={<Blog />} />
         <Route path="quienes-somos" element={<QuienesSomos />} />
+        <Route path="planes-y-precios" element={<PlanesYPrecios />} />
+        <Route path="sugerencias" element={<Sugerencias />} />
         <Route path="terminos-y-condiciones" element={<TermsAndConditions />} />
         
         {/* Auth */}
-        <Route path="login" element={<Login />} />
+        <Route
+          path="login"
+          element={<Login allowedUserTypes={['user', 'company']} defaultUserType="user" />}
+        />
+        <Route
+          path="acceso-admin"
+          element={<Login allowedUserTypes={['admin']} defaultUserType="admin" hideUserTypeSelector />}
+        />
         <Route path="register/user" element={<RegisterUser />} />
         <Route path="register/company" element={<RegisterCompany />} />
         <Route

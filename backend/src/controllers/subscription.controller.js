@@ -208,7 +208,7 @@ exports.getPlans = async (req, res) => {
         duration: '1 mes',
         isFreeMode,
         features: [
-          'Publicar ofertas ilimitadas',
+          'Publicar ofertas laborales ilimitadas',
           'Ver postulantes',
           'Contacto por WhatsApp',
           'Soporte por email',
@@ -223,7 +223,7 @@ exports.getPlans = async (req, res) => {
         discount: '17% de descuento',
         isFreeMode,
         features: [
-          'Publicar ofertas ilimitadas',
+          'Publicar ofertas laborales ilimitadas',
           'Ver postulantes',
           'Contacto por WhatsApp',
           'Soporte prioritario',
@@ -238,7 +238,7 @@ exports.getPlans = async (req, res) => {
         discount: '25% de descuento',
         isFreeMode,
         features: [
-          'Publicar ofertas ilimitadas',
+          'Publicar ofertas laborales ilimitadas',
           'Ver postulantes',
           'Contacto por WhatsApp',
           'Soporte prioritario',

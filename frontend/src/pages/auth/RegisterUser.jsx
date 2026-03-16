@@ -6,15 +6,25 @@ import { useAuthStore } from '../../context/authStore';
 import { DEBUG_FORM_DATA, DEBUG_MODE } from '../../config/debug';
 import './Register.css';
 
-const getInitialForm = () => (DEBUG_MODE ? { ...DEBUG_FORM_DATA.registerUser } : {
-  firstName: '',
-  lastName: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
-  phone: '',
-  cv: null,
-});
+const MAX_CV_FILES = 4;
+
+const getInitialForm = () => {
+  const base = DEBUG_MODE
+    ? { ...DEBUG_FORM_DATA.registerUser }
+    : {
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        phone: '',
+      };
+
+  return {
+    ...base,
+    cvs: Array.isArray(base.cvs) ? base.cvs : [],
+  };
+};
 
 export default function RegisterUser() {
   const [formData, setFormData] = useState(getInitialForm);
@@ -29,11 +39,25 @@ export default function RegisterUser() {
   };
 
   const handleFileChange = (e) => {
-    setFormData((prev) => ({ ...prev, cv: e.target.files?.[0] || null }));
+    const selectedFiles = Array.from(e.target.files || []);
+
+    if (selectedFiles.length > MAX_CV_FILES) {
+      toast.error(`Podés subir hasta ${MAX_CV_FILES} archivos PDF`);
+      e.target.value = '';
+      setFormData((prev) => ({ ...prev, cvs: [] }));
+      return;
+    }
+
+    setFormData((prev) => ({ ...prev, cvs: selectedFiles }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!formData.cvs.length) {
+      toast.error('Tenés que subir al menos un archivo PDF');
+      return;
+    }
 
     if (formData.password !== formData.confirmPassword) {
       toast.error('Las contraseñas no coinciden');
@@ -55,13 +79,17 @@ export default function RegisterUser() {
 
       setAuth(user, 'user', token);
 
-      if (formData.cv) {
-        try {
-          await userService.uploadCV(formData.cv);
-          toast.success('CV subido exitosamente');
-        } catch (uploadError) {
-          toast.error(uploadError.response?.data?.error || 'No se pudo subir el CV');
+      try {
+        for (const file of formData.cvs) {
+          await userService.uploadCV(file);
         }
+        toast.success(
+          formData.cvs.length === 1
+            ? 'Archivo subido exitosamente'
+            : `${formData.cvs.length} archivos subidos exitosamente`
+        );
+      } catch (uploadError) {
+        toast.error(uploadError.response?.data?.error || 'No se pudo subir el CV');
       }
 
       toast.success('Cuenta creada exitosamente');
@@ -106,7 +134,7 @@ export default function RegisterUser() {
             padding: '2rem',
           }}
         >
-          <h1 style={{ fontSize: '1.8rem', marginBottom: '0.4rem' }}>Registro de Candidato</h1>
+          <h1 style={{ fontSize: '1.8rem', marginBottom: '0.4rem' }}>Registro de Profesional</h1>
           <p style={{ opacity: 0.9 }}>Creá tu cuenta para postularte a ofertas laborales</p>
         </div>
 
@@ -121,7 +149,7 @@ export default function RegisterUser() {
                   : 'register-user-type-btn-inactive'
               }`}
             >
-              Candidato
+              Profesional
             </button>
             <button
               type="button"
@@ -201,8 +229,10 @@ export default function RegisterUser() {
           </div>
 
           <div style={{ marginTop: '1rem' }}>
-            <label style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem' }}>CV PDF (opcional)</label>
-            <input type="file" accept="application/pdf" onChange={handleFileChange} />
+            <label style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem' }}>
+              CV PDF (máximo 4 archivos)
+            </label>
+            <input type="file" accept="application/pdf" onChange={handleFileChange} multiple required />
           </div>
 
           <button className="btn btn-primary" style={{ width: '100%', marginTop: '1.5rem' }} disabled={loading}>

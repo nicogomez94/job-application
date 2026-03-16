@@ -1,0 +1,99 @@
+.tips-page {
+  background: #fff;
+  padding: 4rem 1rem 4.5rem;
+}
+
+.tips-container {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.tips-header {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto 2.25rem;
+}
+
+.tips-header h1 {
+  color: #2f2416;
+  font-size: clamp(1.9rem, 4vw, 2.8rem);
+  margin: 0 0 0.75rem;
+}
+
+.tips-header p {
+  color: #74624b;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.tips-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+}
+
+.tips-card {
+  background: #fffdfa;
+  border: 1px solid #e8dbc7;
+  border-radius: 1rem;
+  padding: 1.4rem;
+  box-shadow: 0 8px 22px rgba(79, 53, 20, 0.08);
+}
+
+.tips-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.95rem;
+  color: #5f3916;
+}
+
+.tips-card-title h2 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.tips-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.72rem;
+}
+
+.tips-card li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  color: #5f4d35;
+  line-height: 1.45;
+  font-size: 0.96rem;
+}
+
+.tips-card li svg {
+  color: #208246;
+  flex-shrink: 0;
+  margin-top: 0.18rem;
+}
+
+.tips-link {
+  display: inline-block;
+  text-decoration: none;
+  color: #fff;
+  background: #cda455;
+  border: 1px solid #cda455;
+  border-radius: 0.65rem;
+  padding: 0.62rem 1rem;
+  font-weight: 700;
+}
+
+.tips-link:hover {
+  background: #b88f42;
+}
+
+@media (max-width: 920px) {
+  .tips-grid {
+    grid-template-columns: 1fr;
+  }
+}

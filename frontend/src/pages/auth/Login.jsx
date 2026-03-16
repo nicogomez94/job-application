@@ -8,15 +8,33 @@ import { DEBUG_MODE, getDebugLoginData } from '../../config/debug';
 import { Briefcase, Mail, Lock } from 'lucide-react';
 import './Login.css';
 
-export default function Login() {
-  const [userType, setUserType] = useState('user'); // 'user', 'company', 'admin'
+const USER_TYPE_LABELS = {
+  user: 'Profesional',
+  company: 'Empresa',
+  admin: 'Admin',
+};
+
+export default function Login({
+  allowedUserTypes = ['user', 'company', 'admin'],
+  defaultUserType = 'user',
+  hideUserTypeSelector = false,
+}) {
+  const initialType =
+    allowedUserTypes.includes(defaultUserType) ? defaultUserType : allowedUserTypes[0] || 'user';
+  const [userType, setUserType] = useState(initialType);
   const [loading, setLoading] = useState(false);
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
-    defaultValues: DEBUG_MODE ? getDebugLoginData('user') : { email: '', password: '' },
+    defaultValues: DEBUG_MODE ? getDebugLoginData(initialType) : { email: '', password: '' },
   });
   const { setAuth } = useAuthStore();
   const navigate = useNavigate();
   const apiBaseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+  useEffect(() => {
+    if (!allowedUserTypes.includes(userType)) {
+      setUserType(initialType);
+    }
+  }, [allowedUserTypes, initialType, userType]);
 
   useEffect(() => {
     if (!DEBUG_MODE) return;
@@ -78,41 +96,24 @@ export default function Login() {
         </div>
 
         <div className="card login-card">
-          <div className="login-user-type-selector">
-            <button
-              type="button"
-              onClick={() => setUserType('user')}
-              className={`login-user-type-btn ${
-                userType === 'user'
-                  ? 'login-user-type-btn-active'
-                  : 'login-user-type-btn-inactive'
-              }`}
-            >
-              Candidato
-            </button>
-            <button
-              type="button"
-              onClick={() => setUserType('company')}
-              className={`login-user-type-btn ${
-                userType === 'company'
-                  ? 'login-user-type-btn-active'
-                  : 'login-user-type-btn-inactive'
-              }`}
-            >
-              Empresa
-            </button>
-            <button
-              type="button"
-              onClick={() => setUserType('admin')}
-              className={`login-user-type-btn ${
-                userType === 'admin'
-                  ? 'login-user-type-btn-active'
-                  : 'login-user-type-btn-inactive'
-              }`}
-            >
-              Admin
-            </button>
-          </div>
+          {!hideUserTypeSelector && (
+            <div className="login-user-type-selector">
+              {allowedUserTypes.map((type) => (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => setUserType(type)}
+                  className={`login-user-type-btn ${
+                    userType === type
+                      ? 'login-user-type-btn-active'
+                      : 'login-user-type-btn-inactive'
+                  }`}
+                >
+                  {USER_TYPE_LABELS[type] || type}
+                </button>
+              ))}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit(onSubmit)} className="login-form">
             <div className="login-form-group">
