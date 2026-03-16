@@ -76,7 +76,7 @@ export default function Home() {
         <div className="home-hero-content">
           <div className="home-hero-left">
             <h1 className="home-hero-title">
-              {t('Gana mas')}<br />
+              {t('Gana más')}<br />
               {t('Haciendo menos')}
             </h1>
             <p className="home-hero-subtitle">
@@ -141,7 +141,7 @@ export default function Home() {
       <section ref={categoriesRef} className={`home-categories animate-on-scroll ${categoriesVisible ? 'animate-visible' : ''}`}>
         <div className="home-categories-container">
           <h2 className="categories-title">{t('Navegá por categoría')}</h2>
-          <p className="categories-subtitle">{t('Encontrá el trabajo perfecto para vos. más de 800 trabajos nuevos cada día')}</p>
+          <p className="categories-subtitle">{t('Simplifica tu búsqueda de trabajo buscando por categorías')}</p>
           
           <div className="categories-carousel">
             <button className="carousel-btn carousel-btn-prev" onClick={prevSlide}>
@@ -201,7 +201,7 @@ export default function Home() {
                 <Search />
               </div>
               <h3>{t('Busca')}</h3>
-              <p>{t('Explora miles de ofertas laborales de empresas verificadas')}</p>
+              <p>{t('Explora las ofertas laborales')}</p>
             </div>
 
             <div className="home-feature-item">
@@ -234,7 +234,7 @@ export default function Home() {
               </p>
               <br />
               <Link to="/register/user" className="btn btn-primary">
-                {t('Crear Cuenta de Candidato')}
+                {t('Crear Cuenta de Profesional')}
               </Link>
             </div>
 

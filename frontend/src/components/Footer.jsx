@@ -16,7 +16,7 @@ export default function Footer() {
               <span className="footer-logo-text"></span>
             </div>
             <p className="footer-description">
-              {t('Conectamos talento con oportunidades. La plataforma líder en búsqueda de empleo.')}
+              {t('Conectamos talento con oportunidades.')}
             </p>
           </div>
 
@@ -26,6 +26,7 @@ export default function Footer() {
               <li><Link to="/jobs">{t('Buscar Empleos')}</Link></li>
               <li><Link to="/register/user">{t('Crear Cuenta')}</Link></li>
               <li><Link to="/user/profile">{t('Mi Perfil')}</Link></li>
+              <li><Link to="/sugerencias">{t('Sugerencias para Profesionales y Empresas')}</Link></li>
             </ul>
           </div>
 
@@ -33,8 +34,8 @@ export default function Footer() {
             <h3>{t('Empresas')}</h3>
             <ul className="footer-list">
               <li><Link to="/register/company">{t('Registrar Empresa')}</Link></li>
-              <li><Link to="/company/subscription">{t('Planes y Precios')}</Link></li>
-              <li><Link to="/company/jobs/create">{t('Publicar Oferta')}</Link></li>
+              <li><Link to="/planes-y-precios">{t('Planes y Precios')}</Link></li>
+              <li><Link to="/company/jobs/create">{t('Publicar Ofertas Laborales')}</Link></li>
               <li><Link to="/quienes-somos">{t('Quiénes Somos')}</Link></li>
             </ul>
           </div>

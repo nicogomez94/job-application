@@ -120,8 +120,8 @@ export default function JobSearch() {
     <div style={{ minHeight: '100vh', background: '#fcf7ef', paddingBottom: '3rem' }}>
       <div style={{ background: 'linear-gradient(135deg, var(--primary-600) 0%, var(--primary-500) 100%)', padding: '2.5rem 0' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem', color: '#fff' }}>
-          <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Buscar Empleo</h1>
-          <p style={{ opacity: 0.9 }}>Encontrá ofertas activas y postulá en pocos pasos.</p>
+          <h1 style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>Buscar Profesión</h1>
+          <p style={{fontSize: '1.2rem', opacity: 0.9, color : '#f7f7f7' }}>Encontrá ofertas activas y postulá en pocos pasos.</p>
         </div>
       </div>
 
@@ -160,8 +160,8 @@ export default function JobSearch() {
               </option>
             ))}
           </select>
-          <select className="input" name="workMode" value={filters.workMode} onChange={handleFilterChange}>
-            <option value="">Modalidad</option>
+          <select style={{width: 'max-content'}} className="input" name="workMode" value={filters.workMode} onChange={handleFilterChange}>
+            <option value="">Profesiones Anunciadas</option>
             <option value="PRESENCIAL">Presencial</option>
             <option value="REMOTO">Remoto</option>
             <option value="HIBRIDO">Híbrido</option>

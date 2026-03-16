@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 .navbar {
-  background: #f5f2eb;
+  background: #fff;
   border-bottom: 1px solid #ede3d4;
   position: sticky;
   top: 0;
@@ -91,7 +91,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.55rem 0.95rem;
-  border: 1px solid #e2d7c4;
+  border: 1px solid #b9af9f;
   border-radius: 999px;
   min-width: 300px;
   width: 24vw;
@@ -109,13 +109,13 @@
   outline: none;
   width: 100%;
   font-size: 1rem;
-  color: #6a5b46;
+  color: #2c261d;
   background: transparent;
   font-family: inherit;
 }
 
 .navbar-search-input::placeholder {
-  color: #b8ab96;
+  color: #8f816d;
 }
 
 .btn-outline {
@@ -273,6 +273,7 @@
 
   .navbar-link-home {
     justify-content: center;
+    color: black;
   }
 
   .navbar-search {

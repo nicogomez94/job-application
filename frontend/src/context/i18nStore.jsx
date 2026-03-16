@@ -16,6 +16,7 @@ const ES_TO_EN = {
   'Buscar Empleos': 'Search Jobs',
   'Crear Cuenta': 'Create Account',
   'Mi Perfil': 'My Profile',
+  'Sugerencias para Profesionales y Empresas': 'Tips for Professionals and Companies',
   'Registrar Empresa': 'Register Company',
   'Planes y Precios': 'Plans and Pricing',
   'Publicar Oferta': 'Post Job',
