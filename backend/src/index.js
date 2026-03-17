@@ -15,6 +15,7 @@ if (missingEnv.length > 0) {
 const passport = require('./config/passport');
 const routes = require('./routes');
 const errorHandler = require('./middlewares/error.middleware');
+const seedCategoriesIfEmpty = require('./bootstrap/seedCategoriesIfEmpty');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -100,15 +101,25 @@ app.use(errorHandler);
 
 // ==================== INICIAR SERVIDOR ====================
 
-app.listen(PORT, () => {
-  console.log('==========================================');
-  console.log('🚀 Job Platform API');
-  console.log('==========================================');
-  console.log(`📡 Servidor corriendo en http://localhost:${PORT}`);
-  console.log(`📝 Documentación en http://localhost:${PORT}/api/health`);
-  console.log(`🌍 Entorno: ${process.env.NODE_ENV || 'development'}`);
-  console.log('==========================================');
-});
+const startServer = async () => {
+  try {
+    await seedCategoriesIfEmpty();
+  } catch (error) {
+    console.error('⚠️ No se pudo ejecutar el seed automático de categorías:', error.message);
+  }
+
+  app.listen(PORT, () => {
+    console.log('==========================================');
+    console.log('🚀 Job Platform API');
+    console.log('==========================================');
+    console.log(`📡 Servidor corriendo en http://localhost:${PORT}`);
+    console.log(`📝 Documentación en http://localhost:${PORT}/api/health`);
+    console.log(`🌍 Entorno: ${process.env.NODE_ENV || 'development'}`);
+    console.log('==========================================');
+  });
+};
+
+startServer();
 
 // Manejo de errores no capturados
 process.on('unhandledRejection', (error) => {
