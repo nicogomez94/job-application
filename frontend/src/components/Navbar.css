@@ -77,6 +77,38 @@
   font-weight: 700;
 }
 
+.navbar-language-toggle {
+  display: flex;
+  align-items: center;
+  background: #ede3d4;
+  border-radius: 999px;
+  padding: 0.2rem;
+  gap: 0.1rem;
+}
+
+.navbar-language-btn {
+  background: transparent;
+  border: none;
+  color: #6d6250;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.navbar-language-btn-active {
+  background: #c8a96e;
+  color: #fff;
+}
+
+.navbar-language-btn:hover:not(.navbar-language-btn-active) {
+  background: #d1cbc2;
+  color: #3d2c1a;
+}
+
 .navbar-link-home:hover {
   background: #c2bbaf;
   color: #ffffff;

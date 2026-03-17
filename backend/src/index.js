@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
 
 // ==================== VALIDACIÓN DE ENV VARS ====================
 const REQUIRED_ENV = ['DATABASE_URL', 'JWT_SECRET', 'GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET'];
@@ -16,6 +18,8 @@ const errorHandler = require('./middlewares/error.middleware');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const frontendDistPath = path.resolve(__dirname, '../../frontend/dist');
+const hasFrontendBuild = fs.existsSync(frontendDistPath);
 
 // ==================== MIDDLEWARES ====================
 
@@ -53,24 +57,34 @@ app.get('/health', (req, res) => {
 
 app.use('/api', routes);
 
-// Ruta raíz
-app.get('/', (req, res) => {
-  res.json({
-    message: 'Job Platform API',
-    version: '1.0.0',
-    endpoints: {
-      health: '/api/health',
-      auth: '/api/auth',
-      users: '/api/users',
-      companies: '/api/companies',
-      jobOffers: '/api/job-offers',
-      applications: '/api/applications',
-      admin: '/api/admin',
-      subscriptions: '/api/subscriptions',
-      categories: '/api/categories',
-    },
+// Frontend SPA (si existe build)
+if (hasFrontendBuild) {
+  app.use(express.static(frontendDistPath));
+
+  // Todas las rutas no-API deben resolver al index de la SPA
+  app.get(/^\/(?!api).*/, (req, res) => {
+    res.sendFile(path.join(frontendDistPath, 'index.html'));
   });
-});
+} else {
+  // Ruta raíz (modo API solamente)
+  app.get('/', (req, res) => {
+    res.json({
+      message: 'Job Platform API',
+      version: '1.0.0',
+      endpoints: {
+        health: '/api/health',
+        auth: '/api/auth',
+        users: '/api/users',
+        companies: '/api/companies',
+        jobOffers: '/api/job-offers',
+        applications: '/api/applications',
+        admin: '/api/admin',
+        subscriptions: '/api/subscriptions',
+        categories: '/api/categories',
+      },
+    });
+  });
+}
 
 // Ruta no encontrada
 app.use((req, res) => {

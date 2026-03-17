@@ -7,7 +7,7 @@ import './Navbar.css';
 
 export default function Navbar() {
   const { isAuthenticated, user, userType, logout } = useAuthStore();
-  const { t } = useI18n();
+  const { t, language, setLanguage } = useI18n();
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -67,6 +67,23 @@ export default function Navbar() {
           </button>
 
           <div className={`navbar-links ${isMenuOpen ? 'navbar-links-open' : ''}`}>
+            <div className="navbar-language-toggle" role="group" aria-label="Language selector">
+              <button
+                type="button"
+                className={`navbar-language-btn ${language === 'es' ? 'navbar-language-btn-active' : ''}`}
+                onClick={() => setLanguage('es')}
+              >
+                ES
+              </button>
+              <button
+                type="button"
+                className={`navbar-language-btn ${language === 'en' ? 'navbar-language-btn-active' : ''}`}
+                onClick={() => setLanguage('en')}
+              >
+                EN
+              </button>
+            </div>
+
             <Link
               to="/"
               className={`navbar-link navbar-link-home ${location.pathname === '/' ? 'navbar-link-active' : ''}`}
