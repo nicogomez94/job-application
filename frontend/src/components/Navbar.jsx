@@ -117,14 +117,15 @@ export default function Navbar() {
               Candidatos <ChevronDown size={16} />
             </Link> */}
             {!isAuthenticated ? (
-              <>
+              <div className="navbar-mobile-actions">
                 <Link to="/register/user" className="btn btn-outline" onClick={closeMenu}>
                   {t('Registrarse')}
                 </Link>
+                &nbsp;
                 <Link to="/login" className="btn btn-primary" onClick={closeMenu}>
                   {t('Ingresar')}
                 </Link>
-              </>
+              </div>
             ) : (
               <div className="navbar-user-section">
                 <div className="navbar-user-info">
