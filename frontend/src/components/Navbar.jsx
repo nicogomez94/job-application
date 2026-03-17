@@ -72,17 +72,19 @@ export default function Navbar() {
                 type="button"
                 className={`navbar-language-btn ${language === 'es' ? 'navbar-language-btn-active' : ''}`}
                 onClick={() => setLanguage('es')}
+                aria-label="Español"
                 title="Español"
               >
-                🇪🇸
+                <img src="/flags/es.svg" alt="" className="navbar-language-flag" aria-hidden="true" />
               </button>
               <button
                 type="button"
                 className={`navbar-language-btn ${language === 'en' ? 'navbar-language-btn-active' : ''}`}
                 onClick={() => setLanguage('en')}
+                aria-label="English"
                 title="English"
               >
-                🇺🇸
+                <img src="/flags/us.svg" alt="" className="navbar-language-flag" aria-hidden="true" />
               </button>
             </div>
 

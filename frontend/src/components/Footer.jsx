@@ -64,15 +64,19 @@ export default function Footer() {
               type="button"
               className={`footer-language-btn ${language === 'es' ? 'footer-language-btn-active' : ''}`}
               onClick={() => setLanguage('es')}
+              aria-label="Español"
+              title="Español"
             >
-              ES
+              <img src="/flags/es.svg" alt="" className="footer-language-flag" aria-hidden="true" />
             </button>
             <button
               type="button"
               className={`footer-language-btn ${language === 'en' ? 'footer-language-btn-active' : ''}`}
               onClick={() => setLanguage('en')}
+              aria-label="English"
+              title="English"
             >
-              EN
+              <img src="/flags/us.svg" alt="" className="footer-language-flag" aria-hidden="true" />
             </button>
           </div>
         </div>

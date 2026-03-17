@@ -89,14 +89,16 @@
 .navbar-language-btn {
   background: transparent;
   border: none;
-  font-size: 1.35rem;
   line-height: 1;
-  padding: 0.2rem 0.4rem;
+  padding: 0.28rem 0.42rem;
   border-radius: 999px;
   cursor: pointer;
   transition: all 0.2s;
   font-family: inherit;
   filter: grayscale(0.3) opacity(0.75);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .navbar-language-btn-active {
@@ -107,6 +109,13 @@
 .navbar-language-btn:hover:not(.navbar-language-btn-active) {
   background: #d1cbc2;
   filter: grayscale(0) opacity(1);
+}
+
+.navbar-language-flag {
+  width: 1.22rem;
+  height: 0.92rem;
+  border-radius: 2px;
+  display: block;
 }
 
 .navbar-link-home:hover {
