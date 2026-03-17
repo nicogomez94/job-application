@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { authService, subscriptionService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
 import { DEBUG_MODE, getDebugLoginData } from '../../config/debug';
+import { API_BASE_URL } from '../../services/apiBaseUrl';
 import { Briefcase, Mail, Lock } from 'lucide-react';
 import './Login.css';
 
@@ -28,7 +29,7 @@ export default function Login({
   });
   const { setAuth } = useAuthStore();
   const navigate = useNavigate();
-  const apiBaseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  const apiBaseURL = API_BASE_URL;
 
   useEffect(() => {
     if (!allowedUserTypes.includes(userType)) {

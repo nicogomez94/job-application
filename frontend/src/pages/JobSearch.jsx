@@ -2,15 +2,13 @@ import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { categoryService, jobOfferService } from '../services';
+import { BACKEND_BASE_URL } from '../services/apiBaseUrl';
 import './JobSearch.css';
-
-const apiBaseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-const backendBaseURL = apiBaseURL.replace(/\/api\/?$/, '');
 
 const toAssetUrl = (assetPath) => {
   if (!assetPath) return null;
   if (assetPath.startsWith('http://') || assetPath.startsWith('https://')) return assetPath;
-  return `${backendBaseURL}${assetPath}`;
+  return `${BACKEND_BASE_URL}${assetPath}`;
 };
 
 const formatDate = (date) => {
