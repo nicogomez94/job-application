@@ -7,22 +7,9 @@ import { DEBUG_FORM_DATA, DEBUG_MODE } from '../../config/debug';
 import './Register.css';
 
 const MAX_CV_FILES = 4;
-const ALLOWED_CV_EXTENSIONS = ['.pdf', '.jpg', '.jpeg', '.doc', '.docx'];
-const ALLOWED_CV_MIME_TYPES = new Set([
-  'application/pdf',
-  'image/jpeg',
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-]);
+const MAX_CV_FILE_SIZE = 5 * 1024 * 1024;
 
-const isValidCvFile = (file) => {
-  if (!file) {
-    return false;
-  }
-
-  const fileName = file.name.toLowerCase();
-  return ALLOWED_CV_MIME_TYPES.has(file.type) || ALLOWED_CV_EXTENSIONS.some((ext) => fileName.endsWith(ext));
-};
+const getFilesExceedingSize = (files) => files.filter((file) => file.size > MAX_CV_FILE_SIZE);
 
 const getInitialForm = () => {
   const base = DEBUG_MODE
@@ -63,10 +50,10 @@ export default function RegisterUser() {
       return;
     }
 
-    const hasInvalidFile = selectedFiles.some((file) => !isValidCvFile(file));
+    const oversizedFiles = getFilesExceedingSize(selectedFiles);
 
-    if (hasInvalidFile) {
-      toast.error('Solo se permiten archivos PDF, JPG o Word');
+    if (oversizedFiles.length > 0) {
+      toast.error('Cada archivo debe pesar como máximo 5 MB');
       e.target.value = '';
       return;
     }
@@ -76,7 +63,7 @@ export default function RegisterUser() {
     const mergedFiles = [...formData.cvs, ...newUniqueFiles];
 
     if (mergedFiles.length > MAX_CV_FILES) {
-      toast.error(`Podés subir hasta ${MAX_CV_FILES} archivos PDF, JPG o Word`);
+      toast.error(`Podés subir hasta ${MAX_CV_FILES} archivos`);
       e.target.value = '';
       return;
     }
@@ -96,7 +83,12 @@ export default function RegisterUser() {
     e.preventDefault();
 
     if (!formData.cvs.length) {
-      toast.error('Tenés que subir al menos un archivo PDF, JPG o Word');
+      toast.error('Tenés que subir al menos un archivo');
+      return;
+    }
+
+    if (getFilesExceedingSize(formData.cvs).length > 0) {
+      toast.error('Cada archivo debe pesar como máximo 5 MB');
       return;
     }
 
@@ -275,7 +267,6 @@ export default function RegisterUser() {
             </label>
             <input
               type="file"
-              accept=".pdf,.jpg,.jpeg,.doc,.docx,application/pdf,image/jpeg,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
               onChange={handleFileChange}
               multiple
             />
