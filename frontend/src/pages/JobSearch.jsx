@@ -40,6 +40,8 @@ export default function JobSearch() {
   const [categories, setCategories] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, pages: 1, total: 0 });
   const [loading, setLoading] = useState(false);
+  const getCategoryOffersCount = (category) => category?.activeJobOffersCount ?? category?._count?.jobOffers ?? 0;
+  const totalCategoryOffers = categories.reduce((total, category) => total + getCategoryOffersCount(category), 0);
 
   useEffect(() => {
     setFilters(getFiltersFromParams());
@@ -139,7 +141,7 @@ export default function JobSearch() {
           <input
             className="input"
             name="search"
-            placeholder="Título o palabra clave"
+            placeholder="Buscar Profesión, Empresa o Habilidad"
             value={filters.search}
             onChange={handleFilterChange}
           />
@@ -151,19 +153,19 @@ export default function JobSearch() {
             onChange={handleFilterChange}
           />
           <select className="input" name="categoryId" value={filters.categoryId} onChange={handleFilterChange}>
-            <option value="">Todas las categorías</option>
+            <option value="">Todas las categorías ({totalCategoryOffers})</option>
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
-                {category.name}
+                {category.name} ({getCategoryOffersCount(category)})
               </option>
             ))}
           </select>
-          <select style={{width: 'max-content'}} className="input" name="workMode" value={filters.workMode} onChange={handleFilterChange}>
+          {/* <select style={{width: 'max-content'}} className="input" name="workMode" value={filters.workMode} onChange={handleFilterChange}>
             <option value="">Profesiones Anunciadas</option>
             <option value="PRESENCIAL">Presencial</option>
             <option value="REMOTO">Remoto</option>
             <option value="HIBRIDO">Híbrido</option>
-          </select>
+          </select> */}
         </div>
 
         <div style={{ marginTop: '1rem', color: '#6f604b', fontSize: '0.95rem' }}>

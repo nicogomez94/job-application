@@ -3,18 +3,45 @@ const prisma = require('../config/database');
 // Obtener todas las categorías
 exports.getAllCategories = async (req, res) => {
   try {
-    const categories = await prisma.category.findMany({
-      orderBy: {
-        name: 'asc',
-      },
-      include: {
-        _count: {
-          select: { jobOffers: true },
-        },
-      },
-    });
+    const activeJobOfferFilter = {
+      isActive: true,
+      OR: [
+        { expiresAt: null },
+        { expiresAt: { gte: new Date() } },
+      ],
+    };
 
-    res.json(categories);
+    const [categories, activeOffersByCategory] = await Promise.all([
+      prisma.category.findMany({
+        orderBy: {
+          name: 'asc',
+        },
+        include: {
+          _count: {
+            select: { jobOffers: true },
+          },
+        },
+      }),
+      prisma.jobOffer.groupBy({
+        by: ['categoryId'],
+        where: activeJobOfferFilter,
+        _count: {
+          _all: true,
+        },
+      }),
+    ]);
+
+    const activeOffersMap = activeOffersByCategory.reduce((acc, item) => {
+      acc[item.categoryId] = item._count?._all || 0;
+      return acc;
+    }, {});
+
+    const categoriesWithActiveCount = categories.map((category) => ({
+      ...category,
+      activeJobOffersCount: activeOffersMap[category.id] || 0,
+    }));
+
+    res.json(categoriesWithActiveCount);
   } catch (error) {
     console.error('Error en getAllCategories:', error);
     res.status(500).json({ error: 'Error al obtener categorías' });
