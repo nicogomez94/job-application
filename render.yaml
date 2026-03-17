@@ -3,7 +3,7 @@ services:
     name: ruben-backend
     runtime: node
     rootDir: backend
-    plan: starter
+    plan: free
     region: oregon
     buildCommand: npm install && npm run prisma:generate && npx prisma migrate deploy
     startCommand: npm run start:deploy:seed
@@ -25,7 +25,6 @@ services:
     name: ruben-frontend
     runtime: static
     rootDir: frontend
-    plan: starter
     buildCommand: npm install && npm run build
     staticPublishPath: dist
     envVars:
