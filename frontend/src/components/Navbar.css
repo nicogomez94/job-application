@@ -37,7 +37,6 @@
   width: auto;
   object-fit: contain;
   border-radius: 16px;
-  margin-bottom: -5px;
 }
 
 .navbar-logo-text {
@@ -255,6 +254,9 @@
 }
 
 @media (max-width: 1160px) {
+  .navbar-logo-img{
+    margin-bottom: 5px;
+  }
   .navbar-container {
     padding: 0 1.25rem;
   }
