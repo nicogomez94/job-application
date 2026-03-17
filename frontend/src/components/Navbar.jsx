@@ -72,15 +72,17 @@ export default function Navbar() {
                 type="button"
                 className={`navbar-language-btn ${language === 'es' ? 'navbar-language-btn-active' : ''}`}
                 onClick={() => setLanguage('es')}
+                title="Español"
               >
-                ES
+                🇪🇸
               </button>
               <button
                 type="button"
                 className={`navbar-language-btn ${language === 'en' ? 'navbar-language-btn-active' : ''}`}
                 onClick={() => setLanguage('en')}
+                title="English"
               >
-                EN
+                🇺🇸
               </button>
             </div>
 

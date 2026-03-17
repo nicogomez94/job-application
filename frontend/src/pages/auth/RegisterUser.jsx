@@ -33,6 +33,8 @@ export default function RegisterUser() {
   const navigate = useNavigate();
   const userType = 'user';
 
+  const getFileKey = (file) => `${file.name}-${file.size}-${file.lastModified}`;
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -41,14 +43,39 @@ export default function RegisterUser() {
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files || []);
 
-    if (selectedFiles.length > MAX_CV_FILES) {
-      toast.error(`Podés subir hasta ${MAX_CV_FILES} archivos PDF`);
-      e.target.value = '';
-      setFormData((prev) => ({ ...prev, cvs: [] }));
+    if (!selectedFiles.length) {
       return;
     }
 
-    setFormData((prev) => ({ ...prev, cvs: selectedFiles }));
+    const hasInvalidFile = selectedFiles.some(
+      (file) => file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')
+    );
+
+    if (hasInvalidFile) {
+      toast.error('Solo se permiten archivos PDF');
+      e.target.value = '';
+      return;
+    }
+
+    const existingKeys = new Set(formData.cvs.map(getFileKey));
+    const newUniqueFiles = selectedFiles.filter((file) => !existingKeys.has(getFileKey(file)));
+    const mergedFiles = [...formData.cvs, ...newUniqueFiles];
+
+    if (mergedFiles.length > MAX_CV_FILES) {
+      toast.error(`Podés subir hasta ${MAX_CV_FILES} archivos PDF`);
+      e.target.value = '';
+      return;
+    }
+
+    setFormData((prev) => ({ ...prev, cvs: mergedFiles }));
+    e.target.value = '';
+  };
+
+  const handleRemoveFile = (fileIndex) => {
+    setFormData((prev) => ({
+      ...prev,
+      cvs: prev.cvs.filter((_, index) => index !== fileIndex),
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -232,7 +259,61 @@ export default function RegisterUser() {
             <label style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem' }}>
               CV PDF (máximo 4 archivos)
             </label>
-            <input type="file" accept="application/pdf" onChange={handleFileChange} multiple required />
+            <input type="file" accept="application/pdf" onChange={handleFileChange} multiple />
+            {formData.cvs.length > 0 && (
+              <div style={{ marginTop: '0.6rem' }}>
+                <p style={{ margin: 0, color: '#6f604b', fontSize: '0.92rem' }}>
+                  {formData.cvs.length} archivo{formData.cvs.length === 1 ? '' : 's'} seleccionado
+                  {formData.cvs.length === 1 ? '' : 's'}
+                </p>
+                <div style={{ marginTop: '0.5rem', display: 'grid', gap: '0.4rem' }}>
+                  {formData.cvs.map((file, index) => (
+                    <div
+                      key={getFileKey(file)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '0.6rem',
+                        border: '1px solid #d7c9b7',
+                        borderRadius: '0.45rem',
+                        padding: '0.4rem 0.55rem',
+                        background: '#faf7f2',
+                      }}
+                    >
+                      <span
+                        title={file.name}
+                        style={{
+                          fontSize: '0.9rem',
+                          color: '#5e4d38',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {file.name}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveFile(index)}
+                        style={{
+                          border: '1px solid #c94f4f',
+                          background: '#fff',
+                          color: '#c94f4f',
+                          borderRadius: '0.4rem',
+                          padding: '0.25rem 0.55rem',
+                          cursor: 'pointer',
+                          fontSize: '0.82rem',
+                          flexShrink: 0,
+                        }}
+                      >
+                        Borrar
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           <button className="btn btn-primary" style={{ width: '100%', marginTop: '1.5rem' }} disabled={loading}>
