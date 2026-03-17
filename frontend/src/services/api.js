@@ -27,10 +27,11 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Token inválido o expirado
+      const previousUserType = localStorage.getItem('userType');
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       localStorage.removeItem('userType');
-      window.location.href = '/login';
+      window.location.href = previousUserType === 'admin' ? '/acceso-admin' : '/login';
     }
     return Promise.reject(error);
   }
