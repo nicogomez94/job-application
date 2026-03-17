@@ -1,6 +1,15 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+
+// ==================== VALIDACIÓN DE ENV VARS ====================
+const REQUIRED_ENV = ['DATABASE_URL', 'JWT_SECRET', 'GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET'];
+const missingEnv = REQUIRED_ENV.filter((key) => !process.env[key]);
+if (missingEnv.length > 0) {
+  console.error('❌ Faltan las siguientes variables de entorno requeridas:', missingEnv.join(', '));
+  process.exit(1);
+}
+
 const passport = require('./config/passport');
 const routes = require('./routes');
 const errorHandler = require('./middlewares/error.middleware');

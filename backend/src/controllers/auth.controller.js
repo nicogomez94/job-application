@@ -46,8 +46,11 @@ exports.registerUser = async (req, res) => {
       token,
     });
   } catch (error) {
-    console.error('Error en registerUser:', error);
-    res.status(500).json({ error: 'Error al registrar usuario' });
+    console.error('Error en registerUser:', error.message || error);
+    res.status(500).json({
+      error: 'Error al registrar usuario',
+      ...(process.env.NODE_ENV !== 'production' && { detail: error.message }),
+    });
   }
 };
 
