@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { companyService, subscriptionService } from '../../services';
+import BackToDashboardButton from '../../components/BackToDashboardButton';
 
 const formatDate = (date) =>
   new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(date));
@@ -84,6 +85,7 @@ export default function CompanySubscription() {
 
   return (
     <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '2rem 1rem' }}>
+      <BackToDashboardButton to="/company/dashboard" />
       <h1 style={{ marginBottom: '1rem' }}>Suscripciones</h1>
 
       <div className="card" style={{ marginBottom: '1rem' }}>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { jobOfferService } from '../../services';
+import BackToDashboardButton from '../../components/BackToDashboardButton';
 import './Jobs.css';
 
 const formatDate = (date) =>
@@ -54,6 +55,7 @@ export default function CompanyJobs() {
 
   return (
     <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '2rem 1rem' }}>
+      <BackToDashboardButton to="/company/dashboard" />
       <div className="company-jobs-header">
         <h1 className="company-jobs-title">Mis Ofertas Laborales</h1>
         <Link className="btn btn-primary company-jobs-create-btn" to="/company/jobs/create">

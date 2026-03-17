@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { userService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
+import BackToDashboardButton from '../../components/BackToDashboardButton';
 
 const initialForm = {
   firstName: '',
@@ -92,6 +93,7 @@ export default function UserProfile() {
 
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1rem' }}>
+      <BackToDashboardButton to="/user/dashboard" />
       <h1 style={{ marginBottom: '1rem' }}>Mi Perfil</h1>
       <form className="card" onSubmit={handleSubmit}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>

@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { jobOfferService } from '../../services';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
+import BackToDashboardButton from '../../components/BackToDashboardButton';
 
 const toAssetUrl = (assetPath) => {
   if (!assetPath) return null;
@@ -69,6 +70,7 @@ export default function JobApplicants() {
 
   return (
     <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '2rem 1rem' }}>
+      <BackToDashboardButton to="/company/dashboard" />
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.8rem', marginBottom: '1rem' }}>
         <div>
           <h1>Postulantes</h1>

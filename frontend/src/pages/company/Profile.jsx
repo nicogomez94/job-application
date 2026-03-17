@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { companyService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
+import BackToDashboardButton from '../../components/BackToDashboardButton';
 
 const initialForm = {
   companyName: '',
@@ -99,6 +100,7 @@ export default function CompanyProfile() {
 
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1rem' }}>
+      <BackToDashboardButton to="/company/dashboard" />
       <h1 style={{ marginBottom: '1rem' }}>Perfil de Empresa</h1>
 
       <form className="card" onSubmit={handleSubmit}>

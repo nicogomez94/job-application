@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { categoryService, companyService, jobOfferService } from '../../services';
 import { DEBUG_FORM_DATA, DEBUG_MODE } from '../../config/debug';
+import BackToDashboardButton from '../../components/BackToDashboardButton';
 
 const getInitialForm = () =>
   DEBUG_MODE
@@ -129,6 +130,7 @@ export default function CreateJob() {
   if (isBlocked) {
     return (
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1rem' }}>
+        <BackToDashboardButton to="/company/dashboard" />
         <div className="card" style={{ border: '1px solid #fecaca', background: '#fef2f2' }}>
           <h1 style={{ color: '#991b1b', marginBottom: '0.6rem' }}>No podés crear ofertas</h1>
           <p style={{ color: '#7f1d1d', marginBottom: '1rem' }}>Necesitás una suscripción activa para publicar empleos.</p>
@@ -142,6 +144,7 @@ export default function CreateJob() {
 
   return (
     <div style={{ maxWidth: '980px', margin: '0 auto', padding: '2rem 1rem' }}>
+      <BackToDashboardButton to="/company/dashboard" />
       <h1 style={{ marginBottom: '1rem' }}>Crear Oferta Laboral</h1>
 
       <form className="card" onSubmit={handleSubmit}>

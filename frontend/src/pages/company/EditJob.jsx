@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { categoryService, jobOfferService } from '../../services';
+import BackToDashboardButton from '../../components/BackToDashboardButton';
 
 const parseTextToArray = (text) =>
   text
@@ -137,6 +138,7 @@ export default function EditJob() {
 
   return (
     <div style={{ maxWidth: '980px', margin: '0 auto', padding: '2rem 1rem' }}>
+      <BackToDashboardButton to="/company/dashboard" />
       <h1 style={{ marginBottom: '1rem' }}>Editar Oferta Laboral</h1>
 
       <form className="card" onSubmit={handleSubmit}>

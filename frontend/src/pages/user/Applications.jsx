@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { userService } from '../../services';
+import BackToDashboardButton from '../../components/BackToDashboardButton';
 
 const STATUS_LABELS = {
   PENDING: 'Pendiente',
@@ -54,6 +55,7 @@ export default function UserApplications() {
 
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '2rem 1rem' }}>
+      <BackToDashboardButton to="/user/dashboard" />
       <h1 style={{ marginBottom: '0.5rem' }}>Mis Postulaciones</h1>
       <p style={{ color: '#6f604b', marginBottom: '1rem' }}>
         Total: <strong>{applications.length}</strong>
