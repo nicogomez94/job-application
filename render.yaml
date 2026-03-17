@@ -5,13 +5,13 @@ services:
     rootDir: backend
     plan: free
     region: oregon
-    buildCommand: bash -lc 'npm install && npm run prisma:generate && (npx prisma migrate resolve --rolled-back 20260301161452_init || true) && (npx prisma migrate resolve --applied 20260301161452_init || true) && npx prisma migrate deploy'
+    buildCommand: npm install && npm run prisma:generate && npx prisma migrate deploy
     startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
-        value: postgresql://basefree_user:5qKWDSyE5T9svRX1BwlRUabLM7IcU5L9@dpg-d6sqp1ia214c73c704qg-a/basefree
+        value: postgresql://basefree_user:5qKWDSyE5T9svRX1BwlRUabLM7IcU5L9@dpg-d6sqp1ia214c73c704qg-a/basefree?schema=ruben_jobs
       - key: JWT_SECRET
         sync: false
       - key: FRONTEND_URL
