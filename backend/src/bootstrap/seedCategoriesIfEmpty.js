@@ -1,27 +1,8 @@
 const prisma = require('../config/database');
-
-const DEFAULT_CATEGORIES = [
-  { name: 'Tecnología', slug: 'tecnologia', description: 'Empleos en tecnología y desarrollo', icon: '💻' },
-  { name: 'Marketing', slug: 'marketing', description: 'Empleos en marketing y publicidad', icon: '📢' },
-  { name: 'Ventas', slug: 'ventas', description: 'Empleos en ventas y comercio', icon: '💼' },
-  { name: 'Diseño', slug: 'diseno', description: 'Empleos en diseño gráfico y UX/UI', icon: '🎨' },
-  { name: 'Recursos Humanos', slug: 'recursos-humanos', description: 'Empleos en RRHH y gestión de personal', icon: '👥' },
-  { name: 'Finanzas', slug: 'finanzas', description: 'Empleos en finanzas y contabilidad', icon: '💰' },
-  { name: 'Salud', slug: 'salud', description: 'Empleos en salud y medicina', icon: '⚕️' },
-  { name: 'Educación', slug: 'educacion', description: 'Empleos en educación y formación', icon: '📚' },
-  { name: 'Atención al Cliente', slug: 'atencion-cliente', description: 'Empleos en servicio al cliente', icon: '🎧' },
-  { name: 'Administración', slug: 'administracion', description: 'Empleos en administración y gestión', icon: '📋' },
-];
+const { DEFAULT_CATEGORIES } = require('../constants/defaultCategories');
 
 async function seedCategoriesIfEmpty() {
-  const totalCategories = await prisma.category.count();
-
-  if (totalCategories > 0) {
-    console.log(`ℹ️ Categorías existentes: ${totalCategories}. No se requiere seed.`);
-    return;
-  }
-
-  console.log('🌱 No hay categorías. Cargando categorías por defecto...');
+  console.log('🌱 Sincronizando categorías por defecto...');
 
   for (const category of DEFAULT_CATEGORIES) {
     await prisma.category.upsert({
@@ -29,13 +10,38 @@ async function seedCategoriesIfEmpty() {
       update: {
         name: category.name,
         description: category.description,
-        icon: category.icon,
+        icon: category.icon || null,
       },
       create: category,
     });
   }
 
-  console.log(`✅ Seed automático completado: ${DEFAULT_CATEGORIES.length} categorías.`);
+  const allowedSlugs = DEFAULT_CATEGORIES.map((category) => category.slug);
+  const staleCategories = await prisma.category.findMany({
+    where: {
+      slug: { notIn: allowedSlugs },
+    },
+    include: {
+      _count: {
+        select: { jobOffers: true },
+      },
+    },
+  });
+
+  let removed = 0;
+  let keptWithOffers = 0;
+
+  for (const category of staleCategories) {
+    if ((category._count?.jobOffers || 0) > 0) {
+      keptWithOffers += 1;
+      continue;
+    }
+
+    await prisma.category.delete({ where: { id: category.id } });
+    removed += 1;
+  }
+
+  console.log(`✅ Categorías sincronizadas: ${DEFAULT_CATEGORIES.length} base, ${removed} removidas, ${keptWithOffers} conservadas por tener ofertas.`);
 }
 
 module.exports = seedCategoriesIfEmpty;
