@@ -6,6 +6,14 @@ import { useAuthStore } from '../../context/authStore';
 import { DEBUG_FORM_DATA, DEBUG_MODE } from '../../config/debug';
 import './Register.css';
 
+const isValidImageFile = (file) => {
+  if (!file) {
+    return false;
+  }
+
+  return file.type.startsWith('image/') || /\.(png|jpe?g|gif|webp|svg)$/i.test(file.name);
+};
+
 const getInitialForm = () => (DEBUG_MODE ? { ...DEBUG_FORM_DATA.registerCompany } : {
   companyName: '',
   email: '',
@@ -32,7 +40,24 @@ export default function RegisterCompany() {
   };
 
   const handleFileChange = (e) => {
-    setFormData((prev) => ({ ...prev, logo: e.target.files?.[0] || null }));
+    const selectedFile = e.target.files?.[0] || null;
+
+    if (!selectedFile) {
+      return;
+    }
+
+    if (!isValidImageFile(selectedFile)) {
+      toast.error('Solo se permiten archivos de imagen');
+      e.target.value = '';
+      return;
+    }
+
+    setFormData((prev) => ({ ...prev, logo: selectedFile }));
+    e.target.value = '';
+  };
+
+  const handleRemoveFile = () => {
+    setFormData((prev) => ({ ...prev, logo: null }));
   };
 
   const handleSubmit = async (e) => {
@@ -237,6 +262,56 @@ export default function RegisterCompany() {
           <div style={{ marginTop: '1rem' }}>
             <label style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem' }}>Logo (opcional)</label>
             <input type="file" accept="image/*" onChange={handleFileChange} />
+            {formData.logo && (
+              <div style={{ marginTop: '0.6rem' }}>
+                <p style={{ margin: 0, color: '#6f604b', fontSize: '0.92rem' }}>
+                  1 archivo seleccionado
+                </p>
+                <div style={{ marginTop: '0.5rem', display: 'grid', gap: '0.4rem' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: '0.6rem',
+                      border: '1px solid #d7c9b7',
+                      borderRadius: '0.45rem',
+                      padding: '0.4rem 0.55rem',
+                      background: '#faf7f2',
+                    }}
+                  >
+                    <span
+                      title={formData.logo.name}
+                      style={{
+                        fontSize: '0.9rem',
+                        color: '#5e4d38',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {formData.logo.name}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleRemoveFile}
+                      style={{
+                        border: '1px solid #c94f4f',
+                        background: '#fff',
+                        color: '#c94f4f',
+                        borderRadius: '0.4rem',
+                        padding: '0.25rem 0.55rem',
+                        cursor: 'pointer',
+                        fontSize: '0.82rem',
+                        flexShrink: 0,
+                      }}
+                    >
+                      Borrar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <button className="btn btn-primary" style={{ width: '100%', marginTop: '1.5rem' }} disabled={loading}>

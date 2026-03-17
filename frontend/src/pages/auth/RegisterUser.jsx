@@ -7,6 +7,22 @@ import { DEBUG_FORM_DATA, DEBUG_MODE } from '../../config/debug';
 import './Register.css';
 
 const MAX_CV_FILES = 4;
+const ALLOWED_CV_EXTENSIONS = ['.pdf', '.jpg', '.jpeg', '.doc', '.docx'];
+const ALLOWED_CV_MIME_TYPES = new Set([
+  'application/pdf',
+  'image/jpeg',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+]);
+
+const isValidCvFile = (file) => {
+  if (!file) {
+    return false;
+  }
+
+  const fileName = file.name.toLowerCase();
+  return ALLOWED_CV_MIME_TYPES.has(file.type) || ALLOWED_CV_EXTENSIONS.some((ext) => fileName.endsWith(ext));
+};
 
 const getInitialForm = () => {
   const base = DEBUG_MODE
@@ -47,12 +63,10 @@ export default function RegisterUser() {
       return;
     }
 
-    const hasInvalidFile = selectedFiles.some(
-      (file) => file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')
-    );
+    const hasInvalidFile = selectedFiles.some((file) => !isValidCvFile(file));
 
     if (hasInvalidFile) {
-      toast.error('Solo se permiten archivos PDF');
+      toast.error('Solo se permiten archivos PDF, JPG o Word');
       e.target.value = '';
       return;
     }
@@ -62,7 +76,7 @@ export default function RegisterUser() {
     const mergedFiles = [...formData.cvs, ...newUniqueFiles];
 
     if (mergedFiles.length > MAX_CV_FILES) {
-      toast.error(`Podés subir hasta ${MAX_CV_FILES} archivos PDF`);
+      toast.error(`Podés subir hasta ${MAX_CV_FILES} archivos PDF, JPG o Word`);
       e.target.value = '';
       return;
     }
@@ -82,7 +96,7 @@ export default function RegisterUser() {
     e.preventDefault();
 
     if (!formData.cvs.length) {
-      toast.error('Tenés que subir al menos un archivo PDF');
+      toast.error('Tenés que subir al menos un archivo PDF, JPG o Word');
       return;
     }
 
@@ -257,9 +271,14 @@ export default function RegisterUser() {
 
           <div style={{ marginTop: '1rem' }}>
             <label style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem' }}>
-              CV PDF (máximo 4 archivos)
+              CV / Portfolio (PDF, JPG o Word. máximo 4 archivos)
             </label>
-            <input type="file" accept="application/pdf" onChange={handleFileChange} multiple />
+            <input
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.doc,.docx,application/pdf,image/jpeg,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              onChange={handleFileChange}
+              multiple
+            />
             {formData.cvs.length > 0 && (
               <div style={{ marginTop: '0.6rem' }}>
                 <p style={{ margin: 0, color: '#6f604b', fontSize: '0.92rem' }}>

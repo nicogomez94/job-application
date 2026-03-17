@@ -38,11 +38,19 @@ const storage = multer.diskStorage({
 // Filtro de archivos
 const fileFilter = (req, file, cb) => {
   if (file.fieldname === 'cv') {
-    // Solo PDFs para CVs
-    if (file.mimetype === 'application/pdf') {
+    const allowedCvMimeTypes = new Set([
+      'application/pdf',
+      'image/jpeg',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    ]);
+    const hasAllowedCvExtension = /\.(pdf|jpe?g|docx?)$/i.test(file.originalname);
+
+    // Permitir PDF, JPG/JPEG y Word para CVs
+    if (allowedCvMimeTypes.has(file.mimetype) || hasAllowedCvExtension) {
       cb(null, true);
     } else {
-      cb(new Error('Solo se permiten archivos PDF para CVs'), false);
+      cb(new Error('Solo se permiten archivos PDF, JPG o Word para CVs'), false);
     }
   } else if (file.fieldname === 'profileImage' || file.fieldname === 'companyLogo') {
     // Solo imágenes para perfiles y logos
