@@ -5,8 +5,8 @@ services:
     rootDir: backend
     plan: free
     region: oregon
-    buildCommand: npm install && npm run prisma:generate && npx prisma migrate deploy
-    startCommand: npm run start:deploy:seed
+    buildCommand: bash -lc 'npm install && npm run prisma:generate && (npx prisma migrate resolve --rolled-back 20260301161452_init || true) && (npx prisma migrate resolve --applied 20260301161452_init || true) && npx prisma migrate deploy'
+    startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
