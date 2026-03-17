@@ -5,7 +5,7 @@ services:
     rootDir: backend
     plan: free
     region: oregon
-    buildCommand: npm install && npm run prisma:generate && npx prisma migrate deploy && cd ../frontend && npm install && npm run build
+    buildCommand: npm install && npm run prisma:generate && npx prisma migrate deploy
     startCommand: npm run start:deploy:seed
     envVars:
       - key: NODE_ENV
@@ -19,4 +19,18 @@ services:
       - key: GOOGLE_CLIENT_ID
         sync: false
       - key: GOOGLE_CLIENT_SECRET
+        sync: false
+
+  - type: web
+    name: ruben-frontend
+    runtime: static
+    rootDir: frontend
+    plan: free
+    region: oregon
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false
+      - key: VITE_GOOGLE_CLIENT_ID
         sync: false
