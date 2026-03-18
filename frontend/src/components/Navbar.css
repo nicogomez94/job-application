@@ -134,9 +134,9 @@
   padding: 0.55rem 0.95rem;
   border: 1px solid #b9af9f;
   border-radius: 999px;
-  min-width: 300px;
-  width: 24vw;
-  max-width: 420px;
+  min-width: 150px;
+  width: 12vw;
+  max-width: 210px;
   background: #f8f5ef;
 }
 
@@ -267,8 +267,8 @@
   }
 
   .navbar-search {
-    min-width: 180px;
-    width: 22vw;
+    min-width: 90px;
+    width: 11vw;
   }
 
   .navbar-logo-text {

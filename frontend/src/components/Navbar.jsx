@@ -101,7 +101,7 @@ export default function Navbar() {
               <input
                 type="text"
                 className="navbar-search-input"
-                placeholder={t('Buscar empleo...')}
+                placeholder={t('Buscar')}
                 value={searchTerm}
                 onChange={(event) => setSearchTerm(event.target.value)}
               />
