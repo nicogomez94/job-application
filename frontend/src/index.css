@@ -16,6 +16,10 @@ body {
   line-height: 1.5;
 }
 
+html {
+  font-size: 17px;
+}
+
 h1,
 h2 {
   font-family: 'Century Gothic', 'CenturyGothic', 'AppleGothic', sans-serif !important;
