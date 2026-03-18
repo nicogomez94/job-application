@@ -160,6 +160,7 @@ const ES_TO_EN = {
   'Cada mes, más de 3 millones de personas buscan trabajo en nuestra plataforma, realizando más de 140.000 postulaciones cada día':
     'Every month, more than 3 million people search for jobs on our platform, submitting over 140,000 applications each day.',
   Industria: 'Industry',
+  Profesiones: 'Professions',
   Tecnología: 'Technology',
   Marketing: 'Marketing',
   Finanzas: 'Finance',

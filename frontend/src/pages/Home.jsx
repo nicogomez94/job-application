@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Briefcase, Building2, TrendingUp, MapPin, Briefcase as BriefcaseIcon, ChevronLeft, ChevronRight, ChevronDown, ShoppingBag, PenTool, Users, BarChart2, Laptop, DollarSign, TrendingUp as TrendingUpIcon, Megaphone } from 'lucide-react';
+import { Search, Briefcase, Building2, TrendingUp, MapPin, Briefcase as BriefcaseIcon, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import { useI18n } from '../context/i18nStore';
+import { categoryService } from '../services';
 import './Home.css';
 
 const heroImageMain = '/herohome.png';
@@ -42,33 +43,80 @@ const useScrollAnimation = () => {
 export default function Home() {
   const { t } = useI18n();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [homeFilters, setHomeFilters] = useState({ categoryId: '', location: '', search: '' });
+  const [availableCategories, setAvailableCategories] = useState([]);
   const [heroRef, heroVisible] = useScrollAnimation();
   const [categoriesRef, categoriesVisible] = useScrollAnimation();
   const [featuresRef, featuresVisible] = useScrollAnimation();
   const [ctaRef, ctaVisible] = useScrollAnimation();
   const [statsRef, statsVisible] = useScrollAnimation();
 
-  const categories = [
-    { id: 1, name: 'Retail & Producto', icon: ShoppingBag, jobs: 3, color: '#fbefc9' },
-    { id: 2, name: 'Redactor de Contenido', icon: PenTool, jobs: 8, color: '#f7e7b8' },
-    { id: 3, name: 'Recursos Humanos', icon: Users, jobs: 3, color: '#fbefc9' },
-    { id: 4, name: 'Investigación de Mercado', icon: BarChart2, jobs: 4, color: '#f7e7b8' },
-    { id: 5, name: 'Software', icon: Laptop, jobs: 4, color: '#fbefc9' },
-    { id: 6, name: 'Finanzas', icon: DollarSign, jobs: 5, color: '#f7e7b8' },
-    { id: 7, name: 'Gestión', icon: TrendingUpIcon, jobs: 5, color: '#fbefc9' },
-    { id: 8, name: 'Marketing & Ventas', icon: Megaphone, jobs: 4, color: '#f7e7b8' },
-  ];
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const response = await categoryService.getAll();
+        const payload = response?.data;
+        const normalized = Array.isArray(payload)
+          ? payload
+          : Array.isArray(payload?.categories)
+            ? payload.categories
+            : [];
+        setAvailableCategories(normalized);
+      } catch (error) {
+        console.error('No se pudieron cargar categorías para home-search-select:', error);
+      }
+    };
 
+    loadCategories();
+  }, []);
+
+  const categories = availableCategories;
+  const legacyCategoryNames = new Set([
+    'Retail & Producto',
+    'Redactor de Contenido',
+    'Recursos Humanos',
+    'Investigación de Mercado',
+  ]);
+  const categoriesForCarousel = [...categories].sort((a, b) => {
+    const aIsLegacy = legacyCategoryNames.has(a?.name);
+    const bIsLegacy = legacyCategoryNames.has(b?.name);
+    if (aIsLegacy !== bIsLegacy) return aIsLegacy ? 1 : -1;
+    const aDate = a?.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const bDate = b?.createdAt ? new Date(b.createdAt).getTime() : 0;
+    if (aDate !== bDate) return bDate - aDate;
+    return String(a?.name || '').localeCompare(String(b?.name || ''), 'es');
+  });
+  const getCategoryOffersCount = (category) => category?.activeJobOffersCount ?? category?._count?.jobOffers ?? 0;
+  const getDisplayCategoryName = (category) => {
+    const name = String(category?.name || '').trim();
+    if (name.toLowerCase() === 'industria') return t('Profesiones');
+    return t(name);
+  };
   const itemsPerSlide = 4;
-  const totalSlides = Math.ceil(categories.length / itemsPerSlide);
+  const totalSlides = Math.max(1, Math.ceil(categoriesForCarousel.length / itemsPerSlide));
+
+  useEffect(() => {
+    if (currentSlide > totalSlides - 1) {
+      setCurrentSlide(0);
+    }
+  }, [currentSlide, totalSlides]);
 
   const nextSlide = () => {
+    if (categoriesForCarousel.length <= itemsPerSlide) return;
     setCurrentSlide((prev) => (prev + 1) % totalSlides);
   };
 
   const prevSlide = () => {
+    if (categoriesForCarousel.length <= itemsPerSlide) return;
     setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
   };
+
+  const jobsParams = new URLSearchParams();
+  if (homeFilters.categoryId) jobsParams.set('categoryId', homeFilters.categoryId);
+  if (homeFilters.location) jobsParams.set('location', homeFilters.location);
+  if (homeFilters.search) jobsParams.set('search', homeFilters.search);
+  const jobsSearch = jobsParams.toString();
+  const jobsHref = jobsSearch ? `/jobs?${jobsSearch}` : '/jobs';
 
   return (
     <div className="home-container">
@@ -100,24 +148,33 @@ export default function Home() {
           <div className="home-search-bar">
             <div className="home-search-field">
               <BriefcaseIcon size={20} className="search-icon" />
-              <select className="home-search-select">
-                <option>{t('Industria')}</option>
-                <option>{t('Tecnología')}</option>
-                <option>{t('Marketing')}</option>
-                <option>{t('Finanzas')}</option>
-                <option>{t('Salud')}</option>
+              <select
+                className="home-search-select"
+                value={homeFilters.categoryId}
+                onChange={(e) => setHomeFilters((prev) => ({ ...prev, categoryId: e.target.value }))}
+              >
+                <option value="">{t('Profesiones')}</option>
+                {availableCategories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {getDisplayCategoryName(category)}
+                  </option>
+                ))}
               </select>
               <ChevronDown size={16} className="home-search-chevron" />
             </div>
             <div className="home-search-divider"></div>
             <div className="home-search-field">
               <MapPin size={20} className="search-icon" />
-              <select className="home-search-select">
-                <option>{t('Ubicación')}</option>
-                <option>Buenos Aires</option>
-                <option>{t('Córdoba')}</option>
-                <option>{t('Rosario')}</option>
-                <option>{t('Remoto')}</option>
+              <select
+                className="home-search-select"
+                value={homeFilters.location}
+                onChange={(e) => setHomeFilters((prev) => ({ ...prev, location: e.target.value }))}
+              >
+                <option value="">{t('Ubicación')}</option>
+                <option value="Buenos Aires">Buenos Aires</option>
+                <option value="Córdoba">{t('Córdoba')}</option>
+                <option value="Rosario">{t('Rosario')}</option>
+                <option value="Remoto">{t('Remoto')}</option>
               </select>
               <ChevronDown size={16} className="home-search-chevron" />
             </div>
@@ -127,9 +184,11 @@ export default function Home() {
                 type="text"
                 placeholder={t('Palabras clave')}
                 className="home-search-input"
+                value={homeFilters.search}
+                onChange={(e) => setHomeFilters((prev) => ({ ...prev, search: e.target.value }))}
               />
             </div>
-            <Link to="/jobs" className="btn btn-primary home-search-btn">
+            <Link to={jobsHref} className="btn btn-primary home-search-btn">
               <Search size={20} />
               <span>{t('Buscar')}</span>
             </Link>
@@ -144,7 +203,7 @@ export default function Home() {
           <p className="categories-subtitle">{t('Simplifica tu búsqueda de trabajo buscando por categorías')}</p>
           
           <div className="categories-carousel">
-            <button className="carousel-btn carousel-btn-prev" onClick={prevSlide}>
+            <button className="carousel-btn carousel-btn-prev" onClick={prevSlide} disabled={categoriesForCarousel.length <= itemsPerSlide}>
               <ChevronLeft size={24} />
             </button>
 
@@ -156,16 +215,16 @@ export default function Home() {
                 {Array.from({ length: totalSlides }).map((_, slideIndex) => (
                   <div key={slideIndex} className="categories-slide">
                     <div className="categories-grid">
-                      {categories
+                      {categoriesForCarousel
                         .slice(slideIndex * itemsPerSlide, (slideIndex + 1) * itemsPerSlide)
                         .map((category) => (
-                          <Link to={`/jobs?category=${category.id}`} key={category.id} className="category-card">
-                            <div className="category-icon-wrapper" style={{ backgroundColor: category.color }}>
-                              <category.icon size={24} className="category-icon" />
+                          <Link to={`/jobs?categoryId=${category.id}`} key={category.id} className="category-card">
+                            <div className="category-icon-wrapper">
+                              <BriefcaseIcon size={24} className="category-icon" />
                             </div>
                             <div className="category-info">
-                              <h3 className="category-name">{t(category.name)}</h3>
-                              <p className="category-jobs">{category.jobs} {t('Trabajos Disponibles')}</p>
+                              <h3 className="category-name">{getDisplayCategoryName(category)}</h3>
+                              <p className="category-jobs">{getCategoryOffersCount(category)} {t('Trabajos Disponibles')}</p>
                             </div>
                           </Link>
                         ))}
@@ -175,7 +234,7 @@ export default function Home() {
               </div>
             </div>
 
-            <button className="carousel-btn carousel-btn-next" onClick={nextSlide}>
+            <button className="carousel-btn carousel-btn-next" onClick={nextSlide} disabled={categoriesForCarousel.length <= itemsPerSlide}>
               <ChevronRight size={24} />
             </button>
           </div>
