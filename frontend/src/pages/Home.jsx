@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Briefcase, Building2, TrendingUp, MapPin, Briefcase as BriefcaseIcon, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import { useI18n } from '../context/i18nStore';
@@ -71,29 +71,39 @@ export default function Home() {
   }, []);
 
   const categories = availableCategories;
-  const legacyCategoryNames = new Set([
-    'Retail & Producto',
-    'Redactor de Contenido',
-    'Recursos Humanos',
-    'Investigación de Mercado',
-  ]);
-  const categoriesForCarousel = [...categories].sort((a, b) => {
-    const aIsLegacy = legacyCategoryNames.has(a?.name);
-    const bIsLegacy = legacyCategoryNames.has(b?.name);
-    if (aIsLegacy !== bIsLegacy) return aIsLegacy ? 1 : -1;
-    const aDate = a?.createdAt ? new Date(a.createdAt).getTime() : 0;
-    const bDate = b?.createdAt ? new Date(b.createdAt).getTime() : 0;
-    if (aDate !== bDate) return bDate - aDate;
-    return String(a?.name || '').localeCompare(String(b?.name || ''), 'es');
-  });
   const getCategoryOffersCount = (category) => category?.activeJobOffersCount ?? category?._count?.jobOffers ?? 0;
+  const categoriesForCarousel = [...categories].sort((a, b) => {
+    const offersDiff = getCategoryOffersCount(b) - getCategoryOffersCount(a);
+    if (offersDiff !== 0) return offersDiff;
+    return String(a?.name || '').localeCompare(String(b?.name || ''), 'es', { sensitivity: 'base' });
+  });
   const getDisplayCategoryName = (category) => {
     const name = String(category?.name || '').trim();
     if (name.toLowerCase() === 'industria') return t('Profesiones');
     return t(name);
   };
   const itemsPerSlide = 4;
-  const totalSlides = Math.max(1, Math.ceil(categoriesForCarousel.length / itemsPerSlide));
+  const slideStep = 3;
+  const slideStartIndexes = useMemo(() => {
+    const total = categoriesForCarousel.length;
+    if (total <= itemsPerSlide) return [0];
+
+    const maxStart = total - itemsPerSlide;
+    const starts = [0];
+    let nextStart = slideStep;
+
+    while (nextStart < maxStart) {
+      starts.push(nextStart);
+      nextStart += slideStep;
+    }
+
+    if (starts[starts.length - 1] !== maxStart) {
+      starts.push(maxStart);
+    }
+
+    return starts;
+  }, [categoriesForCarousel, itemsPerSlide, slideStep]);
+  const totalSlides = slideStartIndexes.length;
 
   useEffect(() => {
     if (currentSlide > totalSlides - 1) {
@@ -238,13 +248,13 @@ export default function Home() {
             <div className="categories-slider">
               <div 
                 className="categories-track"
-                style={{ transform: `translateX(-${currentSlide * (100 / totalSlides)}%)` }}
+                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
               >
-                {Array.from({ length: totalSlides }).map((_, slideIndex) => (
+                {slideStartIndexes.map((startIndex, slideIndex) => (
                   <div key={slideIndex} className="categories-slide">
                     <div className="categories-grid">
                       {categoriesForCarousel
-                        .slice(slideIndex * itemsPerSlide, (slideIndex + 1) * itemsPerSlide)
+                        .slice(startIndex, startIndex + itemsPerSlide)
                         .map((category) => (
                           <Link to={`/jobs?categoryId=${category.id}`} key={category.id} className="category-card">
                             <div className="category-icon-wrapper">
