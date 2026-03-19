@@ -1,0 +1,417 @@
+/* ── Page wrapper ───────────────────────────────────────── */
+.jd-page {
+  background: #fcf7ef;
+  min-height: 100vh;
+  padding: 1.5rem 1rem 2rem;
+}
+
+.jd-container {
+  max-width: 1060px;
+  margin: 0 auto;
+}
+
+/* ── Hero card ──────────────────────────────────────────── */
+.jd-hero {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.07);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.jd-hero-top {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.jd-logo {
+  width: 84px;
+  height: 84px;
+  border-radius: 0.75rem;
+  object-fit: cover;
+  border: 1px solid #ede3d4;
+  flex-shrink: 0;
+}
+
+.jd-logo-placeholder {
+  width: 84px;
+  height: 84px;
+  border-radius: 0.75rem;
+  border: 1px solid #ede3d4;
+  background: #f5efe5;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  color: #b09070;
+}
+
+.jd-hero-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.jd-category-badge {
+  display: inline-block;
+  background: #f5efe5;
+  color: #7c5f3a;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.jd-title {
+  font-size: 1.75rem !important;
+  color: #2f2416;
+  margin-bottom: 0.25rem;
+  line-height: 1.2;
+}
+
+.jd-company-name {
+  font-size: 1rem;
+  color: #5e4d38;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.jd-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.jd-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: #f5efe5;
+  color: #5e4d38;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+}
+
+.jd-tag svg {
+  color: #a07850;
+  flex-shrink: 0;
+}
+
+.jd-salary-tag {
+  background: #eef7f1;
+  color: #2f6b42;
+  font-weight: 600;
+}
+
+.jd-salary-tag svg {
+  color: #4a9460;
+}
+
+.jd-hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid #f0e8da;
+  align-items: center;
+}
+
+.jd-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: #6f604b;
+}
+
+.jd-meta-item svg {
+  color: #a07850;
+}
+
+/* ── Two-column layout ──────────────────────────────────── */
+.jd-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+/* ── Content sections ───────────────────────────────────── */
+.jd-section {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.07);
+  padding: 1.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.jd-section:last-child {
+  margin-bottom: 0;
+}
+
+.jd-section-title {
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  color: #2f2416;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.jd-section-title svg {
+  color: #a07850;
+}
+
+.jd-description {
+  color: #5e4d38;
+  line-height: 1.75;
+  white-space: pre-wrap;
+  font-size: 0.95rem;
+}
+
+/* Requirements list with check icons */
+.jd-check-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.jd-check-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  color: #5e4d38;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.jd-check-icon {
+  color: #4a9460;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+/* Responsibilities list with dot */
+.jd-dot-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.jd-dot-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  color: #5e4d38;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.jd-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #c9a46a;
+  flex-shrink: 0;
+  margin-top: 0.42rem;
+}
+
+/* Languages */
+.jd-lang-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.jd-lang-tag {
+  background: #eef3ee;
+  color: #3d6b4a;
+  font-size: 0.82rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  font-weight: 500;
+}
+
+/* ── Sidebar ────────────────────────────────────────────── */
+.jd-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  position: sticky;
+  top: 6.5rem;
+}
+
+.jd-sidebar-card {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.07);
+  padding: 1.5rem;
+}
+
+/* Apply card */
+.jd-apply-title {
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  color: #2f2416;
+  margin-bottom: 0.3rem;
+}
+
+.jd-apply-desc {
+  font-size: 0.82rem;
+  color: #7a6a55;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.jd-btn-full {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border-radius: 0.6rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  border: none;
+  margin-top: 0.6rem;
+}
+
+.jd-btn-whatsapp {
+  background: #25d366;
+  color: white;
+}
+
+.jd-btn-whatsapp:hover {
+  background: #1ebe5b;
+}
+
+.jd-btn-email {
+  background: transparent;
+  color: #5e4d38;
+  border: 1.5px solid #d6c9b6;
+}
+
+.jd-btn-email:hover {
+  background: #f5efe5;
+}
+
+/* Applied banner */
+.jd-applied-banner {
+  background: #eef7f1;
+  border: 1.5px solid #a8d5b5;
+  border-radius: 0.75rem;
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: #2f6b42;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+/* Company sidebar card */
+.jd-company-header {
+  display: flex;
+  gap: 0.85rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.jd-company-logo-sm {
+  width: 50px;
+  height: 50px;
+  border-radius: 0.5rem;
+  object-fit: cover;
+  border: 1px solid #ede3d4;
+  flex-shrink: 0;
+}
+
+.jd-company-logo-sm-placeholder {
+  width: 50px;
+  height: 50px;
+  border-radius: 0.5rem;
+  border: 1px solid #ede3d4;
+  background: #f5efe5;
+  display: grid;
+  place-items: center;
+  color: #b09070;
+  flex-shrink: 0;
+}
+
+.jd-company-card-name {
+  font-weight: 600;
+  color: #2f2416;
+  font-size: 0.95rem;
+}
+
+.jd-company-info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  color: #6f604b;
+  margin-bottom: 0.45rem;
+}
+
+.jd-company-info-row svg {
+  color: #a07850;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.jd-company-desc {
+  font-size: 0.82rem;
+  color: #5e4d38;
+  line-height: 1.6;
+  margin-top: 0.85rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid #f0e8da;
+}
+
+.jd-website-link {
+  color: var(--primary-600, #a07030);
+  text-decoration: none;
+  font-size: 0.82rem;
+  word-break: break-all;
+}
+
+.jd-website-link:hover {
+  text-decoration: underline;
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .jd-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .jd-sidebar {
+    position: static;
+  }
+
+  .jd-hero-top {
+    gap: 1rem;
+  }
+
+  .jd-logo,
+  .jd-logo-placeholder {
+    width: 64px;
+    height: 64px;
+  }
+
+  .jd-title {
+    font-size: 1.35rem !important;
+  }
+}
