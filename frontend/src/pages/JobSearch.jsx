@@ -1,9 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { ArrowLeft } from 'lucide-react';
 import { categoryService, jobOfferService } from '../services';
 import { BACKEND_BASE_URL } from '../services/apiBaseUrl';
 import './JobSearch.css';
+import '../components/BackToDashboardButton.css';
 
 const toAssetUrl = (assetPath) => {
   if (!assetPath) return null;
@@ -27,6 +29,7 @@ const formatSalary = (min, max, period) => {
 
 export default function JobSearch() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const shouldSkipHistoryPushRef = useRef(false);
   const getFiltersFromParams = () => ({
     search: searchParams.get('search') || '',
     location: searchParams.get('location') || '',
@@ -40,6 +43,17 @@ export default function JobSearch() {
   const [categories, setCategories] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, pages: 1, total: 0 });
   const [loading, setLoading] = useState(false);
+  const [searchHistory, setSearchHistory] = useState(() => {
+    const initialFilters = getFiltersFromParams();
+    return [
+      {
+        search: initialFilters.search || '',
+        location: initialFilters.location || '',
+        categoryId: initialFilters.categoryId || '',
+        workMode: initialFilters.workMode || '',
+      },
+    ];
+  });
   const getCategoryOffersCount = (category) => category?.activeJobOffersCount ?? category?._count?.jobOffers ?? 0;
   const categoriesOrdered = useMemo(() => {
     const isOtherCategory = (name) => {
@@ -62,10 +76,40 @@ export default function JobSearch() {
     });
   }, [categories]);
   const totalCategoryOffers = categoriesOrdered.reduce((total, category) => total + getCategoryOffersCount(category), 0);
+  const hasPreviousSearch = searchHistory.length > 1;
+
+  const filtersToSearchState = (sourceFilters) => ({
+    search: sourceFilters.search || '',
+    location: sourceFilters.location || '',
+    categoryId: sourceFilters.categoryId || '',
+    workMode: sourceFilters.workMode || '',
+  });
 
   useEffect(() => {
     setFilters(getFiltersFromParams());
   }, [searchParams]);
+
+  useEffect(() => {
+    if (shouldSkipHistoryPushRef.current) {
+      shouldSkipHistoryPushRef.current = false;
+      return;
+    }
+
+    const currentSearchState = filtersToSearchState(filters);
+    setSearchHistory((prev) => {
+      const last = prev[prev.length - 1];
+      if (
+        last &&
+        last.search === currentSearchState.search &&
+        last.location === currentSearchState.location &&
+        last.categoryId === currentSearchState.categoryId &&
+        last.workMode === currentSearchState.workMode
+      ) {
+        return prev;
+      }
+      return [...prev, currentSearchState];
+    });
+  }, [filters.search, filters.location, filters.categoryId, filters.workMode]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -136,6 +180,31 @@ export default function JobSearch() {
     });
   };
 
+  const goToPreviousSearch = () => {
+    if (!hasPreviousSearch) return;
+
+    const nextHistory = searchHistory.slice(0, -1);
+    const previousSearch = nextHistory[nextHistory.length - 1];
+    const nextFilters = {
+      ...filters,
+      ...previousSearch,
+      page: 1,
+    };
+
+    shouldSkipHistoryPushRef.current = true;
+    setSearchHistory(nextHistory);
+    setFilters(nextFilters);
+
+    const nextParams = new URLSearchParams();
+    Object.entries(nextFilters).forEach(([key, filterValue]) => {
+      if (filterValue === '' || filterValue === null || filterValue === undefined) return;
+      if (key === 'page' && Number(filterValue) === 1) return;
+      if (key === 'limit' && Number(filterValue) === 9) return;
+      nextParams.set(key, String(filterValue));
+    });
+    setSearchParams(nextParams);
+  };
+
   return (
     <div style={{ minHeight: '100vh', background: '#fcf7ef', paddingBottom: '3rem' }}>
       <div style={{ background: 'linear-gradient(135deg, var(--primary-600) 0%, var(--primary-500) 100%)', padding: '2.5rem 0' }}>
@@ -146,6 +215,18 @@ export default function JobSearch() {
       </div>
 
       <div style={{ maxWidth: '1200px', margin: '1.5rem auto 0', padding: '0 1rem' }}>
+        {hasPreviousSearch && (
+          <button
+            type="button"
+            className="back-dashboard-btn"
+            onClick={goToPreviousSearch}
+            style={{ marginBottom: '0.8rem' }}
+          >
+            <ArrowLeft size={16} />
+            <span>Volver a búsqueda anterior</span>
+          </button>
+        )}
+
         <div
           className="job-search-header"
           style={{

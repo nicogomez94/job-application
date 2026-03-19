@@ -117,6 +117,34 @@ export default function Home() {
   if (homeFilters.search) jobsParams.set('search', homeFilters.search);
   const jobsSearch = jobsParams.toString();
   const jobsHref = jobsSearch ? `/jobs?${jobsSearch}` : '/jobs';
+  const compactPlans = [
+    {
+      id: 'MONTHLY',
+      name: 'Mensual',
+      subtitle: 'Ideal para empezar',
+      price: '$25.000',
+      period: '/ mes',
+      feature: 'Hasta 3 publicaciones activas',
+    },
+    {
+      id: 'QUARTERLY',
+      name: 'Trimestral',
+      subtitle: 'Mejor relación precio-valor',
+      price: '$60.000',
+      period: '/ trimestre',
+      feature: 'Hasta 10 publicaciones activas',
+      highlight: true,
+      badge: 'Más elegido',
+    },
+    {
+      id: 'ANNUAL',
+      name: 'Anual',
+      subtitle: 'Para escalar contrataciones',
+      price: '$210.000',
+      period: '/ año',
+      feature: 'Publicaciones ilimitadas',
+    },
+  ];
 
   return (
     <div className="home-container">
@@ -314,23 +342,34 @@ export default function Home() {
 
       <section ref={statsRef} className={`home-stats animate-on-scroll ${statsVisible ? 'animate-visible' : ''}`}>
         <div className="home-stats-container">
-          <div className="home-stats-grid">
-            <div>
-              <div className="home-stat-number">10,000+</div>
-              <div className="home-stat-label">{t('Ofertas Laborales')}</div>
-            </div>
-            <div>
-              <div className="home-stat-number">5,000+</div>
-              <div className="home-stat-label">{t('Empresas Registradas')}</div>
-            </div>
-            <div>
-              <div className="home-stat-number">50,000+</div>
-              <div className="home-stat-label">{t('Candidatos Activos')}</div>
-            </div>
-            <div>
-              <div className="home-stat-number">95%</div>
-              <div className="home-stat-label">{t('Tasa de Éxito')}</div>
-            </div>
+          <div className="home-stats-header">
+            <p className="home-stats-eyebrow">Empresas</p>
+            <h2>Planes y precios en versión resumida</h2>
+            <p>Elegí un plan para publicar ofertas y gestionar postulantes.</p>
+          </div>
+
+          <div className="home-pricing-preview-grid">
+            {compactPlans.map((plan) => (
+              <article
+                key={plan.id}
+                className={`home-pricing-preview-card ${plan.highlight ? 'home-pricing-preview-card-highlight' : ''}`}
+              >
+                {plan.badge ? <span className="home-pricing-preview-badge">{plan.badge}</span> : null}
+                <h3>{plan.name}</h3>
+                <p className="home-pricing-preview-subtitle">{plan.subtitle}</p>
+                <p className="home-pricing-preview-price">
+                  {plan.price}
+                  <span>{plan.period}</span>
+                </p>
+                <p className="home-pricing-preview-feature">{plan.feature}</p>
+              </article>
+            ))}
+          </div>
+
+          <div className="home-pricing-preview-cta">
+            <Link to="/planes-y-precios" className="btn btn-outline home-pricing-preview-link">
+              Ver planes y precios
+            </Link>
           </div>
         </div>
       </section>

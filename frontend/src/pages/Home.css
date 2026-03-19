@@ -139,24 +139,28 @@
 }
 
 /* Animación para stats */
-.home-stats.animate-visible .home-stats-grid > div {
+.home-stats.animate-visible .home-stats-header {
+  animation: fadeInDown 0.8s ease-out 0.2s both;
+}
+
+.home-stats.animate-visible .home-pricing-preview-grid > article {
   animation: fadeInScale 0.8s ease-out both;
 }
 
-.home-stats.animate-visible .home-stats-grid > div:nth-child(1) {
+.home-stats.animate-visible .home-pricing-preview-grid > article:nth-child(1) {
   animation-delay: 0.2s;
 }
 
-.home-stats.animate-visible .home-stats-grid > div:nth-child(2) {
+.home-stats.animate-visible .home-pricing-preview-grid > article:nth-child(2) {
   animation-delay: 0.4s;
 }
 
-.home-stats.animate-visible .home-stats-grid > div:nth-child(3) {
+.home-stats.animate-visible .home-pricing-preview-grid > article:nth-child(3) {
   animation-delay: 0.6s;
 }
 
-.home-stats.animate-visible .home-stats-grid > div:nth-child(4) {
-  animation-delay: 0.8s;
+.home-stats.animate-visible .home-pricing-preview-cta {
+  animation: fadeInUp 0.8s ease-out 0.8s both;
 }
 
 /* Hero Section */
@@ -977,7 +981,7 @@ margin: 0px auto 40px;
 
 /* Stats Section */
 .home-stats {
-  padding: 4rem 0;
+  padding: 4rem 0 4.4rem;
   background-color: var(--primary-600);
   color: white;
 }
@@ -988,27 +992,112 @@ margin: 0px auto 40px;
   padding: 0 1rem;
 }
 
-.home-stats-grid {
+.home-stats-header {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto 1.6rem;
+}
+
+.home-stats-eyebrow {
+  margin: 0 0 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+  color: #faeed8;
+  font-weight: 700;
+}
+
+.home-stats-header h2 {
+  margin: 0 0 0.6rem;
+  color: #fff;
+  font-size: clamp(1.55rem, 3vw, 2.1rem);
+}
+
+.home-stats-header p {
+  margin: 0;
+  color: #f8edd9;
+  font-size: 1rem;
+}
+
+.home-pricing-preview-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
+  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.home-pricing-preview-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 0.85rem;
+  padding: 1rem 1rem 1.05rem;
+  text-align: left;
+  box-shadow: 0 8px 22px rgba(57, 35, 12, 0.14);
+  position: relative;
+}
+
+.home-pricing-preview-card-highlight {
+  border-color: #e3bc77;
+  box-shadow: 0 14px 30px rgba(85, 53, 17, 0.24);
+  transform: translateY(-2px);
+}
+
+.home-pricing-preview-badge {
+  position: absolute;
+  top: -11px;
+  right: 14px;
+  font-size: 0.69rem;
+  font-weight: 700;
+  background: #d6a958;
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+}
+
+.home-pricing-preview-card h3 {
+  margin: 0;
+  color: #3f2b13;
+  font-size: 1.22rem;
+}
+
+.home-pricing-preview-subtitle {
+  margin: 0.3rem 0 0.7rem;
+  color: #7c6647;
+  font-size: 0.91rem;
+}
+
+.home-pricing-preview-price {
+  margin: 0 0 0.55rem;
+  color: #4d3318;
+  font-size: 1.7rem;
+  line-height: 1;
+  font-weight: 800;
+}
+
+.home-pricing-preview-price span {
+  font-size: 0.9rem;
+  color: #806a4b;
+  font-weight: 500;
+}
+
+.home-pricing-preview-feature {
+  margin: 0;
+  color: #5c472f;
+  font-size: 0.92rem;
+}
+
+.home-pricing-preview-cta {
+  margin-top: 1rem;
   text-align: center;
 }
 
-@media (min-width: 768px) {
-  .home-stats-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
+.home-pricing-preview-link {
+  border-color: #f7ead6;
+  color: #fff;
 }
 
-.home-stat-number {
-  font-size: 2.25rem;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-}
-
-.home-stat-label {
-  color: var(--primary-100);
+.home-pricing-preview-link:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
 }
 
 /* Responsive Stats */
@@ -1017,17 +1106,17 @@ margin: 0px auto 40px;
     padding: 3rem 0;
   }
 
-  .home-stats-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .home-pricing-preview-grid {
+    grid-template-columns: 1fr;
     gap: 1.5rem;
   }
 
-  .home-stat-number {
-    font-size: 2rem;
+  .home-pricing-preview-card-highlight {
+    transform: none;
   }
 
-  .home-stat-label {
-    font-size: 0.9375rem;
+  .home-stats-header p {
+    font-size: 0.95rem;
   }
 }
 
@@ -1036,16 +1125,15 @@ margin: 0px auto 40px;
     padding: 2.5rem 0;
   }
 
-  .home-stats-grid {
-    grid-template-columns: 1fr;
-    gap: 1.25rem;
+  .home-pricing-preview-grid {
+    gap: 0.9rem;
   }
 
-  .home-stat-number {
-    font-size: 1.75rem;
+  .home-pricing-preview-card {
+    padding: 0.9rem;
   }
 
-  .home-stat-label {
-    font-size: 0.875rem;
+  .home-pricing-preview-price {
+    font-size: 1.45rem;
   }
 }
