@@ -191,7 +191,7 @@ export default function Home() {
                 value={homeFilters.categoryId}
                 onChange={(e) => setHomeFilters((prev) => ({ ...prev, categoryId: e.target.value }))}
               >
-                <option value="">{t('Profesiones')}</option>
+                <option value="">{t('Categoría')}</option>
                 {availableCategories.map((category) => (
                   <option key={category.id} value={category.id}>
                     {getDisplayCategoryName(category)}
