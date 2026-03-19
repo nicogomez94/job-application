@@ -87,8 +87,9 @@ export default function JobDetail() {
       <div style={{ minHeight: '50vh', display: 'grid', placeItems: 'center', padding: '2rem' }}>
         <div className="card">
           <p style={{ marginBottom: '1rem' }}>No se encontró la oferta.</p>
-          <Link to="/jobs" className="btn btn-primary">
-            Volver a búsqueda
+          <Link to="/jobs" className="back-dashboard-btn">
+            <ArrowLeft size={16} />
+            <span>Volver a búsqueda</span>
           </Link>
         </div>
       </div>

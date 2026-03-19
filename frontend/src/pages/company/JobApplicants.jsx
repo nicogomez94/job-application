@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { MessageCircle } from 'lucide-react';
+import { ArrowLeft, MessageCircle } from 'lucide-react';
 import { jobOfferService } from '../../services';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
@@ -97,8 +97,9 @@ export default function JobApplicants() {
           <h1>Postulantes</h1>
           <p style={{ color: '#6f604b' }}>{jobOffer?.title || 'Oferta'}</p>
         </div>
-        <Link className="btn btn-outline" to="/company/jobs">
-          Volver a ofertas
+        <Link className="back-dashboard-btn" to="/company/jobs">
+          <ArrowLeft size={16} />
+          <span>Volver a ofertas</span>
         </Link>
       </div>
 
