@@ -1,4 +1,33 @@
+const fs = require('fs');
+const path = require('path');
 const prisma = require('../config/database');
+
+const MAX_OTHER_FILES = 4;
+
+const normalizeUploadedFiles = (uploadedFiles) => {
+  if (!Array.isArray(uploadedFiles)) return [];
+  return uploadedFiles
+    .map((item) => {
+      if (!item || typeof item !== 'object') return null;
+      const url = typeof item.url === 'string' ? item.url.trim() : '';
+      const name = typeof item.name === 'string' ? item.name.trim() : '';
+      if (!url) return null;
+      return {
+        url,
+        name: name || url.split('/').pop() || 'archivo',
+      };
+    })
+    .filter(Boolean);
+};
+
+const removeUploadedFile = (assetPath) => {
+  if (!assetPath || typeof assetPath !== 'string') return;
+  const normalized = assetPath.replace(/^\/+/, '');
+  const absolutePath = path.resolve(process.cwd(), normalized);
+  if (fs.existsSync(absolutePath)) {
+    fs.unlinkSync(absolutePath);
+  }
+};
 
 // Obtener perfil de usuario
 exports.getProfile = async (req, res) => {
@@ -33,6 +62,7 @@ exports.getProfile = async (req, res) => {
 
     // Remover password
     const { password, ...userWithoutPassword } = user;
+    userWithoutPassword.uploadedFiles = normalizeUploadedFiles(userWithoutPassword.uploadedFiles);
 
     res.json(userWithoutPassword);
   } catch (error) {
@@ -86,6 +116,7 @@ exports.updateProfile = async (req, res) => {
         education: true,
         skills: true,
         cvUrl: true,
+        uploadedFiles: true,
         location: true,
         linkedinUrl: true,
         portfolioUrl: true,
@@ -95,7 +126,10 @@ exports.updateProfile = async (req, res) => {
 
     res.json({
       message: 'Perfil actualizado exitosamente',
-      user: updatedUser,
+      user: {
+        ...updatedUser,
+        uploadedFiles: normalizeUploadedFiles(updatedUser.uploadedFiles),
+      },
     });
   } catch (error) {
     console.error('Error en updateProfile:', error);
@@ -109,6 +143,11 @@ exports.uploadCV = async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ error: 'No se ha subido ningún archivo' });
     }
+
+    const currentUser = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: { cvUrl: true },
+    });
 
     const cvUrl = `/uploads/cvs/${req.file.filename}`;
 
@@ -128,9 +167,132 @@ exports.uploadCV = async (req, res) => {
       message: 'CV subido exitosamente',
       cvUrl: updatedUser.cvUrl,
     });
+
+    if (currentUser?.cvUrl && currentUser.cvUrl !== cvUrl) {
+      try {
+        removeUploadedFile(currentUser.cvUrl);
+      } catch (fileError) {
+        console.warn('No se pudo eliminar el CV anterior:', fileError.message);
+      }
+    }
   } catch (error) {
     console.error('Error en uploadCV:', error);
     res.status(500).json({ error: 'Error al subir CV' });
+  }
+};
+
+// Eliminar CV
+exports.deleteCV = async (req, res) => {
+  try {
+    const currentUser = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: { cvUrl: true },
+    });
+
+    if (!currentUser?.cvUrl) {
+      return res.status(400).json({ error: 'No hay CV cargado para eliminar' });
+    }
+
+    await prisma.user.update({
+      where: { id: req.user.id },
+      data: { cvUrl: null },
+      select: { id: true },
+    });
+
+    try {
+      removeUploadedFile(currentUser.cvUrl);
+    } catch (fileError) {
+      console.warn('No se pudo eliminar el CV del sistema:', fileError.message);
+    }
+
+    res.json({ message: 'CV eliminado exitosamente' });
+  } catch (error) {
+    console.error('Error en deleteCV:', error);
+    res.status(500).json({ error: 'Error al eliminar CV' });
+  }
+};
+
+// Subir archivo varios
+exports.uploadOtherFile = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No se ha subido ningún archivo' });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: { uploadedFiles: true },
+    });
+
+    const currentFiles = normalizeUploadedFiles(user?.uploadedFiles);
+    if (currentFiles.length >= MAX_OTHER_FILES) {
+      return res.status(400).json({ error: `Podés subir hasta ${MAX_OTHER_FILES} archivos varios` });
+    }
+
+    const nextFiles = [
+      ...currentFiles,
+      {
+        url: `/uploads/files/${req.file.filename}`,
+        name: req.file.originalname || req.file.filename,
+      },
+    ];
+
+    const updatedUser = await prisma.user.update({
+      where: { id: req.user.id },
+      data: { uploadedFiles: nextFiles },
+      select: { uploadedFiles: true },
+    });
+
+    res.json({
+      message: 'Archivo subido exitosamente',
+      uploadedFiles: normalizeUploadedFiles(updatedUser.uploadedFiles),
+    });
+  } catch (error) {
+    console.error('Error en uploadOtherFile:', error);
+    res.status(500).json({ error: 'Error al subir archivo' });
+  }
+};
+
+// Eliminar archivo varios por índice
+exports.deleteOtherFile = async (req, res) => {
+  try {
+    const index = Number.parseInt(req.params.index, 10);
+    if (!Number.isInteger(index) || index < 0) {
+      return res.status(400).json({ error: 'Índice de archivo inválido' });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: { uploadedFiles: true },
+    });
+
+    const currentFiles = normalizeUploadedFiles(user?.uploadedFiles);
+    if (!currentFiles[index]) {
+      return res.status(404).json({ error: 'Archivo no encontrado' });
+    }
+
+    const fileToDelete = currentFiles[index];
+    const nextFiles = currentFiles.filter((_, idx) => idx !== index);
+
+    const updatedUser = await prisma.user.update({
+      where: { id: req.user.id },
+      data: { uploadedFiles: nextFiles.length ? nextFiles : null },
+      select: { uploadedFiles: true },
+    });
+
+    try {
+      removeUploadedFile(fileToDelete.url);
+    } catch (fileError) {
+      console.warn('No se pudo eliminar el archivo del sistema:', fileError.message);
+    }
+
+    res.json({
+      message: 'Archivo eliminado exitosamente',
+      uploadedFiles: normalizeUploadedFiles(updatedUser.uploadedFiles),
+    });
+  } catch (error) {
+    console.error('Error en deleteOtherFile:', error);
+    res.status(500).json({ error: 'Error al eliminar archivo' });
   }
 };
 

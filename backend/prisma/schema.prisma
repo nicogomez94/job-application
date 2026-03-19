@@ -28,6 +28,7 @@ model User {
   education     Json?         // Array de formación académica
   skills        String[]      // Array de habilidades
   cvUrl         String?       // URL del CV subido
+  uploadedFiles Json?         // Archivos subidos por el usuario (máx. 4)
   
   location      String?
   linkedinUrl   String?

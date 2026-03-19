@@ -6,10 +6,10 @@ import { useAuthStore } from '../../context/authStore';
 import { DEBUG_FORM_DATA, DEBUG_MODE } from '../../config/debug';
 import './Register.css';
 
-const MAX_CV_FILES = 4;
-const MAX_CV_FILE_SIZE = 5 * 1024 * 1024;
+const MAX_OTHER_FILES = 4;
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
-const getFilesExceedingSize = (files) => files.filter((file) => file.size > MAX_CV_FILE_SIZE);
+const getFilesExceedingSize = (files) => files.filter((file) => file.size > MAX_FILE_SIZE);
 
 const getInitialForm = () => {
   const base = DEBUG_MODE
@@ -25,7 +25,8 @@ const getInitialForm = () => {
 
   return {
     ...base,
-    cvs: Array.isArray(base.cvs) ? base.cvs : [],
+    cvFile: base.cvFile || null,
+    otherFiles: Array.isArray(base.otherFiles) ? base.otherFiles : [],
   };
 };
 
@@ -43,7 +44,19 @@ export default function RegisterUser() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e) => {
+  const handleCvFileChange = (e) => {
+    const file = e.target.files?.[0] || null;
+    if (!file) return;
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error('El archivo debe pesar como máximo 5 MB');
+      e.target.value = '';
+      return;
+    }
+    setFormData((prev) => ({ ...prev, cvFile: file }));
+    e.target.value = '';
+  };
+
+  const handleOtherFilesChange = (e) => {
     const selectedFiles = Array.from(e.target.files || []);
 
     if (!selectedFiles.length) {
@@ -58,36 +71,40 @@ export default function RegisterUser() {
       return;
     }
 
-    const existingKeys = new Set(formData.cvs.map(getFileKey));
+    const existingKeys = new Set(formData.otherFiles.map(getFileKey));
     const newUniqueFiles = selectedFiles.filter((file) => !existingKeys.has(getFileKey(file)));
-    const mergedFiles = [...formData.cvs, ...newUniqueFiles];
+    const mergedFiles = [...formData.otherFiles, ...newUniqueFiles];
 
-    if (mergedFiles.length > MAX_CV_FILES) {
-      toast.error(`Podés subir hasta ${MAX_CV_FILES} archivos`);
+    if (mergedFiles.length > MAX_OTHER_FILES) {
+      toast.error(`Podés subir hasta ${MAX_OTHER_FILES} archivos`);
       e.target.value = '';
       return;
     }
 
-    setFormData((prev) => ({ ...prev, cvs: mergedFiles }));
+    setFormData((prev) => ({ ...prev, otherFiles: mergedFiles }));
     e.target.value = '';
   };
 
-  const handleRemoveFile = (fileIndex) => {
+  const handleRemoveOtherFile = (fileIndex) => {
     setFormData((prev) => ({
       ...prev,
-      cvs: prev.cvs.filter((_, index) => index !== fileIndex),
+      otherFiles: prev.otherFiles.filter((_, index) => index !== fileIndex),
     }));
+  };
+
+  const handleRemoveCv = () => {
+    setFormData((prev) => ({ ...prev, cvFile: null }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.cvs.length) {
-      toast.error('Tenés que subir al menos un archivo');
+    if (formData.cvFile && formData.cvFile.size > MAX_FILE_SIZE) {
+      toast.error('El CV debe pesar como máximo 5 MB');
       return;
     }
 
-    if (getFilesExceedingSize(formData.cvs).length > 0) {
+    if (getFilesExceedingSize(formData.otherFiles).length > 0) {
       toast.error('Cada archivo debe pesar como máximo 5 MB');
       return;
     }
@@ -113,16 +130,22 @@ export default function RegisterUser() {
       setAuth(user, 'user', token);
 
       try {
-        for (const file of formData.cvs) {
-          await userService.uploadCV(file);
+        if (formData.cvFile) {
+          await userService.uploadCV(formData.cvFile);
         }
-        toast.success(
-          formData.cvs.length === 1
-            ? 'Archivo subido exitosamente'
-            : `${formData.cvs.length} archivos subidos exitosamente`
-        );
+        for (const file of formData.otherFiles) {
+          await userService.uploadOtherFile(file);
+        }
+        const totalUploaded = (formData.cvFile ? 1 : 0) + formData.otherFiles.length;
+        if (totalUploaded > 0) {
+          toast.success(
+            totalUploaded === 1
+              ? 'Archivo subido exitosamente'
+              : `${totalUploaded} archivos subidos exitosamente`
+          );
+        }
       } catch (uploadError) {
-        toast.error(uploadError.response?.data?.error || 'No se pudo subir el CV');
+        toast.error(uploadError.response?.data?.error || 'No se pudieron subir los archivos');
       }
 
       toast.success('Cuenta creada exitosamente');
@@ -263,21 +286,75 @@ export default function RegisterUser() {
 
           <div style={{ marginTop: '1rem' }}>
             <label style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem' }}>
-              CV / Portfolio (PDF, JPG o Word. máximo 4 archivos)
+              CV (PDF, JPG o Word. máximo 1 archivo)
             </label>
-            <input
-              type="file"
-              onChange={handleFileChange}
-              multiple
-            />
-            {formData.cvs.length > 0 && (
+            <input type="file" onChange={handleCvFileChange} />
+            {formData.cvFile && (
               <div style={{ marginTop: '0.6rem' }}>
                 <p style={{ margin: 0, color: '#6f604b', fontSize: '0.92rem' }}>
-                  {formData.cvs.length} archivo{formData.cvs.length === 1 ? '' : 's'} seleccionado
-                  {formData.cvs.length === 1 ? '' : 's'}
+                  1 archivo seleccionado
                 </p>
                 <div style={{ marginTop: '0.5rem', display: 'grid', gap: '0.4rem' }}>
-                  {formData.cvs.map((file, index) => (
+                  <div
+                    key={getFileKey(formData.cvFile)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: '0.6rem',
+                      border: '1px solid #d7c9b7',
+                      borderRadius: '0.45rem',
+                      padding: '0.4rem 0.55rem',
+                      background: '#faf7f2',
+                    }}
+                  >
+                    <span
+                      title={formData.cvFile.name}
+                      style={{
+                        fontSize: '0.9rem',
+                        color: '#5e4d38',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {formData.cvFile.name}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleRemoveCv}
+                      style={{
+                        border: '1px solid #c94f4f',
+                        background: '#fff',
+                        color: '#c94f4f',
+                        borderRadius: '0.4rem',
+                        padding: '0.25rem 0.55rem',
+                        cursor: 'pointer',
+                        fontSize: '0.82rem',
+                        flexShrink: 0,
+                      }}
+                    >
+                      Borrar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div style={{ marginTop: '1rem' }}>
+            <label style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem' }}>
+              Archivos varios (PDF, JPG o Word. máximo 4 archivos)
+            </label>
+            <input type="file" onChange={handleOtherFilesChange} multiple />
+            {formData.otherFiles.length > 0 && (
+              <div style={{ marginTop: '0.6rem' }}>
+                <p style={{ margin: 0, color: '#6f604b', fontSize: '0.92rem' }}>
+                  {formData.otherFiles.length} archivo{formData.otherFiles.length === 1 ? '' : 's'} seleccionado
+                  {formData.otherFiles.length === 1 ? '' : 's'}
+                </p>
+                <div style={{ marginTop: '0.5rem', display: 'grid', gap: '0.4rem' }}>
+                  {formData.otherFiles.map((file, index) => (
                     <div
                       key={getFileKey(file)}
                       style={{
@@ -305,7 +382,7 @@ export default function RegisterUser() {
                       </span>
                       <button
                         type="button"
-                        onClick={() => handleRemoveFile(index)}
+                        onClick={() => handleRemoveOtherFile(index)}
                         style={{
                           border: '1px solid #c94f4f',
                           background: '#fff',

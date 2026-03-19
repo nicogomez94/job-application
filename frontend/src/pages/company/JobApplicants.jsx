@@ -36,6 +36,9 @@ const STATUS_OPTIONS = [
 const formatDate = (date) =>
   new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(date));
 
+const normalizeUploadedFiles = (uploadedFiles) =>
+  (Array.isArray(uploadedFiles) ? uploadedFiles : []).filter((file) => file?.url);
+
 export default function JobApplicants() {
   const { id } = useParams();
   const [jobOffer, setJobOffer] = useState(null);
@@ -107,6 +110,7 @@ export default function JobApplicants() {
         <div style={{ display: 'grid', gap: '0.9rem' }}>
           {applications.map((application) => {
             const whatsappUrl = toWhatsAppUrl(application.user?.phone);
+            const otherFiles = normalizeUploadedFiles(application.user?.uploadedFiles);
             return (
             <article key={application.id} className="card" style={{ border: '1px solid #e7dcc6' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
@@ -201,7 +205,10 @@ export default function JobApplicants() {
                     </div>
                     <div style={{ marginTop: '0.8rem', display: 'grid', gap: '0.45rem' }}>
                       <p style={{ color: '#5e4d38', margin: 0 }}>
-                        <strong>Archivos subidos:</strong> {application.user?.cvUrl ? 'Cargados' : 'Sin archivos subidos'}
+                        <strong>CV:</strong> {application.user?.cvUrl ? 'Cargado' : 'Sin CV'}
+                      </p>
+                      <p style={{ color: '#5e4d38', margin: 0 }}>
+                        <strong>Archivos varios:</strong> {otherFiles.length > 0 ? `${otherFiles.length} cargado(s)` : 'Sin archivos'}
                       </p>
                       <div
                         style={{
@@ -218,6 +225,19 @@ export default function JobApplicants() {
                               Ver CV
                             </a>
                           ) : null}
+
+                          {otherFiles.map((file, index) => (
+                            <a
+                              key={`${file.url}-${index}`}
+                              className="btn btn-outline"
+                              href={toAssetUrl(file.url)}
+                              target="_blank"
+                              rel="noreferrer"
+                              title={file.name || `Archivo ${index + 1}`}
+                            >
+                              {file.name || `Archivo ${index + 1}`}
+                            </a>
+                          ))}
 
                           {application.user?.linkedinUrl ? (
                             <a className="btn btn-outline" href={application.user.linkedinUrl} target="_blank" rel="noreferrer">

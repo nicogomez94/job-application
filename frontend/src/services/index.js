@@ -31,6 +31,15 @@ export const userService = {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
+  deleteCV: () => api.delete('/users/upload/cv'),
+  uploadOtherFile: (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return api.post('/users/upload/file', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+  deleteOtherFile: (index) => api.delete(`/users/upload/file/${index}`),
   uploadProfileImage: (file) => {
     const formData = new FormData();
     formData.append('profileImage', file);

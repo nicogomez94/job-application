@@ -17,15 +17,36 @@ const initialForm = {
   skillsText: '',
 };
 
+const MAX_OTHER_FILES = 4;
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+const getFilesExceedingSize = (files) => files.filter((file) => file.size > MAX_FILE_SIZE);
+const getFileNameFromPath = (assetPath) => {
+  if (!assetPath) return '';
+  const cleaned = String(assetPath).split('?')[0].trim();
+  const segments = cleaned.split('/');
+  return segments[segments.length - 1] || cleaned;
+};
+const normalizeUploadedFiles = (uploadedFiles) =>
+  (Array.isArray(uploadedFiles) ? uploadedFiles : []).filter((file) => file?.url);
+
 export default function UserProfile() {
   const [formData, setFormData] = useState(initialForm);
   const [profileImage, setProfileImage] = useState('');
   const [selectedImageFile, setSelectedImageFile] = useState(null);
   const [previewImageUrl, setPreviewImageUrl] = useState('');
+  const [cvUrl, setCvUrl] = useState('');
+  const [selectedCvFile, setSelectedCvFile] = useState(null);
+  const [otherFiles, setOtherFiles] = useState([]);
+  const [selectedOtherFiles, setSelectedOtherFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingCv, setUploadingCv] = useState(false);
+  const [deletingCv, setDeletingCv] = useState(false);
+  const [uploadingOtherFiles, setUploadingOtherFiles] = useState(false);
+  const [deletingOtherIndex, setDeletingOtherIndex] = useState(null);
   const { updateUser } = useAuthStore();
+  const getFileKey = (file) => `${file.name}-${file.size}-${file.lastModified}`;
 
   const toAssetUrl = (assetPath) => {
     if (!assetPath) return '/profile-placeholder.svg';
@@ -45,6 +66,8 @@ export default function UserProfile() {
         const response = await userService.getProfile();
         const user = response.data;
         setProfileImage(user.profileImage || '');
+        setCvUrl(user.cvUrl || '');
+        setOtherFiles(normalizeUploadedFiles(user.uploadedFiles));
         setFormData({
           firstName: user.firstName || '',
           lastName: user.lastName || '',
@@ -138,6 +161,126 @@ export default function UserProfile() {
     }
   };
 
+  const handleCvFileChange = (e) => {
+    const file = e.target.files?.[0] || null;
+    if (!file) return;
+
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error('El archivo debe pesar como máximo 5 MB');
+      e.target.value = '';
+      return;
+    }
+
+    setSelectedCvFile(file);
+    e.target.value = '';
+  };
+
+  const handleUploadCv = async () => {
+    if (!selectedCvFile) {
+      toast.error('Seleccioná un CV primero');
+      return;
+    }
+
+    setUploadingCv(true);
+    try {
+      const response = await userService.uploadCV(selectedCvFile);
+      const nextCv = response.data?.cvUrl || '';
+      setCvUrl(nextCv);
+      updateUser({ cvUrl: nextCv });
+      setSelectedCvFile(null);
+      toast.success('CV actualizado');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'No se pudo subir el CV');
+    } finally {
+      setUploadingCv(false);
+    }
+  };
+
+  const handleDeleteCv = async () => {
+    setDeletingCv(true);
+    try {
+      await userService.deleteCV();
+      setCvUrl('');
+      updateUser({ cvUrl: null });
+      toast.success('CV eliminado');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'No se pudo eliminar el CV');
+    } finally {
+      setDeletingCv(false);
+    }
+  };
+
+  const handleOtherFilesChange = (e) => {
+    const selectedFiles = Array.from(e.target.files || []);
+
+    if (!selectedFiles.length) return;
+
+    const oversizedFiles = getFilesExceedingSize(selectedFiles);
+    if (oversizedFiles.length > 0) {
+      toast.error('Cada archivo debe pesar como máximo 5 MB');
+      e.target.value = '';
+      return;
+    }
+
+    const existingKeys = new Set(selectedOtherFiles.map(getFileKey));
+    const newUniqueFiles = selectedFiles.filter((file) => !existingKeys.has(getFileKey(file)));
+    const mergedFiles = [...selectedOtherFiles, ...newUniqueFiles];
+
+    if (otherFiles.length + mergedFiles.length > MAX_OTHER_FILES) {
+      toast.error(`Podés subir hasta ${MAX_OTHER_FILES} archivos varios`);
+      e.target.value = '';
+      return;
+    }
+
+    setSelectedOtherFiles(mergedFiles);
+    e.target.value = '';
+  };
+
+  const handleRemoveSelectedOtherFile = (indexToRemove) => {
+    setSelectedOtherFiles((prev) => prev.filter((_, index) => index !== indexToRemove));
+  };
+
+  const handleUploadOtherFiles = async () => {
+    if (!selectedOtherFiles.length) {
+      toast.error('Seleccioná archivos para subir');
+      return;
+    }
+
+    setUploadingOtherFiles(true);
+    try {
+      let latestFiles = otherFiles;
+
+      for (const file of selectedOtherFiles) {
+        const response = await userService.uploadOtherFile(file);
+        latestFiles = normalizeUploadedFiles(response.data?.uploadedFiles);
+      }
+
+      setOtherFiles(latestFiles);
+      updateUser({ uploadedFiles: latestFiles });
+      setSelectedOtherFiles([]);
+      toast.success('Archivos varios actualizados');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'No se pudieron subir los archivos');
+    } finally {
+      setUploadingOtherFiles(false);
+    }
+  };
+
+  const handleDeleteOtherFile = async (index) => {
+    setDeletingOtherIndex(index);
+    try {
+      const response = await userService.deleteOtherFile(index);
+      const nextFiles = normalizeUploadedFiles(response.data?.uploadedFiles);
+      setOtherFiles(nextFiles);
+      updateUser({ uploadedFiles: nextFiles });
+      toast.success('Archivo eliminado');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'No se pudo eliminar el archivo');
+    } finally {
+      setDeletingOtherIndex(null);
+    }
+  };
+
   if (loading) {
     return (
       <div style={{ minHeight: '50vh', display: 'grid', placeItems: 'center' }}>
@@ -192,6 +335,117 @@ export default function UserProfile() {
           </div>
         </div>
 
+        <div
+          style={{
+            display: 'grid',
+            gap: '0.55rem',
+            marginBottom: '1rem',
+            padding: '0.9rem',
+            border: '1px solid #ebdfcb',
+            borderRadius: '0.7rem',
+            background: '#fdf9f2',
+          }}
+        >
+          <label style={{ display: 'block', color: '#5e4d38', marginBottom: '0.1rem' }}>
+            CV (PDF, JPG o Word. máximo 1 archivo)
+          </label>
+          <input type="file" onChange={handleCvFileChange} />
+
+          {selectedCvFile ? (
+            <div style={{ marginTop: '0.3rem', display: 'grid', gap: '0.4rem' }}>
+              <p style={{ margin: 0, color: '#6f604b', fontSize: '0.92rem' }}>1 archivo seleccionado</p>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.6rem', border: '1px solid #d7c9b7', borderRadius: '0.45rem', padding: '0.4rem 0.55rem', background: '#faf7f2' }}>
+                <span title={selectedCvFile.name} style={{ fontSize: '0.9rem', color: '#5e4d38', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {selectedCvFile.name}
+                </span>
+                <button type="button" onClick={() => setSelectedCvFile(null)} style={{ border: '1px solid #c94f4f', background: '#fff', color: '#c94f4f', borderRadius: '0.4rem', padding: '0.25rem 0.55rem', cursor: 'pointer', fontSize: '0.82rem', flexShrink: 0 }}>
+                  Borrar
+                </button>
+              </div>
+            </div>
+          ) : cvUrl ? (
+            <div style={{ marginTop: '0.3rem', display: 'grid', gap: '0.4rem' }}>
+              <p style={{ margin: 0, color: '#6f604b', fontSize: '0.92rem' }}>CV cargado</p>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.6rem', border: '1px solid #d7c9b7', borderRadius: '0.45rem', padding: '0.4rem 0.55rem', background: '#faf7f2' }}>
+                <a href={toAssetUrl(cvUrl)} target="_blank" rel="noreferrer" title={getFileNameFromPath(cvUrl)} style={{ fontSize: '0.9rem', color: '#5e4d38', textDecoration: 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {getFileNameFromPath(cvUrl)}
+                </a>
+                <button type="button" onClick={handleDeleteCv} disabled={deletingCv} style={{ border: '1px solid #c94f4f', background: '#fff', color: '#c94f4f', borderRadius: '0.4rem', padding: '0.25rem 0.55rem', cursor: 'pointer', fontSize: '0.82rem', flexShrink: 0 }}>
+                  {deletingCv ? 'Eliminando...' : 'Borrar'}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <p style={{ margin: 0, color: '#7e705c', fontSize: '0.92rem' }}>Sin CV cargado</p>
+          )}
+          <button type="button" className="btn btn-outline" onClick={handleUploadCv} disabled={uploadingCv}>
+            {uploadingCv ? 'Subiendo...' : cvUrl ? 'Reemplazar CV' : 'Subir CV'}
+          </button>
+        </div>
+
+        <div
+          style={{
+            display: 'grid',
+            gap: '0.55rem',
+            marginBottom: '1rem',
+            padding: '0.9rem',
+            border: '1px solid #ebdfcb',
+            borderRadius: '0.7rem',
+            background: '#fdf9f2',
+          }}
+        >
+          <label style={{ display: 'block', color: '#5e4d38', marginBottom: '0.1rem' }}>
+            Archivos varios (PDF, JPG o Word. máximo {MAX_OTHER_FILES} archivos)
+          </label>
+          <input type="file" onChange={handleOtherFilesChange} multiple />
+
+          {selectedOtherFiles.length > 0 && (
+            <div style={{ marginTop: '0.3rem' }}>
+              <p style={{ margin: 0, color: '#6f604b', fontSize: '0.92rem' }}>
+                {selectedOtherFiles.length} archivo{selectedOtherFiles.length === 1 ? '' : 's'} seleccionado
+                {selectedOtherFiles.length === 1 ? '' : 's'}
+              </p>
+              <div style={{ marginTop: '0.5rem', display: 'grid', gap: '0.4rem' }}>
+                {selectedOtherFiles.map((file, index) => (
+                  <div key={getFileKey(file)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.6rem', border: '1px solid #d7c9b7', borderRadius: '0.45rem', padding: '0.4rem 0.55rem', background: '#faf7f2' }}>
+                    <span title={file.name} style={{ fontSize: '0.9rem', color: '#5e4d38', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {file.name}
+                    </span>
+                    <button type="button" onClick={() => handleRemoveSelectedOtherFile(index)} style={{ border: '1px solid #c94f4f', background: '#fff', color: '#c94f4f', borderRadius: '0.4rem', padding: '0.25rem 0.55rem', cursor: 'pointer', fontSize: '0.82rem', flexShrink: 0 }}>
+                      Borrar
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {otherFiles.length > 0 && (
+            <div style={{ marginTop: selectedOtherFiles.length ? '0.3rem' : 0 }}>
+              <p style={{ margin: 0, color: '#6f604b', fontSize: '0.92rem' }}>
+                {otherFiles.length} archivo{otherFiles.length === 1 ? '' : 's'} subido
+                {otherFiles.length === 1 ? '' : 's'}
+              </p>
+              <div style={{ marginTop: '0.5rem', display: 'grid', gap: '0.4rem' }}>
+                {otherFiles.map((file, index) => (
+                  <div key={`${file.url}-${index}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.6rem', border: '1px solid #d7c9b7', borderRadius: '0.45rem', padding: '0.4rem 0.55rem', background: '#faf7f2' }}>
+                    <a href={toAssetUrl(file.url)} target="_blank" rel="noreferrer" title={file.name || getFileNameFromPath(file.url)} style={{ fontSize: '0.9rem', color: '#5e4d38', textDecoration: 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {file.name || getFileNameFromPath(file.url)}
+                    </a>
+                    <button type="button" onClick={() => handleDeleteOtherFile(index)} disabled={deletingOtherIndex === index} style={{ border: '1px solid #c94f4f', background: '#fff', color: '#c94f4f', borderRadius: '0.4rem', padding: '0.25rem 0.55rem', cursor: 'pointer', fontSize: '0.82rem', flexShrink: 0 }}>
+                      {deletingOtherIndex === index ? 'Eliminando...' : 'Borrar'}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <button type="button" className="btn btn-outline" onClick={handleUploadOtherFiles} disabled={uploadingOtherFiles}>
+            {uploadingOtherFiles ? 'Subiendo...' : 'Subir archivos varios'}
+          </button>
+        </div>
+
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
           <input className="input" name="firstName" placeholder="Nombre" value={formData.firstName} onChange={handleChange} required />
           <input className="input" name="lastName" placeholder="Apellido" value={formData.lastName} onChange={handleChange} required />
@@ -207,10 +461,13 @@ export default function UserProfile() {
         </div>
 
         <div style={{ marginTop: '1rem' }}>
+          <label style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+            Sobre mí
+          </label>
           <textarea
             className="input"
             name="bio"
-            placeholder="Resumen profesional"
+            placeholder="Contá brevemente sobre vos"
             value={formData.bio}
             onChange={handleChange}
             rows={4}

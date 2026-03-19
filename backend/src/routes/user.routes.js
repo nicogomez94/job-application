@@ -24,6 +24,9 @@ router.delete('/account', userController.deleteAccount);
 
 // Uploads
 router.post('/upload/cv', upload.single('cv'), userController.uploadCV);
+router.delete('/upload/cv', userController.deleteCV);
+router.post('/upload/file', upload.single('file'), userController.uploadOtherFile);
+router.delete('/upload/file/:index', userController.deleteOtherFile);
 router.post('/upload/profile-image', upload.single('profileImage'), userController.uploadProfileImage);
 
 // Postulaciones
