@@ -122,48 +122,15 @@ export default function CompanyDashboard() {
         </div>
       </div>
 
-      {/* ===== SUSCRIPCIÓN ===== */}
-      <div
-        className="card"
-        style={{
-          marginBottom: '1.2rem',
-          border: subscriptionStatus?.hasActiveSubscription ? '1px solid #a8d5b5' : '1px solid #fecaca',
-          background: subscriptionStatus?.hasActiveSubscription ? '#f0faf4' : '#fef2f2',
-        }}
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.6rem' }}>
-          <div>
-            <h2 style={{ marginBottom: '0.5rem', color: '#2f2416' }}>Suscripción</h2>
-            {sub ? (
-              <>
-                <p style={{ margin: '0 0 0.25rem', fontWeight: '600', fontSize: '1.05rem', color: '#2f2416' }}>
-                  Plan {PLAN_LABELS[sub.plan] || sub.plan}
-                </p>
-                <p style={{ margin: '0 0 0.2rem', color: '#5e4d38', fontSize: '0.93rem' }}>
-                  Inicio: {formatDate(sub.startDate)} — Vence: {formatDate(sub.endDate)}
-                </p>
-                <p style={{ margin: 0, color: '#6f604b', fontSize: '0.9rem' }}>
-                  {Math.max(0, Math.ceil((new Date(sub.endDate) - new Date()) / (1000 * 60 * 60 * 24)))} días restantes
-                </p>
-              </>
-            ) : (
-              <p style={{ margin: 0, color: '#991b1b' }}>Sin suscripción activa</p>
-            )}
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
-            <span className={subscriptionStatus?.hasActiveSubscription ? 'badge badge-success' : 'badge badge-error'}>
-              {subscriptionStatus?.hasActiveSubscription ? 'Activa' : 'Inactiva'}
-            </span>
-            <Link className="btn btn-outline" style={{ fontSize: '0.88rem' }} to="/company/subscription">
-              {subscriptionStatus?.hasActiveSubscription ? 'Gestionar' : 'Activar'}
-            </Link>
-          </div>
+      {/* ===== ACCIONES RÁPIDAS ===== */}
+      <div className="card" style={{ marginBottom: '1.2rem' }}>
+        <h2 style={{ marginBottom: '0.8rem' }}>Acciones rápidas</h2>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem' }}>
+          <Link className="btn btn-primary" to="/company/jobs/create">Crear oferta</Link>
+          <Link className="btn btn-outline" to="/company/jobs">Gestionar ofertas</Link>
+          <Link className="btn btn-outline" to="/company/profile">Editar perfil</Link>
+          <Link className="btn btn-outline" to="/company/subscription">Suscripciones</Link>
         </div>
-        {subscriptionStatus?.isBlocked && (
-          <div style={{ marginTop: '0.8rem', padding: '0.6rem 0.9rem', background: '#fee2e2', borderRadius: '6px', color: '#991b1b', fontSize: '0.92rem' }}>
-            Tu empresa está bloqueada por falta de suscripción activa. Activá tu plan para publicar ofertas.
-          </div>
-        )}
       </div>
 
       {/* ===== ÚLTIMAS OFERTAS ===== */}
@@ -215,15 +182,47 @@ export default function CompanyDashboard() {
         )}
       </div>
 
-      {/* ===== ACCIONES RÁPIDAS ===== */}
-      <div className="card">
-        <h2 style={{ marginBottom: '0.8rem' }}>Acciones rápidas</h2>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem' }}>
-          <Link className="btn btn-primary" to="/company/jobs/create">Crear oferta</Link>
-          <Link className="btn btn-outline" to="/company/jobs">Gestionar ofertas</Link>
-          <Link className="btn btn-outline" to="/company/profile">Editar perfil</Link>
-          <Link className="btn btn-outline" to="/company/subscription">Suscripciones</Link>
+      {/* ===== SUSCRIPCIÓN ===== */}
+      <div
+        className="card"
+        style={{
+          border: subscriptionStatus?.hasActiveSubscription ? '1px solid #a8d5b5' : '1px solid #fecaca',
+          background: subscriptionStatus?.hasActiveSubscription ? '#f0faf4' : '#fef2f2',
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.6rem' }}>
+          <div>
+            <h2 style={{ marginBottom: '0.5rem', color: '#2f2416' }}>Suscripción</h2>
+            {sub ? (
+              <>
+                <p style={{ margin: '0 0 0.25rem', fontWeight: '600', fontSize: '1.05rem', color: '#2f2416' }}>
+                  Plan {PLAN_LABELS[sub.plan] || sub.plan}
+                </p>
+                <p style={{ margin: '0 0 0.2rem', color: '#5e4d38', fontSize: '0.93rem' }}>
+                  Inicio: {formatDate(sub.startDate)} — Vence: {formatDate(sub.endDate)}
+                </p>
+                <p style={{ margin: 0, color: '#6f604b', fontSize: '0.9rem' }}>
+                  {Math.max(0, Math.ceil((new Date(sub.endDate) - new Date()) / (1000 * 60 * 60 * 24)))} días restantes
+                </p>
+              </>
+            ) : (
+              <p style={{ margin: 0, color: '#991b1b' }}>Sin suscripción activa</p>
+            )}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
+            <span className={subscriptionStatus?.hasActiveSubscription ? 'badge badge-success' : 'badge badge-error'}>
+              {subscriptionStatus?.hasActiveSubscription ? 'Activa' : 'Inactiva'}
+            </span>
+            <Link className="btn btn-outline" style={{ fontSize: '0.88rem' }} to="/company/subscription">
+              {subscriptionStatus?.hasActiveSubscription ? 'Gestionar' : 'Activar'}
+            </Link>
+          </div>
         </div>
+        {subscriptionStatus?.isBlocked && (
+          <div style={{ marginTop: '0.8rem', padding: '0.6rem 0.9rem', background: '#fee2e2', borderRadius: '6px', color: '#991b1b', fontSize: '0.92rem' }}>
+            Tu empresa está bloqueada por falta de suscripción activa. Activá tu plan para publicar ofertas.
+          </div>
+        )}
       </div>
 
     </div>

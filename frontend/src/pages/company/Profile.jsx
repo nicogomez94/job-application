@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { companyService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
+import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
 
 const initialForm = {
@@ -16,10 +17,23 @@ const initialForm = {
 export default function CompanyProfile() {
   const [formData, setFormData] = useState(initialForm);
   const [logoFile, setLogoFile] = useState(null);
+  const [companyLogo, setCompanyLogo] = useState('');
+  const [previewLogoUrl, setPreviewLogoUrl] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const { updateUser } = useAuthStore();
+
+  const toAssetUrl = (assetPath) => {
+    if (!assetPath) return '/profile-placeholder.svg';
+    if (assetPath.startsWith('http://') || assetPath.startsWith('https://')) return assetPath;
+
+    const rawPath = String(assetPath).trim();
+    const noApiPrefix = rawPath.replace(/^\/?api\//i, '/');
+    const normalizedPath = noApiPrefix.startsWith('/') ? noApiPrefix : `/${noApiPrefix}`;
+
+    return `${BACKEND_BASE_URL}${normalizedPath}`;
+  };
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -27,6 +41,7 @@ export default function CompanyProfile() {
       try {
         const response = await companyService.getProfile();
         const company = response.data;
+        setCompanyLogo(company.companyLogo || '');
         setFormData({
           companyName: company.companyName || '',
           description: company.description || '',
@@ -44,6 +59,18 @@ export default function CompanyProfile() {
 
     loadProfile();
   }, []);
+
+  useEffect(() => {
+    if (!logoFile) {
+      setPreviewLogoUrl('');
+      return undefined;
+    }
+
+    const objectUrl = URL.createObjectURL(logoFile);
+    setPreviewLogoUrl(objectUrl);
+
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [logoFile]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -80,7 +107,9 @@ export default function CompanyProfile() {
     setUploading(true);
     try {
       const response = await companyService.uploadLogo(logoFile);
-      updateUser({ companyLogo: response.data?.companyLogo });
+      const nextLogo = response.data?.companyLogo || '';
+      setCompanyLogo(nextLogo);
+      updateUser({ companyLogo: nextLogo });
       setLogoFile(null);
       toast.success('Logo actualizado');
     } catch (error) {
@@ -104,6 +133,42 @@ export default function CompanyProfile() {
       <h1 style={{ marginBottom: '1rem' }}>Perfil de Empresa</h1>
 
       <form className="card" onSubmit={handleSubmit}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1rem',
+            flexWrap: 'wrap',
+            marginBottom: '1rem',
+            padding: '0.9rem',
+            border: '1px solid #ebdfcb',
+            borderRadius: '0.7rem',
+            background: '#fdf9f2',
+          }}
+        >
+          <img
+            src={previewLogoUrl || toAssetUrl(companyLogo)}
+            alt="Logo de empresa"
+            style={{
+              width: '72px',
+              height: '72px',
+              borderRadius: '999px',
+              objectFit: 'cover',
+              border: '2px solid #dfcfb6',
+              background: '#f1eadf',
+            }}
+          />
+          <div style={{ display: 'grid', gap: '0.45rem' }}>
+            <label style={{ color: '#5e4d38', fontWeight: 600 }}>Logo de empresa (opcional)</label>
+            <input type="file" accept="image/*" onChange={(e) => setLogoFile(e.target.files?.[0] || null)} />
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+              <button className="btn btn-outline" type="button" onClick={handleUploadLogo} disabled={uploading}>
+                {uploading ? 'Subiendo...' : 'Subir logo'}
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div style={{ display: 'grid', gap: '1rem' }}>
           <input
             className="input"
@@ -136,14 +201,6 @@ export default function CompanyProfile() {
           {saving ? 'Guardando...' : 'Guardar cambios'}
         </button>
       </form>
-
-      <div className="card" style={{ marginTop: '1rem' }}>
-        <h2 style={{ marginBottom: '0.8rem' }}>Logo de empresa</h2>
-        <input type="file" accept="image/*" onChange={(e) => setLogoFile(e.target.files?.[0] || null)} />
-        <button className="btn btn-outline" style={{ marginTop: '0.8rem' }} onClick={handleUploadLogo} disabled={uploading}>
-          {uploading ? 'Subiendo...' : 'Subir logo'}
-        </button>
-      </div>
     </div>
   );
 }
