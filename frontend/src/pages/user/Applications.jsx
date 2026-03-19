@@ -28,6 +28,7 @@ const formatDate = (date) =>
 export default function UserApplications() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const hasNoApplications = applications.length === 0;
 
   useEffect(() => {
     const loadApplications = async () => {
@@ -54,14 +55,20 @@ export default function UserApplications() {
   }
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '2rem 1rem' }}>
+    <div
+      style={{
+        maxWidth: '1000px',
+        margin: '0 auto',
+        padding: hasNoApplications ? '2rem 1rem 7rem' : '2rem 1rem',
+      }}
+    >
       <BackToDashboardButton to="/user/dashboard" />
       <h1 style={{ marginBottom: '0.5rem' }}>Mis Postulaciones</h1>
       <p style={{ color: '#6f604b', marginBottom: '1rem' }}>
         Total: <strong>{applications.length}</strong>
       </p>
 
-      {applications.length === 0 ? (
+      {hasNoApplications ? (
         <div className="card">
           <p style={{ marginBottom: '0.8rem' }}>Todavía no realizaste postulaciones.</p>
           <Link className="btn btn-primary" to="/jobs">
