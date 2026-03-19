@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { FaIndustry, FaMapMarkerAlt, FaUsers, FaGlobe, FaUserTie } from 'react-icons/fa';
 import { companyService, jobOfferService } from '../../services';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
 
@@ -61,6 +62,7 @@ export default function CompanyDashboard() {
 
   return (
     <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '2rem 1rem' }}>
+      <h1 style={{ marginBottom: '1rem' }}>Mi perfil</h1>
 
       {/* ===== HEADER ===== */}
       <div className="card" style={{ marginBottom: '1.2rem', display: 'flex', gap: '1.5rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
@@ -87,11 +89,30 @@ export default function CompanyDashboard() {
             )}
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.9rem', color: '#6f604b', fontSize: '0.93rem', marginBottom: '0.5rem' }}>
-            {company?.industry && <span>🏭 {company.industry}</span>}
-            {company?.location && <span>📍 {company.location}</span>}
-            {company?.size && <span>👥 {company.size} empleados</span>}
+            {company?.industry && (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                <FaIndustry /> {company.industry}
+              </span>
+            )}
+            {company?.location && (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                <FaMapMarkerAlt /> {company.location}
+              </span>
+            )}
+            {company?.size && (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                <FaUsers /> {company.size} empleados
+              </span>
+            )}
             {company?.website && (
-              <a href={company.website} target="_blank" rel="noopener noreferrer" style={{ color: '#c9a96e' }}>🌐 Sitio web</a>
+              <a
+                href={company.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#c9a96e', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+              >
+                <FaGlobe /> Sitio web
+              </a>
             )}
           </div>
           {company?.description && (
@@ -163,7 +184,9 @@ export default function CompanyDashboard() {
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
                   <span style={{ fontSize: '0.85rem', color: '#5e4d38' }}>
-                    👤 {offer._count?.applications || 0} postulante{offer._count?.applications !== 1 ? 's' : ''}
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                      <FaUserTie /> {offer._count?.applications || 0} postulante{offer._count?.applications !== 1 ? 's' : ''}
+                    </span>
                   </span>
                   <span className={offer.isActive ? 'badge badge-success' : 'badge badge-warning'}>
                     {offer.isActive ? 'Activa' : 'Inactiva'}

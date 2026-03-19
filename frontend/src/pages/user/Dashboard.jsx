@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { FaMapMarkerAlt, FaLinkedin, FaBriefcase, FaFileAlt } from 'react-icons/fa';
 import { userService } from '../../services';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
 
@@ -75,6 +76,7 @@ export default function UserDashboard() {
 
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '2rem 1rem' }}>
+      <h1 style={{ marginBottom: '1rem' }}>Mi perfil</h1>
 
       {/* ===== HEADER ===== */}
       <div className="card" style={{ marginBottom: '1.2rem', display: 'flex', gap: '1.5rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
@@ -99,15 +101,40 @@ export default function UserDashboard() {
             <p style={{ margin: '0 0 0.4rem', color: '#5e4d38', fontWeight: '500', fontSize: '1rem' }}>{profile.title}</p>
           )}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.9rem', color: '#6f604b', fontSize: '0.9rem', marginBottom: '0.6rem' }}>
-            {profile?.location && <span>📍 {profile.location}</span>}
+            {profile?.location && (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                <FaMapMarkerAlt /> {profile.location}
+              </span>
+            )}
             {profile?.linkedinUrl && (
-              <a href={profile.linkedinUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#c9a96e' }}>🔗 LinkedIn</a>
+              <a
+                href={profile.linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#c9a96e', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+              >
+                <FaLinkedin /> LinkedIn
+              </a>
             )}
             {profile?.portfolioUrl && (
-              <a href={profile.portfolioUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#c9a96e' }}>💼 Portfolio</a>
+              <a
+                href={profile.portfolioUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#c9a96e', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+              >
+                <FaBriefcase /> Portfolio
+              </a>
             )}
             {cvUrl && (
-              <a href={cvUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#c9a96e' }}>📄 Ver CV</a>
+              <a
+                href={cvUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#c9a96e', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+              >
+                <FaFileAlt /> Ver CV
+              </a>
             )}
           </div>
           {profile?.skills && profile.skills.length > 0 && (

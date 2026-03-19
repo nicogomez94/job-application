@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { MessageCircle } from 'lucide-react';
 import { jobOfferService } from '../../services';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
@@ -17,6 +18,11 @@ const toAssetUrl = (assetPath) => {
 };
 
 const toProfileImageUrl = (imagePath) => toAssetUrl(imagePath) || '/profile-placeholder.svg';
+const toWhatsAppUrl = (phone) => {
+  const digits = String(phone || '').replace(/\D/g, '');
+  if (!digits) return null;
+  return `https://web.whatsapp.com/send?phone=${digits}`;
+};
 
 const STATUS_OPTIONS = [
   { value: 'PENDING', label: 'Pendiente' },
@@ -99,7 +105,9 @@ export default function JobApplicants() {
         </div>
       ) : (
         <div style={{ display: 'grid', gap: '0.9rem' }}>
-          {applications.map((application) => (
+          {applications.map((application) => {
+            const whatsappUrl = toWhatsAppUrl(application.user?.phone);
+            return (
             <article key={application.id} className="card" style={{ border: '1px solid #e7dcc6' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -195,27 +203,57 @@ export default function JobApplicants() {
                       <p style={{ color: '#5e4d38', margin: 0 }}>
                         <strong>Archivos subidos:</strong> {application.user?.cvUrl ? 'Cargados' : 'Sin archivos subidos'}
                       </p>
-                      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                        {application.user?.cvUrl ? (
-                          <a className="btn btn-outline" href={toAssetUrl(application.user.cvUrl)} target="_blank" rel="noreferrer">
-                            Ver CV
-                          </a>
-                        ) : null}
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          gap: '0.7rem',
+                          flexWrap: 'wrap',
+                        }}
+                      >
+                        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                          {application.user?.cvUrl ? (
+                            <a className="btn btn-outline" href={toAssetUrl(application.user.cvUrl)} target="_blank" rel="noreferrer">
+                              Ver CV
+                            </a>
+                          ) : null}
 
-                        {application.user?.linkedinUrl ? (
-                          <a className="btn btn-outline" href={application.user.linkedinUrl} target="_blank" rel="noreferrer">
-                            LinkedIn
-                          </a>
-                        ) : (
-                          <span style={{ color: '#7e705c', fontSize: '0.92rem' }}>Sin LinkedIn</span>
-                        )}
+                          {application.user?.linkedinUrl ? (
+                            <a className="btn btn-outline" href={application.user.linkedinUrl} target="_blank" rel="noreferrer">
+                              LinkedIn
+                            </a>
+                          ) : (
+                            <span style={{ color: '#7e705c', fontSize: '0.92rem' }}>Sin LinkedIn</span>
+                          )}
 
-                        {application.user?.portfolioUrl ? (
-                          <a className="btn btn-outline" href={application.user.portfolioUrl} target="_blank" rel="noreferrer">
-                            Portfolio
+                          {application.user?.portfolioUrl ? (
+                            <a className="btn btn-outline" href={application.user.portfolioUrl} target="_blank" rel="noreferrer">
+                              Portfolio
+                            </a>
+                          ) : (
+                            <span style={{ color: '#7e705c', fontSize: '0.92rem' }}>Sin portfolio</span>
+                          )}
+                        </div>
+
+                        {whatsappUrl && (
+                          <a
+                            className="btn btn-outline"
+                            href={whatsappUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '0.4rem',
+                              color: '#1f8f4f',
+                              borderColor: '#58bf81',
+                              marginLeft: 'auto',
+                            }}
+                          >
+                            <MessageCircle size={16} />
+                            Hablar por WhatsApp
                           </a>
-                        ) : (
-                          <span style={{ color: '#7e705c', fontSize: '0.92rem' }}>Sin portfolio</span>
                         )}
                       </div>
                     </div>
@@ -237,7 +275,8 @@ export default function JobApplicants() {
                 </div>
               )}
             </article>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
