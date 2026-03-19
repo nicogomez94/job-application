@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { adminService } from '../../services';
+import BackToDashboardButton from '../../components/BackToDashboardButton';
 import { formatCurrency, formatDate, statusToBadgeClass } from './adminUtils';
 import './Admin.css';
 
@@ -43,6 +44,7 @@ export default function AdminSubscriptions() {
 
   return (
     <div className="admin-page">
+      <BackToDashboardButton to="/admin/dashboard" />
       <header className="admin-page-header">
         <div>
           <h1 className="admin-title">Control de Suscripciones</h1>
