@@ -37,7 +37,7 @@ export default function CompanyDashboard() {
         setSubscriptionStatus(subscriptionResponse.data);
         setOffers(offersResponse.data || []);
       } catch (error) {
-        toast.error(error.response?.data?.error || 'No se pudo cargar el dashboard de empresa');
+        toast.error(error.response?.data?.error || 'No se pudo cargar el panel de empresa');
       } finally {
         setLoading(false);
       }
@@ -48,7 +48,7 @@ export default function CompanyDashboard() {
   if (loading) {
     return (
       <div style={{ minHeight: '50vh', display: 'grid', placeItems: 'center' }}>
-        <p>Cargando dashboard...</p>
+        <p>Cargando panel...</p>
       </div>
     );
   }

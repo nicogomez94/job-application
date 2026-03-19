@@ -6,7 +6,7 @@ export default function BackToDashboardButton({ to }) {
   return (
     <Link className="back-dashboard-btn" to={to}>
       <ArrowLeft size={16} />
-      <span>Volver al dashboard</span>
+      <span>Volver al panel</span>
     </Link>
   );
 }

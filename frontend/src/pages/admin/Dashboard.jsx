@@ -18,7 +18,7 @@ export default function AdminDashboard() {
         setMetrics(response.data?.metrics || null);
         setRecent(response.data?.recent || { users: [], companies: [], jobOffers: [] });
       } catch (error) {
-        toast.error(error.response?.data?.error || 'No se pudo cargar el dashboard de admin');
+        toast.error(error.response?.data?.error || 'No se pudo cargar el panel de administración');
       } finally {
         setLoading(false);
       }

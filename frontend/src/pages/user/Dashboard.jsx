@@ -49,7 +49,7 @@ export default function UserDashboard() {
         setProfile(profileResponse.data);
         setApplications(applicationsResponse.data || []);
       } catch (error) {
-        toast.error(error.response?.data?.error || 'No se pudo cargar el dashboard');
+        toast.error(error.response?.data?.error || 'No se pudo cargar el panel');
       } finally {
         setLoading(false);
       }
@@ -60,7 +60,7 @@ export default function UserDashboard() {
   if (loading) {
     return (
       <div style={{ minHeight: '50vh', display: 'grid', placeItems: 'center' }}>
-        <p>Cargando dashboard...</p>
+        <p>Cargando panel...</p>
       </div>
     );
   }
