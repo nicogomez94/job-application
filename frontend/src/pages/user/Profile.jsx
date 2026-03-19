@@ -12,6 +12,7 @@ const initialForm = {
   title: '',
   location: '',
   bio: '',
+  experienceText: '',
   linkedinUrl: '',
   portfolioUrl: '',
   skillsText: '',
@@ -28,6 +29,27 @@ const getFileNameFromPath = (assetPath) => {
 };
 const normalizeUploadedFiles = (uploadedFiles) =>
   (Array.isArray(uploadedFiles) ? uploadedFiles : []).filter((file) => file?.url);
+const normalizeExperienceText = (experience) => {
+  if (!experience) return '';
+  if (typeof experience === 'string') return experience;
+  if (Array.isArray(experience)) {
+    return experience
+      .map((item) => {
+        if (!item) return '';
+        if (typeof item === 'string') return item;
+        if (typeof item === 'object') {
+          return [item.position, item.company, item.description].filter(Boolean).join(' - ');
+        }
+        return '';
+      })
+      .filter(Boolean)
+      .join('\n');
+  }
+  if (typeof experience === 'object') {
+    return [experience.position, experience.company, experience.description].filter(Boolean).join(' - ');
+  }
+  return '';
+};
 
 export default function UserProfile() {
   const [formData, setFormData] = useState(initialForm);
@@ -75,6 +97,7 @@ export default function UserProfile() {
           title: user.title || '',
           location: user.location || '',
           bio: user.bio || '',
+          experienceText: normalizeExperienceText(user.experience),
           linkedinUrl: user.linkedinUrl || '',
           portfolioUrl: user.portfolioUrl || '',
           skillsText: (user.skills || []).join(', '),
@@ -117,6 +140,7 @@ export default function UserProfile() {
         title: formData.title.trim() || null,
         location: formData.location.trim() || null,
         bio: formData.bio.trim() || null,
+        experience: formData.experienceText.trim() || null,
         linkedinUrl: formData.linkedinUrl.trim() || null,
         portfolioUrl: formData.portfolioUrl.trim() || null,
         skills: formData.skillsText
@@ -320,8 +344,8 @@ export default function UserProfile() {
             }}
           />
           <div style={{ display: 'grid', gap: '0.45rem' }}>
-            <label style={{ color: '#5e4d38', fontWeight: 600 }}>Foto de perfil (opcional)</label>
-            <input type="file" accept="image/*" onChange={handleProfileImageFileChange} />
+            <label htmlFor="profile-image" style={{ color: '#5e4d38', fontWeight: 600 }}>Foto de perfil (opcional)</label>
+            <input id="profile-image" type="file" accept="image/*" onChange={handleProfileImageFileChange} />
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
               <button
                 type="button"
@@ -346,10 +370,10 @@ export default function UserProfile() {
             background: '#fdf9f2',
           }}
         >
-          <label style={{ display: 'block', color: '#5e4d38', marginBottom: '0.1rem' }}>
+          <label htmlFor="profile-cv" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.1rem' }}>
             CV (PDF, JPG o Word. máximo 1 archivo)
           </label>
-          <input type="file" onChange={handleCvFileChange} />
+          <input id="profile-cv" type="file" onChange={handleCvFileChange} />
 
           {selectedCvFile ? (
             <div style={{ marginTop: '0.3rem', display: 'grid', gap: '0.4rem' }}>
@@ -394,10 +418,10 @@ export default function UserProfile() {
             background: '#fdf9f2',
           }}
         >
-          <label style={{ display: 'block', color: '#5e4d38', marginBottom: '0.1rem' }}>
+          <label htmlFor="profile-other-files" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.1rem' }}>
             Archivos varios (PDF, JPG o Word. máximo {MAX_OTHER_FILES} archivos)
           </label>
-          <input type="file" onChange={handleOtherFilesChange} multiple />
+          <input id="profile-other-files" type="file" onChange={handleOtherFilesChange} multiple />
 
           {selectedOtherFiles.length > 0 && (
             <div style={{ marginTop: '0.3rem' }}>
@@ -447,24 +471,48 @@ export default function UserProfile() {
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-          <input className="input" name="firstName" placeholder="Nombre" value={formData.firstName} onChange={handleChange} required />
-          <input className="input" name="lastName" placeholder="Apellido" value={formData.lastName} onChange={handleChange} required />
+          <div>
+            <label htmlFor="user-first-name" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+              Nombre
+            </label>
+            <input id="user-first-name" className="input" name="firstName" placeholder="Nombre" value={formData.firstName} onChange={handleChange} required />
+          </div>
+          <div>
+            <label htmlFor="user-last-name" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+              Apellido
+            </label>
+            <input id="user-last-name" className="input" name="lastName" placeholder="Apellido" value={formData.lastName} onChange={handleChange} required />
+          </div>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
-          <input className="input" name="phone" placeholder="Teléfono" value={formData.phone} onChange={handleChange} />
-          <input className="input" name="location" placeholder="Ubicación" value={formData.location} onChange={handleChange} />
+          <div>
+            <label htmlFor="user-phone" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+              Teléfono
+            </label>
+            <input id="user-phone" className="input" name="phone" placeholder="Teléfono" value={formData.phone} onChange={handleChange} />
+          </div>
+          <div>
+            <label htmlFor="user-location" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+              Ubicación
+            </label>
+            <input id="user-location" className="input" name="location" placeholder="Ubicación" value={formData.location} onChange={handleChange} />
+          </div>
         </div>
 
         <div style={{ marginTop: '1rem' }}>
-          <input className="input" name="title" placeholder="Título profesional" value={formData.title} onChange={handleChange} />
+          <label htmlFor="user-title" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+            Título profesional
+          </label>
+          <input id="user-title" className="input" name="title" placeholder="Título profesional" value={formData.title} onChange={handleChange} />
         </div>
 
         <div style={{ marginTop: '1rem' }}>
-          <label style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+          <label htmlFor="user-bio" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
             Sobre mí
           </label>
           <textarea
+            id="user-bio"
             className="input"
             name="bio"
             placeholder="Contá brevemente sobre vos"
@@ -476,7 +524,27 @@ export default function UserProfile() {
         </div>
 
         <div style={{ marginTop: '1rem' }}>
+          <label htmlFor="user-experience" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+            Experiencia laboral
+          </label>
+          <textarea
+            id="user-experience"
+            className="input"
+            name="experienceText"
+            placeholder="Contá brevemente tu experiencia laboral"
+            value={formData.experienceText}
+            onChange={handleChange}
+            rows={4}
+            style={{ resize: 'vertical' }}
+          />
+        </div>
+
+        <div style={{ marginTop: '1rem' }}>
+          <label htmlFor="user-skills" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+            Skills
+          </label>
           <input
+            id="user-skills"
             className="input"
             name="skillsText"
             placeholder="Skills separadas por coma (ej: React, Node.js, SQL)"
@@ -486,8 +554,18 @@ export default function UserProfile() {
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
-          <input className="input" name="linkedinUrl" placeholder="LinkedIn URL" value={formData.linkedinUrl} onChange={handleChange} />
-          <input className="input" name="portfolioUrl" placeholder="Portfolio URL" value={formData.portfolioUrl} onChange={handleChange} />
+          <div>
+            <label htmlFor="user-linkedin-url" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+              LinkedIn URL
+            </label>
+            <input id="user-linkedin-url" className="input" name="linkedinUrl" placeholder="LinkedIn URL" value={formData.linkedinUrl} onChange={handleChange} />
+          </div>
+          <div>
+            <label htmlFor="user-portfolio-url" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+              Portfolio URL
+            </label>
+            <input id="user-portfolio-url" className="input" name="portfolioUrl" placeholder="Portfolio URL" value={formData.portfolioUrl} onChange={handleChange} />
+          </div>
         </div>
 
         <button className="btn btn-primary" style={{ marginTop: '1rem' }} disabled={saving}>

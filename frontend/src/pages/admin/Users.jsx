@@ -78,7 +78,11 @@ export default function AdminUsers() {
       <div className="card">
         <div className="admin-toolbar">
           <form onSubmit={handleSearch}>
+            <label htmlFor="admin-users-search" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+              Buscar usuarios
+            </label>
             <input
+              id="admin-users-search"
               className="input"
               type="text"
               placeholder="Buscar por nombre o email"

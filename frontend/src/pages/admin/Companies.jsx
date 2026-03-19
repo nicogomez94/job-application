@@ -102,7 +102,11 @@ export default function AdminCompanies() {
       <div className="card">
         <div className="admin-toolbar">
           <form onSubmit={handleSearch}>
+            <label htmlFor="admin-companies-search" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+              Buscar empresas
+            </label>
             <input
+              id="admin-companies-search"
               className="input"
               type="text"
               placeholder="Buscar por nombre o email"

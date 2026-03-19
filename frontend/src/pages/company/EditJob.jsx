@@ -143,65 +143,145 @@ export default function EditJob() {
 
       <form className="card" onSubmit={handleSubmit}>
         <div style={{ display: 'grid', gap: '1rem' }}>
-          <input className="input" name="title" value={formData.title} onChange={handleChange} required />
-          <textarea className="input" name="description" rows={5} value={formData.description} onChange={handleChange} style={{ resize: 'vertical' }} required />
+          <div>
+            <label htmlFor="edit-job-title" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+              Título del puesto
+            </label>
+            <input id="edit-job-title" className="input" name="title" value={formData.title} onChange={handleChange} required />
+          </div>
+          <div>
+            <label htmlFor="edit-job-description" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+              Descripción del puesto
+            </label>
+            <textarea id="edit-job-description" className="input" name="description" rows={5} value={formData.description} onChange={handleChange} style={{ resize: 'vertical' }} required />
+          </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <input className="input" name="location" value={formData.location} onChange={handleChange} required />
-            <select className="input" name="categoryId" value={formData.categoryId} onChange={handleChange} required>
-              <option value="">Seleccionar categoría</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
+            <div>
+              <label htmlFor="edit-job-location" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Ubicación
+              </label>
+              <input id="edit-job-location" className="input" name="location" value={formData.location} onChange={handleChange} required />
+            </div>
+            <div>
+              <label htmlFor="edit-job-category" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Categoría
+              </label>
+              <select id="edit-job-category" className="input" name="categoryId" value={formData.categoryId} onChange={handleChange} required>
+                <option value="">Seleccionar categoría</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
-            <select className="input" name="workType" value={formData.workType} onChange={handleChange}>
-              <option value="FULL_TIME">Tiempo completo</option>
-              <option value="PART_TIME">Medio tiempo</option>
-              <option value="CONTRACT">Contrato</option>
-              <option value="FREELANCE">Freelance</option>
-              <option value="INTERNSHIP">Pasantía</option>
-            </select>
-            <select className="input" name="workMode" value={formData.workMode} onChange={handleChange}>
-              <option value="PRESENCIAL">Presencial</option>
-              <option value="REMOTO">Remoto</option>
-              <option value="HIBRIDO">Híbrido</option>
-            </select>
-            <select className="input" name="experienceLevel" value={formData.experienceLevel} onChange={handleChange}>
-              <option value="ENTRY">Entry</option>
-              <option value="JUNIOR">Junior</option>
-              <option value="MID">Mid</option>
-              <option value="SENIOR">Senior</option>
-              <option value="LEAD">Lead</option>
-            </select>
+            <div>
+              <label htmlFor="edit-job-work-type" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Tipo de trabajo
+              </label>
+              <select id="edit-job-work-type" className="input" name="workType" value={formData.workType} onChange={handleChange}>
+                <option value="FULL_TIME">Tiempo completo</option>
+                <option value="PART_TIME">Medio tiempo</option>
+                <option value="CONTRACT">Contrato</option>
+                <option value="FREELANCE">Freelance</option>
+                <option value="INTERNSHIP">Pasantía</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="edit-job-work-mode" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Modalidad
+              </label>
+              <select id="edit-job-work-mode" className="input" name="workMode" value={formData.workMode} onChange={handleChange}>
+                <option value="PRESENCIAL">Presencial</option>
+                <option value="REMOTO">Remoto</option>
+                <option value="HIBRIDO">Híbrido</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="edit-job-experience-level" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Nivel de experiencia
+              </label>
+              <select id="edit-job-experience-level" className="input" name="experienceLevel" value={formData.experienceLevel} onChange={handleChange}>
+                <option value="ENTRY">Entry</option>
+                <option value="JUNIOR">Junior</option>
+                <option value="MID">Mid</option>
+                <option value="SENIOR">Senior</option>
+                <option value="LEAD">Lead</option>
+              </select>
+            </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
-            <input className="input" type="number" min="0" step="0.01" name="salaryMin" value={formData.salaryMin} onChange={handleChange} />
-            <input className="input" type="number" min="0" step="0.01" name="salaryMax" value={formData.salaryMax} onChange={handleChange} />
-            <select className="input" name="salaryPeriod" value={formData.salaryPeriod} onChange={handleChange}>
-              <option value="monthly">Mensual</option>
-              <option value="annual">Anual</option>
-              <option value="hourly">Por hora</option>
-            </select>
+            <div>
+              <label htmlFor="edit-job-salary-min" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Salario mínimo
+              </label>
+              <input id="edit-job-salary-min" className="input" type="number" min="0" step="0.01" name="salaryMin" value={formData.salaryMin} onChange={handleChange} />
+            </div>
+            <div>
+              <label htmlFor="edit-job-salary-max" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Salario máximo
+              </label>
+              <input id="edit-job-salary-max" className="input" type="number" min="0" step="0.01" name="salaryMax" value={formData.salaryMax} onChange={handleChange} />
+            </div>
+            <div>
+              <label htmlFor="edit-job-salary-period" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Periodicidad salarial
+              </label>
+              <select id="edit-job-salary-period" className="input" name="salaryPeriod" value={formData.salaryPeriod} onChange={handleChange}>
+                <option value="monthly">Mensual</option>
+                <option value="annual">Anual</option>
+                <option value="hourly">Por hora</option>
+              </select>
+            </div>
           </div>
 
-          <textarea className="input" name="requirementsText" rows={4} value={formData.requirementsText} onChange={handleChange} style={{ resize: 'vertical' }} required />
-          <textarea className="input" name="responsibilitiesText" rows={4} value={formData.responsibilitiesText} onChange={handleChange} style={{ resize: 'vertical' }} required />
-          <input className="input" name="languagesText" value={formData.languagesText} onChange={handleChange} />
+          <div>
+            <label htmlFor="edit-job-requirements" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+              Requisitos
+            </label>
+            <textarea id="edit-job-requirements" className="input" name="requirementsText" rows={4} value={formData.requirementsText} onChange={handleChange} style={{ resize: 'vertical' }} required />
+          </div>
+          <div>
+            <label htmlFor="edit-job-responsibilities" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+              Responsabilidades
+            </label>
+            <textarea id="edit-job-responsibilities" className="input" name="responsibilitiesText" rows={4} value={formData.responsibilitiesText} onChange={handleChange} style={{ resize: 'vertical' }} required />
+          </div>
+          <div>
+            <label htmlFor="edit-job-languages" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+              Idiomas requeridos
+            </label>
+            <input id="edit-job-languages" className="input" name="languagesText" value={formData.languagesText} onChange={handleChange} />
+          </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
-            <input className="input" name="whatsappNumber" value={formData.whatsappNumber} onChange={handleChange} />
-            <input className="input" type="email" name="contactEmail" value={formData.contactEmail} onChange={handleChange} />
-            <input className="input" type="date" name="expiresAt" min="1900-01-01" max="9999-12-31" value={formData.expiresAt} onChange={handleChange} />
+            <div>
+              <label htmlFor="edit-job-whatsapp" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                WhatsApp de contacto
+              </label>
+              <input id="edit-job-whatsapp" className="input" name="whatsappNumber" value={formData.whatsappNumber} onChange={handleChange} />
+            </div>
+            <div>
+              <label htmlFor="edit-job-contact-email" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Email de contacto
+              </label>
+              <input id="edit-job-contact-email" className="input" type="email" name="contactEmail" value={formData.contactEmail} onChange={handleChange} />
+            </div>
+            <div>
+              <label htmlFor="edit-job-expires-at" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Fecha de vencimiento
+              </label>
+              <input id="edit-job-expires-at" className="input" type="date" name="expiresAt" min="1900-01-01" max="9999-12-31" value={formData.expiresAt} onChange={handleChange} />
+            </div>
           </div>
 
-          <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <input type="checkbox" name="isActive" checked={formData.isActive} onChange={handleChange} />
+          <label htmlFor="edit-job-active" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <input id="edit-job-active" type="checkbox" name="isActive" checked={formData.isActive} onChange={handleChange} />
             <span>Oferta activa</span>
           </label>
         </div>

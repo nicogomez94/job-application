@@ -159,8 +159,8 @@ export default function CompanyProfile() {
             }}
           />
           <div style={{ display: 'grid', gap: '0.45rem' }}>
-            <label style={{ color: '#5e4d38', fontWeight: 600 }}>Logo de empresa (opcional)</label>
-            <input type="file" accept="image/*" onChange={(e) => setLogoFile(e.target.files?.[0] || null)} />
+            <label htmlFor="company-profile-logo" style={{ color: '#5e4d38', fontWeight: 600 }}>Logo de empresa (opcional)</label>
+            <input id="company-profile-logo" type="file" accept="image/*" onChange={(e) => setLogoFile(e.target.files?.[0] || null)} />
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
               <button className="btn btn-outline" type="button" onClick={handleUploadLogo} disabled={uploading}>
                 {uploading ? 'Subiendo...' : 'Subir logo'}
@@ -170,30 +170,62 @@ export default function CompanyProfile() {
         </div>
 
         <div style={{ display: 'grid', gap: '1rem' }}>
-          <input
-            className="input"
-            name="companyName"
-            placeholder="Nombre de la empresa"
-            value={formData.companyName}
-            onChange={handleChange}
-            required
-          />
-          <textarea
-            className="input"
-            name="description"
-            placeholder="Descripción"
-            value={formData.description}
-            onChange={handleChange}
-            rows={4}
-            style={{ resize: 'vertical' }}
-          />
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <input className="input" name="website" placeholder="Sitio web" value={formData.website} onChange={handleChange} />
-            <input className="input" name="location" placeholder="Ubicación" value={formData.location} onChange={handleChange} />
+          <div>
+            <label htmlFor="company-profile-name" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+              Nombre de la empresa
+            </label>
+            <input
+              id="company-profile-name"
+              className="input"
+              name="companyName"
+              placeholder="Nombre de la empresa"
+              value={formData.companyName}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="company-profile-description" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+              Descripción
+            </label>
+            <textarea
+              id="company-profile-description"
+              className="input"
+              name="description"
+              placeholder="Descripción"
+              value={formData.description}
+              onChange={handleChange}
+              rows={4}
+              style={{ resize: 'vertical' }}
+            />
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <input className="input" name="industry" placeholder="Industria" value={formData.industry} onChange={handleChange} />
-            <input className="input" name="size" placeholder="Tamaño de empresa" value={formData.size} onChange={handleChange} />
+            <div>
+              <label htmlFor="company-profile-website" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Sitio web
+              </label>
+              <input id="company-profile-website" className="input" name="website" placeholder="Sitio web" value={formData.website} onChange={handleChange} />
+            </div>
+            <div>
+              <label htmlFor="company-profile-location" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Ubicación
+              </label>
+              <input id="company-profile-location" className="input" name="location" placeholder="Ubicación" value={formData.location} onChange={handleChange} />
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div>
+              <label htmlFor="company-profile-industry" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Industria
+              </label>
+              <input id="company-profile-industry" className="input" name="industry" placeholder="Industria" value={formData.industry} onChange={handleChange} />
+            </div>
+            <div>
+              <label htmlFor="company-profile-size" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Tamaño de empresa
+              </label>
+              <input id="company-profile-size" className="input" name="size" placeholder="Tamaño de empresa" value={formData.size} onChange={handleChange} />
+            </div>
           </div>
         </div>
 

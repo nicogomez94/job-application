@@ -97,8 +97,25 @@ export default function Navbar() {
             </Link>
 
             <form className="navbar-search" onSubmit={handleSearchSubmit}>
+              <label
+                htmlFor="navbar-search-input"
+                style={{
+                  position: 'absolute',
+                  width: '1px',
+                  height: '1px',
+                  padding: 0,
+                  margin: '-1px',
+                  overflow: 'hidden',
+                  clip: 'rect(0, 0, 0, 0)',
+                  whiteSpace: 'nowrap',
+                  border: 0,
+                }}
+              >
+                Buscar
+              </label>
               <Search className="navbar-search-icon" size={16} />
               <input
+                id="navbar-search-input"
                 type="text"
                 className="navbar-search-input"
                 placeholder={t('Buscar')}

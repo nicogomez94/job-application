@@ -167,7 +167,11 @@ export default function RegisterCompany() {
           </div>
 
           <div style={{ marginBottom: '1rem' }}>
+            <label htmlFor="register-company-name" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+              Nombre de la empresa
+            </label>
             <input
+              id="register-company-name"
               className="input"
               name="companyName"
               placeholder="Nombre de la empresa"
@@ -178,67 +182,106 @@ export default function RegisterCompany() {
           </div>
 
           <div className="register-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <input
-              className="input"
-              type="email"
-              name="email"
-              placeholder="Email corporativo"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-            <input
-              className="input"
-              name="website"
-              placeholder="Sitio web (opcional)"
-              value={formData.website}
-              onChange={handleChange}
-            />
+            <div>
+              <label htmlFor="register-company-email" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Email corporativo
+              </label>
+              <input
+                id="register-company-email"
+                className="input"
+                type="email"
+                name="email"
+                placeholder="Email corporativo"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="register-company-website" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Sitio web
+              </label>
+              <input
+                id="register-company-website"
+                className="input"
+                name="website"
+                placeholder="Sitio web (opcional)"
+                value={formData.website}
+                onChange={handleChange}
+              />
+            </div>
           </div>
 
           <div className="register-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
-            <input
-              className="input"
-              type="password"
-              name="password"
-              placeholder="Contraseña (mín. 6)"
-              value={formData.password}
-              onChange={handleChange}
-              minLength={6}
-              required
-            />
-            <input
-              className="input"
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirmar contraseña"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              minLength={6}
-              required
-            />
+            <div>
+              <label htmlFor="register-company-password" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Contraseña
+              </label>
+              <input
+                id="register-company-password"
+                className="input"
+                type="password"
+                name="password"
+                placeholder="Contraseña (mín. 6)"
+                value={formData.password}
+                onChange={handleChange}
+                minLength={6}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="register-company-confirm-password" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Confirmar contraseña
+              </label>
+              <input
+                id="register-company-confirm-password"
+                className="input"
+                type="password"
+                name="confirmPassword"
+                placeholder="Confirmar contraseña"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                minLength={6}
+                required
+              />
+            </div>
           </div>
 
           <div className="register-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
-            <input
-              className="input"
-              name="industry"
-              placeholder="Industria (ej: Tecnología)"
-              value={formData.industry}
-              onChange={handleChange}
-            />
-            <select className="input" name="size" value={formData.size} onChange={handleChange}>
-              <option value="">Tamaño de empresa</option>
-              <option value="1-10">1-10</option>
-              <option value="11-50">11-50</option>
-              <option value="51-200">51-200</option>
-              <option value="201-500">201-500</option>
-              <option value="500+">500+</option>
-            </select>
+            <div>
+              <label htmlFor="register-company-industry" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Industria
+              </label>
+              <input
+                id="register-company-industry"
+                className="input"
+                name="industry"
+                placeholder="Industria (ej: Tecnología)"
+                value={formData.industry}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="register-company-size" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Tamaño de empresa
+              </label>
+              <select id="register-company-size" className="input" name="size" value={formData.size} onChange={handleChange}>
+                <option value="">Tamaño de empresa</option>
+                <option value="1-10">1-10</option>
+                <option value="11-50">11-50</option>
+                <option value="51-200">51-200</option>
+                <option value="201-500">201-500</option>
+                <option value="500+">500+</option>
+              </select>
+            </div>
           </div>
 
           <div style={{ marginTop: '1rem' }}>
+            <label htmlFor="register-company-location" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+              Ubicación
+            </label>
             <input
+              id="register-company-location"
               className="input"
               name="location"
               placeholder="Ubicación"
@@ -248,7 +291,11 @@ export default function RegisterCompany() {
           </div>
 
           <div style={{ marginTop: '1rem' }}>
+            <label htmlFor="register-company-description" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+              Descripción
+            </label>
             <textarea
+              id="register-company-description"
               className="input"
               name="description"
               placeholder="Descripción de la empresa (opcional)"
@@ -260,8 +307,8 @@ export default function RegisterCompany() {
           </div>
 
           <div style={{ marginTop: '1rem' }}>
-            <label style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem' }}>Logo (opcional)</label>
-            <input type="file" accept="image/*" onChange={handleFileChange} />
+            <label htmlFor="register-company-logo" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem' }}>Logo (opcional)</label>
+            <input id="register-company-logo" type="file" accept="image/*" onChange={handleFileChange} />
             {formData.logo && (
               <div style={{ marginTop: '0.6rem' }}>
                 <p style={{ margin: 0, color: '#6f604b', fontSize: '0.92rem' }}>

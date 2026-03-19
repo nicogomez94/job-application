@@ -118,10 +118,11 @@ export default function Login({
 
           <form onSubmit={handleSubmit(onSubmit)} className="login-form">
             <div className="login-form-group">
-              <label className="login-label">Email</label>
+              <label className="login-label" htmlFor="login-email">Email</label>
               <div className="login-input-wrapper">
                 <Mail className="login-input-icon" />
                 <input
+                  id="login-email"
                   type="email"
                   {...register('email', {
                     required: 'El email es requerido',
@@ -140,10 +141,11 @@ export default function Login({
             </div>
 
             <div className="login-form-group">
-              <label className="login-label">Contraseña</label>
+              <label className="login-label" htmlFor="login-password">Contraseña</label>
               <div className="login-input-wrapper">
                 <Lock className="login-input-icon" />
                 <input
+                  id="login-password"
                   type="password"
                   {...register('password', {
                     required: 'La contraseña es requerida',

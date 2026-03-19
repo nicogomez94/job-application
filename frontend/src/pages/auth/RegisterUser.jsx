@@ -221,26 +221,42 @@ export default function RegisterUser() {
           </div>
 
           <div className="register-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <input
-              className="input"
-              name="firstName"
-              placeholder="Nombre"
-              value={formData.firstName}
-              onChange={handleChange}
-              required
-            />
-            <input
-              className="input"
-              name="lastName"
-              placeholder="Apellido"
-              value={formData.lastName}
-              onChange={handleChange}
-              required
-            />
+            <div>
+              <label htmlFor="register-user-first-name" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Nombre
+              </label>
+              <input
+                id="register-user-first-name"
+                className="input"
+                name="firstName"
+                placeholder="Nombre"
+                value={formData.firstName}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="register-user-last-name" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Apellido
+              </label>
+              <input
+                id="register-user-last-name"
+                className="input"
+                name="lastName"
+                placeholder="Apellido"
+                value={formData.lastName}
+                onChange={handleChange}
+                required
+              />
+            </div>
           </div>
 
           <div style={{ marginTop: '1rem' }}>
+            <label htmlFor="register-user-email" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+              Email
+            </label>
             <input
+              id="register-user-email"
               className="input"
               type="email"
               name="email"
@@ -252,30 +268,46 @@ export default function RegisterUser() {
           </div>
 
           <div className="register-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
-            <input
-              className="input"
-              type="password"
-              name="password"
-              placeholder="Contraseña (mín. 6)"
-              value={formData.password}
-              onChange={handleChange}
-              minLength={6}
-              required
-            />
-            <input
-              className="input"
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirmar contraseña"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              minLength={6}
-              required
-            />
+            <div>
+              <label htmlFor="register-user-password" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Contraseña
+              </label>
+              <input
+                id="register-user-password"
+                className="input"
+                type="password"
+                name="password"
+                placeholder="Contraseña (mín. 6)"
+                value={formData.password}
+                onChange={handleChange}
+                minLength={6}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="register-user-confirm-password" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Confirmar contraseña
+              </label>
+              <input
+                id="register-user-confirm-password"
+                className="input"
+                type="password"
+                name="confirmPassword"
+                placeholder="Confirmar contraseña"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                minLength={6}
+                required
+              />
+            </div>
           </div>
 
           <div style={{ marginTop: '1rem' }}>
+            <label htmlFor="register-user-phone" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+              Teléfono
+            </label>
             <input
+              id="register-user-phone"
               className="input"
               name="phone"
               placeholder="Teléfono (opcional)"
@@ -285,10 +317,10 @@ export default function RegisterUser() {
           </div>
 
           <div style={{ marginTop: '1rem' }}>
-            <label style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem' }}>
+            <label htmlFor="register-user-cv" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem' }}>
               CV (PDF, JPG o Word. máximo 1 archivo)
             </label>
-            <input type="file" onChange={handleCvFileChange} />
+            <input id="register-user-cv" type="file" onChange={handleCvFileChange} />
             {formData.cvFile && (
               <div style={{ marginTop: '0.6rem' }}>
                 <p style={{ margin: 0, color: '#6f604b', fontSize: '0.92rem' }}>
@@ -343,10 +375,10 @@ export default function RegisterUser() {
           </div>
 
           <div style={{ marginTop: '1rem' }}>
-            <label style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem' }}>
+            <label htmlFor="register-user-other-files" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem' }}>
               Archivos varios (PDF, JPG o Word. máximo 4 archivos)
             </label>
-            <input type="file" onChange={handleOtherFilesChange} multiple />
+            <input id="register-user-other-files" type="file" onChange={handleOtherFilesChange} multiple />
             {formData.otherFiles.length > 0 && (
               <div style={{ marginTop: '0.6rem' }}>
                 <p style={{ margin: 0, color: '#6f604b', fontSize: '0.92rem' }}>
