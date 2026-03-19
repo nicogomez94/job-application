@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { applicationService, jobOfferService, userService } from '../services';
 import { useAuthStore } from '../context/authStore';
+import '../components/BackToDashboardButton.css';
 
 const formatDate = (date) =>
   new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(date));
@@ -96,8 +98,9 @@ export default function JobDetail() {
   return (
     <div style={{ background: '#fcf7ef', minHeight: '100vh', padding: '1.5rem 1rem 2rem' }}>
       <div style={{ maxWidth: '960px', margin: '0 auto' }}>
-        <Link to="/jobs" style={{ color: 'var(--primary-700)', textDecoration: 'none', display: 'inline-block', marginBottom: '1rem' }}>
-          ← Volver a ofertas
+        <Link to="/jobs" className="back-dashboard-btn">
+          <ArrowLeft size={16} />
+          <span>Volver a ofertas</span>
         </Link>
 
         <div className="card" style={{ marginBottom: '1rem' }}>
@@ -135,28 +138,28 @@ export default function JobDetail() {
           </ul>
         </div>
 
-        <div className="card">
-          <h2 style={{ marginBottom: '0.8rem' }}>Postularme</h2>
-          {userType === 'company' || userType === 'admin' ? (
-            <p style={{ color: '#b91c1c' }}>Solo usuarios candidatos pueden postularse.</p>
-          ) : hasApplied ? (
-            <p style={{ color: 'var(--primary-800)', fontWeight: 600 }}>Ya te postulaste a esta oferta.</p>
-          ) : (
-            <>
-              <textarea
-                className="input"
-                rows={5}
-                placeholder="Carta de presentación (opcional)"
-                value={coverLetter}
-                onChange={(e) => setCoverLetter(e.target.value)}
-                style={{ resize: 'vertical', marginBottom: '0.8rem' }}
-              />
-              <button className="btn btn-primary" disabled={submitting} onClick={handleApply}>
-                {submitting ? 'Enviando...' : 'Enviar postulación'}
-              </button>
-            </>
-          )}
-        </div>
+        {(userType === 'company' || userType === 'admin' || !hasApplied) && (
+          <div className="card">
+            <h2 style={{ marginBottom: '0.8rem' }}>Postularme</h2>
+            {userType === 'company' || userType === 'admin' ? (
+              <p style={{ color: '#b91c1c' }}>Solo usuarios candidatos pueden postularse.</p>
+            ) : (
+              <>
+                <textarea
+                  className="input"
+                  rows={5}
+                  placeholder="Carta de presentación (opcional)"
+                  value={coverLetter}
+                  onChange={(e) => setCoverLetter(e.target.value)}
+                  style={{ resize: 'vertical', marginBottom: '0.8rem' }}
+                />
+                <button className="btn btn-primary" disabled={submitting} onClick={handleApply}>
+                  {submitting ? 'Enviando...' : 'Enviar postulación'}
+                </button>
+              </>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -182,7 +182,7 @@ export default function Home() {
             <div className="home-search-field home-search-field-input">
               <input
                 type="text"
-                placeholder={t('Palabras clave')}
+                placeholder={t('Buscar Trabajo')}
                 className="home-search-input"
                 value={homeFilters.search}
                 onChange={(e) => setHomeFilters((prev) => ({ ...prev, search: e.target.value }))}

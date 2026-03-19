@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { categoryService, jobOfferService } from '../services';
@@ -41,7 +41,27 @@ export default function JobSearch() {
   const [pagination, setPagination] = useState({ page: 1, pages: 1, total: 0 });
   const [loading, setLoading] = useState(false);
   const getCategoryOffersCount = (category) => category?.activeJobOffersCount ?? category?._count?.jobOffers ?? 0;
-  const totalCategoryOffers = categories.reduce((total, category) => total + getCategoryOffersCount(category), 0);
+  const categoriesOrdered = useMemo(() => {
+    const isOtherCategory = (name) => {
+      const normalized = String(name || '')
+        .trim()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase();
+      return normalized === 'otros' || normalized === 'otro';
+    };
+
+    return [...categories].sort((a, b) => {
+      const aIsOther = isOtherCategory(a?.name);
+      const bIsOther = isOtherCategory(b?.name);
+
+      if (aIsOther && !bIsOther) return 1;
+      if (!aIsOther && bIsOther) return -1;
+
+      return String(a?.name || '').localeCompare(String(b?.name || ''), 'es', { sensitivity: 'base' });
+    });
+  }, [categories]);
+  const totalCategoryOffers = categoriesOrdered.reduce((total, category) => total + getCategoryOffersCount(category), 0);
 
   useEffect(() => {
     setFilters(getFiltersFromParams());
@@ -154,7 +174,7 @@ export default function JobSearch() {
           />
           <select className="input" name="categoryId" value={filters.categoryId} onChange={handleFilterChange}>
             <option value="">Todas las categorías ({totalCategoryOffers})</option>
-            {categories.map((category) => (
+            {categoriesOrdered.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name} ({getCategoryOffersCount(category)})
               </option>
