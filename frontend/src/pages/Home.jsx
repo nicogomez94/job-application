@@ -130,29 +130,29 @@ export default function Home() {
   const compactPlans = [
     {
       id: 'MONTHLY',
-      name: 'Mensual',
-      subtitle: 'Ideal para empezar',
-      price: '$25.000',
-      period: '/ mes',
-      feature: 'Hasta 3 publicaciones activas',
+      name: 'Plan 3 meses',
+      subtitle: 'Solo por tiempo limitado',
+      price: 'USD 50',
+      period: '/ 3 meses',
+      feature: 'Renovación paga al finalizar',
     },
     {
       id: 'QUARTERLY',
-      name: 'Trimestral',
-      subtitle: 'Mejor relación precio-valor',
-      price: '$60.000',
-      period: '/ trimestre',
-      feature: 'Hasta 10 publicaciones activas',
+      name: 'Plan 7 meses',
+      subtitle: 'Mejor relación precio-tiempo',
+      price: 'USD 80',
+      period: '/ 7 meses',
+      feature: 'Continuidad extendida para publicar',
       highlight: true,
       badge: 'Más elegido',
     },
     {
       id: 'ANNUAL',
-      name: 'Anual',
-      subtitle: 'Para escalar contrataciones',
-      price: '$210.000',
-      period: '/ año',
-      feature: 'Publicaciones ilimitadas',
+      name: 'Plan 12 + 1',
+      subtitle: 'Pagás 12 meses y usás 13',
+      price: 'USD 120',
+      period: '/ 13 meses',
+      feature: 'Incluye 1 mes sin costo',
     },
   ];
 
@@ -355,7 +355,7 @@ export default function Home() {
           <div className="home-stats-header">
             <p className="home-stats-eyebrow">Empresas</p>
             <h2>Planes y precios en versión resumida</h2>
-            <p>Elegí un plan para publicar ofertas y gestionar postulantes.</p>
+            <p>Incluye 2 meses gratis en la inscripción inicial + beneficios por calidad y referidos.</p>
           </div>
 
           <div className="home-pricing-preview-grid">

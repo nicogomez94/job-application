@@ -41,6 +41,29 @@
   gap: 1.25rem;
 }
 
+.pricing-conditions {
+  margin: 0 auto 1.6rem;
+  max-width: 860px;
+  background: #fff8ec;
+  border: 1px solid #edd9ba;
+  border-radius: 0.9rem;
+  padding: 1rem 1.1rem;
+}
+
+.pricing-conditions h2 {
+  margin: 0 0 0.55rem;
+  font-size: 1.08rem;
+  color: #4e3518;
+}
+
+.pricing-conditions ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: #5f4d35;
+  display: grid;
+  gap: 0.42rem;
+}
+
 .pricing-card {
   background: #fffdfa;
   border: 1px solid #eadfcf;

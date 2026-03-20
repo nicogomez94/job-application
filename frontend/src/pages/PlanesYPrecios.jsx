@@ -7,56 +7,56 @@ import './PlanesYPrecios.css';
 const FALLBACK_PLANS = [
   {
     id: 'MONTHLY',
-    name: 'Mensual',
-    subtitle: 'Ideal para empezar',
-    price: 25000,
-    currency: 'ARS',
-    duration: 'mes',
+    name: 'Plan 3 meses',
+    subtitle: 'Ingreso inicial para nuevas empresas',
+    price: 50,
+    currency: 'USD',
+    duration: '3 meses',
     features: [
-      'Hasta 3 publicaciones activas',
-      'Gestión de postulantes',
-      'Soporte por email',
+      'Publicación y gestión de postulantes',
+      'Ideal para validar el servicio',
+      'Renovación paga al finalizar',
     ],
   },
   {
     id: 'QUARTERLY',
-    name: 'Trimestral',
-    subtitle: 'La mejor relación precio-valor',
-    price: 60000,
-    currency: 'ARS',
-    duration: 'trimestre',
+    name: 'Plan 7 meses',
+    subtitle: 'Más tiempo para contratar sin interrupciones',
+    price: 80,
+    currency: 'USD',
+    duration: '7 meses',
     highlight: true,
     badge: 'Más elegido',
     features: [
-      'Hasta 10 publicaciones activas',
-      'Filtrado de candidatos',
-      'Soporte prioritario',
+      'Mayor continuidad de publicaciones',
+      'Mejor costo por mes',
+      'Renovación paga al finalizar',
     ],
   },
   {
     id: 'ANNUAL',
-    name: 'Anual',
-    subtitle: 'Para equipos con crecimiento sostenido',
-    price: 210000,
-    currency: 'ARS',
-    duration: 'año',
+    name: 'Plan 12 + 1',
+    subtitle: 'Pagás 12 meses y usás 13 meses',
+    price: 120,
+    currency: 'USD',
+    duration: '13 meses',
     features: [
-      'Publicaciones ilimitadas',
-      'Acceso a métricas avanzadas',
-      'Soporte dedicado',
+      '1 mes adicional sin costo incluido',
+      'Cobertura anual extendida',
+      'Renovación paga al finalizar',
     ],
   },
 ];
 
 const PLAN_META = {
-  MONTHLY: { icon: Shield, subtitle: 'Ideal para empezar' },
+  MONTHLY: { icon: Shield, subtitle: 'Ingreso inicial para nuevas empresas' },
   QUARTERLY: {
     icon: Star,
-    subtitle: 'La mejor relación precio-valor',
+    subtitle: 'Más tiempo para contratar sin interrupciones',
     highlight: true,
     badge: 'Más elegido',
   },
-  ANNUAL: { icon: Zap, subtitle: 'Para equipos con crecimiento sostenido' },
+  ANNUAL: { icon: Zap, subtitle: 'Pagás 12 meses y usás 13 meses' },
 };
 
 const formatPrice = (price, currency = 'ARS') =>
@@ -108,10 +108,19 @@ export default function PlanesYPrecios() {
           <p className="pricing-eyebrow">Empresas</p>
           <h1>Planes y Precios</h1>
           <p>
-            Elegí el plan que mejor se adapta al ritmo de contratación de tu empresa.
-            Podés cambiarlo cuando quieras.
+            Solo por tiempo limitado: elegí el plan pago que mejor se adapte al ritmo de contratación de tu empresa.
           </p>
         </header>
+
+        <section className="pricing-conditions">
+          <h2>Condiciones comerciales</h2>
+          <ul>
+            <li>Inscripción inicial: 2 meses gratis en tu primera vez en la plataforma.</li>
+            <li>Periodo de renovación: todas las renovaciones son pagas en cualquiera de sus formas.</li>
+            <li>Reconocimiento a la calidad: el empleador mejor calificado al finalizar su período pago recibe 2 meses sin costo.</li>
+            <li>Programa de referidos: por cada nueva empresa que se inscriba con plan pago, obtenés 2 meses gratis.</li>
+          </ul>
+        </section>
 
         <div className="pricing-grid">
           {(loading ? FALLBACK_PLANS : normalizedPlans).map((plan) => {
@@ -129,7 +138,7 @@ export default function PlanesYPrecios() {
                 <p className="pricing-subtitle">{plan.subtitle}</p>
                 <p className="pricing-value">
                   {formatPrice(plan.price, plan.currency)}
-                  <span> / {plan.duration || 'mes'}</span>
+                  <span> / {plan.duration || '3 meses'}</span>
                 </p>
                 <ul className="pricing-features">
                   {(plan.features || []).map((feature) => (
