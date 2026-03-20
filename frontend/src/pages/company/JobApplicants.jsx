@@ -5,6 +5,7 @@ import { ArrowLeft, MessageCircle } from 'lucide-react';
 import { jobOfferService } from '../../services';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
+import StarRatingInput from '../../components/StarRatingInput';
 
 const toAssetUrl = (assetPath) => {
   if (!assetPath) return null;
@@ -24,7 +25,7 @@ const toWhatsAppUrl = (phone) => {
   return `https://web.whatsapp.com/send?phone=${digits}`;
 };
 
-const STATUS_OPTIONS = [
+const CONTRACT_STATUS_OPTIONS = [
   { value: 'PENDING', label: 'Pendiente' },
   { value: 'REVIEWING', label: 'En revisión' },
   { value: 'SHORTLISTED', label: 'Preseleccionado' },
@@ -32,6 +33,14 @@ const STATUS_OPTIONS = [
   { value: 'REJECTED', label: 'Rechazado' },
   { value: 'ACCEPTED', label: 'Aceptado' },
 ];
+
+const FREELANCE_STATUS_OPTIONS = [
+  { value: 'PENDING', label: 'Pendiente de finalización' },
+  { value: 'ACCEPTED', label: 'Finalizado' },
+  { value: 'REJECTED', label: 'No finalizado' },
+];
+
+const FREELANCE_VISIBLE_STATUS_VALUES = new Set(FREELANCE_STATUS_OPTIONS.map((option) => option.value));
 
 const formatDate = (date) =>
   new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(date));
@@ -45,6 +54,7 @@ export default function JobApplicants() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState(null);
+  const [ratingUpdatingId, setRatingUpdatingId] = useState(null);
   const [expandedApplicationId, setExpandedApplicationId] = useState(null);
 
   const loadApplicants = async () => {
@@ -81,6 +91,19 @@ export default function JobApplicants() {
     setExpandedApplicationId((prev) => (prev === applicationId ? null : applicationId));
   };
 
+  const handleCompanyRatingChange = async (applicationId, rating) => {
+    setRatingUpdatingId(applicationId);
+    try {
+      await jobOfferService.rateApplication(applicationId, rating);
+      setApplications((prev) => prev.map((app) => (app.id === applicationId ? { ...app, ratingByCompany: rating } : app)));
+      toast.success('Puntuación guardada');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'No se pudo guardar la puntuación');
+    } finally {
+      setRatingUpdatingId(null);
+    }
+  };
+
   if (loading) {
     return (
       <div style={{ minHeight: '50vh', display: 'grid', placeItems: 'center' }}>
@@ -110,6 +133,11 @@ export default function JobApplicants() {
       ) : (
         <div style={{ display: 'grid', gap: '0.9rem' }}>
           {applications.map((application) => {
+            const isFreelanceJob = jobOffer?.workType === 'FREELANCE';
+            const statusOptions = isFreelanceJob ? FREELANCE_STATUS_OPTIONS : CONTRACT_STATUS_OPTIONS;
+            const currentStatus = isFreelanceJob && !FREELANCE_VISIBLE_STATUS_VALUES.has(application.status)
+              ? 'PENDING'
+              : application.status;
             const whatsappUrl = toWhatsAppUrl(application.user?.phone);
             const otherFiles = normalizeUploadedFiles(application.user?.uploadedFiles);
             return (
@@ -137,19 +165,33 @@ export default function JobApplicants() {
                   </div>
                 </div>
                 <div style={{ minWidth: '220px' }}>
-                  <label style={{ display: 'block', color: '#6f604b', marginBottom: '0.3rem' }}>Estado</label>
+                  <label style={{ display: 'block', color: '#6f604b', marginBottom: '0.3rem' }}>
+                    {isFreelanceJob ? 'Finalización' : 'Estado'}
+                  </label>
                   <select
                     className="input"
-                    value={application.status}
+                    value={currentStatus}
                     onChange={(e) => handleStatusChange(application.id, e.target.value)}
                     disabled={updatingId === application.id}
                   >
-                    {STATUS_OPTIONS.map((option) => (
+                    {statusOptions.map((option) => (
                       <option key={option.value} value={option.value}>
                         {option.label}
                       </option>
                     ))}
                   </select>
+                  {isFreelanceJob && currentStatus === 'ACCEPTED' && (
+                    <div style={{ marginTop: '0.7rem' }}>
+                      <label style={{ display: 'block', color: '#6f604b', marginBottom: '0.25rem' }}>
+                        Puntuar postulante
+                      </label>
+                      <StarRatingInput
+                        value={application.ratingByCompany}
+                        onChange={(rating) => handleCompanyRatingChange(application.id, rating)}
+                        disabled={ratingUpdatingId === application.id}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
 

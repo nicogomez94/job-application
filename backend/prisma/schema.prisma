@@ -181,6 +181,8 @@ model Application {
   id              String            @id @default(uuid())
   coverLetter     String?           @db.Text
   status          ApplicationStatus @default(PENDING)
+  ratingByCompany Int?
+  ratingByUser    Int?
   
   // Relaciones
   user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)

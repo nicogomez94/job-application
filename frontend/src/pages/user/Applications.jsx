@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { userService } from '../../services';
+import { applicationService, userService } from '../../services';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
+import StarRatingInput from '../../components/StarRatingInput';
 
 const STATUS_LABELS = {
   PENDING: 'Pendiente',
@@ -22,12 +23,33 @@ const STATUS_CLASS = {
   ACCEPTED: 'badge badge-success',
 };
 
+const getStatusLabel = (status, workType) => {
+  if (workType === 'FREELANCE') {
+    if (status === 'ACCEPTED') return 'Finalizado';
+    if (status === 'REJECTED') return 'No finalizado';
+    return 'Pendiente de finalización';
+  }
+
+  return STATUS_LABELS[status] || status;
+};
+
+const getStatusClass = (status, workType) => {
+  if (workType === 'FREELANCE') {
+    if (status === 'ACCEPTED') return 'badge badge-success';
+    if (status === 'REJECTED') return 'badge badge-error';
+    return 'badge badge-warning';
+  }
+
+  return STATUS_CLASS[status] || 'badge badge-info';
+};
+
 const formatDate = (date) =>
   new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(date));
 
 export default function UserApplications() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [ratingUpdatingId, setRatingUpdatingId] = useState(null);
   const hasNoApplications = applications.length === 0;
 
   useEffect(() => {
@@ -45,6 +67,19 @@ export default function UserApplications() {
 
     loadApplications();
   }, []);
+
+  const handleUserRatingChange = async (applicationId, rating) => {
+    setRatingUpdatingId(applicationId);
+    try {
+      await applicationService.rateCompany(applicationId, rating);
+      setApplications((prev) => prev.map((app) => (app.id === applicationId ? { ...app, ratingByUser: rating } : app)));
+      toast.success('Puntuación guardada');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'No se pudo guardar la puntuación');
+    } finally {
+      setRatingUpdatingId(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -87,13 +122,25 @@ export default function UserApplications() {
                 Postulado el {formatDate(application.createdAt)}
               </p>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.8rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                <span className={STATUS_CLASS[application.status] || 'badge badge-info'}>
-                  {STATUS_LABELS[application.status] || application.status}
+                <span className={getStatusClass(application.status, application.jobOffer?.workType)}>
+                  {getStatusLabel(application.status, application.jobOffer?.workType)}
                 </span>
                 <Link className="btn btn-outline" to={`/jobs/${application.jobOfferId}`}>
                   Ver oferta
                 </Link>
               </div>
+              {application.jobOffer?.workType === 'FREELANCE' && application.status === 'ACCEPTED' && (
+                <div style={{ marginTop: '0.75rem' }}>
+                  <label style={{ display: 'block', color: '#6f604b', marginBottom: '0.3rem' }}>
+                    Puntuar empresa
+                  </label>
+                  <StarRatingInput
+                    value={application.ratingByUser}
+                    onChange={(rating) => handleUserRatingChange(application.id, rating)}
+                    disabled={ratingUpdatingId === application.id}
+                  />
+                </div>
+              )}
             </article>
           ))}
         </div>

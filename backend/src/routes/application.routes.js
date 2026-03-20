@@ -22,5 +22,9 @@ router.put('/:id/cover-letter', [
   body('coverLetter').notEmpty().withMessage('La carta de presentación es requerida'),
   validate,
 ], applicationController.updateCoverLetter);
+router.put('/:id/rating', [
+  body('rating').isInt({ min: 1, max: 5 }).withMessage('La puntuación debe estar entre 1 y 5'),
+  validate,
+], applicationController.rateCompany);
 
 module.exports = router;

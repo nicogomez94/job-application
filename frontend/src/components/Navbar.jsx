@@ -1,9 +1,21 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { User, LogOut, Building2, ChevronDown, Menu, X, Search, PencilLine } from 'lucide-react';
 import { useAuthStore } from '../context/authStore';
-import { User, LogOut, Building2, ChevronDown, Menu, X, Search } from 'lucide-react';
-import { useState } from 'react';
 import { useI18n } from '../context/i18nStore';
+import { BACKEND_BASE_URL } from '../services/apiBaseUrl';
 import './Navbar.css';
+
+const toAssetUrl = (assetPath) => {
+  if (!assetPath) return '';
+  if (assetPath.startsWith('http://') || assetPath.startsWith('https://')) return assetPath;
+
+  const rawPath = String(assetPath).trim();
+  const noApiPrefix = rawPath.replace(/^\/?api\//i, '/');
+  const normalizedPath = noApiPrefix.startsWith('/') ? noApiPrefix : `/${noApiPrefix}`;
+
+  return `${BACKEND_BASE_URL}${normalizedPath}`;
+};
 
 export default function Navbar() {
   const { isAuthenticated, user, userType, logout } = useAuthStore();
@@ -11,12 +23,15 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const userMenuRef = useRef(null);
 
   const handleLogout = () => {
     logout();
     navigate('/');
     setIsMenuOpen(false);
+    setIsUserDropdownOpen(false);
   };
 
   const toggleMenu = () => {
@@ -25,6 +40,7 @@ export default function Navbar() {
 
   const closeMenu = () => {
     setIsMenuOpen(false);
+    setIsUserDropdownOpen(false);
   };
 
   const handleSearchSubmit = (event) => {
@@ -50,6 +66,45 @@ export default function Navbar() {
         return '/';
     }
   };
+
+  const getEditProfileLink = () => {
+    switch (userType) {
+      case 'user':
+        return '/user/profile';
+      case 'company':
+        return '/company/profile';
+      default:
+        return getDashboardLink();
+    }
+  };
+
+  const displayName = user?.firstName || user?.companyName || t('Usuario');
+  const avatarUrl = toAssetUrl(user?.profileImage || user?.companyLogo || '');
+  const avatarInitial = (displayName?.charAt(0) || 'U').toUpperCase();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!userMenuRef.current?.contains(event.target)) {
+        setIsUserDropdownOpen(false);
+      }
+    };
+
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        setIsUserDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, []);
 
   return (
     <nav className="navbar">
@@ -127,12 +182,6 @@ export default function Navbar() {
             <Link to="/jobs" className="navbar-link" onClick={closeMenu}>
               {t('Ver Ofertas')} <ChevronDown size={16} />
             </Link>
-            {/* <Link to="/companies" className="navbar-link" onClick={closeMenu}>
-              Reclutadores <ChevronDown size={16} />
-            </Link>
-            <Link to="/candidates" className="navbar-link" onClick={closeMenu}>
-              Candidatos <ChevronDown size={16} />
-            </Link> */}
             {!isAuthenticated ? (
               <div className="navbar-mobile-actions">
                 <Link to="/register/user" className="btn btn-outline" onClick={closeMenu}>
@@ -144,19 +193,58 @@ export default function Navbar() {
                 </Link>
               </div>
             ) : (
-              <div className="navbar-user-section">
-                <div className="navbar-user-info">
-                  {userType === 'user' && <User className="navbar-user-icon" />}
-                  {userType === 'company' && <Building2 className="navbar-user-icon" />}
-                  <Link to={getDashboardLink()} className="navbar-user-name-link" onClick={closeMenu}>
-                    {user?.firstName || user?.companyName || t('Usuario')}
-                  </Link>
-                </div>
-
-                <button onClick={handleLogout} className="navbar-logout-btn">
-                  <LogOut className="navbar-icon-small" />
-                  <span>{t('Salir')}</span>
+              <div className="navbar-user-section" ref={userMenuRef}>
+                <button
+                  type="button"
+                  className="navbar-user-menu-trigger"
+                  onClick={() => setIsUserDropdownOpen((prev) => !prev)}
+                  aria-haspopup="menu"
+                  aria-expanded={isUserDropdownOpen}
+                >
+                  <span className="navbar-user-info">
+                    {userType === 'company' ? <Building2 className="navbar-user-icon" /> : <User className="navbar-user-icon" />}
+                    <span className="navbar-user-name-link">{displayName}</span>
+                  </span>
+                  <ChevronDown className={`navbar-user-menu-chevron ${isUserDropdownOpen ? 'is-open' : ''}`} size={16} />
                 </button>
+
+                <div className={`navbar-user-dropdown ${isUserDropdownOpen ? 'navbar-user-dropdown-open' : ''}`} role="menu">
+                  <Link
+                    to={getEditProfileLink()}
+                    className="navbar-user-dropdown-profile-link"
+                    onClick={closeMenu}
+                    role="menuitem"
+                  >
+                    <div className="navbar-user-avatar" aria-hidden="true">
+                      {avatarUrl ? (
+                        <img src={avatarUrl} alt={`Foto de perfil de ${displayName}`} className="navbar-user-avatar-img" />
+                      ) : (
+                        avatarInitial
+                      )}
+                    </div>
+                    <div className="navbar-user-dropdown-name">{displayName}</div>
+                  </Link>
+
+                  <Link
+                    to={getEditProfileLink()}
+                    className="navbar-user-dropdown-action"
+                    onClick={closeMenu}
+                    role="menuitem"
+                  >
+                    <PencilLine className="navbar-icon-small" />
+                    <span>{t('Editar perfil')}</span>
+                  </Link>
+
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="navbar-user-dropdown-action navbar-user-dropdown-action-logout"
+                    role="menuitem"
+                  >
+                    <LogOut className="navbar-icon-small" />
+                    <span>{t('Salir')}</span>
+                  </button>
+                </div>
               </div>
             )}
           </div>

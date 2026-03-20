@@ -18,16 +18,16 @@ exports.createSubscription = async (req, res) => {
 
     switch (plan) {
       case 'MONTHLY':
-        endDate.setMonth(endDate.getMonth() + 1);
-        break;
-      case 'QUARTERLY':
         endDate.setMonth(endDate.getMonth() + 3);
         break;
+      case 'QUARTERLY':
+        endDate.setMonth(endDate.getMonth() + 7);
+        break;
       case 'ANNUAL':
-        endDate.setFullYear(endDate.getFullYear() + 1);
+        endDate.setMonth(endDate.getMonth() + 13);
         break;
       default:
-        endDate.setMonth(endDate.getMonth() + 1);
+        endDate.setMonth(endDate.getMonth() + 3);
     }
 
     // Desactivar suscripciones anteriores
@@ -202,47 +202,43 @@ exports.getPlans = async (req, res) => {
     const plans = [
       {
         id: 'MONTHLY',
-        name: 'Plan Mensual',
-        price: 9999,
-        currency: 'ARS',
-        duration: '1 mes',
+        name: 'Plan 3 meses',
+        price: 50,
+        currency: 'USD',
+        duration: '3 meses',
         isFreeMode,
         features: [
-          'Publicar ofertas laborales ilimitadas',
-          'Ver postulantes',
-          'Contacto por WhatsApp',
-          'Soporte por email',
+          'Solo por tiempo limitado',
+          'Renovación paga al finalizar',
+          'Acceso a gestión de postulantes',
         ],
       },
       {
         id: 'QUARTERLY',
-        name: 'Plan Trimestral',
-        price: 24999,
-        currency: 'ARS',
-        duration: '3 meses',
-        discount: '17% de descuento',
+        name: 'Plan 7 meses',
+        price: 80,
+        currency: 'USD',
+        duration: '7 meses',
+        discount: 'Más elegido',
         isFreeMode,
         features: [
-          'Publicar ofertas laborales ilimitadas',
-          'Ver postulantes',
-          'Contacto por WhatsApp',
-          'Soporte prioritario',
+          'Solo por tiempo limitado',
+          'Renovación paga al finalizar',
+          'Cobertura extendida para contrataciones',
         ],
       },
       {
         id: 'ANNUAL',
-        name: 'Plan Anual',
-        price: 89999,
-        currency: 'ARS',
-        duration: '12 meses',
-        discount: '25% de descuento',
+        name: 'Plan 12 + 1',
+        price: 120,
+        currency: 'USD',
+        duration: '13 meses',
+        discount: '1 mes gratis incluido',
         isFreeMode,
         features: [
-          'Publicar ofertas laborales ilimitadas',
-          'Ver postulantes',
-          'Contacto por WhatsApp',
-          'Soporte prioritario',
-          'Destacar ofertas',
+          'Pagás 12 meses y usás 13',
+          'Renovación paga al finalizar',
+          'Mayor continuidad anual',
         ],
       },
     ];

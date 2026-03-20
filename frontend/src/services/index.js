@@ -80,6 +80,8 @@ export const jobOfferService = {
   getApplicants: (id) => api.get(`/job-offers/${id}/applicants`),
   updateApplicationStatus: (applicationId, status) =>
     api.put(`/job-offers/applications/${applicationId}/status`, { status }),
+  rateApplication: (applicationId, rating) =>
+    api.put(`/job-offers/applications/${applicationId}/rating`, { rating }),
 };
 
 // ==================== APPLICATIONS ====================
@@ -91,6 +93,8 @@ export const applicationService = {
   cancel: (id) => api.delete(`/applications/${id}`),
   updateCoverLetter: (id, coverLetter) =>
     api.put(`/applications/${id}/cover-letter`, { coverLetter }),
+  rateCompany: (id, rating) =>
+    api.put(`/applications/${id}/rating`, { rating }),
 };
 
 // ==================== SUBSCRIPTIONS ====================

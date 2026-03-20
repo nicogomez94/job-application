@@ -33,6 +33,26 @@ const STATUS_COLORS = {
   ACCEPTED:    { bg: '#dcfce7', color: '#166534' },
 };
 
+const getStatusLabel = (status, workType) => {
+  if (workType === 'FREELANCE') {
+    if (status === 'ACCEPTED') return 'Finalizado';
+    if (status === 'REJECTED') return 'No finalizado';
+    return 'Pendiente de finalización';
+  }
+
+  return STATUS_LABELS[status] || status;
+};
+
+const getStatusColors = (status, workType) => {
+  if (workType === 'FREELANCE') {
+    if (status === 'ACCEPTED') return STATUS_COLORS.ACCEPTED;
+    if (status === 'REJECTED') return STATUS_COLORS.REJECTED;
+    return STATUS_COLORS.PENDING;
+  }
+
+  return STATUS_COLORS[status] || STATUS_COLORS.PENDING;
+};
+
 export default function UserDashboard() {
   const [profile, setProfile] = useState(null);
   const [applications, setApplications] = useState([]);
@@ -190,7 +210,7 @@ export default function UserDashboard() {
           <div style={{ display: 'grid', gap: '0.6rem' }}>
             {recentApps.map((app) => {
               const companyLogoUrl = toAssetUrl(app.jobOffer?.company?.companyLogo);
-              const statusStyle = STATUS_COLORS[app.status] || STATUS_COLORS.PENDING;
+              const statusStyle = getStatusColors(app.status, app.jobOffer?.workType);
               return (
                 <div
                   key={app.id}
@@ -228,7 +248,7 @@ export default function UserDashboard() {
                       padding: '0.2rem 0.65rem', borderRadius: '999px', fontSize: '0.82rem',
                       fontWeight: '600', background: statusStyle.bg, color: statusStyle.color,
                     }}>
-                      {STATUS_LABELS[app.status] || app.status}
+                      {getStatusLabel(app.status, app.jobOffer?.workType)}
                     </span>
                     <Link
                       className="btn btn-outline"

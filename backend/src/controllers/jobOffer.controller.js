@@ -1,5 +1,8 @@
 const prisma = require('../config/database');
 
+const FREELANCE_ALLOWED_STATUSES = ['PENDING', 'ACCEPTED', 'REJECTED'];
+const isValidRating = (rating) => Number.isInteger(rating) && rating >= 1 && rating <= 5;
+
 // Crear oferta laboral
 exports.createJobOffer = async (req, res) => {
   try {
@@ -274,6 +277,7 @@ exports.getJobOfferApplicants = async (req, res) => {
       jobOffer: {
         id: jobOffer.id,
         title: jobOffer.title,
+        workType: jobOffer.workType,
       },
       applications,
       total: applications.length,
@@ -297,6 +301,7 @@ exports.updateApplicationStatus = async (req, res) => {
         jobOffer: {
           select: {
             companyId: true,
+            workType: true,
           },
         },
       },
@@ -308,6 +313,12 @@ exports.updateApplicationStatus = async (req, res) => {
 
     if (application.jobOffer.companyId !== req.user.id) {
       return res.status(403).json({ error: 'No autorizado' });
+    }
+
+    if (application.jobOffer.workType === 'FREELANCE' && !FREELANCE_ALLOWED_STATUSES.includes(status)) {
+      return res.status(400).json({
+        error: 'Para trabajos freelance solo podés marcar pendiente, finalizado o no finalizado',
+      });
     }
 
     const updatedApplication = await prisma.application.update({
@@ -332,6 +343,63 @@ exports.updateApplicationStatus = async (req, res) => {
   } catch (error) {
     console.error('Error en updateApplicationStatus:', error);
     res.status(500).json({ error: 'Error al actualizar estado' });
+  }
+};
+
+// Calificar postulante (empresa -> usuario) para trabajos freelance finalizados
+exports.rateApplicationByCompany = async (req, res) => {
+  try {
+    const { applicationId } = req.params;
+    const { rating } = req.body;
+
+    if (!isValidRating(rating)) {
+      return res.status(400).json({ error: 'La puntuación debe ser un número entre 1 y 5' });
+    }
+
+    const application = await prisma.application.findUnique({
+      where: { id: applicationId },
+      include: {
+        jobOffer: {
+          select: {
+            companyId: true,
+            workType: true,
+          },
+        },
+      },
+    });
+
+    if (!application) {
+      return res.status(404).json({ error: 'Postulación no encontrada' });
+    }
+
+    if (application.jobOffer.companyId !== req.user.id) {
+      return res.status(403).json({ error: 'No autorizado' });
+    }
+
+    if (application.jobOffer.workType !== 'FREELANCE') {
+      return res.status(400).json({ error: 'Solo podés puntuar postulantes en trabajos freelance' });
+    }
+
+    if (application.status !== 'ACCEPTED') {
+      return res.status(400).json({ error: 'Solo podés puntuar cuando el trabajo esté finalizado' });
+    }
+
+    const updatedApplication = await prisma.application.update({
+      where: { id: applicationId },
+      data: { ratingByCompany: rating },
+      select: {
+        id: true,
+        ratingByCompany: true,
+      },
+    });
+
+    res.json({
+      message: 'Puntuación guardada exitosamente',
+      application: updatedApplication,
+    });
+  } catch (error) {
+    console.error('Error en rateApplicationByCompany:', error);
+    res.status(500).json({ error: 'Error al guardar puntuación' });
   }
 };
 

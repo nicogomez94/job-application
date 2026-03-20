@@ -36,5 +36,9 @@ router.put('/applications/:applicationId/status', [
     .withMessage('Estado inválido'),
   validate,
 ], jobOfferController.updateApplicationStatus);
+router.put('/applications/:applicationId/rating', [
+  body('rating').isInt({ min: 1, max: 5 }).withMessage('La puntuación debe estar entre 1 y 5'),
+  validate,
+], jobOfferController.rateApplicationByCompany);
 
 module.exports = router;
