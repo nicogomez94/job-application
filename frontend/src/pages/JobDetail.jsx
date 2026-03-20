@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import { applicationService, jobOfferService, userService } from '../services';
 import { BACKEND_BASE_URL } from '../services/apiBaseUrl';
 import { useAuthStore } from '../context/authStore';
+import RatingSummary from '../components/RatingSummary';
 import '../components/BackToDashboardButton.css';
 import './JobDetail.css';
 
@@ -298,6 +299,15 @@ export default function JobDetail() {
                   </div>
                 )}
                 <span className="jd-company-card-name">{job.company?.companyName}</span>
+              </div>
+
+              <div style={{ marginBottom: '0.7rem' }}>
+                <RatingSummary
+                  title="Calificacion de la empresa"
+                  average={job.company?.ratingSummary?.average}
+                  total={job.company?.ratingSummary?.total}
+                  emptyText="Todavia sin calificaciones"
+                />
               </div>
 
               {job.company?.industry && (

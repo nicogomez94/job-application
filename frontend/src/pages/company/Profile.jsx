@@ -4,6 +4,7 @@ import { companyService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
+import RatingSummary from '../../components/RatingSummary';
 
 const initialForm = {
   companyName: '',
@@ -19,6 +20,7 @@ export default function CompanyProfile() {
   const [logoFile, setLogoFile] = useState(null);
   const [companyLogo, setCompanyLogo] = useState('');
   const [previewLogoUrl, setPreviewLogoUrl] = useState('');
+  const [ratingSummary, setRatingSummary] = useState({ average: 0, total: 0 });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -42,6 +44,10 @@ export default function CompanyProfile() {
         const response = await companyService.getProfile();
         const company = response.data;
         setCompanyLogo(company.companyLogo || '');
+        setRatingSummary({
+          average: Number(company.ratingSummary?.average || 0),
+          total: Number(company.ratingSummary?.total || 0),
+        });
         setFormData({
           companyName: company.companyName || '',
           description: company.description || '',
@@ -166,6 +172,14 @@ export default function CompanyProfile() {
                 {uploading ? 'Subiendo...' : 'Subir logo'}
               </button>
             </div>
+          </div>
+          <div style={{ marginLeft: 'auto' }}>
+            <RatingSummary
+              title="Calificacion de la empresa"
+              average={ratingSummary.average}
+              total={ratingSummary.total}
+              emptyText="Todavia no tenes calificaciones"
+            />
           </div>
         </div>
 

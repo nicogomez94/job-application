@@ -32,29 +32,47 @@ const removeUploadedFile = (assetPath) => {
 // Obtener perfil de usuario
 exports.getProfile = async (req, res) => {
   try {
-    const user = await prisma.user.findUnique({
-      where: { id: req.user.id },
-      include: {
-        applications: {
-          include: {
-            jobOffer: {
-              include: {
-                company: {
-                  select: {
-                    id: true,
-                    companyName: true,
-                    companyLogo: true,
+    const [user, userRatingAggregate] = await Promise.all([
+      prisma.user.findUnique({
+        where: { id: req.user.id },
+        include: {
+          applications: {
+            include: {
+              jobOffer: {
+                include: {
+                  company: {
+                    select: {
+                      id: true,
+                      companyName: true,
+                      companyLogo: true,
+                    },
                   },
                 },
               },
             },
-          },
-          orderBy: {
-            createdAt: 'desc',
+            orderBy: {
+              createdAt: 'desc',
+            },
           },
         },
-      },
-    });
+      }),
+      prisma.application.aggregate({
+        where: {
+          userId: req.user.id,
+          status: 'ACCEPTED',
+          ratingByCompany: { not: null },
+          jobOffer: {
+            workType: 'FREELANCE',
+          },
+        },
+        _avg: {
+          ratingByCompany: true,
+        },
+        _count: {
+          ratingByCompany: true,
+        },
+      }),
+    ]);
 
     if (!user) {
       return res.status(404).json({ error: 'Usuario no encontrado' });
@@ -63,8 +81,16 @@ exports.getProfile = async (req, res) => {
     // Remover password
     const { password, ...userWithoutPassword } = user;
     userWithoutPassword.uploadedFiles = normalizeUploadedFiles(userWithoutPassword.uploadedFiles);
+    const average = Number(userRatingAggregate?._avg?.ratingByCompany || 0);
+    const total = Number(userRatingAggregate?._count?.ratingByCompany || 0);
 
-    res.json(userWithoutPassword);
+    res.json({
+      ...userWithoutPassword,
+      ratingSummary: {
+        average,
+        total,
+      },
+    });
   } catch (error) {
     console.error('Error en getProfile:', error);
     res.status(500).json({ error: 'Error al obtener perfil' });

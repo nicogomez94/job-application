@@ -4,6 +4,7 @@ import { userService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
+import RatingSummary from '../../components/RatingSummary';
 
 const initialForm = {
   firstName: '',
@@ -56,6 +57,7 @@ export default function UserProfile() {
   const [profileImage, setProfileImage] = useState('');
   const [selectedImageFile, setSelectedImageFile] = useState(null);
   const [previewImageUrl, setPreviewImageUrl] = useState('');
+  const [ratingSummary, setRatingSummary] = useState({ average: 0, total: 0 });
   const [cvUrl, setCvUrl] = useState('');
   const [selectedCvFile, setSelectedCvFile] = useState(null);
   const [otherFiles, setOtherFiles] = useState([]);
@@ -89,6 +91,10 @@ export default function UserProfile() {
         const user = response.data;
         setProfileImage(user.profileImage || '');
         setCvUrl(user.cvUrl || '');
+        setRatingSummary({
+          average: Number(user.ratingSummary?.average || 0),
+          total: Number(user.ratingSummary?.total || 0),
+        });
         setOtherFiles(normalizeUploadedFiles(user.uploadedFiles));
         setFormData({
           firstName: user.firstName || '',
@@ -356,6 +362,14 @@ export default function UserProfile() {
                 {uploadingImage ? 'Subiendo...' : 'Subir foto'}
               </button>
             </div>
+          </div>
+          <div style={{ marginLeft: 'auto' }}>
+            <RatingSummary
+              title="Tu calificacion freelance"
+              average={ratingSummary.average}
+              total={ratingSummary.total}
+              emptyText="Todavia no recibiste calificaciones"
+            />
           </div>
         </div>
 

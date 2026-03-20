@@ -3,22 +3,40 @@ const prisma = require('../config/database');
 // Obtener perfil de empresa
 exports.getProfile = async (req, res) => {
   try {
-    const company = await prisma.company.findUnique({
-      where: { id: req.user.id },
-      include: {
-        jobOffers: {
-          orderBy: {
-            createdAt: 'desc',
+    const [company, companyRatingAggregate] = await Promise.all([
+      prisma.company.findUnique({
+        where: { id: req.user.id },
+        include: {
+          jobOffers: {
+            orderBy: {
+              createdAt: 'desc',
+            },
+          },
+          subscriptions: {
+            orderBy: {
+              createdAt: 'desc',
+            },
+            take: 5,
           },
         },
-        subscriptions: {
-          orderBy: {
-            createdAt: 'desc',
+      }),
+      prisma.application.aggregate({
+        where: {
+          status: 'ACCEPTED',
+          ratingByUser: { not: null },
+          jobOffer: {
+            companyId: req.user.id,
+            workType: 'FREELANCE',
           },
-          take: 5,
         },
-      },
-    });
+        _avg: {
+          ratingByUser: true,
+        },
+        _count: {
+          ratingByUser: true,
+        },
+      }),
+    ]);
 
     if (!company) {
       return res.status(404).json({ error: 'Empresa no encontrada' });
@@ -27,7 +45,16 @@ exports.getProfile = async (req, res) => {
     // Remover password
     const { password, ...companyWithoutPassword } = company;
 
-    res.json(companyWithoutPassword);
+    const average = Number(companyRatingAggregate?._avg?.ratingByUser || 0);
+    const total = Number(companyRatingAggregate?._count?.ratingByUser || 0);
+
+    res.json({
+      ...companyWithoutPassword,
+      ratingSummary: {
+        average,
+        total,
+      },
+    });
   } catch (error) {
     console.error('Error en getProfile:', error);
     res.status(500).json({ error: 'Error al obtener perfil' });

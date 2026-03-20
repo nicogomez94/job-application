@@ -210,7 +210,7 @@ export default function Navbar() {
 
                 <div className={`navbar-user-dropdown ${isUserDropdownOpen ? 'navbar-user-dropdown-open' : ''}`} role="menu">
                   <Link
-                    to={getEditProfileLink()}
+                    to={getDashboardLink()}
                     className="navbar-user-dropdown-profile-link"
                     onClick={closeMenu}
                     role="menuitem"

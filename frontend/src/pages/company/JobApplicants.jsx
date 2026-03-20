@@ -6,6 +6,7 @@ import { jobOfferService } from '../../services';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
 import StarRatingInput from '../../components/StarRatingInput';
+import RatingSummary from '../../components/RatingSummary';
 
 const toAssetUrl = (assetPath) => {
   if (!assetPath) return null;
@@ -230,6 +231,12 @@ export default function JobApplicants() {
                           background: '#f1eadf',
                           flexShrink: 0,
                         }}
+                      />
+                      <RatingSummary
+                        title="Calificacion del postulante"
+                        average={application.user?.ratingSummary?.average}
+                        total={application.user?.ratingSummary?.total}
+                        emptyText="Todavia sin calificaciones"
                       />
                     </div>
                     <div style={{ display: 'grid', gap: '0.3rem' }}>

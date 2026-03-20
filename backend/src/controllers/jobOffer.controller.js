@@ -122,7 +122,35 @@ exports.getJobOfferById = async (req, res) => {
       return res.status(404).json({ error: 'Oferta no encontrada' });
     }
 
-    res.json(jobOffer);
+    const companyRatingAggregate = await prisma.application.aggregate({
+      where: {
+        status: 'ACCEPTED',
+        ratingByUser: { not: null },
+        jobOffer: {
+          companyId: jobOffer.companyId,
+          workType: 'FREELANCE',
+        },
+      },
+      _avg: {
+        ratingByUser: true,
+      },
+      _count: {
+        ratingByUser: true,
+      },
+    });
+
+    const companyRatingSummary = {
+      average: Number(companyRatingAggregate?._avg?.ratingByUser || 0),
+      total: Number(companyRatingAggregate?._count?.ratingByUser || 0),
+    };
+
+    res.json({
+      ...jobOffer,
+      company: {
+        ...jobOffer.company,
+        ratingSummary: companyRatingSummary,
+      },
+    });
   } catch (error) {
     console.error('Error en getJobOfferById:', error);
     res.status(500).json({ error: 'Error al obtener oferta' });
@@ -273,14 +301,53 @@ exports.getJobOfferApplicants = async (req, res) => {
       },
     });
 
+    const userIds = applications.map((application) => application.userId);
+    const userRatingAggregates = userIds.length
+      ? await prisma.application.groupBy({
+        by: ['userId'],
+        where: {
+          userId: { in: userIds },
+          status: 'ACCEPTED',
+          ratingByCompany: { not: null },
+          jobOffer: {
+            workType: 'FREELANCE',
+          },
+        },
+        _avg: {
+          ratingByCompany: true,
+        },
+        _count: {
+          ratingByCompany: true,
+        },
+      })
+      : [];
+
+    const userRatingSummaryMap = new Map(
+      userRatingAggregates.map((item) => [
+        item.userId,
+        {
+          average: Number(item?._avg?.ratingByCompany || 0),
+          total: Number(item?._count?.ratingByCompany || 0),
+        },
+      ]),
+    );
+
+    const applicationsWithRatings = applications.map((application) => ({
+      ...application,
+      user: {
+        ...application.user,
+        ratingSummary: userRatingSummaryMap.get(application.userId) || { average: 0, total: 0 },
+      },
+    }));
+
     res.json({
       jobOffer: {
         id: jobOffer.id,
         title: jobOffer.title,
         workType: jobOffer.workType,
       },
-      applications,
-      total: applications.length,
+      applications: applicationsWithRatings,
+      total: applicationsWithRatings.length,
     });
   } catch (error) {
     console.error('Error en getJobOfferApplicants:', error);
