@@ -27,6 +27,7 @@ model User {
   experience    Json?         // Array de experiencias laborales
   education     Json?         // Array de formación académica
   skills        String[]      // Array de habilidades
+  languages     String[]      // Array de idiomas que maneja el profesional
   cvUrl         String?       // URL del CV subido
   uploadedFiles Json?         // Archivos subidos por el usuario (máx. 4)
   

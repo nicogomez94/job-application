@@ -244,7 +244,7 @@ export default function JobApplicants() {
                         <strong>Email:</strong> {application.user?.email || 'No disponible'}
                       </p>
                       <p style={{ color: '#5e4d38', margin: 0 }}>
-                        <strong>Teléfono:</strong> {application.user?.phone || 'No disponible'}
+                        <strong>Whatsapp:</strong> {application.user?.phone || 'No disponible'}
                       </p>
                       <p style={{ color: '#5e4d38', margin: 0 }}>
                         <strong>Ubicación:</strong> {application.user?.location || 'No disponible'}

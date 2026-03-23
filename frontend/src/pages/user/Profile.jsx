@@ -17,6 +17,7 @@ const initialForm = {
   linkedinUrl: '',
   portfolioUrl: '',
   skillsText: '',
+  languagesText: '',
 };
 
 const MAX_OTHER_FILES = 4;
@@ -107,6 +108,7 @@ export default function UserProfile() {
           linkedinUrl: user.linkedinUrl || '',
           portfolioUrl: user.portfolioUrl || '',
           skillsText: (user.skills || []).join(', '),
+          languagesText: (user.languages || []).join(', '),
         });
       } catch (error) {
         toast.error(error.response?.data?.error || 'No se pudo cargar tu perfil');
@@ -150,6 +152,10 @@ export default function UserProfile() {
         linkedinUrl: formData.linkedinUrl.trim() || null,
         portfolioUrl: formData.portfolioUrl.trim() || null,
         skills: formData.skillsText
+          .split(',')
+          .map((item) => item.trim())
+          .filter(Boolean),
+        languages: formData.languagesText
           .split(',')
           .map((item) => item.trim())
           .filter(Boolean),
@@ -502,7 +508,7 @@ export default function UserProfile() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
           <div>
             <label htmlFor="user-phone" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
-              Teléfono
+              Whatsapp
             </label>
             <input id="user-phone" className="input" name="phone" placeholder="Teléfono" value={formData.phone} onChange={handleChange} />
           </div>
@@ -563,6 +569,20 @@ export default function UserProfile() {
             name="skillsText"
             placeholder="Skills separadas por coma (ej: React, Node.js, SQL)"
             value={formData.skillsText}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div style={{ marginTop: '1rem' }}>
+          <label htmlFor="user-languages" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+            Idiomas
+          </label>
+          <input
+            id="user-languages"
+            className="input"
+            name="languagesText"
+            placeholder="Idiomas separados por coma (ej: Español, Inglés, Portugués)"
+            value={formData.languagesText}
             onChange={handleChange}
           />
         </div>

@@ -245,6 +245,7 @@ exports.getProfile = async (req, res) => {
           experience: true,
           education: true,
           skills: true,
+          languages: true,
           cvUrl: true,
           uploadedFiles: true,
           location: true,

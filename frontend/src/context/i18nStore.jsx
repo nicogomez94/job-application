@@ -45,6 +45,8 @@ const ES_TO_EN = {
   'Título profesional': 'Professional title',
   'Resumen profesional': 'Professional summary',
   'Skills separadas por coma (ej: React, Node.js, SQL)': 'Skills separated by commas (e.g., React, Node.js, SQL)',
+  Idiomas: 'Languages',
+  'Idiomas separados por coma (ej: Español, Inglés, Portugués)': 'Languages separated by commas (e.g., Spanish, English, Portuguese)',
   'LinkedIn URL': 'LinkedIn URL',
   'Portfolio URL': 'Portfolio URL',
   'Guardando...': 'Saving...',

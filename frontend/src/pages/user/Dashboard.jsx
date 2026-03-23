@@ -197,7 +197,7 @@ export default function UserDashboard() {
 
       {/* ===== POSTULACIONES RECIENTES ===== */}
       <div className="card" style={{ marginBottom: '1.2rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem', marginBottom: '0.8rem' }}>
           <h2 style={{ margin: 0 }}>Postulaciones recientes</h2>
           <Link className="btn btn-outline" style={{ fontSize: '0.88rem' }} to="/user/applications">Ver todas</Link>
         </div>
@@ -269,7 +269,7 @@ export default function UserDashboard() {
       <div className="card">
         <h2 style={{ marginBottom: '0.8rem' }}>Acciones rápidas</h2>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem' }}>
-          <Link className="btn btn-primary" to="/jobs">Buscar ofertas</Link>
+          {/* <Link className="btn btn-primary" to="/jobs">Buscar ofertas</Link> */}
           <Link className="btn btn-outline" to="/user/applications">Mis postulaciones</Link>
           <Link className="btn btn-outline" to="/user/profile">Editar perfil</Link>
           {cvUrl && (

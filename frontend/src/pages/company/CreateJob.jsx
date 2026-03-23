@@ -211,8 +211,8 @@ export default function CreateJob() {
                 Modalidad
               </label>
               <select id="create-job-work-mode" className="input" name="workMode" value={formData.workMode} onChange={handleChange}>
-                <option value="PRESENCIAL">Presencial</option>
                 <option value="REMOTO">Remoto</option>
+                <option value="PRESENCIAL">Presencial</option>
                 <option value="HIBRIDO">Híbrido</option>
               </select>
             </div>
