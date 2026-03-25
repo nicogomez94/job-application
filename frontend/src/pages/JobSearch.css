@@ -1,5 +1,17 @@
 /* Responsive styles for JobSearch page */
 
+.job-applied-badge {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #9ccfb0;
+  background: #eef7f1;
+  color: #2f6b42;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+}
+
 @media (max-width: 1024px) {
   .job-search-container {
     grid-template-columns: 1fr !important;

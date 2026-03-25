@@ -152,9 +152,17 @@ export default function JobDetail() {
             )}
 
             <div className="jd-hero-info">
-              {job.category?.name && (
-                <span className="jd-category-badge">{job.category.name}</span>
-              )}
+              <div className="jd-top-badges">
+                {job.category?.name && (
+                  <span className="jd-category-badge">{job.category.name}</span>
+                )}
+                {hasApplied && (
+                  <span className="jd-applied-status-badge">
+                    <Check size={13} />
+                    Ya postulado
+                  </span>
+                )}
+              </div>
               <h1 className="jd-title">{job.title}</h1>
               <p className="jd-company-name">{job.company?.companyName}</p>
 

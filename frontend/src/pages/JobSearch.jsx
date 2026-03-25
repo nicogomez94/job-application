@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { categoryService, jobOfferService } from '../services';
+import { categoryService, jobOfferService, userService } from '../services';
 import { BACKEND_BASE_URL } from '../services/apiBaseUrl';
+import { useAuthStore } from '../context/authStore';
 import './JobSearch.css';
 
 const toAssetUrl = (assetPath) => {
@@ -26,6 +27,7 @@ const formatSalary = (min, max, period) => {
 };
 
 export default function JobSearch() {
+  const { isAuthenticated, userType } = useAuthStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const getFiltersFromParams = () => ({
     search: searchParams.get('search') || '',
@@ -40,6 +42,7 @@ export default function JobSearch() {
   const [categories, setCategories] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, pages: 1, total: 0 });
   const [loading, setLoading] = useState(false);
+  const [appliedJobOfferIds, setAppliedJobOfferIds] = useState(new Set());
   const getCategoryOffersCount = (category) => category?.activeJobOffersCount ?? category?._count?.jobOffers ?? 0;
   const categoriesOrdered = useMemo(() => {
     const isOtherCategory = (name) => {
@@ -99,6 +102,29 @@ export default function JobSearch() {
 
     fetchJobs();
   }, [filters]);
+
+  useEffect(() => {
+    const fetchMyApplications = async () => {
+      if (!isAuthenticated || userType !== 'user') {
+        setAppliedJobOfferIds(new Set());
+        return;
+      }
+
+      try {
+        const response = await userService.getMyApplications();
+        const appliedIds = new Set(
+          (response.data || [])
+            .map((application) => application.jobOfferId || application.jobOffer?.id)
+            .filter(Boolean)
+        );
+        setAppliedJobOfferIds(appliedIds);
+      } catch (error) {
+        setAppliedJobOfferIds(new Set());
+      }
+    };
+
+    fetchMyApplications();
+  }, [isAuthenticated, userType]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -215,7 +241,12 @@ export default function JobSearch() {
                   style={{ width: '64px', height: '64px', borderRadius: '0.5rem', objectFit: 'cover' }}
                 />
                 <div style={{ flex: 1 }}>
-                  <h2 style={{ color: '#2f2416', marginBottom: '0.25rem' }}>{job.title}</h2>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.25rem' }}>
+                    <h2 style={{ color: '#2f2416', marginBottom: 0 }}>{job.title}</h2>
+                    {appliedJobOfferIds.has(job.id) && (
+                      <span className="job-applied-badge">Ya postulado</span>
+                    )}
+                  </div>
                   <p style={{ color: '#5e4d38', marginBottom: '0.5rem' }}>{job.company?.companyName || 'Empresa'}</p>
                   <p style={{ color: '#7e705c', marginBottom: '0.7rem', lineHeight: 1.5 }}>
                     {(job.description || '').slice(0, 180)}
