@@ -167,11 +167,11 @@ export default function JobSearch() {
     <div style={{ minHeight: '100vh', background: '#fcf7ef', paddingBottom: '3rem' }}>
       <div style={{ background: 'linear-gradient(135deg, var(--primary-600) 0%, var(--primary-500) 100%)', padding: '2.5rem 0' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem', color: '#fff' }}>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginBottom: '1rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '0.75rem', marginBottom: '1rem' }}>
             <button
               type="button"
               className="btn"
-              onClick={() => navigate(-1)}
+              onClick={() => navigate('/')}
               style={{ background: '#fff', color: 'var(--primary-700)' }}
             >
               Volver
