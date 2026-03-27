@@ -57,6 +57,9 @@ export default function RegisterCompany() {
   };
 
   const handleRemoveFile = () => {
+    const confirmed = window.confirm('¿Estás seguro de que querés borrar este archivo?');
+    if (!confirmed) return;
+
     setFormData((prev) => ({ ...prev, logo: null }));
   };
 

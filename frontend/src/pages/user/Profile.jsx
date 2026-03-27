@@ -233,6 +233,9 @@ export default function UserProfile() {
   };
 
   const handleDeleteCv = async () => {
+    const confirmed = window.confirm('¿Estás seguro de que querés borrar este archivo?');
+    if (!confirmed) return;
+
     setDeletingCv(true);
     try {
       await userService.deleteCV();
@@ -273,6 +276,9 @@ export default function UserProfile() {
   };
 
   const handleRemoveSelectedOtherFile = (indexToRemove) => {
+    const confirmed = window.confirm('¿Estás seguro de que querés borrar este archivo?');
+    if (!confirmed) return;
+
     setSelectedOtherFiles((prev) => prev.filter((_, index) => index !== indexToRemove));
   };
 
@@ -303,6 +309,9 @@ export default function UserProfile() {
   };
 
   const handleDeleteOtherFile = async (index) => {
+    const confirmed = window.confirm('¿Estás seguro de que querés borrar este archivo?');
+    if (!confirmed) return;
+
     setDeletingOtherIndex(index);
     try {
       const response = await userService.deleteOtherFile(index);

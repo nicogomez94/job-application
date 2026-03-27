@@ -86,6 +86,9 @@ export default function RegisterUser() {
   };
 
   const handleRemoveOtherFile = (fileIndex) => {
+    const confirmed = window.confirm('¿Estás seguro de que querés borrar este archivo?');
+    if (!confirmed) return;
+
     setFormData((prev) => ({
       ...prev,
       otherFiles: prev.otherFiles.filter((_, index) => index !== fileIndex),
@@ -93,6 +96,9 @@ export default function RegisterUser() {
   };
 
   const handleRemoveCv = () => {
+    const confirmed = window.confirm('¿Estás seguro de que querés borrar este archivo?');
+    if (!confirmed) return;
+
     setFormData((prev) => ({ ...prev, cvFile: null }));
   };
 

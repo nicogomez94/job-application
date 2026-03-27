@@ -24,7 +24,7 @@
 /* Page wrapper */
 .select-plan-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
+  background: #fff;
   padding: 3rem 1rem;
   display: flex;
   align-items: flex-start;
@@ -40,28 +40,13 @@
 .select-plan-header {
   text-align: center;
   margin-bottom: 2.5rem;
-  color: #fff;
-}
-
-.select-plan-free-banner {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #fff;
-  padding: 0.35rem 1rem;
-  border-radius: 999px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-bottom: 1.25rem;
-  backdrop-filter: blur(8px);
+  color: #2f2416;
 }
 
 .select-plan-title {
   font-size: 2.5rem;
   font-weight: 800;
-  color: #fff;
+  color: #2f2416;
   margin-bottom: 0.75rem;
 }
 
@@ -110,13 +95,17 @@
 
 /* Popular badge */
 .select-plan-badge {
-  position: absolute;
-  top: -13px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--primary-500);
-  letter-spacing: 0.03em;
-  white-space: nowrap;
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary-500);
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    border-radius: 15px;
+    padding: 11px;
+    color: white;
+    font-weight: bold;
 }
 
 /* Card header */
@@ -160,22 +149,10 @@
   border-bottom: 1px solid #f3ebde;
 }
 
-.select-plan-free-tag {
-  display: inline-block;
-  background: #dcfce7;
-  color: #16a34a;
-  font-size: 1.5rem;
-  font-weight: 800;
-  padding: 0.25rem 1rem;
-  border-radius: 0.5rem;
-  margin-bottom: 0.5rem;
-  letter-spacing: 0.02em;
-}
-
 .select-plan-original-price {
-  font-size: 0.8rem;
-  color: #aa9a7f;
-  text-decoration: line-through;
+  font-size: 1.1rem;
+  color: #4e3518;
+  font-weight: 800;
 }
 
 .select-plan-discount {
@@ -255,7 +232,7 @@
 /* Footer */
 .select-plan-footer {
   text-align: center;
-  color: rgba(255, 255, 255, 0.75);
+  color: #6f604b;
   font-size: 0.85rem;
   line-height: 1.6;
   display: flex;
@@ -264,12 +241,12 @@
 }
 
 .select-plan-footer-mp {
-  color: rgba(255, 255, 255, 0.6);
+  color: #7e705c;
   font-size: 0.8rem;
 }
 
 .select-plan-footer-mp strong {
-  color: rgba(255, 255, 255, 0.85);
+  color: #5f3916;
 }
 
 /* Responsive */

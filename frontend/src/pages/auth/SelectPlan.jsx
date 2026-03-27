@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check, Star, Zap, Shield, Clock } from 'lucide-react';
+import { Check, Star, Shield, Clock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { subscriptionService } from '../../services';
 import './SelectPlan.css';
@@ -13,7 +13,7 @@ const PLAN_META = {
   },
   QUARTERLY: {
     highlight: true,
-    badge: 'Más popular',
+    badge: 'Recomendado',
     icon: Star,
     subtitle: 'La mejor relación precio-valor',
   },
@@ -29,6 +29,7 @@ export default function SelectPlan() {
   const [loading, setLoading] = useState(true);
   const [activating, setActivating] = useState(null);
   const navigate = useNavigate();
+  const containsGratis = (text = '') => /gratis/i.test(String(text));
 
   useEffect(() => {
     const init = async () => {
@@ -105,15 +106,11 @@ export default function SelectPlan() {
       <div className="select-plan-container">
         {/* Header */}
         <div className="select-plan-header">
-          <div className="select-plan-free-banner">
-            <Zap size={16} />
-            <span>Período de lanzamiento — ¡Todo gratis!</span>
-          </div>
-          <h1 className="select-plan-title">Elegí tu plan</h1>
-          <p className="select-plan-subtitle">
+          <h1 className="select-plan-title">Seleccione el plan que mejor se adapte a su empresa</h1>
+          {/* <p className="select-plan-subtitle">
             Seleccioná el plan que mejor se adapte a tu empresa. Por ahora, todos los planes son
             gratuitos y no requieren tarjeta de crédito.
-          </p>
+          </p> */}
         </div>
 
         {/* Plan cards */}
@@ -141,17 +138,16 @@ export default function SelectPlan() {
                 </div>
 
                 <div className="select-plan-price-section">
-                  <div className="select-plan-free-tag">¡GRATIS</div>
                   <div className="select-plan-original-price">
                     Valor regular: ${plan.price?.toLocaleString('es-AR')} {plan.currency}/{plan.duration}
                   </div>
-                  {plan.discount && (
+                  {plan.discount && !containsGratis(plan.discount) && (
                     <div className="select-plan-discount">{plan.discount}</div>
                   )}
                 </div>
 
                 <ul className="select-plan-features">
-                  {plan.features?.map((feature, i) => (
+                  {plan.features?.filter((feature) => !containsGratis(feature)).map((feature, i) => (
                     <li key={i} className="select-plan-feature">
                       <Check size={16} className="select-plan-check" />
                       <span>{feature}</span>
