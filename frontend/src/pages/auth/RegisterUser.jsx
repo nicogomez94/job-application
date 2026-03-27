@@ -33,7 +33,7 @@ const getInitialForm = () => {
 export default function RegisterUser() {
   const [formData, setFormData] = useState(getInitialForm);
   const [loading, setLoading] = useState(false);
-  const { setAuth } = useAuthStore();
+  const { setAuth, logout } = useAuthStore();
   const navigate = useNavigate();
   const userType = 'user';
 
@@ -105,6 +105,11 @@ export default function RegisterUser() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!formData.cvFile) {
+      toast.error('Debés subir tu CV para crear la cuenta');
+      return;
+    }
+
     if (formData.cvFile && formData.cvFile.size > MAX_FILE_SIZE) {
       toast.error('El CV debe pesar como máximo 5 MB');
       return;
@@ -136,13 +141,25 @@ export default function RegisterUser() {
       setAuth(user, 'user', token);
 
       try {
-        if (formData.cvFile) {
-          await userService.uploadCV(formData.cvFile);
+        await userService.uploadCV(formData.cvFile);
+      } catch (cvError) {
+        try {
+          await userService.deleteAccount();
+        } catch (deleteError) {
+          console.error('No se pudo eliminar la cuenta tras fallar la subida del CV:', deleteError);
         }
+        logout();
+        toast.error(cvError.response?.data?.error || 'No se pudo subir el CV');
+        return;
+      }
+
+      let uploadedOtherFiles = 0;
+      try {
         for (const file of formData.otherFiles) {
           await userService.uploadOtherFile(file);
+          uploadedOtherFiles += 1;
         }
-        const totalUploaded = (formData.cvFile ? 1 : 0) + formData.otherFiles.length;
+        const totalUploaded = 1 + uploadedOtherFiles;
         if (totalUploaded > 0) {
           toast.success(
             totalUploaded === 1

@@ -76,6 +76,13 @@ exports.loginUser = async (req, res) => {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
 
+    // Requerir CV para permitir el inicio de sesión de candidatos
+    if (!user.cvUrl) {
+      return res.status(403).json({
+        error: 'Debés subir tu CV para iniciar sesión',
+      });
+    }
+
     // Generar token
     const token = generateToken({ id: user.id, type: 'user' });
 

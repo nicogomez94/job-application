@@ -5,44 +5,6 @@ import { applicationService, userService } from '../../services';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
 import StarRatingInput from '../../components/StarRatingInput';
 
-const STATUS_LABELS = {
-  PENDING: 'Pendiente',
-  REVIEWING: 'En revisión',
-  SHORTLISTED: 'Preseleccionado',
-  INTERVIEWED: 'Entrevistado',
-  REJECTED: 'Rechazado',
-  ACCEPTED: 'Aceptado',
-};
-
-const STATUS_CLASS = {
-  PENDING: 'badge badge-warning',
-  REVIEWING: 'badge badge-info',
-  SHORTLISTED: 'badge badge-info',
-  INTERVIEWED: 'badge badge-info',
-  REJECTED: 'badge badge-error',
-  ACCEPTED: 'badge badge-success',
-};
-
-const getStatusLabel = (status, workType) => {
-  if (workType === 'FREELANCE') {
-    if (status === 'ACCEPTED') return 'Finalizado';
-    if (status === 'REJECTED') return 'No finalizado';
-    return 'Pendiente de finalización';
-  }
-
-  return STATUS_LABELS[status] || status;
-};
-
-const getStatusClass = (status, workType) => {
-  if (workType === 'FREELANCE') {
-    if (status === 'ACCEPTED') return 'badge badge-success';
-    if (status === 'REJECTED') return 'badge badge-error';
-    return 'badge badge-warning';
-  }
-
-  return STATUS_CLASS[status] || 'badge badge-info';
-};
-
 const formatDate = (date) =>
   new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(date));
 
@@ -122,9 +84,7 @@ export default function UserApplications() {
                 Postulado el {formatDate(application.createdAt)}
               </p>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.8rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                <span className={getStatusClass(application.status, application.jobOffer?.workType)}>
-                  {getStatusLabel(application.status, application.jobOffer?.workType)}
-                </span>
+                <span className="badge badge-applied">Postulado</span>
                 <Link className="btn btn-outline" to={`/jobs/${application.jobOfferId}`}>
                   Ver oferta
                 </Link>

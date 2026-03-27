@@ -159,7 +159,7 @@ export default function JobDetail() {
                 {hasApplied && (
                   <span className="jd-applied-status-badge">
                     <Check size={13} />
-                    Ya postulado
+                    Postulado
                   </span>
                 )}
               </div>

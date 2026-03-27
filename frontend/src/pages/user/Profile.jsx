@@ -337,7 +337,7 @@ export default function UserProfile() {
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1rem' }}>
       <BackToDashboardButton to="/user/dashboard" />
-      <h1 style={{ marginBottom: '1rem' }}>Mi Perfil</h1>
+      <h1 style={{ marginBottom: '1rem' }}>MI perfil de trabajo</h1>
       <form className="card" onSubmit={handleSubmit}>
         <div
           style={{

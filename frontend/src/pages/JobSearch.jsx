@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { categoryService, jobOfferService, userService } from '../services';
 import { BACKEND_BASE_URL } from '../services/apiBaseUrl';
@@ -27,6 +27,7 @@ const formatSalary = (min, max, period) => {
 };
 
 export default function JobSearch() {
+  const navigate = useNavigate();
   const { isAuthenticated, userType } = useAuthStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const getFiltersFromParams = () => ({
@@ -166,6 +167,16 @@ export default function JobSearch() {
     <div style={{ minHeight: '100vh', background: '#fcf7ef', paddingBottom: '3rem' }}>
       <div style={{ background: 'linear-gradient(135deg, var(--primary-600) 0%, var(--primary-500) 100%)', padding: '2.5rem 0' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem', color: '#fff' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginBottom: '1rem' }}>
+            <button
+              type="button"
+              className="btn"
+              onClick={() => navigate(-1)}
+              style={{ background: '#fff', color: 'var(--primary-700)' }}
+            >
+              Volver
+            </button>
+          </div>
           <h1 style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>Buscar Profesión</h1>
           <p style={{fontSize: '1.2rem', opacity: 0.9, color : '#f7f7f7' }}>Encontrá ofertas activas y postulá en pocos pasos.</p>
         </div>
@@ -214,8 +225,8 @@ export default function JobSearch() {
           </select> */}
         </div>
 
-        <div style={{ marginTop: '1rem', color: '#6f604b', fontSize: '0.95rem' }}>
-          {loading ? 'Cargando ofertas...' : `${pagination.total || 0} ofertas encontradas`}
+        <div style={{ marginTop: '1rem', color: '#6f604b', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <span>{loading ? 'Cargando ofertas...' : `${pagination.total || 0} ofertas encontradas`}</span>
         </div>
 
         <div style={{ marginTop: '1rem', display: 'grid', gap: '1rem' }}>
@@ -244,7 +255,7 @@ export default function JobSearch() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.25rem' }}>
                     <h2 style={{ color: '#2f2416', marginBottom: 0 }}>{job.title}</h2>
                     {appliedJobOfferIds.has(job.id) && (
-                      <span className="job-applied-badge">Ya postulado</span>
+                      <span className="job-applied-badge">Postulado</span>
                     )}
                   </div>
                   <p style={{ color: '#5e4d38', marginBottom: '0.5rem' }}>{job.company?.companyName || 'Empresa'}</p>

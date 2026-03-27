@@ -50,7 +50,7 @@ export const DEBUG_FORM_DATA = {
     salaryMax: '1800000',
     salaryPeriod: 'monthly',
     workType: 'FULL_TIME',
-    workMode: 'HIBRIDO',
+    workMode: 'REMOTO',
     experienceLevel: 'MID',
     whatsappNumber: '+54 11 5555 5555',
     contactEmail: 'rrhh@empresa-debug.com',

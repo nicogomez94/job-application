@@ -25,7 +25,7 @@ export default function Footer() {
             <ul className="footer-list">
               <li><Link to="/jobs">{t('Buscar Empleos')}</Link></li>
               <li><Link to="/register/user">{t('Crear Cuenta')}</Link></li>
-              <li><Link to="/user/profile">{t('Mi Perfil')}</Link></li>
+              <li><Link to="/user/profile">{t('MI perfil de trabajo')}</Link></li>
               <li><Link to="/sugerencias">{t('Sugerencias para Profesionales y Empresas')}</Link></li>
             </ul>
           </div>

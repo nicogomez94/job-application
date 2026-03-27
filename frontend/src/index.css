@@ -157,6 +157,13 @@ h2 {
   color: var(--info-800);
 }
 
+.badge-applied {
+  background-color: #eef7f1;
+  color: #2f6b42;
+  border: 1px solid #9ccfb0;
+  font-weight: 600;
+}
+
 /* Responsive Global Styles */
 @media (max-width: 768px) {
   body {

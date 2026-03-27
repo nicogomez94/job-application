@@ -15,44 +15,6 @@ const toAssetUrl = (path) => {
 const formatDate = (date) =>
   new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(date));
 
-const STATUS_LABELS = {
-  PENDING: 'Pendiente',
-  REVIEWING: 'En revisión',
-  SHORTLISTED: 'Preseleccionado',
-  INTERVIEWED: 'Entrevistado',
-  REJECTED: 'Rechazado',
-  ACCEPTED: 'Aceptado',
-};
-
-const STATUS_COLORS = {
-  PENDING:     { bg: '#fff7e0', color: '#92610a' },
-  REVIEWING:   { bg: '#e0f0ff', color: '#1553a0' },
-  SHORTLISTED: { bg: '#e0f0ff', color: '#1553a0' },
-  INTERVIEWED: { bg: '#ede0ff', color: '#6b21a8' },
-  REJECTED:    { bg: '#fee2e2', color: '#991b1b' },
-  ACCEPTED:    { bg: '#dcfce7', color: '#166534' },
-};
-
-const getStatusLabel = (status, workType) => {
-  if (workType === 'FREELANCE') {
-    if (status === 'ACCEPTED') return 'Finalizado';
-    if (status === 'REJECTED') return 'No finalizado';
-    return 'Pendiente de finalización';
-  }
-
-  return STATUS_LABELS[status] || status;
-};
-
-const getStatusColors = (status, workType) => {
-  if (workType === 'FREELANCE') {
-    if (status === 'ACCEPTED') return STATUS_COLORS.ACCEPTED;
-    if (status === 'REJECTED') return STATUS_COLORS.REJECTED;
-    return STATUS_COLORS.PENDING;
-  }
-
-  return STATUS_COLORS[status] || STATUS_COLORS.PENDING;
-};
-
 export default function UserDashboard() {
   const [profile, setProfile] = useState(null);
   const [applications, setApplications] = useState([]);
@@ -96,7 +58,7 @@ export default function UserDashboard() {
 
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '2rem 1rem' }}>
-      <h1 style={{ marginBottom: '1rem' }}>Mi perfil</h1>
+      <h1 style={{ marginBottom: '1rem' }}>MI perfil de trabajo</h1>
 
       {/* ===== HEADER ===== */}
       <div className="card" style={{ marginBottom: '1.2rem', display: 'flex', gap: '1.5rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
@@ -116,7 +78,7 @@ export default function UserDashboard() {
           </div>
         )}
         <div style={{ flex: 1, minWidth: '200px' }}>
-          <h1 style={{ margin: '0 0 0.2rem' }}>{fullName || 'Mi Perfil'}</h1>
+          <h1 style={{ margin: '0 0 0.2rem' }}>{fullName || 'MI perfil de trabajo'}</h1>
           {profile?.title && (
             <p style={{ margin: '0 0 0.4rem', color: '#5e4d38', fontWeight: '500', fontSize: '1rem' }}>{profile.title}</p>
           )}
@@ -210,7 +172,6 @@ export default function UserDashboard() {
           <div style={{ display: 'grid', gap: '0.6rem' }}>
             {recentApps.map((app) => {
               const companyLogoUrl = toAssetUrl(app.jobOffer?.company?.companyLogo);
-              const statusStyle = getStatusColors(app.status, app.jobOffer?.workType);
               return (
                 <div
                   key={app.id}
@@ -244,12 +205,7 @@ export default function UserDashboard() {
                     </p>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
-                    <span style={{
-                      padding: '0.2rem 0.65rem', borderRadius: '999px', fontSize: '0.82rem',
-                      fontWeight: '600', background: statusStyle.bg, color: statusStyle.color,
-                    }}>
-                      {getStatusLabel(app.status, app.jobOffer?.workType)}
-                    </span>
+                    <span className="badge badge-applied" style={{ fontSize: '0.82rem' }}>Postulado</span>
                     <Link
                       className="btn btn-outline"
                       style={{ fontSize: '0.82rem', padding: '0.2rem 0.6rem' }}
