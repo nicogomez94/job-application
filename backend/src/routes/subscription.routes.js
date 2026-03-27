@@ -14,7 +14,7 @@ router.use(authenticateCompany);
 
 // Gestión de suscripciones
 router.post('/', [
-  body('plan').isIn(['MONTHLY', 'QUARTERLY', 'ANNUAL']).withMessage('Plan inválido'),
+  body('plan').isIn(['TRIAL', 'MONTHLY', 'QUARTERLY', 'ANNUAL']).withMessage('Plan inválido'),
   body('amount').isDecimal().withMessage('El monto debe ser un número'),
   body('paymentId').optional().isString(),
   // paymentMethod: 'free' = período gratuito | 'mercadopago' = pago real

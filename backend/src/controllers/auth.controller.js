@@ -1,6 +1,11 @@
 const bcrypt = require('bcryptjs');
 const prisma = require('../config/database');
 const { generateToken } = require('../config/jwt');
+const addMonths = (date, months) => {
+  const value = new Date(date);
+  value.setMonth(value.getMonth() + months);
+  return value;
+};
 
 // ==================== USUARIOS ====================
 
@@ -104,37 +109,55 @@ exports.registerCompany = async (req, res) => {
     // Hash de contraseña
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Crear empresa
-    const company = await prisma.company.create({
-      data: {
-        email,
-        password: hashedPassword,
-        companyName,
-        description,
-        website,
-        location,
-        industry,
-        size,
-      },
-      select: {
-        id: true,
-        email: true,
-        companyName: true,
-        description: true,
-        website: true,
-        location: true,
-        industry: true,
-        size: true,
-        isActive: true,
-        createdAt: true,
-      },
+    const company = await prisma.$transaction(async (tx) => {
+      const newCompany = await tx.company.create({
+        data: {
+          email,
+          password: hashedPassword,
+          companyName,
+          description,
+          website,
+          location,
+          industry,
+          size,
+        },
+        select: {
+          id: true,
+          email: true,
+          companyName: true,
+          description: true,
+          website: true,
+          location: true,
+          industry: true,
+          size: true,
+          isActive: true,
+          createdAt: true,
+        },
+      });
+
+      const startDate = new Date();
+      await tx.subscription.create({
+        data: {
+          companyId: newCompany.id,
+          plan: 'TRIAL',
+          status: 'ACTIVE',
+          startDate,
+          endDate: addMonths(startDate, 2),
+          amount: 0,
+          currency: 'USD',
+          paymentStatus: 'free',
+          paymentMethod: 'free',
+        },
+      });
+
+      return newCompany;
     });
 
     // Generar token
     const token = generateToken({ id: company.id, type: 'company' });
 
     res.status(201).json({
-      message: 'Empresa registrada exitosamente',
+      message: 'Empresa registrada exitosamente. Se activó el plan gratuito de 2 meses.',
       company,
       token,
     });

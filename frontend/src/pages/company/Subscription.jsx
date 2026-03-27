@@ -8,6 +8,12 @@ const formatDate = (date) =>
 
 const formatAmount = (amount, currency = 'ARS') =>
   new Intl.NumberFormat('es-AR', { style: 'currency', currency }).format(Number(amount || 0));
+const PLAN_LABELS = {
+  TRIAL: 'Prueba 2 meses',
+  MONTHLY: 'Plan 3 meses',
+  QUARTERLY: 'Plan 7 meses',
+  ANNUAL: 'Plan 12 + 1',
+};
 
 export default function CompanySubscription() {
   const [plans, setPlans] = useState([]);
@@ -75,6 +81,9 @@ export default function CompanySubscription() {
     }
   };
 
+  const currentPlanLabel = PLAN_LABELS[status?.subscription?.plan] || status?.subscription?.plan || '-';
+  const isTrialActive = status?.hasActiveSubscription && status?.subscription?.plan === 'TRIAL';
+
   if (loading) {
     return (
       <div style={{ minHeight: '50vh', display: 'grid', placeItems: 'center' }}>
@@ -87,13 +96,36 @@ export default function CompanySubscription() {
     <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '2rem 1rem' }}>
       <BackToDashboardButton to="/company/dashboard" />
       <h1 style={{ marginBottom: '1rem' }}>Suscripciones</h1>
+      {isTrialActive && (
+        <div
+          style={{
+            marginBottom: '1rem',
+            border: '2px solid #dcb16e',
+            background: '#fff8ec',
+            borderRadius: '0.9rem',
+            padding: '1rem 1.1rem',
+          }}
+        >
+          <p style={{ margin: 0, fontSize: '1.45rem', fontWeight: 800, color: '#4e3518' }}>
+            POR TIEMPO LIMITADO
+          </p>
+          <p style={{ margin: '0.45rem 0 0', color: '#5f4d35', lineHeight: 1.55 }}>
+            Tu empresa se registró con un plan gratuito de 2 meses hasta el{' '}
+            <strong>{formatDate(status.subscription?.endDate)}</strong>. Luego deberás cambiar a un
+            plan pago de la lista para continuar sin interrupciones.
+          </p>
+          <a href="#planes-pago" className="btn btn-primary" style={{ marginTop: '0.8rem' }}>
+            Elegir plan pago
+          </a>
+        </div>
+      )}
 
       <div className="card" style={{ marginBottom: '1rem' }}>
         <h2 style={{ marginBottom: '0.7rem' }}>Estado actual</h2>
         {status?.hasActiveSubscription ? (
           <>
             <p style={{ color: '#5e4d38' }}>
-              Plan: <strong>{status.subscription?.plan}</strong>
+              Plan: <strong>{currentPlanLabel}</strong>
             </p>
             <p style={{ color: '#5e4d38' }}>
               Vigencia: {formatDate(status.subscription?.startDate)} - {formatDate(status.subscription?.endDate)}
@@ -110,7 +142,7 @@ export default function CompanySubscription() {
         )}
       </div>
 
-      <div className="card" style={{ marginBottom: '1rem' }}>
+      <div className="card" id="planes-pago" style={{ marginBottom: '1rem' }}>
         <h2 style={{ marginBottom: '0.8rem' }}>Planes disponibles</h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '1rem' }}>
           {plans.map((plan) => (

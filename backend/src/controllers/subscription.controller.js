@@ -1,4 +1,9 @@
 const prisma = require('../config/database');
+const addMonths = (date, months) => {
+  const value = new Date(date);
+  value.setMonth(value.getMonth() + months);
+  return value;
+};
 
 // Crear suscripción (pago exitoso)
 exports.createSubscription = async (req, res) => {
@@ -14,21 +19,24 @@ exports.createSubscription = async (req, res) => {
 
     // Determinar fecha de fin según el plan
     const startDate = new Date();
-    const endDate = new Date();
-
+    let durationInMonths = 3;
     switch (plan) {
+      case 'TRIAL':
+        durationInMonths = 2;
+        break;
       case 'MONTHLY':
-        endDate.setMonth(endDate.getMonth() + 3);
+        durationInMonths = 3;
         break;
       case 'QUARTERLY':
-        endDate.setMonth(endDate.getMonth() + 7);
+        durationInMonths = 7;
         break;
       case 'ANNUAL':
-        endDate.setMonth(endDate.getMonth() + 13);
+        durationInMonths = 13;
         break;
       default:
-        endDate.setMonth(endDate.getMonth() + 3);
+        durationInMonths = 3;
     }
+    const endDate = addMonths(startDate, durationInMonths);
 
     // Desactivar suscripciones anteriores
     await prisma.subscription.updateMany({

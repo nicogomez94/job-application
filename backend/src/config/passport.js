@@ -2,6 +2,11 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
 const prisma = require('./database');
+const addMonths = (date, months) => {
+  const value = new Date(date);
+  value.setMonth(value.getMonth() + months);
+  return value;
+};
 
 // JWT Strategy
 const jwtOptions = {
@@ -86,13 +91,32 @@ passport.use(
         });
 
         if (!company) {
-          company = await prisma.company.create({
-            data: {
-              googleId: profile.id,
-              email: profile.emails[0].value,
-              companyName: profile.displayName,
-              companyLogo: profile.photos?.[0]?.value,
-            },
+          company = await prisma.$transaction(async (tx) => {
+            const createdCompany = await tx.company.create({
+              data: {
+                googleId: profile.id,
+                email: profile.emails[0].value,
+                companyName: profile.displayName,
+                companyLogo: profile.photos?.[0]?.value,
+              },
+            });
+
+            const startDate = new Date();
+            await tx.subscription.create({
+              data: {
+                companyId: createdCompany.id,
+                plan: 'TRIAL',
+                status: 'ACTIVE',
+                startDate,
+                endDate: addMonths(startDate, 2),
+                amount: 0,
+                currency: 'USD',
+                paymentStatus: 'free',
+                paymentMethod: 'free',
+              },
+            });
+
+            return createdCompany;
           });
         }
 

@@ -15,7 +15,7 @@ const toAssetUrl = (path) => {
 const formatDate = (date) =>
   new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(date));
 
-const PLAN_LABELS = { MONTHLY: 'Mensual', ANNUAL: 'Anual', TRIAL: 'Prueba' };
+const PLAN_LABELS = { TRIAL: 'Prueba 2 meses', MONTHLY: 'Plan 3 meses', QUARTERLY: 'Plan 7 meses', ANNUAL: 'Plan 12 + 1' };
 const WORKMODE_LABELS = { PRESENCIAL: 'Presencial', REMOTO: 'Remoto', HIBRIDO: 'Híbrido' };
 
 export default function CompanyDashboard() {
