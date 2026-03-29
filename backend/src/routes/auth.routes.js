@@ -28,6 +28,15 @@ const loginValidation = [
   validate,
 ];
 
+const recoverPasswordValidation = [
+  body('email').isEmail().withMessage('Email inválido'),
+  body('userType')
+    .optional()
+    .isIn(['user', 'company', 'admin'])
+    .withMessage('Tipo de usuario inválido'),
+  validate,
+];
+
 // ==================== USUARIOS ====================
 
 // Registro y login usuario
@@ -66,6 +75,9 @@ router.get('/company/google/callback',
 
 // Login admin
 router.post('/admin/login', loginValidation, authController.loginAdmin);
+
+// Recuperación de clave
+router.post('/recover-password', recoverPasswordValidation, authController.requestPasswordRecovery);
 
 // ==================== PERFIL ====================
 

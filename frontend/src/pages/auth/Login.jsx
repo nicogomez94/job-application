@@ -24,7 +24,10 @@ export default function Login({
     allowedUserTypes.includes(defaultUserType) ? defaultUserType : allowedUserTypes[0] || 'user';
   const [userType, setUserType] = useState(initialType);
   const [loading, setLoading] = useState(false);
-  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+  const [isRecoveryModalOpen, setIsRecoveryModalOpen] = useState(false);
+  const [recoveryEmail, setRecoveryEmail] = useState('');
+  const [recoveryLoading, setRecoveryLoading] = useState(false);
+  const { register, handleSubmit, reset, getValues, formState: { errors } } = useForm({
     defaultValues: DEBUG_MODE ? getDebugLoginData(initialType) : { email: '', password: '' },
   });
   const { setAuth } = useAuthStore();
@@ -82,6 +85,42 @@ export default function Login({
       toast.error(error.response?.data?.error || 'Error al iniciar sesión');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const openRecoveryModal = () => {
+    setRecoveryEmail(getValues('email') || '');
+    setIsRecoveryModalOpen(true);
+  };
+
+  const closeRecoveryModal = () => {
+    if (recoveryLoading) return;
+    setIsRecoveryModalOpen(false);
+  };
+
+  const submitRecovery = async (event) => {
+    event.preventDefault();
+
+    const trimmedEmail = recoveryEmail.trim();
+    if (!trimmedEmail) {
+      toast.error('Ingresá un email válido');
+      return;
+    }
+
+    setRecoveryLoading(true);
+    try {
+      const payload = { email: trimmedEmail };
+      if (allowedUserTypes.includes(userType)) {
+        payload.userType = userType;
+      }
+
+      await authService.requestPasswordRecovery(payload);
+      toast.success('Si el email está registrado, te enviamos instrucciones para recuperar tu clave');
+      setIsRecoveryModalOpen(false);
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'No se pudo procesar la recuperación de clave');
+    } finally {
+      setRecoveryLoading(false);
     }
   };
 
@@ -159,6 +198,16 @@ export default function Login({
               )}
             </div>
 
+            <div className="login-forgot-password-wrapper">
+              <button
+                type="button"
+                className="login-forgot-password-btn"
+                onClick={openRecoveryModal}
+              >
+                Recuperar tu clave
+              </button>
+            </div>
+
             <button
               type="submit"
               disabled={loading}
@@ -223,6 +272,58 @@ export default function Login({
                 Regístrate aquí
               </Link>
             </p>
+          </div>
+        )}
+
+        {isRecoveryModalOpen && (
+          <div
+            className="login-recovery-backdrop"
+            onClick={closeRecoveryModal}
+            role="presentation"
+          >
+            <div
+              className="login-recovery-modal"
+              onClick={(event) => event.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="login-recovery-title"
+            >
+              <button
+                type="button"
+                className="login-recovery-close-btn"
+                onClick={closeRecoveryModal}
+                aria-label="Cerrar"
+              >
+                ×
+              </button>
+
+              <h3 id="login-recovery-title" className="login-recovery-title">
+                Recuperar tu clave
+              </h3>
+              <p className="login-recovery-description">
+                Ingresá tu email y te enviaremos las instrucciones para restablecerla.
+              </p>
+
+              <form className="login-recovery-form" onSubmit={submitRecovery}>
+                <label className="login-label" htmlFor="recovery-email">Email</label>
+                <input
+                  id="recovery-email"
+                  type="email"
+                  value={recoveryEmail}
+                  onChange={(event) => setRecoveryEmail(event.target.value)}
+                  className="input"
+                  placeholder="tu@email.com"
+                  required
+                />
+                <button
+                  type="submit"
+                  disabled={recoveryLoading}
+                  className="btn btn-primary login-recovery-submit-btn"
+                >
+                  {recoveryLoading ? 'Enviando...' : 'Enviar recuperación'}
+                </button>
+              </form>
+            </div>
           </div>
         )}
       </div>

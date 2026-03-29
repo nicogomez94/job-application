@@ -127,6 +127,26 @@
   width: 100%;
 }
 
+.login-forgot-password-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -0.75rem;
+}
+
+.login-forgot-password-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-size: 0.875rem;
+  color: var(--primary-600);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.login-forgot-password-btn:hover {
+  color: var(--primary-700);
+}
+
 .login-divider {
   margin-top: 1.5rem;
   position: relative;
@@ -193,4 +213,66 @@
 
 .login-register-link:hover {
   color: var(--primary-700);
+}
+
+.login-recovery-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 1000;
+}
+
+.login-recovery-modal {
+  position: relative;
+  background: white;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+}
+
+.login-recovery-close-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  background: transparent;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--gray-500);
+  cursor: pointer;
+}
+
+.login-recovery-close-btn:hover {
+  color: var(--gray-700);
+}
+
+.login-recovery-title {
+  margin: 0;
+  color: var(--gray-900);
+  font-size: 1.25rem;
+}
+
+.login-recovery-description {
+  margin: 0.75rem 0 1.25rem;
+  color: var(--gray-600);
+  font-size: 0.95rem;
+}
+
+.login-recovery-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.login-recovery-submit-btn {
+  width: 100%;
+  margin-top: 0.25rem;
 }

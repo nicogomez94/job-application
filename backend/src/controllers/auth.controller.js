@@ -252,6 +252,51 @@ exports.loginAdmin = async (req, res) => {
   }
 };
 
+// Solicitud de recuperación de clave
+exports.requestPasswordRecovery = async (req, res) => {
+  try {
+    const { email, userType } = req.body;
+    const normalizedEmail = email.trim();
+
+    const searchStrategies = {
+      user: () =>
+        prisma.user.findFirst({
+          where: { email: { equals: normalizedEmail, mode: 'insensitive' } },
+          select: { id: true },
+        }),
+      company: () =>
+        prisma.company.findFirst({
+          where: { email: { equals: normalizedEmail, mode: 'insensitive' } },
+          select: { id: true },
+        }),
+      admin: () =>
+        prisma.admin.findFirst({
+          where: { email: { equals: normalizedEmail, mode: 'insensitive' } },
+          select: { id: true },
+        }),
+    };
+
+    const selectedStrategies = userType
+      ? [searchStrategies[userType]]
+      : [searchStrategies.user, searchStrategies.company, searchStrategies.admin];
+
+    const results = await Promise.all(selectedStrategies.map((strategy) => strategy()));
+    const accountExists = results.some(Boolean);
+
+    if (accountExists) {
+      // TODO: integrar proveedor de correo y token de reseteo.
+      console.log(`[auth] Solicitud de recuperación de clave para: ${normalizedEmail}`);
+    }
+
+    res.json({
+      message: 'Si el email está registrado, recibirás instrucciones para recuperar tu clave.',
+    });
+  } catch (error) {
+    console.error('Error en requestPasswordRecovery:', error);
+    res.status(500).json({ error: 'No se pudo procesar la recuperación de clave' });
+  }
+};
+
 // ==================== PERFIL ====================
 
 // Obtener perfil del usuario autenticado

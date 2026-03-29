@@ -6,6 +6,7 @@ export const authService = {
   // Usuarios
   registerUser: (data) => api.post('/auth/user/register', data),
   loginUser: (data) => api.post('/auth/user/login', data),
+  requestPasswordRecovery: (data) => api.post('/auth/recover-password', data),
 
   // Empresas
   registerCompany: (data) => api.post('/auth/company/register', data),
