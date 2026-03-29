@@ -37,6 +37,14 @@ const recoverPasswordValidation = [
   validate,
 ];
 
+const resetPasswordValidation = [
+  body('token').notEmpty().withMessage('El token es requerido'),
+  body('newPassword')
+    .isLength({ min: 6 })
+    .withMessage('La nueva contraseña debe tener al menos 6 caracteres'),
+  validate,
+];
+
 // ==================== USUARIOS ====================
 
 // Registro y login usuario
@@ -78,6 +86,7 @@ router.post('/admin/login', loginValidation, authController.loginAdmin);
 
 // Recuperación de clave
 router.post('/recover-password', recoverPasswordValidation, authController.requestPasswordRecovery);
+router.post('/reset-password', resetPasswordValidation, authController.resetPassword);
 
 // ==================== PERFIL ====================
 

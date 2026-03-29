@@ -73,8 +73,9 @@
 .navbar-link-home {
   padding: 0.58rem 1.5rem;
   border-radius: 999px;
-  background: #d1cbc2;
-  color: #ffffff;
+  background: transparent;
+  color: var(--primary-700);
+  border: 2px solid var(--primary-500);
   font-weight: 700;
 }
 
@@ -120,12 +121,13 @@
 }
 
 .navbar-link-home:hover {
-  background: #c2bbaf;
-  color: #ffffff;
+  background: #f8f0de;
+  color: var(--primary-800);
 }
 
 .navbar-link-active {
-  background: #b7b0a4;
+  background: var(--primary-500);
+  color: #fff;
 }
 
 .navbar-search {
@@ -160,19 +162,19 @@
   color: #8f816d;
 }
 
-.btn-outline {
+.navbar .btn-outline {
   background: #fffefa;
   color: var(--primary-700);
   border: 2px solid var(--primary-500);
-  padding: 0.62rem 1.35rem;
-  border-radius: 0.7rem;
+  padding: 0.58rem 1.4rem;
+  border-radius: 999px;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   text-decoration: none;
   transition: all 0.2s;
 }
 
-.btn-outline:hover {
+.navbar .btn-outline:hover {
   background: #f8f0de;
   color: var(--primary-800);
 }
@@ -181,10 +183,10 @@
   background: var(--primary-500);
   color: #ffffff;
   border: 2px solid var(--primary-500);
-  padding: 0.62rem 1.35rem;
-  border-radius: 0.7rem;
+  padding: 0.58rem 1.4rem;
+  border-radius: 999px;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .navbar .btn-primary:hover {
@@ -221,19 +223,19 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  border: 1px solid #eadfce;
-  background: #fff;
-  color: #6d6250;
-  border-radius: 0.65rem;
-  padding: 0.42rem 0.6rem;
+  border: 2px solid var(--primary-500);
+  background: #fffefa;
+  color: var(--primary-700);
+  border-radius: 999px;
+  padding: 0.42rem 0.85rem;
   font-family: inherit;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .navbar-user-menu-trigger:hover {
-  background: #faf5ec;
-  border-color: #dfd0bc;
+  background: #f8f0de;
+  border-color: var(--primary-600);
 }
 
 .navbar-user-menu-trigger:focus-visible {
@@ -386,7 +388,7 @@
     display: none;
   }
 
-  .btn-outline,
+  .navbar .btn-outline,
   .navbar .btn-primary {
     padding: 0.55rem 1rem;
     font-size: 0.9rem;
@@ -470,7 +472,7 @@
     margin-top: 0.2rem;
   }
 
-  .btn-outline,
+  .navbar .btn-outline,
   .navbar .btn-primary {
     width: min(100%, 190px);
     min-height: 48px;

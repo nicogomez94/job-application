@@ -19,6 +19,7 @@ import RegisterUser from './pages/auth/RegisterUser';
 import RegisterCompany from './pages/auth/RegisterCompany';
 import SelectPlan from './pages/auth/SelectPlan';
 import OAuthCallback from './pages/auth/OAuthCallback';
+import ResetPassword from './pages/auth/ResetPassword';
 
 // User Dashboard
 import UserDashboard from './pages/user/Dashboard';
@@ -96,6 +97,7 @@ function App() {
           }
         />
         <Route path="auth/callback" element={<OAuthCallback />} />
+        <Route path="reset-password" element={<ResetPassword />} />
 
         {/* User Routes */}
         <Route

@@ -51,10 +51,19 @@ Editar `.env` con tus credenciales:
 ```env
 DATABASE_URL="postgresql://usuario:password@localhost:5432/job_platform"
 JWT_SECRET="tu_secreto_jwt_super_seguro"
+RESET_PASSWORD_SECRET="tu_secreto_para_reset_password"
 GOOGLE_CLIENT_ID="tu_google_client_id"
 GOOGLE_CLIENT_SECRET="tu_google_client_secret"
 MERCADO_PAGO_ACCESS_TOKEN="tu_access_token"
+SMTP_HOST="smtp.tu-proveedor.com"
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER="tu_usuario_smtp"
+SMTP_PASS="tu_password_smtp"
+MAIL_FROM="JobPlatform <no-reply@jobplatform.com>"
 ```
+
+Si no configurás SMTP en desarrollo, el backend usa una cuenta de prueba de **Ethereal** y muestra en consola un link para ver el correo enviado.
 
 ### 4. Configurar PostgreSQL
 
@@ -159,6 +168,8 @@ POST   /api/auth/company/register       - Registro de empresa
 POST   /api/auth/company/login          - Login de empresa
 GET    /api/auth/company/google         - OAuth Google (empresa)
 POST   /api/auth/admin/login            - Login de admin
+POST   /api/auth/recover-password       - Solicitar recuperación de clave
+POST   /api/auth/reset-password         - Restablecer clave con token
 GET    /api/auth/profile                - Obtener perfil autenticado
 ```
 

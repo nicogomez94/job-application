@@ -1,6 +1,11 @@
 const bcrypt = require('bcryptjs');
 const prisma = require('../config/database');
-const { generateToken } = require('../config/jwt');
+const {
+  generateToken,
+  generatePasswordResetToken,
+  verifyPasswordResetToken,
+} = require('../config/jwt');
+const { sendPasswordRecoveryEmail } = require('../services/mail.service');
 const addMonths = (date, months) => {
   const value = new Date(date);
   value.setMonth(value.getMonth() + months);
@@ -256,36 +261,51 @@ exports.loginAdmin = async (req, res) => {
 exports.requestPasswordRecovery = async (req, res) => {
   try {
     const { email, userType } = req.body;
-    const normalizedEmail = email.trim();
+    const normalizedEmail = email.trim().toLowerCase();
 
     const searchStrategies = {
       user: () =>
         prisma.user.findFirst({
           where: { email: { equals: normalizedEmail, mode: 'insensitive' } },
-          select: { id: true },
+          select: { id: true, email: true, password: true },
         }),
       company: () =>
         prisma.company.findFirst({
           where: { email: { equals: normalizedEmail, mode: 'insensitive' } },
-          select: { id: true },
+          select: { id: true, email: true, password: true },
         }),
       admin: () =>
         prisma.admin.findFirst({
           where: { email: { equals: normalizedEmail, mode: 'insensitive' } },
-          select: { id: true },
+          select: { id: true, email: true, password: true },
         }),
     };
 
-    const selectedStrategies = userType
-      ? [searchStrategies[userType]]
-      : [searchStrategies.user, searchStrategies.company, searchStrategies.admin];
+    const selectedTypes = userType ? [userType] : ['user', 'company', 'admin'];
+    let foundAccount = null;
 
-    const results = await Promise.all(selectedStrategies.map((strategy) => strategy()));
-    const accountExists = results.some(Boolean);
+    for (const type of selectedTypes) {
+      const strategy = searchStrategies[type];
+      if (!strategy) continue;
+      const account = await strategy();
+      if (account) {
+        foundAccount = { ...account, type };
+        break;
+      }
+    }
 
-    if (accountExists) {
-      // TODO: integrar proveedor de correo y token de reseteo.
-      console.log(`[auth] Solicitud de recuperación de clave para: ${normalizedEmail}`);
+    if (foundAccount && foundAccount.password) {
+      const token = generatePasswordResetToken({
+        id: foundAccount.id,
+        type: foundAccount.type,
+      });
+      const frontendBaseUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+      const resetUrl = `${frontendBaseUrl}/reset-password?token=${encodeURIComponent(token)}`;
+
+      await sendPasswordRecoveryEmail({
+        to: foundAccount.email,
+        resetUrl,
+      });
     }
 
     res.json({
@@ -294,6 +314,47 @@ exports.requestPasswordRecovery = async (req, res) => {
   } catch (error) {
     console.error('Error en requestPasswordRecovery:', error);
     res.status(500).json({ error: 'No se pudo procesar la recuperación de clave' });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+
+    const decoded = verifyPasswordResetToken(token);
+    if (!decoded?.id || !decoded?.type) {
+      return res.status(400).json({ error: 'El enlace de recuperación es inválido o expiró' });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    if (decoded.type === 'user') {
+      await prisma.user.update({
+        where: { id: decoded.id },
+        data: { password: hashedPassword },
+      });
+    } else if (decoded.type === 'company') {
+      await prisma.company.update({
+        where: { id: decoded.id },
+        data: { password: hashedPassword },
+      });
+    } else if (decoded.type === 'admin') {
+      await prisma.admin.update({
+        where: { id: decoded.id },
+        data: { password: hashedPassword },
+      });
+    } else {
+      return res.status(400).json({ error: 'Tipo de usuario inválido' });
+    }
+
+    res.json({ message: 'Clave restablecida correctamente' });
+  } catch (error) {
+    if (error?.code === 'P2025') {
+      return res.status(400).json({ error: 'El enlace de recuperación es inválido o expiró' });
+    }
+
+    console.error('Error en resetPassword:', error);
+    res.status(500).json({ error: 'No se pudo restablecer la clave' });
   }
 };
 
