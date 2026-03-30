@@ -10,6 +10,7 @@ import { BACKEND_BASE_URL } from '../services/apiBaseUrl';
 import { useAuthStore } from '../context/authStore';
 import RatingSummary from '../components/RatingSummary';
 import { getJobPostingLanguageLabel } from '../constants/jobOfferLanguages';
+import { scrollToTopInstant } from '../utils/scrollToTop';
 import '../components/BackToDashboardButton.css';
 import './JobDetail.css';
 
@@ -122,7 +123,7 @@ export default function JobDetail() {
       <div style={{ minHeight: '50vh', display: 'grid', placeItems: 'center', padding: '2rem' }}>
         <div className="card">
           <p style={{ marginBottom: '1rem' }}>No se encontró la oferta.</p>
-          <Link to="/jobs" className="back-dashboard-btn">
+          <Link to="/jobs" className="back-dashboard-btn" onClick={scrollToTopInstant}>
             <ArrowLeft size={16} />
             <span>Volver a búsqueda</span>
           </Link>
@@ -136,7 +137,12 @@ export default function JobDetail() {
     <div className="jd-page">
       <div className="jd-container">
         {/* Back link */}
-        <Link to="/jobs" className="back-dashboard-btn" style={{ marginBottom: '1.25rem', display: 'inline-flex' }}>
+        <Link
+          to="/jobs"
+          className="back-dashboard-btn"
+          style={{ marginBottom: '1.25rem', display: 'inline-flex' }}
+          onClick={scrollToTopInstant}
+        >
           <ArrowLeft size={16} />
           <span>Volver a ofertas</span>
         </Link>

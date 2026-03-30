@@ -7,6 +7,7 @@ import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
 import StarRatingInput from '../../components/StarRatingInput';
 import RatingSummary from '../../components/RatingSummary';
+import { scrollToTopInstant } from '../../utils/scrollToTop';
 
 const toAssetUrl = (assetPath) => {
   if (!assetPath) return null;
@@ -121,7 +122,7 @@ export default function JobApplicants() {
           <h1>Postulantes</h1>
           <p style={{ color: '#6f604b' }}>{jobOffer?.title || 'Oferta'}</p>
         </div>
-        <Link className="back-dashboard-btn" to="/company/jobs">
+        <Link className="back-dashboard-btn" to="/company/jobs" onClick={scrollToTopInstant}>
           <ArrowLeft size={16} />
           <span>Volver a ofertas</span>
         </Link>

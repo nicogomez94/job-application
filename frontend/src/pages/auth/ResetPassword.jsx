@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Lock } from 'lucide-react';
 import { authService } from '../../services';
+import { scrollToTopInstant } from '../../utils/scrollToTop';
 import './ResetPassword.css';
 
 export default function ResetPassword() {
@@ -70,7 +71,7 @@ export default function ResetPassword() {
           {!token ? (
             <div className="reset-password-invalid">
               <p>El enlace de recuperación es inválido o expiró.</p>
-              <Link className="btn btn-primary reset-password-back-btn" to="/login">
+              <Link className="btn btn-primary reset-password-back-btn" to="/login" onClick={scrollToTopInstant}>
                 Volver al login
               </Link>
             </div>

@@ -6,6 +6,7 @@ import { categoryService, jobOfferService, userService } from '../services';
 import { BACKEND_BASE_URL } from '../services/apiBaseUrl';
 import { useAuthStore } from '../context/authStore';
 import { getJobPostingLanguageLabel } from '../constants/jobOfferLanguages';
+import { scrollToTopInstant } from '../utils/scrollToTop';
 import '../components/BackToDashboardButton.css';
 import './JobSearch.css';
 
@@ -170,7 +171,7 @@ export default function JobSearch() {
       <div style={{ background: 'linear-gradient(135deg, var(--primary-600) 0%, var(--primary-500) 100%)', padding: '2.5rem 0' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem', color: '#fff' }}>
           <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '0.75rem', marginBottom: '1rem' }}>
-            <Link to="/" className="back-dashboard-btn" style={{ marginBottom: 0 }}>
+            <Link to="/" className="back-dashboard-btn" style={{ marginBottom: 0 }} onClick={scrollToTopInstant}>
               <ArrowLeft size={16} />
               <span>Volver</span>
             </Link>

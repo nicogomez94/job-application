@@ -21,7 +21,7 @@ export default function Footer() {
           </div>
 
           <div className="footer-section">
-            <h3>{t('Candidatos')}</h3>
+            <h3>{t('Profesionales')}</h3>
             <ul className="footer-list">
               <li><Link to="/jobs">{t('Buscar Empleos')}</Link></li>
               <li><Link to="/register/user">{t('Crear Cuenta')}</Link></li>
