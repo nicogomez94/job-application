@@ -138,7 +138,7 @@ export default function Navbar() {
           <div>
             <Link to="/" className="navbar-logo notranslate" onClick={closeMenu} translate="no" lang="en">
               <img src="/logo.png" alt="PaH logo" className="navbar-logo-img" />
-              <span className="navbar-logo-text notranslate" translate="no" lang="en">Professionals at Home</span>
+              <span className="navbar-logo-text notranslate" translate="no" lang="en">professionals at home</span>
             </Link>
           </div>
 

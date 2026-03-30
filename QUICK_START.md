@@ -104,7 +104,7 @@ npm run dev
 ### Cuentas de Prueba
 
 **Administrador:**
-- Email: `admin@jobplatform.com`
+- Email: `admin@professionalsathome.com`
 - Contraseña: `admin123`
 
 **Usuario (Candidato):**

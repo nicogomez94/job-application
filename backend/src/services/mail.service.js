@@ -51,12 +51,12 @@ const getMailTransporter = async () => {
 
 const sendPasswordRecoveryEmail = async ({ to, resetUrl }) => {
   const transporter = await getMailTransporter();
-  const from = process.env.MAIL_FROM || 'JobPlatform <no-reply@jobplatform.local>';
+  const from = process.env.MAIL_FROM || 'professionals at home <no-reply@professionalsathome.local>';
 
   const info = await transporter.sendMail({
     from,
     to,
-    subject: 'Recuperación de clave - JobPlatform',
+    subject: 'Recuperación de clave - professionals at home',
     text: `Recibimos una solicitud para recuperar tu clave.
 
 Restablecé tu clave desde este enlace:
@@ -66,7 +66,7 @@ Este enlace vence pronto por seguridad. Si no solicitaste este cambio, podés ig
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 560px; margin: 0 auto; color: #2f2416;">
         <h2 style="margin-bottom: 12px;">Recuperación de clave</h2>
-        <p>Recibimos una solicitud para recuperar tu clave en JobPlatform.</p>
+        <p>Recibimos una solicitud para recuperar tu clave en professionals at home.</p>
         <p style="margin: 20px 0;">
           <a href="${resetUrl}" style="background:#efc89a;color:#fff;text-decoration:none;padding:10px 16px;border-radius:8px;display:inline-block;">
             Restablecer clave

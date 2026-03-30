@@ -28,11 +28,25 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
+      const requestUrl = String(error.config?.url || '');
+
+      // Si falla un endpoint de auth (login/recover/reset), no forzar logout/redirect.
+      // Dejamos que la pantalla actual muestre el mensaje de error correspondiente.
+      if (requestUrl.includes('/auth/')) {
+        return Promise.reject(error);
+      }
+
       // Token inválido o expirado: limpiar estado y navegar dentro del SPA
       const previousUserType = localStorage.getItem('userType');
+      const currentPath = window.location.pathname || '';
       useAuthStore.getState().logout();
 
-      const targetPath = previousUserType === 'admin' ? '/acceso-admin' : '/login';
+      const isAdminAuthAttempt = requestUrl.includes('/auth/admin/login');
+      const isInAdminAccess = currentPath.startsWith('/acceso-admin') || currentPath.startsWith('/admin');
+      const targetPath =
+        isAdminAuthAttempt || isInAdminAccess || previousUserType === 'admin'
+          ? '/acceso-admin'
+          : '/login';
       if (window.location.pathname !== targetPath) {
         window.history.pushState({}, '', targetPath);
         window.dispatchEvent(new PopStateEvent('popstate'));

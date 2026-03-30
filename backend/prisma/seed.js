@@ -10,10 +10,10 @@ async function main() {
   // Crear admin por defecto
   const adminPassword = await bcrypt.hash('admin123', 10);
   const admin = await prisma.admin.upsert({
-    where: { email: 'admin@jobplatform.com' },
+    where: { email: 'admin@professionalsathome.com' },
     update: {},
     create: {
-      email: 'admin@jobplatform.com',
+      email: 'admin@professionalsathome.com',
       password: adminPassword,
       firstName: 'Admin',
       lastName: 'Principal',
@@ -149,7 +149,7 @@ async function main() {
   console.log('==========================================');
   console.log('✨ Seed completado exitosamente!');
   console.log('==========================================');
-  console.log('📧 Admin:   admin@jobplatform.com / admin123');
+  console.log('📧 Admin:   admin@professionalsathome.com / admin123');
   console.log('📧 Usuario: juan.perez@example.com / user123');
   console.log('📧 Empresa: rrhh@techcorp.com / company123');
   console.log('==========================================');

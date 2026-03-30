@@ -131,7 +131,7 @@ export default function Login({
           <Briefcase className="login-logo" />
           <h2 className="login-title">Iniciar Sesión</h2>
           <p className="login-subtitle">
-            Accede a tu cuenta de JobPlatform
+            Accede a tu cuenta de professionals at home
           </p>
         </div>
 

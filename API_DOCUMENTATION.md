@@ -92,7 +92,7 @@ POST /auth/admin/login
 Content-Type: application/json
 
 {
-  "email": "admin@jobplatform.com",
+  "email": "admin@professionalsathome.com",
   "password": "admin123"
 }
 ```
@@ -890,7 +890,7 @@ Authorization: Bearer <token>
 Content-Type: application/json
 
 {
-  "email": "nuevo-admin@jobplatform.com",
+  "email": "nuevo-admin@professionalsathome.com",
   "password": "password123",
   "firstName": "Admin",
   "lastName": "Nuevo",

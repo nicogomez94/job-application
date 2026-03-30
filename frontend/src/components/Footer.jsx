@@ -12,7 +12,7 @@ export default function Footer() {
         <div className="footer-grid">
           <div className="footer-logo-section">
             <div className="footer-logo">
-              <img src="/logo.png" alt="Professionals at Home" className="footer-logo-img" />
+              <img src="/logo.png" alt="professionals at home" className="footer-logo-img" />
               <span className="footer-logo-text"></span>
             </div>
             <p className="footer-description">
@@ -43,7 +43,7 @@ export default function Footer() {
           <div className="footer-section">
             <h3>{t('Contacto')}</h3>
             <ul className="footer-list">
-              <li>Email: contacto@jobplatform.com</li>
+              <li>Email: contacto@professionalsathome.com</li>
               <li>Tel: +54 11 1234-5678</li>
               <li className="footer-social">
                 <a href="#"><Twitter className="footer-social-icon" /></a>
@@ -55,7 +55,7 @@ export default function Footer() {
         </div>
 
         <div className="footer-bottom">
-          <p>&copy; {new Date().getFullYear()} JobPlatform. {t('Todos los derechos reservados.')}</p>
+          <p>&copy; {new Date().getFullYear()} professionals at home. {t('Todos los derechos reservados.')}</p>
           <p className="footer-legal">
             <Link to="/terminos-y-condiciones">{t('Términos y Condiciones')}</Link>
           </p>

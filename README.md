@@ -205,7 +205,7 @@ npm run dev
 ### Credenciales de Prueba (después del seed)
 
 ```
-Admin:   admin@jobplatform.com / admin123
+Admin:   admin@professionalsathome.com / admin123
 Usuario: juan.perez@example.com / user123
 Empresa: rrhh@techcorp.com / company123
 ```
@@ -525,4 +525,4 @@ Job Platform Team © 2026
 
 ---
 
-**¿Necesitas ayuda?** Contacta a través de: contacto@jobplatform.com
+**¿Necesitas ayuda?** Contacta a través de: contacto@professionalsathome.com

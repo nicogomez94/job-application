@@ -13,7 +13,7 @@ export const DEBUG_FORM_DATA = {
       password: 'company123',
     },
     admin: {
-      email: 'admin@jobplatform.com',
+      email: 'admin@professionalsathome.com',
       password: 'admin123',
     },
   },

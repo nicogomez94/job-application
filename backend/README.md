@@ -60,7 +60,7 @@ SMTP_PORT=587
 SMTP_SECURE=false
 SMTP_USER="tu_usuario_smtp"
 SMTP_PASS="tu_password_smtp"
-MAIL_FROM="JobPlatform <no-reply@jobplatform.com>"
+MAIL_FROM="professionals at home <no-reply@professionalsathome.com>"
 ```
 
 Si no configurás SMTP en desarrollo, el backend usa una cuenta de prueba de **Ethereal** y muestra en consola un link para ver el correo enviado.
@@ -94,7 +94,7 @@ npm run prisma:seed
 ```
 
 Esto creará:
-- Admin: `admin@jobplatform.com` / `admin123`
+- Admin: `admin@professionalsathome.com` / `admin123`
 - Usuario: `juan.perez@example.com` / `user123`
 - Empresa: `rrhh@techcorp.com` / `company123`
 - 10 categorías predefinidas
