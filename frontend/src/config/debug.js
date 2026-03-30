@@ -9,7 +9,7 @@ export const DEBUG_FORM_DATA = {
       password: 'debug123',
     },
     company: {
-      email: 'rrhh@techcorp.com',
+      email: 'empresa.debug@example.com',
       password: 'company123',
     },
     admin: {
@@ -29,8 +29,8 @@ export const DEBUG_FORM_DATA = {
   registerCompany: {
     companyName: 'Empresa Debug SA',
     email: 'empresa.debug@example.com',
-    password: 'debug123',
-    confirmPassword: 'debug123',
+    password: 'company123',
+    confirmPassword: 'company123',
     website: 'https://empresa-debug.com',
     industry: 'Tecnologia',
     size: '51-200',

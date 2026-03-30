@@ -42,7 +42,7 @@
 }
 
 .pricing-conditions {
-  margin: 0 auto 1.6rem;
+  margin: 0 auto 2rem;
   max-width: 860px;
   background: #fff8ec;
   border: 1px solid #edd9ba;
@@ -84,14 +84,22 @@
 .pricing-badge {
   position: absolute;
   top: -12px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--primary-500);
-  color: #fff;
-  font-size: 0.72rem;
-  font-weight: 700;
-  padding: 0.22rem 0.65rem;
-  border-radius: 999px;
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary-500);
+    color: #fff;
+    font-size: 0.62rem;
+    font-weight: 700;
+    padding: 0.22rem 0.65rem;
+    /* border-radius: 999px; */
+    -webkit-border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    -moz-border-radius-topright: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
 
 .pricing-icon {

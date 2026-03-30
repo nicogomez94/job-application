@@ -535,6 +535,16 @@
     max-height: 260px;
     pointer-events: auto;
   }
+
+  .navbar-links-open .navbar-user-dropdown {
+    border-width: 1px;
+    max-height: 260px;
+    pointer-events: auto;
+  }
+
+  .navbar-links-open .navbar-user-menu-chevron {
+    transform: rotate(180deg);
+  }
 }
 
 @media (min-width: 300px) and (max-width: 960px) {

@@ -81,6 +81,7 @@ export default function Navbar() {
   const displayName = user?.firstName || user?.companyName || t('Usuario');
   const avatarUrl = toAssetUrl(user?.profileImage || user?.companyLogo || '');
   const avatarInitial = (displayName?.charAt(0) || 'U').toUpperCase();
+  const isUserDropdownVisible = isUserDropdownOpen || isMenuOpen;
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -199,7 +200,7 @@ export default function Navbar() {
                   className="navbar-user-menu-trigger"
                   onClick={() => setIsUserDropdownOpen((prev) => !prev)}
                   aria-haspopup="menu"
-                  aria-expanded={isUserDropdownOpen}
+                  aria-expanded={isUserDropdownVisible}
                 >
                   <span className="navbar-user-trigger-avatar" aria-hidden="true">
                     {avatarUrl ? (
@@ -208,10 +209,10 @@ export default function Navbar() {
                       avatarInitial
                     )}
                   </span>
-                  <ChevronDown className={`navbar-user-menu-chevron ${isUserDropdownOpen ? 'is-open' : ''}`} size={16} />
+                  <ChevronDown className={`navbar-user-menu-chevron ${isUserDropdownVisible ? 'is-open' : ''}`} size={16} />
                 </button>
 
-                <div className={`navbar-user-dropdown ${isUserDropdownOpen ? 'navbar-user-dropdown-open' : ''}`} role="menu">
+                <div className={`navbar-user-dropdown ${isUserDropdownVisible ? 'navbar-user-dropdown-open' : ''}`} role="menu">
                   <Link
                     to={getDashboardLink()}
                     className="navbar-user-dropdown-profile-link"

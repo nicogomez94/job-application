@@ -1068,15 +1068,21 @@ margin: 0px auto 40px;
 }
 
 .home-pricing-preview-badge {
-  position: absolute;
-  top: -11px;
-  right: 14px;
-  font-size: 0.69rem;
-  font-weight: 700;
-  background: #d6a958;
-  color: #fff;
-  border-radius: 999px;
-  padding: 0.2rem 0.55rem;
+position: absolute;
+    top: -23px;
+    right: 14px;
+    font-size: 0.59rem;
+    font-weight: 700;
+    background: #af7a1b;
+    color: #fff;
+    /* border-radius: 999px; */
+    padding: 0.2rem 0.55rem;
+    -webkit-border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    -moz-border-radius-topright: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
 
 .home-pricing-preview-card h3 {

@@ -178,7 +178,7 @@ export default function JobSearch() {
             </Link>
           </div>
           <h1 style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>Buscar Profesión</h1>
-          <p style={{fontSize: '1.2rem', opacity: 0.9, color : '#f7f7f7' }}>Encontrá ofertas activas y postulá en pocos pasos.</p>
+          <p style={{fontSize: '1.6rem', opacity: 0.9, color : '#f7f7f7' }}>Encontrá ofertas activas y postulá en pocos pasos.</p>
         </div>
       </div>
 
@@ -244,12 +244,19 @@ export default function JobSearch() {
             </div>
           )}
 
-          {jobs.map((job) => (
-            <article
-              key={job.id}
-              className="card job-card"
-              style={{ border: '1px solid #e7dcc6', padding: '1.25rem' }}
-            >
+          {jobs.map((job) => {
+            const isApplied = appliedJobOfferIds.has(job.id);
+
+            return (
+              <article
+                key={job.id}
+                className="card job-card"
+                style={{
+                  border: isApplied ? '1px solid #9ccfb0' : '1px solid #e7dcc6',
+                  background: isApplied ? '#eef7f1' : undefined,
+                  padding: '1.25rem'
+                }}
+              >
               <div className="job-card-content" style={{ display: 'flex', gap: '1rem' }}>
                 <img
                   src={
@@ -262,7 +269,7 @@ export default function JobSearch() {
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.25rem' }}>
                     <h2 style={{ color: '#2f2416', marginBottom: 0 }}>{job.title}</h2>
-                    {appliedJobOfferIds.has(job.id) && (
+                    {isApplied && (
                       <span className="job-applied-badge">Postulado</span>
                     )}
                   </div>
@@ -291,8 +298,9 @@ export default function JobSearch() {
                   Ver detalle
                 </Link>
               </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
 
         <div style={{ marginTop: '1.5rem', display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
