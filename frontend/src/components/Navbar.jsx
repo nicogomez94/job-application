@@ -78,10 +78,34 @@ export default function Navbar() {
     }
   };
 
+  const getMobileQuickLink = () => {
+    switch (userType) {
+      case 'user':
+        return '/user/applications';
+      case 'company':
+        return '/company/jobs';
+      default:
+        return '';
+    }
+  };
+
+  const getMobileQuickLabel = () => {
+    switch (userType) {
+      case 'user':
+        return t('Mis Postulaciones');
+      case 'company':
+        return t('Mis Ofertas Laborales');
+      default:
+        return '';
+    }
+  };
+
   const displayName = user?.firstName || user?.companyName || t('Usuario');
   const avatarUrl = toAssetUrl(user?.profileImage || user?.companyLogo || '');
   const avatarInitial = (displayName?.charAt(0) || 'U').toUpperCase();
   const isUserDropdownVisible = isUserDropdownOpen || isMenuOpen;
+  const mobileQuickLink = isAuthenticated ? getMobileQuickLink() : '';
+  const mobileQuickLabel = isAuthenticated ? getMobileQuickLabel() : '';
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -118,9 +142,16 @@ export default function Navbar() {
             </Link>
           </div>
 
-          <button className="navbar-hamburger" onClick={toggleMenu} aria-label="Toggle menu">
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          <div className="navbar-mobile-top-actions">
+            {mobileQuickLink && (
+              <Link to={mobileQuickLink} className="navbar-mobile-quick-link" onClick={closeMenu}>
+                {mobileQuickLabel}
+              </Link>
+            )}
+            <button className="navbar-hamburger" onClick={toggleMenu} aria-label="Toggle menu">
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
 
           <div className={`navbar-links ${isMenuOpen ? 'navbar-links-open' : ''}`}>
             <div className="navbar-language-toggle" role="group" aria-label="Language selector">

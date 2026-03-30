@@ -68,9 +68,12 @@ exports.registerUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+    const normalizedEmail = email.trim().toLowerCase();
 
     // Buscar usuario
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findFirst({
+      where: { email: { equals: normalizedEmail, mode: 'insensitive' } },
+    });
     if (!user || !user.password) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
@@ -183,9 +186,12 @@ exports.registerCompany = async (req, res) => {
 exports.loginCompany = async (req, res) => {
   try {
     const { email, password } = req.body;
+    const normalizedEmail = email.trim().toLowerCase();
 
     // Buscar empresa
-    const company = await prisma.company.findUnique({ where: { email } });
+    const company = await prisma.company.findFirst({
+      where: { email: { equals: normalizedEmail, mode: 'insensitive' } },
+    });
     if (!company || !company.password) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
@@ -227,9 +233,12 @@ exports.loginCompany = async (req, res) => {
 exports.loginAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;
+    const normalizedEmail = email.trim().toLowerCase();
 
     // Buscar admin
-    const admin = await prisma.admin.findUnique({ where: { email } });
+    const admin = await prisma.admin.findFirst({
+      where: { email: { equals: normalizedEmail, mode: 'insensitive' } },
+    });
     if (!admin) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }

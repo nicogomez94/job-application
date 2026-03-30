@@ -8,7 +8,7 @@ const passport = require('../config/passport');
 
 // Validaciones
 const registerUserValidation = [
-  body('email').isEmail().withMessage('Email inválido'),
+  body('email').trim().normalizeEmail().isEmail().withMessage('Email inválido'),
   body('password').isLength({ min: 6 }).withMessage('La contraseña debe tener al menos 6 caracteres'),
   body('firstName').notEmpty().withMessage('El nombre es requerido'),
   body('lastName').notEmpty().withMessage('El apellido es requerido'),
@@ -16,20 +16,20 @@ const registerUserValidation = [
 ];
 
 const registerCompanyValidation = [
-  body('email').isEmail().withMessage('Email inválido'),
+  body('email').trim().normalizeEmail().isEmail().withMessage('Email inválido'),
   body('password').isLength({ min: 6 }).withMessage('La contraseña debe tener al menos 6 caracteres'),
   body('companyName').notEmpty().withMessage('El nombre de la empresa es requerido'),
   validate,
 ];
 
 const loginValidation = [
-  body('email').isEmail().withMessage('Email inválido'),
+  body('email').trim().normalizeEmail().isEmail().withMessage('Email inválido'),
   body('password').notEmpty().withMessage('La contraseña es requerida'),
   validate,
 ];
 
 const recoverPasswordValidation = [
-  body('email').isEmail().withMessage('Email inválido'),
+  body('email').trim().normalizeEmail().isEmail().withMessage('Email inválido'),
   body('userType')
     .optional()
     .isIn(['user', 'company', 'admin'])
