@@ -1,6 +1,6 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-import { LogOut, ChevronDown, Menu, X, Search, PencilLine } from 'lucide-react';
+import { LogOut, ChevronDown, Menu, X, Search, PencilLine, Briefcase } from 'lucide-react';
 import { useAuthStore } from '../context/authStore';
 import { useI18n } from '../context/i18nStore';
 import { BACKEND_BASE_URL } from '../services/apiBaseUrl';
@@ -144,8 +144,14 @@ export default function Navbar() {
 
           <div className="navbar-mobile-top-actions">
             {mobileQuickLink && (
-              <Link to={mobileQuickLink} className="navbar-mobile-quick-link" onClick={closeMenu}>
-                {mobileQuickLabel}
+              <Link
+                to={mobileQuickLink}
+                className="navbar-mobile-quick-link"
+                onClick={closeMenu}
+                aria-label={mobileQuickLabel}
+                title={mobileQuickLabel}
+              >
+                <Briefcase size={16} />
               </Link>
             )}
             <button className="navbar-hamburger" onClick={toggleMenu} aria-label="Toggle menu">
