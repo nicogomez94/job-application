@@ -265,7 +265,22 @@ margin: 0px auto 40px;
   cursor: text;
 }
 
+.home-search-select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.home-search-select-wrapper .home-search-select {
+  width: 100%;
+  padding-right: 1.4rem;
+}
+
 .home-search-chevron {
+  position: absolute;
+  right: 0;
   color: #8f836d;
   flex-shrink: 0;
   pointer-events: none;

@@ -186,35 +186,39 @@ export default function Home() {
           <div className="home-search-bar">
             <div className="home-search-field">
               <BriefcaseIcon size={20} className="search-icon" />
-              <select
-                className="home-search-select"
-                value={homeFilters.categoryId}
-                onChange={(e) => setHomeFilters((prev) => ({ ...prev, categoryId: e.target.value }))}
-              >
-                <option value="">{t('Categoría')}</option>
-                {availableCategories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {getDisplayCategoryName(category)}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown size={16} className="home-search-chevron" />
+              <div className="home-search-select-wrapper">
+                <select
+                  className="home-search-select"
+                  value={homeFilters.categoryId}
+                  onChange={(e) => setHomeFilters((prev) => ({ ...prev, categoryId: e.target.value }))}
+                >
+                  <option value="">{t('Categoría')}</option>
+                  {availableCategories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {getDisplayCategoryName(category)}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown size={16} className="home-search-chevron" />
+              </div>
             </div>
             <div className="home-search-divider"></div>
             <div className="home-search-field">
               <MapPin size={20} className="search-icon" />
-              <select
-                className="home-search-select"
-                value={homeFilters.location}
-                onChange={(e) => setHomeFilters((prev) => ({ ...prev, location: e.target.value }))}
-              >
-                <option value="">{t('Ubicación')}</option>
-                <option value="Buenos Aires">Buenos Aires</option>
-                <option value="Córdoba">{t('Córdoba')}</option>
-                <option value="Rosario">{t('Rosario')}</option>
-                <option value="Remoto">{t('Remoto')}</option>
-              </select>
-              <ChevronDown size={16} className="home-search-chevron" />
+              <div className="home-search-select-wrapper">
+                <select
+                  className="home-search-select"
+                  value={homeFilters.location}
+                  onChange={(e) => setHomeFilters((prev) => ({ ...prev, location: e.target.value }))}
+                >
+                  <option value="">{t('Ubicación')}</option>
+                  <option value="Buenos Aires">Buenos Aires</option>
+                  <option value="Córdoba">{t('Córdoba')}</option>
+                  <option value="Rosario">{t('Rosario')}</option>
+                  <option value="Remoto">{t('Remoto')}</option>
+                </select>
+                <ChevronDown size={16} className="home-search-chevron" />
+              </div>
             </div>
             <div className="home-search-divider"></div>
             <div className="home-search-field home-search-field-input">

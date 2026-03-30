@@ -128,8 +128,7 @@
 }
 
 .login-forgot-password-wrapper {
-  display: flex;
-  justify-content: flex-end;
+  text-align: center;
   margin-top: -0.75rem;
 }
 
