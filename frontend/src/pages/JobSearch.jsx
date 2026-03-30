@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { categoryService, jobOfferService, userService } from '../services';
 import { BACKEND_BASE_URL } from '../services/apiBaseUrl';
 import { useAuthStore } from '../context/authStore';
+import '../components/BackToDashboardButton.css';
 import './JobSearch.css';
 
 const toAssetUrl = (assetPath) => {
@@ -27,7 +29,6 @@ const formatSalary = (min, max, period) => {
 };
 
 export default function JobSearch() {
-  const navigate = useNavigate();
   const { isAuthenticated, userType } = useAuthStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const getFiltersFromParams = () => ({
@@ -168,14 +169,10 @@ export default function JobSearch() {
       <div style={{ background: 'linear-gradient(135deg, var(--primary-600) 0%, var(--primary-500) 100%)', padding: '2.5rem 0' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem', color: '#fff' }}>
           <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '0.75rem', marginBottom: '1rem' }}>
-            <button
-              type="button"
-              className="btn"
-              onClick={() => navigate('/')}
-              style={{ background: '#fff', color: 'var(--primary-700)' }}
-            >
-              Volver
-            </button>
+            <Link to="/" className="back-dashboard-btn" style={{ marginBottom: 0 }}>
+              <ArrowLeft size={16} />
+              <span>Volver</span>
+            </Link>
           </div>
           <h1 style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>Buscar Profesión</h1>
           <p style={{fontSize: '1.2rem', opacity: 0.9, color : '#f7f7f7' }}>Encontrá ofertas activas y postulá en pocos pasos.</p>
