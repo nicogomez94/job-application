@@ -543,12 +543,23 @@ margin: 0px auto 40px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   transition: all 0.2s;
   color: #7e705c;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .carousel-btn:hover {
   background: #fdf8ec;
   color: var(--primary-500);
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-btn:focus {
+  outline: none;
+}
+
+.carousel-btn:focus-visible {
+  outline: 2px solid var(--primary-600);
+  outline-offset: 2px;
 }
 
 .carousel-btn-prev {
@@ -1107,12 +1118,12 @@ margin: 0px auto 40px;
 
 .home-pricing-preview-link {
   border-color: #f7ead6;
-  color: #fff;
+  color: var(--primary-700);
 }
 
 .home-pricing-preview-link:hover {
   background: rgba(255, 255, 255, 0.12);
-  color: #fff;
+  color: var(--primary-700);
 }
 
 /* Responsive Stats */

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { jobOfferService } from '../../services';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
+import { getJobPostingLanguageLabel } from '../../constants/jobOfferLanguages';
 import './Jobs.css';
 
 const formatDate = (date) =>
@@ -76,7 +77,7 @@ export default function CompanyJobs() {
             <article key={job.id} className="card" style={{ border: '1px solid #e7dcc6' }}>
               <h2 style={{ marginBottom: '0.3rem', color: '#2f2416' }}>{job.title}</h2>
               <p style={{ color: '#6f604b', marginBottom: '0.5rem', fontSize: '0.92rem' }}>
-                {job.location} | {job.workMode} | {job.experienceLevel}
+                {job.location} | {job.workMode} | {job.experienceLevel} | Idioma: {getJobPostingLanguageLabel(job.postingLanguage)}
               </p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.8rem', marginBottom: '0.7rem' }}>
                 <span className={job.isActive ? 'badge badge-success' : 'badge badge-error'}>

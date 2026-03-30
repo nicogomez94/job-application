@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { categoryService, companyService, jobOfferService } from '../../services';
 import { DEBUG_FORM_DATA, DEBUG_MODE } from '../../config/debug';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
+import { JOB_POSTING_LANGUAGE_OPTIONS } from '../../constants/jobOfferLanguages';
 
 const getInitialForm = () =>
   DEBUG_MODE
@@ -13,6 +14,7 @@ const getInitialForm = () =>
         description: '',
         location: '',
         categoryId: '',
+        postingLanguage: 'es',
         requirementsText: '',
         responsibilitiesText: '',
         languagesText: '',
@@ -91,6 +93,7 @@ export default function CreateJob() {
         description: formData.description.trim(),
         location: formData.location.trim(),
         categoryId: formData.categoryId,
+        postingLanguage: formData.postingLanguage,
         requirements: parseTextToArray(formData.requirementsText),
         responsibilities: parseTextToArray(formData.responsibilitiesText),
         languages: parseCommaToArray(formData.languagesText),
@@ -191,6 +194,25 @@ export default function CreateJob() {
                 ))}
               </select>
             </div>
+          </div>
+          <div>
+            <label htmlFor="create-job-posting-language" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+              Idioma del anuncio
+            </label>
+            <select
+              id="create-job-posting-language"
+              className="input"
+              name="postingLanguage"
+              value={formData.postingLanguage}
+              onChange={handleChange}
+              required
+            >
+              {JOB_POSTING_LANGUAGE_OPTIONS.map((language) => (
+                <option key={language.value} value={language.value}>
+                  {language.label}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>

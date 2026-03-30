@@ -5,6 +5,8 @@ const validate = require('../middlewares/validator.middleware');
 const jobOfferController = require('../controllers/jobOffer.controller');
 const { authenticateCompany, checkActiveSubscription } = require('../middlewares/auth.middleware');
 
+const POSTING_LANGUAGE_OPTIONS = ['es', 'en', 'pt', 'fr', 'de', 'it'];
+
 // Validaciones
 const createJobOfferValidation = [
   body('title').notEmpty().withMessage('El título es requerido'),
@@ -13,6 +15,11 @@ const createJobOfferValidation = [
   body('categoryId').notEmpty().withMessage('La categoría es requerida'),
   body('requirements').isArray().withMessage('Los requisitos deben ser un array'),
   body('responsibilities').isArray().withMessage('Las responsabilidades deben ser un array'),
+  body('postingLanguage')
+    .optional()
+    .customSanitizer((value) => (typeof value === 'string' ? value.trim().toLowerCase() : value))
+    .isIn(POSTING_LANGUAGE_OPTIONS)
+    .withMessage('Idioma del anuncio inválido'),
   validate,
 ];
 

@@ -16,6 +16,7 @@ const passport = require('./config/passport');
 const routes = require('./routes');
 const errorHandler = require('./middlewares/error.middleware');
 const seedCategoriesIfEmpty = require('./bootstrap/seedCategoriesIfEmpty');
+const ensureJobOfferPostingLanguageColumn = require('./bootstrap/ensureJobOfferPostingLanguageColumn');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -102,6 +103,12 @@ app.use(errorHandler);
 // ==================== INICIAR SERVIDOR ====================
 
 const startServer = async () => {
+  try {
+    await ensureJobOfferPostingLanguageColumn();
+  } catch (error) {
+    console.error('⚠️ Continuando el arranque sin confirmar postingLanguage:', error.message);
+  }
+
   try {
     await seedCategoriesIfEmpty();
   } catch (error) {

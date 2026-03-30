@@ -136,6 +136,7 @@ async function main() {
         whatsappNumber: '+54 9 11 9876-5432',
         contactEmail: 'rrhh@techcorp.com',
         languages: ['Español', 'Inglés'],
+        postingLanguage: 'es',
         companyId: company.id,
         categoryId: techCategory.id,
         isActive: true,

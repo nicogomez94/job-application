@@ -6,7 +6,7 @@ export const DEBUG_FORM_DATA = {
   loginByType: {
     user: {
       email: 'juan.perez@example.com',
-      password: 'user123',
+      password: 'debug123',
     },
     company: {
       email: 'rrhh@techcorp.com',
@@ -20,7 +20,7 @@ export const DEBUG_FORM_DATA = {
   registerUser: {
     firstName: 'Juan',
     lastName: 'Perez',
-    email: 'juan.debug@example.com',
+    email: 'juan.perez@example.com',
     password: 'debug123',
     confirmPassword: 'debug123',
     phone: '+54 11 1234 5678',
@@ -43,6 +43,7 @@ export const DEBUG_FORM_DATA = {
     description: 'Buscamos frontend developer con experiencia en React y testing.',
     location: 'Capital Federal',
     categoryId: '',
+    postingLanguage: 'es',
     requirementsText: 'React\nJavaScript\nGit',
     responsibilitiesText: 'Desarrollar features\nMantener codigo\nCode reviews',
     languagesText: 'Espanol, Ingles',

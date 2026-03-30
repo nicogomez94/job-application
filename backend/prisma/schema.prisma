@@ -132,6 +132,7 @@ model JobOffer {
   
   // Idiomas requeridos
   languages       String[]
+  postingLanguage String        @default("es") // Idioma en el que está escrito el anuncio
   
   // Estado
   isActive        Boolean       @default(true)

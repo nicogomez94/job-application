@@ -21,6 +21,7 @@ exports.createJobOffer = async (req, res) => {
       whatsappNumber,
       contactEmail,
       languages,
+      postingLanguage,
       categoryId,
       expiresAt,
     } = req.body;
@@ -41,6 +42,7 @@ exports.createJobOffer = async (req, res) => {
         whatsappNumber,
         contactEmail,
         languages,
+        postingLanguage: postingLanguage ? String(postingLanguage).trim().toLowerCase() : 'es',
         categoryId,
         companyId: req.user.id,
         expiresAt: expiresAt ? new Date(expiresAt) : null,
@@ -176,6 +178,7 @@ exports.updateJobOffer = async (req, res) => {
       whatsappNumber,
       contactEmail,
       languages,
+      postingLanguage,
       categoryId,
       isActive,
       expiresAt,
@@ -207,6 +210,7 @@ exports.updateJobOffer = async (req, res) => {
         whatsappNumber,
         contactEmail,
         languages,
+        postingLanguage: postingLanguage ? String(postingLanguage).trim().toLowerCase() : undefined,
         categoryId,
         isActive,
         expiresAt: expiresAt ? new Date(expiresAt) : null,
@@ -484,6 +488,7 @@ exports.searchJobOffers = async (req, res) => {
       workMode,
       experienceLevel,
       languages,
+      postingLanguage,
       page = 1,
       limit = 20,
     } = req.query;
@@ -530,6 +535,10 @@ exports.searchJobOffers = async (req, res) => {
       where.languages = {
         hasSome: Array.isArray(languages) ? languages : [languages],
       };
+    }
+
+    if (postingLanguage) {
+      where.postingLanguage = String(postingLanguage).trim().toLowerCase();
     }
 
     const [jobOffers, total] = await Promise.all([

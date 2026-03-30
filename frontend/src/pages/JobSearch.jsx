@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { categoryService, jobOfferService, userService } from '../services';
 import { BACKEND_BASE_URL } from '../services/apiBaseUrl';
 import { useAuthStore } from '../context/authStore';
+import { getJobPostingLanguageLabel } from '../constants/jobOfferLanguages';
 import '../components/BackToDashboardButton.css';
 import './JobSearch.css';
 
@@ -265,6 +266,7 @@ export default function JobSearch() {
                     <span>{job.location}</span>
                     <span>{job.workMode}</span>
                     <span>{job.experienceLevel}</span>
+                    <span>Idioma: {getJobPostingLanguageLabel(job.postingLanguage)}</span>
                     <span>{formatSalary(job.salaryMin, job.salaryMax, job.salaryPeriod)}</span>
                     <span>Publicada: {formatDate(job.createdAt)}</span>
                   </div>

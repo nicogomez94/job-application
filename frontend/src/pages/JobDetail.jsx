@@ -9,6 +9,7 @@ import { applicationService, jobOfferService, userService } from '../services';
 import { BACKEND_BASE_URL } from '../services/apiBaseUrl';
 import { useAuthStore } from '../context/authStore';
 import RatingSummary from '../components/RatingSummary';
+import { getJobPostingLanguageLabel } from '../constants/jobOfferLanguages';
 import '../components/BackToDashboardButton.css';
 import './JobDetail.css';
 
@@ -187,6 +188,10 @@ export default function JobDetail() {
             <span className="jd-meta-item">
               <Calendar size={14} />
               Publicada el {formatDate(job.createdAt)}
+            </span>
+            <span className="jd-meta-item">
+              <Languages size={14} />
+              Idioma del anuncio: {getJobPostingLanguageLabel(job.postingLanguage)}
             </span>
             {job.expiresAt && (
               <span className="jd-meta-item">

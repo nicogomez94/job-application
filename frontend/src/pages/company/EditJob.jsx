@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { categoryService, jobOfferService } from '../../services';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
+import { JOB_POSTING_LANGUAGE_OPTIONS } from '../../constants/jobOfferLanguages';
 
 const parseTextToArray = (text) =>
   text
@@ -64,6 +65,7 @@ export default function EditJob() {
       description: job.description || '',
       location: job.location || '',
       categoryId: job.categoryId || '',
+      postingLanguage: job.postingLanguage || 'es',
       requirementsText: (job.requirements || []).join('\n'),
       responsibilitiesText: (job.responsibilities || []).join('\n'),
       languagesText: (job.languages || []).join(', '),
@@ -103,6 +105,7 @@ export default function EditJob() {
         description: formData.description.trim(),
         location: formData.location.trim(),
         categoryId: formData.categoryId,
+        postingLanguage: formData.postingLanguage,
         requirements: parseTextToArray(formData.requirementsText),
         responsibilities: parseTextToArray(formData.responsibilitiesText),
         languages: parseCommaToArray(formData.languagesText),
@@ -176,6 +179,25 @@ export default function EditJob() {
                 ))}
               </select>
             </div>
+          </div>
+          <div>
+            <label htmlFor="edit-job-posting-language" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+              Idioma del anuncio
+            </label>
+            <select
+              id="edit-job-posting-language"
+              className="input"
+              name="postingLanguage"
+              value={formData.postingLanguage}
+              onChange={handleChange}
+              required
+            >
+              {JOB_POSTING_LANGUAGE_OPTIONS.map((language) => (
+                <option key={language.value} value={language.value}>
+                  {language.label}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
