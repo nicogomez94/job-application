@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Briefcase, Building2, TrendingUp, MapPin, Briefcase as BriefcaseIcon, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
+import { Search, Briefcase, Building2, TrendingUp, MapPin, Languages, Briefcase as BriefcaseIcon, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import { useI18n } from '../context/i18nStore';
 import { categoryService } from '../services';
+import { JOB_POSTING_LANGUAGE_OPTIONS } from '../constants/jobOfferLanguages';
 import './Home.css';
 
 const heroImageMain = '/herohome.png';
@@ -43,7 +44,7 @@ const useScrollAnimation = () => {
 export default function Home() {
   const { t } = useI18n();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [homeFilters, setHomeFilters] = useState({ categoryId: '', location: '', search: '' });
+  const [homeFilters, setHomeFilters] = useState({ categoryId: '', location: '', postingLanguage: '', search: '' });
   const [availableCategories, setAvailableCategories] = useState([]);
   const [heroRef, heroVisible] = useScrollAnimation();
   const [categoriesRef, categoriesVisible] = useScrollAnimation();
@@ -124,6 +125,7 @@ export default function Home() {
   const jobsParams = new URLSearchParams();
   if (homeFilters.categoryId) jobsParams.set('categoryId', homeFilters.categoryId);
   if (homeFilters.location) jobsParams.set('location', homeFilters.location);
+  if (homeFilters.postingLanguage) jobsParams.set('postingLanguage', homeFilters.postingLanguage);
   if (homeFilters.search) jobsParams.set('search', homeFilters.search);
   const jobsSearch = jobsParams.toString();
   const jobsHref = jobsSearch ? `/jobs?${jobsSearch}` : '/jobs';
@@ -216,6 +218,25 @@ export default function Home() {
                   <option value="Córdoba">{t('Córdoba')}</option>
                   <option value="Rosario">{t('Rosario')}</option>
                   <option value="Remoto">{t('Remoto')}</option>
+                </select>
+                <ChevronDown size={16} className="home-search-chevron" />
+              </div>
+            </div>
+            <div className="home-search-divider"></div>
+            <div className="home-search-field">
+              <Languages size={20} className="search-icon" />
+              <div className="home-search-select-wrapper">
+                <select
+                  className="home-search-select"
+                  value={homeFilters.postingLanguage}
+                  onChange={(e) => setHomeFilters((prev) => ({ ...prev, postingLanguage: e.target.value }))}
+                >
+                  <option value="">{t('Idioma')}</option>
+                  {JOB_POSTING_LANGUAGE_OPTIONS.map((languageOption) => (
+                    <option key={languageOption.value} value={languageOption.value}>
+                      {languageOption.label}
+                    </option>
+                  ))}
                 </select>
                 <ChevronDown size={16} className="home-search-chevron" />
               </div>

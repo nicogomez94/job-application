@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import { categoryService, jobOfferService, userService } from '../services';
 import { BACKEND_BASE_URL } from '../services/apiBaseUrl';
 import { useAuthStore } from '../context/authStore';
-import { getJobPostingLanguageLabel } from '../constants/jobOfferLanguages';
+import { getJobPostingLanguageLabel, JOB_POSTING_LANGUAGE_OPTIONS } from '../constants/jobOfferLanguages';
 import { scrollToTopInstant } from '../utils/scrollToTop';
 import '../components/BackToDashboardButton.css';
 import './JobSearch.css';
@@ -37,6 +37,7 @@ export default function JobSearch() {
     search: searchParams.get('search') || '',
     location: searchParams.get('location') || '',
     categoryId: searchParams.get('categoryId') || searchParams.get('category') || '',
+    postingLanguage: searchParams.get('postingLanguage') || '',
     workMode: searchParams.get('workMode') || '',
     page: Number(searchParams.get('page') || 1),
     limit: Number(searchParams.get('limit') || 9),
@@ -186,7 +187,7 @@ export default function JobSearch() {
           className="job-search-header"
           style={{
             display: 'grid',
-            gridTemplateColumns: '2fr 1.3fr 1.3fr 1fr',
+            gridTemplateColumns: '2fr 1.15fr 1.15fr 1fr',
             gap: '0.75rem',
             background: '#fff',
             padding: '1rem',
@@ -213,6 +214,14 @@ export default function JobSearch() {
             {categoriesOrdered.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name} ({getCategoryOffersCount(category)})
+              </option>
+            ))}
+          </select>
+          <select className="input" name="postingLanguage" value={filters.postingLanguage} onChange={handleFilterChange}>
+            <option value="">Todos los idiomas</option>
+            {JOB_POSTING_LANGUAGE_OPTIONS.map((languageOption) => (
+              <option key={languageOption.value} value={languageOption.value}>
+                {languageOption.label}
               </option>
             ))}
           </select>

@@ -124,6 +124,7 @@ const ES_TO_EN = {
   'Idioma del anuncio': 'Ad language',
   'Idioma del anuncio: ': 'Ad language: ',
   'Idioma: ': 'Language: ',
+  Idioma: 'Language',
   'WhatsApp de contacto': 'Contact WhatsApp',
   'Email de contacto': 'Contact email',
   'Publicar oferta': 'Publish job',

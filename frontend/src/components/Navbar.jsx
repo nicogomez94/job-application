@@ -1,6 +1,6 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-import { User, LogOut, Building2, ChevronDown, Menu, X, Search, PencilLine } from 'lucide-react';
+import { LogOut, ChevronDown, Menu, X, Search, PencilLine } from 'lucide-react';
 import { useAuthStore } from '../context/authStore';
 import { useI18n } from '../context/i18nStore';
 import { BACKEND_BASE_URL } from '../services/apiBaseUrl';
@@ -201,9 +201,12 @@ export default function Navbar() {
                   aria-haspopup="menu"
                   aria-expanded={isUserDropdownOpen}
                 >
-                  <span className="navbar-user-info">
-                    {userType === 'company' ? <Building2 className="navbar-user-icon" /> : <User className="navbar-user-icon" />}
-                    <span className="navbar-user-name-link">{displayName}</span>
+                  <span className="navbar-user-trigger-avatar" aria-hidden="true">
+                    {avatarUrl ? (
+                      <img src={avatarUrl} alt="" className="navbar-user-avatar-img" />
+                    ) : (
+                      avatarInitial
+                    )}
                   </span>
                   <ChevronDown className={`navbar-user-menu-chevron ${isUserDropdownOpen ? 'is-open' : ''}`} size={16} />
                 </button>
