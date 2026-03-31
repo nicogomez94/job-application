@@ -30,7 +30,6 @@
   gap: 0.625rem;
   text-decoration: none;
   margin-top: 5px;
-  pointer-events: none;
 }
 
 .navbar-logo-img {
@@ -114,8 +113,8 @@
 }
 
 .navbar-language-flag {
-  width: 1.22rem;
-  height: 0.92rem;
+  width: 0.9rem;
+  height: 0.9rem;
   border-radius: 2px;
   display: block;
 }

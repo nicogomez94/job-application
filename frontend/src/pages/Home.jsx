@@ -146,7 +146,7 @@ export default function Home() {
       period: '/ 7 meses',
       feature: 'Continuidad extendida para publicar',
       highlight: true,
-      badge: 'Más elegido',
+      badge: 'Recomendado',
     },
     {
       id: 'ANNUAL',

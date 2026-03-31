@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { FaMapMarkerAlt, FaLinkedin, FaBriefcase, FaFileAlt } from 'react-icons/fa';
 import { userService } from '../../services';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
+import BackToDashboardButton from '../../components/BackToDashboardButton';
 
 const toAssetUrl = (path) => {
   if (!path) return null;
@@ -58,6 +59,7 @@ export default function UserDashboard() {
 
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '2rem 1rem' }}>
+      <BackToDashboardButton to="/" label="Ir al inicio" icon="home" />
       <h1 style={{ marginBottom: '1rem' }}>MI perfil de trabajo</h1>
 
       {/* ===== HEADER ===== */}

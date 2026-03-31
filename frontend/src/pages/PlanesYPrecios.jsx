@@ -107,13 +107,12 @@ export default function PlanesYPrecios() {
         <header className="pricing-header">
           <p className="pricing-eyebrow">Empresas</p>
           <h1>Planes y Precios</h1>
-          <p>
-            Solo por tiempo limitado: elegí el plan pago que mejor se adapte al ritmo de contratación de tu empresa.
-          </p>
+          <p>Elegí el plan que mejor se adapte al ritmo de contratación de tu empresa.</p>
         </header>
 
         <section className="pricing-conditions">
           <h2>Condiciones comerciales</h2>
+          <p>Condiciones comerciales solo por tiempo limitado.</p>
           <ul>
             <li>Inscripción inicial: 2 meses gratis en tu primera vez en la plataforma.</li>
             <li>Periodo de renovación: todas las renovaciones son pagas en cualquiera de sus formas.</li>

@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { FaIndustry, FaMapMarkerAlt, FaUsers, FaGlobe, FaUserTie } from 'react-icons/fa';
 import { companyService, jobOfferService } from '../../services';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
+import BackToDashboardButton from '../../components/BackToDashboardButton';
 
 const toAssetUrl = (path) => {
   if (!path) return null;
@@ -62,6 +63,7 @@ export default function CompanyDashboard() {
 
   return (
     <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '2rem 1rem' }}>
+      <BackToDashboardButton to="/" label="Ir al inicio" icon="home" />
       <h1 style={{ marginBottom: '1rem' }}>Mi perfil</h1>
 
       {/* ===== HEADER ===== */}
