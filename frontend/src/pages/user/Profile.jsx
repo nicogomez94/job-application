@@ -408,7 +408,7 @@ export default function UserProfile() {
             <div style={{ marginTop: '0.3rem', display: 'grid', gap: '0.4rem' }}>
               <p style={{ margin: 0, color: '#6f604b', fontSize: '0.92rem' }}>1 archivo seleccionado</p>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.6rem', border: '1px solid #d7c9b7', borderRadius: '0.45rem', padding: '0.4rem 0.55rem', background: '#faf7f2' }}>
-                <span title={selectedCvFile.name} style={{ fontSize: '0.9rem', color: '#5e4d38', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <span title={selectedCvFile.name} style={{ fontSize: '0.9rem', color: '#5e4d38', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }}>
                   {selectedCvFile.name}
                 </span>
                 <button type="button" onClick={() => setSelectedCvFile(null)} style={{ border: '1px solid #c94f4f', background: '#fff', color: '#c94f4f', borderRadius: '0.4rem', padding: '0.25rem 0.55rem', cursor: 'pointer', fontSize: '0.82rem', flexShrink: 0 }}>
@@ -420,7 +420,7 @@ export default function UserProfile() {
             <div style={{ marginTop: '0.3rem', display: 'grid', gap: '0.4rem' }}>
               <p style={{ margin: 0, color: '#6f604b', fontSize: '0.92rem' }}>CV cargado</p>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.6rem', border: '1px solid #d7c9b7', borderRadius: '0.45rem', padding: '0.4rem 0.55rem', background: '#faf7f2' }}>
-                <a href={toAssetUrl(cvUrl)} target="_blank" rel="noreferrer" title={getFileNameFromPath(cvUrl)} style={{ fontSize: '0.9rem', color: '#5e4d38', textDecoration: 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <a href={toAssetUrl(cvUrl)} target="_blank" rel="noreferrer" title={getFileNameFromPath(cvUrl)} style={{ fontSize: '0.9rem', color: '#5e4d38', textDecoration: 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }}>
                   {getFileNameFromPath(cvUrl)}
                 </a>
                 <button type="button" onClick={handleDeleteCv} disabled={deletingCv} style={{ border: '1px solid #c94f4f', background: '#fff', color: '#c94f4f', borderRadius: '0.4rem', padding: '0.25rem 0.55rem', cursor: 'pointer', fontSize: '0.82rem', flexShrink: 0 }}>

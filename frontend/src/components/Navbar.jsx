@@ -160,34 +160,13 @@ export default function Navbar() {
           </div>
 
           <div className={`navbar-links ${isMenuOpen ? 'navbar-links-open' : ''}`}>
-            <div className="navbar-language-toggle" role="group" aria-label="Language selector">
-              <button
-                type="button"
-                className={`navbar-language-btn ${language === 'es' ? 'navbar-language-btn-active' : ''}`}
-                onClick={() => setLanguage('es')}
-                aria-label="Español"
-                title="Español"
-              >
-                <img src="/flags/es.svg" alt="" className="navbar-language-flag" aria-hidden="true" />
-              </button>
-              <button
-                type="button"
-                className={`navbar-language-btn ${language === 'en' ? 'navbar-language-btn-active' : ''}`}
-                onClick={() => setLanguage('en')}
-                aria-label="English"
-                title="English"
-              >
-                <img src="/flags/us.svg" alt="" className="navbar-language-flag" aria-hidden="true" />
-              </button>
-            </div>
-
-            <Link
+            {/* <Link
               to="/"
-              className={`navbar-link navbar-link-home ${location.pathname === '/' ? 'navbar-link-active' : ''}`}
+              className="navbar-link"
               onClick={closeMenu}
             >
-              Home
-            </Link>
+              {t('Inicio')}
+            </Link> */}
 
             <form className="navbar-search" onSubmit={handleSearchSubmit}>
               <label
@@ -217,8 +196,12 @@ export default function Navbar() {
               />
             </form>
 
-            <Link to="/jobs" className="navbar-link" onClick={closeMenu}>
-              {t('Ver Ofertas')} <ChevronDown size={16} />
+            <Link
+              to="/jobs"
+              className={`navbar-link navbar-link-home ${location.pathname.startsWith('/jobs') ? 'navbar-link-active' : ''}`}
+              onClick={closeMenu}
+            >
+              {t('Ver Ofertas')}
             </Link>
             {!isAuthenticated ? (
               <div className="navbar-mobile-actions">
@@ -288,6 +271,27 @@ export default function Navbar() {
                 </div>
               </div>
             )}
+
+            <div className="navbar-language-toggle" role="group" aria-label="Language selector">
+              <button
+                type="button"
+                className={`navbar-language-btn ${language === 'es' ? 'navbar-language-btn-active' : ''}`}
+                onClick={() => setLanguage('es')}
+                aria-label="Español"
+                title="Español"
+              >
+                <img src="/flags/es.svg" alt="" className="navbar-language-flag" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                className={`navbar-language-btn ${language === 'en' ? 'navbar-language-btn-active' : ''}`}
+                onClick={() => setLanguage('en')}
+                aria-label="English"
+                title="English"
+              >
+                <img src="/flags/us.svg" alt="" className="navbar-language-flag" aria-hidden="true" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
