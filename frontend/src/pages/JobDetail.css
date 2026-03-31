@@ -438,3 +438,82 @@
     font-size: 1.35rem !important;
   }
 }
+
+@media (max-width: 420px) {
+  .jd-page {
+    padding: 0.9rem 0.65rem 1.2rem;
+  }
+
+  .jd-hero,
+  .jd-section,
+  .jd-sidebar-card {
+    padding: 1rem;
+    border-radius: 0.8rem;
+  }
+
+  .jd-hero-top {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .jd-logo,
+  .jd-logo-placeholder {
+    width: 58px;
+    height: 58px;
+  }
+
+  .jd-title {
+    font-size: 1.02rem !important;
+    line-height: 1.25;
+    margin-bottom: 0.2rem;
+  }
+
+  .jd-company-name {
+    font-size: 0.88rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .jd-category-badge {
+    font-size: 0.62rem;
+  }
+
+  .jd-tag {
+    font-size: 0.74rem;
+    padding: 0.24rem 0.58rem;
+  }
+
+  .jd-hero-meta {
+    gap: 0.62rem;
+    margin-top: 0.82rem;
+    padding-top: 0.78rem;
+  }
+
+  .jd-meta-item {
+    font-size: 0.76rem;
+  }
+
+  .jd-section-title {
+    font-size: 0.9rem !important;
+    margin-bottom: 0.6rem;
+  }
+
+  .jd-description,
+  .jd-check-list li,
+  .jd-dot-list li {
+    font-size: 0.84rem;
+    line-height: 1.45;
+  }
+
+  .jd-lang-tag,
+  .jd-company-info-row,
+  .jd-company-desc,
+  .jd-website-link {
+    font-size: 0.76rem;
+  }
+
+  .jd-btn-full,
+  .jd-applied-banner {
+    font-size: 0.82rem;
+  }
+}

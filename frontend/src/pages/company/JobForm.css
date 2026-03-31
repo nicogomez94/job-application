@@ -1,0 +1,34 @@
+.job-form-page {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  width: 100%;
+}
+
+.job-form-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.job-form-grid-two {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.job-form-grid-three {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 760px) {
+  .job-form-page {
+    padding: 1rem 0.75rem;
+  }
+
+  .job-form-grid-two,
+  .job-form-grid-three {
+    grid-template-columns: 1fr;
+  }
+}

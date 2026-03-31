@@ -287,7 +287,7 @@ export default function Home() {
                             </div>
                             <div className="category-info">
                               <h3 className="category-name">{getDisplayCategoryName(category)}</h3>
-                              <p className="category-jobs">{getCategoryOffersCount(category)} {t('Trabajos Disponibles')}</p>
+                              <p className="category-jobs">{getCategoryOffersCount(category)} {t('Ofertas')}</p>
                             </div>
                           </Link>
                         ))}

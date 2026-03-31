@@ -55,3 +55,108 @@
     flex-wrap: wrap !important;
   }
 }
+
+@media (max-width: 420px) {
+  .job-search-page {
+    overflow-x: clip;
+  }
+
+  .job-search-hero {
+    padding: 1.1rem 0 !important;
+  }
+
+  .job-search-hero-title {
+    font-size: 1.8rem !important;
+    line-height: 1.12;
+    margin-bottom: 0.35rem !important;
+  }
+
+  .job-search-hero-subtitle {
+    font-size: 0.92rem !important;
+    line-height: 1.35;
+  }
+
+  .job-search-header {
+    padding: 0.75rem !important;
+    gap: 0.45rem !important;
+  }
+
+  .job-search-header .input {
+    font-size: 0.84rem;
+    padding: 0.5rem 0.65rem;
+  }
+
+  .job-search-result-count {
+    font-size: 0.82rem !important;
+    margin-top: 0.8rem !important;
+  }
+
+  .job-search-results {
+    gap: 0.75rem !important;
+  }
+
+  .job-card {
+    padding: 0.85rem !important;
+  }
+
+  .job-card-content {
+    gap: 0.7rem !important;
+  }
+
+  .job-card-content img {
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 0.45rem !important;
+  }
+
+  .job-card-title {
+    font-size: 1.05rem !important;
+    line-height: 1.24 !important;
+  }
+
+  .job-card-company {
+    font-size: 0.88rem !important;
+    margin-bottom: 0.35rem !important;
+  }
+
+  .job-card-description {
+    font-size: 0.86rem !important;
+    line-height: 1.36 !important;
+    margin-bottom: 0.55rem !important;
+  }
+
+  .job-card-meta {
+    gap: 0.45rem 0.75rem !important;
+    font-size: 0.8rem !important;
+  }
+
+  .job-card-meta span {
+    overflow-wrap: anywhere;
+  }
+
+  .job-card-footer {
+    margin-top: 0.75rem !important;
+  }
+
+  .job-card .btn {
+    font-size: 0.8rem !important;
+    padding: 0.36rem 0.66rem !important;
+  }
+
+  .job-search-pagination {
+    margin-top: 1rem !important;
+    flex-wrap: wrap;
+    gap: 0.4rem !important;
+  }
+
+  .job-search-pagination .btn {
+    font-size: 0.78rem !important;
+    padding: 0.34rem 0.58rem !important;
+  }
+
+  .job-search-page-indicator {
+    width: 100%;
+    text-align: center;
+    font-size: 0.8rem;
+  }
+}

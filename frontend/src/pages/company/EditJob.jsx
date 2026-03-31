@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { categoryService, jobOfferService } from '../../services';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
 import { JOB_POSTING_LANGUAGE_OPTIONS } from '../../constants/jobOfferLanguages';
+import './JobForm.css';
 
 const parseTextToArray = (text) =>
   text
@@ -140,12 +141,12 @@ export default function EditJob() {
   }
 
   return (
-    <div style={{ maxWidth: '980px', margin: '0 auto', padding: '2rem 1rem' }}>
+    <div className="job-form-page">
       <BackToDashboardButton to="/company/dashboard" />
       <h1 style={{ marginBottom: '1rem' }}>Editar Oferta Laboral</h1>
 
       <form className="card" onSubmit={handleSubmit}>
-        <div style={{ display: 'grid', gap: '1rem' }}>
+        <div className="job-form-grid">
           <div>
             <label htmlFor="edit-job-title" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
               Título del puesto
@@ -159,7 +160,7 @@ export default function EditJob() {
             <textarea id="edit-job-description" className="input" name="description" rows={5} value={formData.description} onChange={handleChange} style={{ resize: 'vertical' }} required />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div className="job-form-grid-two">
             <div>
               <label htmlFor="edit-job-location" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
                 Ubicación
@@ -200,7 +201,7 @@ export default function EditJob() {
             </select>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+          <div className="job-form-grid-three">
             <div>
               <label htmlFor="edit-job-work-type" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
                 Tipo de trabajo
@@ -237,7 +238,7 @@ export default function EditJob() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+          <div className="job-form-grid-three">
             <div>
               <label htmlFor="edit-job-salary-min" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
                 Salario mínimo
@@ -281,7 +282,7 @@ export default function EditJob() {
             <input id="edit-job-languages" className="input" name="languagesText" value={formData.languagesText} onChange={handleChange} />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+          <div className="job-form-grid-three">
             <div>
               <label htmlFor="edit-job-whatsapp" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
                 WhatsApp de contacto

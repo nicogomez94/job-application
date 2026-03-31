@@ -5,6 +5,7 @@ import { categoryService, companyService, jobOfferService } from '../../services
 import { DEBUG_FORM_DATA, DEBUG_MODE } from '../../config/debug';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
 import { JOB_POSTING_LANGUAGE_OPTIONS } from '../../constants/jobOfferLanguages';
+import './JobForm.css';
 
 const getInitialForm = () =>
   DEBUG_MODE
@@ -146,12 +147,12 @@ export default function CreateJob() {
   }
 
   return (
-    <div style={{ maxWidth: '980px', margin: '0 auto', padding: '2rem 1rem' }}>
+    <div className="job-form-page">
       <BackToDashboardButton to="/company/dashboard" />
       <h1 style={{ marginBottom: '1rem' }}>Crear Oferta Laboral</h1>
 
       <form className="card" onSubmit={handleSubmit}>
-        <div style={{ display: 'grid', gap: '1rem' }}>
+        <div className="job-form-grid">
           <div>
             <label htmlFor="create-job-title" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
               Título del puesto
@@ -174,7 +175,7 @@ export default function CreateJob() {
               required
             />
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div className="job-form-grid-two">
             <div>
               <label htmlFor="create-job-location" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
                 Ubicación
@@ -215,7 +216,7 @@ export default function CreateJob() {
             </select>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+          <div className="job-form-grid-three">
             <div>
               <label htmlFor="create-job-work-type" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
                 Tipo de trabajo
@@ -250,7 +251,7 @@ export default function CreateJob() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+          <div className="job-form-grid-three">
             <div>
               <label htmlFor="create-job-salary-min" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
                 Salario mínimo
@@ -321,7 +322,7 @@ export default function CreateJob() {
             />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+          <div className="job-form-grid-three">
             <div>
               <label htmlFor="create-job-whatsapp" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
                 WhatsApp de contacto

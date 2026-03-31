@@ -168,8 +168,8 @@ export default function JobSearch() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#fcf7ef', paddingBottom: '3rem' }}>
-      <div style={{ background: 'linear-gradient(135deg, var(--primary-600) 0%, var(--primary-500) 100%)', padding: '2.5rem 0' }}>
+    <div className="job-search-page" style={{ minHeight: '100vh', background: '#fcf7ef', paddingBottom: '3rem' }}>
+      <div className="job-search-hero" style={{ background: 'linear-gradient(135deg, var(--primary-600) 0%, var(--primary-500) 100%)', padding: '2.5rem 0' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem', color: '#fff' }}>
           <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '0.75rem', marginBottom: '1rem' }}>
             <Link to="/" className="back-dashboard-btn" style={{ marginBottom: 0 }} onClick={scrollToTopInstant}>
@@ -177,8 +177,8 @@ export default function JobSearch() {
               <span>Volver</span>
             </Link>
           </div>
-          <h1 style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>Buscar Profesión</h1>
-          <p style={{fontSize: '1.6rem', opacity: 0.9, color : '#f7f7f7' }}>Encontrá ofertas activas y postulá en pocos pasos.</p>
+          <h1 className="job-search-hero-title" style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>Buscar Profesión</h1>
+          <p className="job-search-hero-subtitle" style={{fontSize: '1.6rem', opacity: 0.9, color : '#f7f7f7' }}>Encontrá ofertas activas y postulá en pocos pasos.</p>
         </div>
       </div>
 
@@ -233,11 +233,11 @@ export default function JobSearch() {
           </select> */}
         </div>
 
-        <div style={{ marginTop: '1rem', color: '#6f604b', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <div className="job-search-result-count" style={{ marginTop: '1rem', color: '#6f604b', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <span>{loading ? 'Cargando ofertas...' : `${pagination.total || 0} ofertas encontradas`}</span>
         </div>
 
-        <div style={{ marginTop: '1rem', display: 'grid', gap: '1rem' }}>
+        <div className="job-search-results" style={{ marginTop: '1rem', display: 'grid', gap: '1rem' }}>
           {!loading && jobs.length === 0 && (
             <div className="card">
               <p>No hay resultados para los filtros seleccionados.</p>
@@ -268,13 +268,13 @@ export default function JobSearch() {
                 />
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.25rem' }}>
-                    <h2 style={{ color: '#2f2416', marginBottom: 0 }}>{job.title}</h2>
+                    <h2 className="job-card-title" style={{ color: '#2f2416', marginBottom: 0 }}>{job.title}</h2>
                     {isApplied && (
                       <span className="job-applied-badge">Postulado</span>
                     )}
                   </div>
-                  <p style={{ color: '#5e4d38', marginBottom: '0.5rem' }}>{job.company?.companyName || 'Empresa'}</p>
-                  <p style={{ color: '#7e705c', marginBottom: '0.7rem', lineHeight: 1.5 }}>
+                  <p className="job-card-company" style={{ color: '#5e4d38', marginBottom: '0.5rem' }}>{job.company?.companyName || 'Empresa'}</p>
+                  <p className="job-card-description" style={{ color: '#7e705c', marginBottom: '0.7rem', lineHeight: 1.5 }}>
                     {(job.description || '').slice(0, 180)}
                     {(job.description || '').length > 180 ? '...' : ''}
                   </p>
@@ -303,11 +303,11 @@ export default function JobSearch() {
           })}
         </div>
 
-        <div style={{ marginTop: '1.5rem', display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+        <div className="job-search-pagination" style={{ marginTop: '1.5rem', display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
           <button className="btn btn-outline" disabled={(pagination.page || 1) <= 1} onClick={() => goToPage((pagination.page || 1) - 1)}>
             Anterior
           </button>
-          <span style={{ alignSelf: 'center', color: '#5e4d38' }}>
+          <span className="job-search-page-indicator" style={{ alignSelf: 'center', color: '#5e4d38' }}>
             Página {pagination.page || 1} de {pagination.pages || 1}
           </span>
           <button
