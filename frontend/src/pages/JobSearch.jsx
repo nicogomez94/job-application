@@ -48,6 +48,7 @@ export default function JobSearch() {
   const [pagination, setPagination] = useState({ page: 1, pages: 1, total: 0 });
   const [loading, setLoading] = useState(false);
   const [appliedJobOfferIds, setAppliedJobOfferIds] = useState(new Set());
+  const [brokenCompanyLogos, setBrokenCompanyLogos] = useState({});
   const getCategoryOffersCount = (category) => category?.activeJobOffersCount ?? category?._count?.jobOffers ?? 0;
   const categoriesOrdered = useMemo(() => {
     const isOtherCategory = (name) => {
@@ -246,6 +247,9 @@ export default function JobSearch() {
 
           {jobs.map((job) => {
             const isApplied = appliedJobOfferIds.has(job.id);
+            const logoUrl = toAssetUrl(job.company?.companyLogo);
+            const companyInitial = (job.company?.companyName || 'E').trim().charAt(0).toUpperCase();
+            const showLogoImage = Boolean(logoUrl) && !brokenCompanyLogos[job.id];
 
             return (
               <article
@@ -258,14 +262,25 @@ export default function JobSearch() {
                 }}
               >
               <div className="job-card-content" style={{ display: 'flex', gap: '1rem' }}>
-                <img
-                  src={
-                    toAssetUrl(job.company?.companyLogo) ||
-                    `https://ui-avatars.com/api/?name=${encodeURIComponent(job.company?.companyName || 'Empresa')}&background=EFC89A&color=4A3A2A`
-                  }
-                  alt={job.company?.companyName || 'Empresa'}
-                  style={{ width: '64px', height: '64px', borderRadius: '0.5rem', objectFit: 'cover' }}
-                />
+                <div className="job-card-logo-wrapper">
+                  {showLogoImage ? (
+                    <img
+                      src={logoUrl}
+                      alt={job.company?.companyName || 'Empresa'}
+                      className="job-card-logo-image"
+                      onError={() =>
+                        setBrokenCompanyLogos((prev) => ({
+                          ...prev,
+                          [job.id]: true,
+                        }))
+                      }
+                    />
+                  ) : (
+                    <div className="job-card-logo-placeholder" aria-hidden="true">
+                      {companyInitial}
+                    </div>
+                  )}
+                </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.25rem' }}>
                     <h2 className="job-card-title" style={{ color: '#2f2416', marginBottom: 0 }}>{job.title}</h2>

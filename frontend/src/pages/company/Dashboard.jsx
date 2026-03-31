@@ -212,7 +212,7 @@ export default function CompanyDashboard() {
           background: subscriptionStatus?.hasActiveSubscription ? '#f0faf4' : '#fef2f2',
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.6rem' }}>
+        <div className="company-dashboard-subscription-header">
           <div>
             <h2 style={{ marginBottom: '0.5rem', color: '#2f2416' }}>Suscripción</h2>
             {sub ? (
@@ -231,11 +231,11 @@ export default function CompanyDashboard() {
               <p style={{ margin: 0, color: '#991b1b' }}>Sin suscripción activa</p>
             )}
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
+          <div className="company-dashboard-subscription-actions">
             <span className={subscriptionStatus?.hasActiveSubscription ? 'badge badge-success' : 'badge badge-error'}>
               {subscriptionStatus?.hasActiveSubscription ? 'Activa' : 'Inactiva'}
             </span>
-            <Link className="btn btn-outline" style={{ fontSize: '0.88rem' }} to="/company/subscription">
+            <Link className="btn btn-outline company-dashboard-subscription-btn" to="/company/subscription">
               {subscriptionStatus?.hasActiveSubscription ? 'Gestionar' : 'Activar'}
             </Link>
           </div>

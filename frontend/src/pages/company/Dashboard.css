@@ -92,14 +92,54 @@
   margin: 0;
 }
 
+.company-dashboard-subscription-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.company-dashboard-subscription-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.company-dashboard-subscription-btn {
+  font-size: 0.88rem;
+}
+
 @media (max-width: 480px) {
   .company-dashboard-company-name {
     font-size: 1.6rem;
+  }
+
+  .company-dashboard-subscription-header {
+    gap: 0.9rem;
+  }
+
+  .company-dashboard-subscription-actions {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
   }
 }
 
 @media (max-width: 320px) {
   .company-dashboard-company-name {
     font-size: 1.35rem;
+  }
+
+  .company-dashboard-subscription-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .company-dashboard-subscription-btn {
+    width: 100%;
+    text-align: center;
   }
 }
