@@ -5,6 +5,7 @@ import { useAuthStore } from '../../context/authStore';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
 import RatingSummary from '../../components/RatingSummary';
+import './Profile.css';
 
 const initialForm = {
   firstName: '',
@@ -335,42 +336,23 @@ export default function UserProfile() {
   }
 
   return (
-    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1rem' }}>
+    <div className="user-profile-page">
       <BackToDashboardButton to="/user/dashboard" />
-      <h1 style={{ marginBottom: '1rem' }}>MI perfil de trabajo</h1>
+      <h1 className="user-profile-title">MI perfil de trabajo</h1>
       <form className="card" onSubmit={handleSubmit}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '1rem',
-            flexWrap: 'wrap',
-            marginBottom: '1rem',
-            padding: '0.9rem',
-            border: '1px solid #ebdfcb',
-            borderRadius: '0.7rem',
-            background: '#fdf9f2',
-          }}
-        >
+        <div className="user-profile-upload-header">
           <img
             src={previewImageUrl || toAssetUrl(profileImage)}
             alt="Foto de perfil"
-            style={{
-              width: '72px',
-              height: '72px',
-              borderRadius: '999px',
-              objectFit: 'cover',
-              border: '2px solid #dfcfb6',
-              background: '#f1eadf',
-            }}
+            className="user-profile-avatar"
           />
-          <div style={{ display: 'grid', gap: '0.45rem' }}>
-            <label htmlFor="profile-image" style={{ color: '#5e4d38', fontWeight: 600 }}>Foto de perfil (opcional)</label>
+          <div className="user-profile-upload-controls">
+            <label htmlFor="profile-image" className="user-profile-upload-label">Foto de perfil (opcional)</label>
             <input id="profile-image" type="file" accept="image/*" onChange={handleProfileImageFileChange} />
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <div className="user-profile-upload-actions">
               <button
                 type="button"
-                className="btn btn-outline"
+                className="btn btn-outline user-profile-upload-btn"
                 onClick={handleUploadProfileImage}
                 disabled={uploadingImage}
               >
@@ -378,7 +360,7 @@ export default function UserProfile() {
               </button>
             </div>
           </div>
-          <div style={{ marginLeft: 'auto' }}>
+          <div className="user-profile-rating">
             <RatingSummary
               title="Tu calificacion freelance"
               average={ratingSummary.average}
@@ -388,83 +370,63 @@ export default function UserProfile() {
           </div>
         </div>
 
-        <div
-          style={{
-            display: 'grid',
-            gap: '0.55rem',
-            marginBottom: '1rem',
-            padding: '0.9rem',
-            border: '1px solid #ebdfcb',
-            borderRadius: '0.7rem',
-            background: '#fdf9f2',
-          }}
-        >
-          <label htmlFor="profile-cv" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.1rem' }}>
+        <div className="user-profile-upload-block">
+          <label htmlFor="profile-cv">
             CV (PDF, JPG o Word. máximo 1 archivo)
           </label>
           <input id="profile-cv" type="file" onChange={handleCvFileChange} />
 
           {selectedCvFile ? (
-            <div style={{ marginTop: '0.3rem', display: 'grid', gap: '0.4rem' }}>
-              <p style={{ margin: 0, color: '#6f604b', fontSize: '0.92rem' }}>1 archivo seleccionado</p>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.6rem', border: '1px solid #d7c9b7', borderRadius: '0.45rem', padding: '0.4rem 0.55rem', background: '#faf7f2' }}>
-                <span title={selectedCvFile.name} style={{ fontSize: '0.9rem', color: '#5e4d38', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }}>
+            <div className="user-profile-file-status">
+              <p className="user-profile-file-status-title">1 archivo seleccionado</p>
+              <div className="user-profile-file-item">
+                <span title={selectedCvFile.name} className="user-profile-file-name">
                   {selectedCvFile.name}
                 </span>
-                <button type="button" onClick={() => setSelectedCvFile(null)} style={{ border: '1px solid #c94f4f', background: '#fff', color: '#c94f4f', borderRadius: '0.4rem', padding: '0.25rem 0.55rem', cursor: 'pointer', fontSize: '0.82rem', flexShrink: 0 }}>
+                <button type="button" onClick={() => setSelectedCvFile(null)} className="user-profile-delete-btn">
                   Borrar
                 </button>
               </div>
             </div>
           ) : cvUrl ? (
-            <div style={{ marginTop: '0.3rem', display: 'grid', gap: '0.4rem' }}>
-              <p style={{ margin: 0, color: '#6f604b', fontSize: '0.92rem' }}>CV cargado</p>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.6rem', border: '1px solid #d7c9b7', borderRadius: '0.45rem', padding: '0.4rem 0.55rem', background: '#faf7f2' }}>
-                <a href={toAssetUrl(cvUrl)} target="_blank" rel="noreferrer" title={getFileNameFromPath(cvUrl)} style={{ fontSize: '0.9rem', color: '#5e4d38', textDecoration: 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }}>
+            <div className="user-profile-file-status">
+              <p className="user-profile-file-status-title">CV cargado</p>
+              <div className="user-profile-file-item">
+                <a href={toAssetUrl(cvUrl)} target="_blank" rel="noreferrer" title={getFileNameFromPath(cvUrl)} className="user-profile-file-name user-profile-file-link">
                   {getFileNameFromPath(cvUrl)}
                 </a>
-                <button type="button" onClick={handleDeleteCv} disabled={deletingCv} style={{ border: '1px solid #c94f4f', background: '#fff', color: '#c94f4f', borderRadius: '0.4rem', padding: '0.25rem 0.55rem', cursor: 'pointer', fontSize: '0.82rem', flexShrink: 0 }}>
+                <button type="button" onClick={handleDeleteCv} disabled={deletingCv} className="user-profile-delete-btn">
                   {deletingCv ? 'Eliminando...' : 'Borrar'}
                 </button>
               </div>
             </div>
           ) : (
-            <p style={{ margin: 0, color: '#7e705c', fontSize: '0.92rem' }}>Sin CV cargado</p>
+            <p className="user-profile-file-status-empty">Sin CV cargado</p>
           )}
-          <button type="button" className="btn btn-outline" onClick={handleUploadCv} disabled={uploadingCv}>
+          <button type="button" className="btn btn-outline user-profile-upload-btn" onClick={handleUploadCv} disabled={uploadingCv}>
             {uploadingCv ? 'Subiendo...' : cvUrl ? 'Reemplazar CV' : 'Subir CV'}
           </button>
         </div>
 
-        <div
-          style={{
-            display: 'grid',
-            gap: '0.55rem',
-            marginBottom: '1rem',
-            padding: '0.9rem',
-            border: '1px solid #ebdfcb',
-            borderRadius: '0.7rem',
-            background: '#fdf9f2',
-          }}
-        >
-          <label htmlFor="profile-other-files" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.1rem' }}>
+        <div className="user-profile-upload-block">
+          <label htmlFor="profile-other-files">
             Archivos varios (PDF, JPG o Word. máximo {MAX_OTHER_FILES} archivos)
           </label>
           <input id="profile-other-files" type="file" onChange={handleOtherFilesChange} multiple />
 
           {selectedOtherFiles.length > 0 && (
-            <div style={{ marginTop: '0.3rem' }}>
-              <p style={{ margin: 0, color: '#6f604b', fontSize: '0.92rem' }}>
+            <div className="user-profile-file-status">
+              <p className="user-profile-file-status-title">
                 {selectedOtherFiles.length} archivo{selectedOtherFiles.length === 1 ? '' : 's'} seleccionado
                 {selectedOtherFiles.length === 1 ? '' : 's'}
               </p>
-              <div style={{ marginTop: '0.5rem', display: 'grid', gap: '0.4rem' }}>
+              <div className="user-profile-file-list">
                 {selectedOtherFiles.map((file, index) => (
-                  <div key={getFileKey(file)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.6rem', border: '1px solid #d7c9b7', borderRadius: '0.45rem', padding: '0.4rem 0.55rem', background: '#faf7f2' }}>
-                    <span title={file.name} style={{ fontSize: '0.9rem', color: '#5e4d38', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <div key={getFileKey(file)} className="user-profile-file-item">
+                    <span title={file.name} className="user-profile-file-name">
                       {file.name}
                     </span>
-                    <button type="button" onClick={() => handleRemoveSelectedOtherFile(index)} style={{ border: '1px solid #c94f4f', background: '#fff', color: '#c94f4f', borderRadius: '0.4rem', padding: '0.25rem 0.55rem', cursor: 'pointer', fontSize: '0.82rem', flexShrink: 0 }}>
+                    <button type="button" onClick={() => handleRemoveSelectedOtherFile(index)} className="user-profile-delete-btn">
                       Borrar
                     </button>
                   </div>
@@ -474,18 +436,18 @@ export default function UserProfile() {
           )}
 
           {otherFiles.length > 0 && (
-            <div style={{ marginTop: selectedOtherFiles.length ? '0.3rem' : 0 }}>
-              <p style={{ margin: 0, color: '#6f604b', fontSize: '0.92rem' }}>
+            <div className={selectedOtherFiles.length ? 'user-profile-file-status user-profile-upload-block-spaced' : 'user-profile-file-status'}>
+              <p className="user-profile-file-status-title">
                 {otherFiles.length} archivo{otherFiles.length === 1 ? '' : 's'} subido
                 {otherFiles.length === 1 ? '' : 's'}
               </p>
-              <div style={{ marginTop: '0.5rem', display: 'grid', gap: '0.4rem' }}>
+              <div className="user-profile-file-list">
                 {otherFiles.map((file, index) => (
-                  <div key={`${file.url}-${index}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.6rem', border: '1px solid #d7c9b7', borderRadius: '0.45rem', padding: '0.4rem 0.55rem', background: '#faf7f2' }}>
-                    <a href={toAssetUrl(file.url)} target="_blank" rel="noreferrer" title={file.name || getFileNameFromPath(file.url)} style={{ fontSize: '0.9rem', color: '#5e4d38', textDecoration: 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <div key={`${file.url}-${index}`} className="user-profile-file-item">
+                    <a href={toAssetUrl(file.url)} target="_blank" rel="noreferrer" title={file.name || getFileNameFromPath(file.url)} className="user-profile-file-name user-profile-file-link">
                       {file.name || getFileNameFromPath(file.url)}
                     </a>
-                    <button type="button" onClick={() => handleDeleteOtherFile(index)} disabled={deletingOtherIndex === index} style={{ border: '1px solid #c94f4f', background: '#fff', color: '#c94f4f', borderRadius: '0.4rem', padding: '0.25rem 0.55rem', cursor: 'pointer', fontSize: '0.82rem', flexShrink: 0 }}>
+                    <button type="button" onClick={() => handleDeleteOtherFile(index)} disabled={deletingOtherIndex === index} className="user-profile-delete-btn">
                       {deletingOtherIndex === index ? 'Eliminando...' : 'Borrar'}
                     </button>
                   </div>
@@ -494,82 +456,80 @@ export default function UserProfile() {
             </div>
           )}
 
-          <button type="button" className="btn btn-outline" onClick={handleUploadOtherFiles} disabled={uploadingOtherFiles}>
+          <button type="button" className="btn btn-outline user-profile-upload-btn" onClick={handleUploadOtherFiles} disabled={uploadingOtherFiles}>
             {uploadingOtherFiles ? 'Subiendo...' : 'Subir archivos varios'}
           </button>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+        <div className="user-profile-two-columns">
           <div>
-            <label htmlFor="user-first-name" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+            <label htmlFor="user-first-name" className="user-profile-field-label">
               Nombre
             </label>
             <input id="user-first-name" className="input" name="firstName" placeholder="Nombre" value={formData.firstName} onChange={handleChange} required />
           </div>
           <div>
-            <label htmlFor="user-last-name" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+            <label htmlFor="user-last-name" className="user-profile-field-label">
               Apellido
             </label>
             <input id="user-last-name" className="input" name="lastName" placeholder="Apellido" value={formData.lastName} onChange={handleChange} required />
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
+        <div className="user-profile-two-columns user-profile-two-columns-spaced">
           <div>
-            <label htmlFor="user-phone" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+            <label htmlFor="user-phone" className="user-profile-field-label">
               Whatsapp
             </label>
             <input id="user-phone" className="input" name="phone" placeholder="Teléfono" value={formData.phone} onChange={handleChange} />
           </div>
           <div>
-            <label htmlFor="user-location" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+            <label htmlFor="user-location" className="user-profile-field-label">
               Ubicación
             </label>
             <input id="user-location" className="input" name="location" placeholder="Ubicación" value={formData.location} onChange={handleChange} />
           </div>
         </div>
 
-        <div style={{ marginTop: '1rem' }}>
-          <label htmlFor="user-title" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+        <div className="user-profile-section">
+          <label htmlFor="user-title" className="user-profile-field-label">
             Título profesional
           </label>
           <input id="user-title" className="input" name="title" placeholder="Título profesional" value={formData.title} onChange={handleChange} />
         </div>
 
-        <div style={{ marginTop: '1rem' }}>
-          <label htmlFor="user-bio" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+        <div className="user-profile-section">
+          <label htmlFor="user-bio" className="user-profile-field-label">
             Sobre mí
           </label>
           <textarea
             id="user-bio"
-            className="input"
             name="bio"
             placeholder="Contá brevemente sobre vos"
             value={formData.bio}
             onChange={handleChange}
             rows={4}
-            style={{ resize: 'vertical' }}
+            className="input user-profile-textarea"
           />
         </div>
 
-        <div style={{ marginTop: '1rem' }}>
-          <label htmlFor="user-experience" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+        <div className="user-profile-section">
+          <label htmlFor="user-experience" className="user-profile-field-label">
             Experiencia laboral
           </label>
           <textarea
             id="user-experience"
-            className="input"
             name="experienceText"
             placeholder="Contá brevemente tu experiencia laboral"
             value={formData.experienceText}
             onChange={handleChange}
             rows={4}
-            style={{ resize: 'vertical' }}
+            className="input user-profile-textarea"
           />
         </div>
 
-        <div style={{ marginTop: '1rem' }}>
-          <label htmlFor="user-skills" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+        <div className="user-profile-section">
+          <label htmlFor="user-skills" className="user-profile-field-label">
             Skills
           </label>
           <input
@@ -582,8 +542,8 @@ export default function UserProfile() {
           />
         </div>
 
-        <div style={{ marginTop: '1rem' }}>
-          <label htmlFor="user-languages" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+        <div className="user-profile-section">
+          <label htmlFor="user-languages" className="user-profile-field-label">
             Idiomas
           </label>
           <input
@@ -596,22 +556,22 @@ export default function UserProfile() {
           />
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
+        <div className="user-profile-two-columns user-profile-two-columns-spaced">
           <div>
-            <label htmlFor="user-linkedin-url" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+            <label htmlFor="user-linkedin-url" className="user-profile-field-label">
               LinkedIn URL
             </label>
             <input id="user-linkedin-url" className="input" name="linkedinUrl" placeholder="LinkedIn URL" value={formData.linkedinUrl} onChange={handleChange} />
           </div>
           <div>
-            <label htmlFor="user-portfolio-url" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
+            <label htmlFor="user-portfolio-url" className="user-profile-field-label">
               Portfolio URL
             </label>
             <input id="user-portfolio-url" className="input" name="portfolioUrl" placeholder="Portfolio URL" value={formData.portfolioUrl} onChange={handleChange} />
           </div>
         </div>
 
-        <button className="btn btn-primary" style={{ marginTop: '1rem' }} disabled={saving}>
+        <button className="btn btn-primary user-profile-save-btn" disabled={saving}>
           {saving ? 'Guardando...' : 'Guardar cambios'}
         </button>
       </form>

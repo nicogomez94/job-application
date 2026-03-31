@@ -17,7 +17,8 @@ export default function RatingSummary({
         border: '1px solid #e6d9c5',
         borderRadius: '0.6rem',
         background: '#fffaf2',
-        minWidth: '220px',
+        width: 'min(100%, 280px)',
+        maxWidth: '100%',
       }}
     >
       <p style={{ margin: 0, marginBottom: '0.35rem', color: '#5e4d38', fontWeight: 600 }}>{title}</p>

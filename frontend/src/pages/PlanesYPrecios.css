@@ -202,5 +202,6 @@
 
   .pricing-card-highlight {
     transform: none;
+    margin: 20px 10px;
   }
 }

@@ -1073,8 +1073,8 @@ position: absolute;
     right: 14px;
     font-size: 0.59rem;
     font-weight: 700;
-    background: #af7a1b;
-    color: #fff;
+    background: rgba(255, 255, 255, 0.9);
+    color: #4d3318 !important;
     /* border-radius: 999px; */
     padding: 0.2rem 0.55rem;
     -webkit-border-top-left-radius: 10px;
@@ -1163,6 +1163,7 @@ position: absolute;
 
   .home-pricing-preview-card {
     padding: 0.9rem;
+    margin: 10px 0;
   }
 
   .home-pricing-preview-price {

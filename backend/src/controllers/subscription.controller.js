@@ -227,7 +227,7 @@ exports.getPlans = async (req, res) => {
         price: 80,
         currency: 'USD',
         duration: '7 meses',
-        discount: 'Más elegido',
+        discount: 'Recomendado',
         isFreeMode,
         features: [
           'Solo por tiempo limitado',

@@ -1,0 +1,227 @@
+.user-profile-page {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  overflow-x: clip;
+}
+
+.user-profile-title {
+  margin-bottom: 1rem;
+}
+
+.user-profile-upload-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  padding: 0.9rem;
+  border: 1px solid #ebdfcb;
+  border-radius: 0.7rem;
+  background: #fdf9f2;
+}
+
+.user-profile-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 2px solid #dfcfb6;
+  background: #f1eadf;
+}
+
+.user-profile-upload-controls {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.user-profile-upload-label {
+  color: #5e4d38;
+  font-weight: 600;
+}
+
+.user-profile-upload-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.user-profile-rating {
+  margin-left: auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.user-profile-upload-block {
+  display: grid;
+  gap: 0.55rem;
+  margin-bottom: 1rem;
+  padding: 0.9rem;
+  border: 1px solid #ebdfcb;
+  border-radius: 0.7rem;
+  background: #fdf9f2;
+  min-width: 0;
+}
+
+.user-profile-upload-block label {
+  display: block;
+  color: #5e4d38;
+  margin-bottom: 0.1rem;
+}
+
+.user-profile-file-status {
+  margin-top: 0.3rem;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.user-profile-file-status-title {
+  margin: 0;
+  color: #6f604b;
+  font-size: 0.92rem;
+}
+
+.user-profile-file-status-empty {
+  margin: 0;
+  color: #7e705c;
+  font-size: 0.92rem;
+}
+
+.user-profile-file-list {
+  margin-top: 0.5rem;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.user-profile-file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  border: 1px solid #d7c9b7;
+  border-radius: 0.45rem;
+  padding: 0.4rem 0.55rem;
+  background: #faf7f2;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.user-profile-file-name {
+  font-size: 0.9rem;
+  color: #5e4d38;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.user-profile-file-link {
+  text-decoration: none;
+}
+
+.user-profile-delete-btn {
+  border: 1px solid #c94f4f;
+  background: #fff;
+  color: #c94f4f;
+  border-radius: 0.4rem;
+  padding: 0.25rem 0.55rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+  flex-shrink: 0;
+}
+
+.user-profile-delete-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.user-profile-upload-btn {
+  align-self: start;
+  width: fit-content;
+  font-size: 0.7rem !important;
+  line-height: 1.2;
+  padding: 0.35rem 0.9rem !important;
+}
+
+.user-profile-two-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.user-profile-two-columns-spaced {
+  margin-top: 1rem;
+}
+
+.user-profile-section {
+  margin-top: 1rem;
+}
+
+.user-profile-field-label {
+  display: block;
+  color: #5e4d38;
+  margin-bottom: 0.35rem;
+  font-weight: 600;
+}
+
+.user-profile-textarea {
+  resize: vertical;
+}
+
+.user-profile-upload-block-spaced {
+  margin-top: 0.3rem;
+}
+
+.user-profile-page input[type='file'] {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.user-profile-save-btn {
+  margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+  .user-profile-upload-header {
+    align-items: flex-start;
+  }
+
+  .user-profile-upload-controls {
+    width: 100%;
+  }
+
+  .user-profile-rating {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .user-profile-two-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-profile-page {
+    padding: 1rem 0.75rem;
+  }
+
+  .user-profile-file-item {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .user-profile-file-name {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-overflow: unset;
+    width: 100%;
+  }
+
+  .user-profile-upload-actions {
+    width: 100%;
+  }
+}

@@ -26,7 +26,7 @@ const FALLBACK_PLANS = [
     currency: 'USD',
     duration: '7 meses',
     highlight: true,
-    badge: 'Más elegido',
+    badge: 'Recomendado',
     features: [
       'Mayor continuidad de publicaciones',
       'Mejor costo por mes',
@@ -54,7 +54,7 @@ const PLAN_META = {
     icon: Star,
     subtitle: 'Más tiempo para contratar sin interrupciones',
     highlight: true,
-    badge: 'Más elegido',
+    badge: 'Recomendado',
   },
   ANNUAL: { icon: Zap, subtitle: 'Pagás 12 meses y usás 13 meses' },
 };
