@@ -5,6 +5,7 @@ import { FaIndustry, FaMapMarkerAlt, FaUsers, FaGlobe, FaUserTie } from 'react-i
 import { companyService, jobOfferService } from '../../services';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
+import './Dashboard.css';
 
 const toAssetUrl = (path) => {
   if (!path) return null;
@@ -48,7 +49,7 @@ export default function CompanyDashboard() {
 
   if (loading) {
     return (
-      <div style={{ minHeight: '50vh', display: 'grid', placeItems: 'center' }}>
+      <div className="company-dashboard-loading">
         <p>Cargando panel...</p>
       </div>
     );
@@ -62,47 +63,43 @@ export default function CompanyDashboard() {
   const sub = subscriptionStatus?.subscription;
 
   return (
-    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '2rem 1rem' }}>
+    <div className="company-dashboard-container">
       <BackToDashboardButton to="/" label="Ir al inicio" icon="home" />
-      <h1 style={{ marginBottom: '1rem' }}>Mi perfil</h1>
+      <h1 className="company-dashboard-page-title">Mi perfil</h1>
 
       {/* ===== HEADER ===== */}
-      <div className="card" style={{ marginBottom: '1.2rem', display: 'flex', gap: '1.5rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+      <div className="card company-dashboard-header-card">
         {logoUrl ? (
           <img
             src={logoUrl}
             alt={company?.companyName}
-            style={{ width: '90px', height: '90px', borderRadius: '12px', objectFit: 'cover', border: '2px solid #e7dcc6', flexShrink: 0 }}
+            className="company-dashboard-logo"
           />
         ) : (
-          <div style={{
-            width: '90px', height: '90px', borderRadius: '12px', background: '#c9a96e', flexShrink: 0,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '2.2rem', fontWeight: '700', color: '#fff',
-          }}>
+          <div className="company-dashboard-logo-placeholder">
             {(company?.companyName || 'E')[0].toUpperCase()}
           </div>
         )}
-        <div style={{ flex: 1, minWidth: '200px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap', marginBottom: '0.3rem' }}>
-            <h1 style={{ margin: 0 }}>{company?.companyName || 'Mi Empresa'}</h1>
+        <div className="company-dashboard-company-main">
+          <div className="company-dashboard-company-row">
+            <h1 className="company-dashboard-company-name">{company?.companyName || 'Mi Empresa'}</h1>
             {subscriptionStatus?.isBlocked && (
               <span className="badge badge-error">Cuenta bloqueada</span>
             )}
           </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.9rem', color: '#6f604b', fontSize: '0.93rem', marginBottom: '0.5rem' }}>
+          <div className="company-dashboard-company-meta">
             {company?.industry && (
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+              <span className="company-dashboard-company-meta-item">
                 <FaIndustry /> {company.industry}
               </span>
             )}
             {company?.location && (
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+              <span className="company-dashboard-company-meta-item">
                 <FaMapMarkerAlt /> {company.location}
               </span>
             )}
             {company?.size && (
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+              <span className="company-dashboard-company-meta-item">
                 <FaUsers /> {company.size} empleados
               </span>
             )}
@@ -111,14 +108,14 @@ export default function CompanyDashboard() {
                 href={company.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ color: '#c9a96e', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+                className="company-dashboard-company-website"
               >
                 <FaGlobe /> Sitio web
               </a>
             )}
           </div>
           {company?.description && (
-            <p style={{ color: '#5e4d38', fontSize: '0.92rem', maxWidth: '620px', margin: 0 }}>
+            <p className="company-dashboard-company-description">
               {company.description.length > 200 ? company.description.slice(0, 200) + '…' : company.description}
             </p>
           )}
