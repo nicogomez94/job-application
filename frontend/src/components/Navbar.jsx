@@ -205,11 +205,10 @@ export default function Navbar() {
             </Link>
             {!isAuthenticated ? (
               <div className="navbar-mobile-actions">
-                <Link to="/register/user" className="btn btn-outline" onClick={closeMenu}>
+                <Link to="/register/user" className="navbar-auth-link" onClick={closeMenu}>
                   {t('Registrarse')}
                 </Link>
-                &nbsp;
-                <Link to="/login" className="btn btn-primary" onClick={closeMenu}>
+                <Link to="/login" className="navbar-auth-link" onClick={closeMenu}>
                   {t('Ingresar')}
                 </Link>
               </div>

@@ -490,6 +490,22 @@
   gap: 0.65rem;
 }
 
+.navbar-auth-link {
+  background: transparent;
+  border: none;
+  color: #6d6250;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.2;
+  padding: 0.2rem 0.25rem;
+  transition: color 0.2s ease;
+}
+
+.navbar-auth-link:hover {
+  color: #4d3720;
+}
+
 /* ── Responsive: tablet ── */
 @media (max-width: 1160px) {
   .navbar-logo-img {
@@ -619,6 +635,12 @@
     width: 100%;
     max-width: 320px;
     margin-top: 0.2rem;
+  }
+
+  .navbar-auth-link {
+    width: 100%;
+    text-align: center;
+    padding: 0.5rem 0.25rem;
   }
 
   .navbar .btn-outline,
