@@ -170,7 +170,7 @@ export default function JobSearch() {
 
   return (
     <div className="job-search-page" style={{ minHeight: '100vh', background: '#fcf7ef', paddingBottom: '3rem' }}>
-      <div className="job-search-hero" style={{ background: 'linear-gradient(135deg, var(--primary-600) 0%, var(--primary-500) 100%)', padding: '2.5rem 0' }}>
+      <div className="job-search-hero" style={{ background: 'linear-gradient(135deg, var(--primary-800) 0%, var(--primary-700) 100%)', padding: '2.5rem 0' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem', color: '#fff' }}>
           <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '0.75rem', marginBottom: '1rem' }}>
             <Link to="/" className="back-dashboard-btn" style={{ marginBottom: 0 }} onClick={scrollToTopInstant}>

@@ -23,7 +23,7 @@ export default function QuienesSomos() {
 
       <section className="about-content">
         <div className="about-container about-card">
-          <h2>Empleador</h2>
+          <h2>Empresa</h2>
           <p>Las grandes empresas vienen en tamaño pequeño. Los grandes negocios también.</p>
           <p>
             Las empresas como habitualmente las conocemos tienden a ser grandes edificios con

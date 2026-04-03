@@ -18,6 +18,11 @@ export default function Footer() {
             <p className="footer-description">
               {t('Conectamos talento con oportunidades.')}
             </p>
+            <p className="footer-suggestions-link-wrap">
+              <Link to="/sugerencias" className="footer-suggestions-link">
+                {t('Sugerencias para Profesionales y Empresas')}
+              </Link>
+            </p>
           </div>
 
           <div className="footer-section">
@@ -26,7 +31,6 @@ export default function Footer() {
               <li><Link to="/jobs">{t('Buscar Empleos')}</Link></li>
               <li><Link to="/register/user">{t('Crear Cuenta')}</Link></li>
               <li><Link to="/user/profile">{t('MI perfil de trabajo')}</Link></li>
-              <li><Link to="/sugerencias">{t('Sugerencias para Profesionales y Empresas')}</Link></li>
             </ul>
           </div>
 
@@ -43,8 +47,7 @@ export default function Footer() {
           <div className="footer-section">
             <h3>{t('Contacto')}</h3>
             <ul className="footer-list">
-              <li>Email: contacto@professionalsathome.com</li>
-              <li>Tel: +54 11 1234-5678</li>
+              {/* <li>Email: contacto@professionalsathome.com</li> */}
               <li className="footer-social">
                 <a href="#"><Twitter className="footer-social-icon" /></a>
                 <a href="#"><Linkedin className="footer-social-icon" /></a>

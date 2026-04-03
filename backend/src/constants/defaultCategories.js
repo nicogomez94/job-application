@@ -15,7 +15,7 @@ const DEFAULT_CATEGORIES = [
   { name: 'Especialista en Marketing Digital', slug: 'especialista-marketing-digital', description: 'Estrategias digitales de adquisición y crecimiento.' },
   { name: 'Especialista en Atención al Cliente', slug: 'especialista-atencion-cliente', description: 'Soporte y gestión de experiencia de cliente.' },
   { name: 'Creador de Productos Digitales', slug: 'creador-productos-digitales', description: 'Diseño y desarrollo de productos digitales.' },
-  { name: 'Especialista en Telemedicina', slug: 'especialista-telemedicina', description: 'Servicios y operación en salud digital a distancia.' },
+  { name: 'Telemedicina', slug: 'especialista-telemedicina', description: 'Servicios y operación en salud digital a distancia.' },
   { name: 'Consultor de Sostenibilidad', slug: 'consultor-sostenibilidad', description: 'Asesoría en prácticas ambientales y sostenibles.' },
   { name: 'Investigación de mercados', slug: 'investigacion-mercados', description: 'Estudio de mercado, audiencias y competencia.' },
   { name: 'Diseñador Indumentaria', slug: 'disenador-indumentaria', description: 'Diseño y desarrollo de colecciones de indumentaria.' },

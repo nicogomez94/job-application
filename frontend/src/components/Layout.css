@@ -7,5 +7,8 @@
 .layout-main {
   flex: 1;
   min-height: 100vh;
-  padding-bottom: 4rem;
+}
+
+.layout-main-admin {
+  background: #ffb0b0;
 }

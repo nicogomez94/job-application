@@ -7,6 +7,7 @@ import './Layout.css';
 
 export default function Layout() {
   const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
 
   useEffect(() => {
     if (!('scrollRestoration' in window.history)) return undefined;
@@ -24,7 +25,7 @@ export default function Layout() {
   return (
     <div className="layout-container">
       <Navbar />
-      <main className="layout-main">
+      <main className={`layout-main ${isAdminRoute ? 'layout-main-admin' : ''}`}>
         <Outlet />
       </main>
       <Footer />

@@ -65,7 +65,7 @@ export default function CompanyDashboard() {
   return (
     <div className="company-dashboard-container">
       <BackToDashboardButton to="/" label="Ir al inicio" icon="home" />
-      <h1 className="company-dashboard-page-title">Mi perfil</h1>
+      <h1 className="company-dashboard-page-title">Mi perfil de empresa</h1>
 
       {/* ===== HEADER ===== */}
       <div className="card company-dashboard-header-card">
