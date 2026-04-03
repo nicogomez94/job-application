@@ -33,6 +33,7 @@ const getInitialForm = () => {
 export default function RegisterUser() {
   const [formData, setFormData] = useState(getInitialForm);
   const [loading, setLoading] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const { setAuth, logout } = useAuthStore();
   const navigate = useNavigate();
   const userType = 'user';
@@ -104,6 +105,11 @@ export default function RegisterUser() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!acceptedTerms) {
+      toast.error('Debés aceptar los términos y condiciones para continuar');
+      return;
+    }
 
     if (!formData.cvFile) {
       toast.error('Debés subir tu CV para crear la cuenta');
@@ -458,7 +464,23 @@ export default function RegisterUser() {
             )}
           </div>
 
-          <button className="btn btn-primary" style={{ width: '100%', marginTop: '1.5rem' }} disabled={loading}>
+          <div style={{ marginTop: '1.5rem', display: 'flex', alignItems: 'flex-start', gap: '0.6rem' }}>
+            <input
+              id="register-user-terms"
+              type="checkbox"
+              checked={acceptedTerms}
+              onChange={(e) => setAcceptedTerms(e.target.checked)}
+              style={{ marginTop: '0.2rem', accentColor: 'var(--primary-600)', cursor: 'pointer', flexShrink: 0 }}
+            />
+            <label htmlFor="register-user-terms" style={{ color: '#5e4d38', fontSize: '0.9rem', cursor: 'pointer' }}>
+              Acepto los{' '}
+              <Link to="/terminos-y-condiciones" target="_blank" rel="noopener noreferrer">
+                Términos y Condiciones
+              </Link>
+            </label>
+          </div>
+
+          <button className="btn btn-primary" style={{ width: '100%', marginTop: '1rem' }} disabled={loading}>
             {loading ? 'Creando cuenta...' : 'Crear Cuenta'}
           </button>
 

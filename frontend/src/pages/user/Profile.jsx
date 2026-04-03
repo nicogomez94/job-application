@@ -500,7 +500,7 @@ export default function UserProfile() {
 
         <div className="user-profile-section">
           <label htmlFor="user-bio" className="user-profile-field-label">
-            Sobre mí
+            Sobre mí/Experiencia Laboral
           </label>
           <textarea
             id="user-bio"
