@@ -34,6 +34,10 @@ router.use(authenticateCompany);
 router.post('/', checkActiveSubscription, createJobOfferValidation, jobOfferController.createJobOffer);
 router.get('/company/my-offers', jobOfferController.getCompanyJobOffers);
 router.put('/:id', checkActiveSubscription, createJobOfferValidation, jobOfferController.updateJobOffer);
+router.put('/:id/status', checkActiveSubscription, [
+  body('isActive').isBoolean().withMessage('El estado de la oferta es inválido'),
+  validate,
+], jobOfferController.updateJobOfferStatus);
 router.delete('/:id', jobOfferController.deleteJobOffer);
 
 // Gestión de postulantes

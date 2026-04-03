@@ -262,6 +262,41 @@ exports.deleteJobOffer = async (req, res) => {
   }
 };
 
+// Pausar/activar oferta laboral
+exports.updateJobOfferStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { isActive } = req.body;
+
+    const existingOffer = await prisma.jobOffer.findFirst({
+      where: { id, companyId: req.user.id },
+      select: { id: true },
+    });
+
+    if (!existingOffer) {
+      return res.status(404).json({ error: 'Oferta no encontrada' });
+    }
+
+    const updatedJobOffer = await prisma.jobOffer.update({
+      where: { id },
+      data: { isActive },
+      select: {
+        id: true,
+        isActive: true,
+        updatedAt: true,
+      },
+    });
+
+    res.json({
+      message: isActive ? 'Oferta activada exitosamente' : 'Oferta pausada exitosamente',
+      jobOffer: updatedJobOffer,
+    });
+  } catch (error) {
+    console.error('Error en updateJobOfferStatus:', error);
+    res.status(500).json({ error: 'Error al actualizar estado de la oferta' });
+  }
+};
+
 // Obtener postulantes de una oferta
 exports.getJobOfferApplicants = async (req, res) => {
   try {

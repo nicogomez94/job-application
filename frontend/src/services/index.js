@@ -78,6 +78,7 @@ export const jobOfferService = {
   create: (data) => api.post('/job-offers', data),
   getMyOffers: () => api.get('/job-offers/company/my-offers'),
   update: (id, data) => api.put(`/job-offers/${id}`, data),
+  updateStatus: (id, isActive) => api.put(`/job-offers/${id}/status`, { isActive }),
   delete: (id) => api.delete(`/job-offers/${id}`),
   getApplicants: (id) => api.get(`/job-offers/${id}/applicants`),
   updateApplicationStatus: (applicationId, status) =>

@@ -13,6 +13,7 @@ export default function CompanyJobs() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
+  const [updatingStatusId, setUpdatingStatusId] = useState(null);
 
   const loadJobs = async () => {
     setLoading(true);
@@ -43,6 +44,25 @@ export default function CompanyJobs() {
       toast.error(error.response?.data?.error || 'No se pudo eliminar la oferta');
     } finally {
       setDeletingId(null);
+    }
+  };
+
+  const handleToggleStatus = async (job) => {
+    const nextStatus = !job.isActive;
+    const actionLabel = nextStatus ? 'activar' : 'pausar';
+    const confirmed = window.confirm(`¿Querés ${actionLabel} esta oferta laboral?`);
+    if (!confirmed) return;
+
+    setUpdatingStatusId(job.id);
+    try {
+      await jobOfferService.updateStatus(job.id, nextStatus);
+      toast.success(nextStatus ? 'Oferta activada' : 'Oferta pausada');
+      await loadJobs();
+    } catch (error) {
+      const message = error.response?.data?.message || error.response?.data?.error || 'No se pudo actualizar el estado de la oferta';
+      toast.error(message);
+    } finally {
+      setUpdatingStatusId(null);
     }
   };
 
@@ -94,6 +114,17 @@ export default function CompanyJobs() {
                 <Link className="btn btn-outline" to={`/company/jobs/${job.id}/applicants`}>
                   Ver postulantes
                 </Link>
+                <button
+                  className="btn btn-outline"
+                  onClick={() => handleToggleStatus(job)}
+                  disabled={updatingStatusId === job.id}
+                >
+                  {updatingStatusId === job.id
+                    ? 'Actualizando...'
+                    : job.isActive
+                      ? 'Pausar'
+                      : 'Activar'}
+                </button>
                 <button className="btn" style={{ background: '#fee2e2', color: '#991b1b' }} onClick={() => handleDelete(job.id)} disabled={deletingId === job.id}>
                   {deletingId === job.id ? 'Eliminando...' : 'Eliminar'}
                 </button>
