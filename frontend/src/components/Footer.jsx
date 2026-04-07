@@ -61,6 +61,8 @@ export default function Footer() {
           <p>&copy; {new Date().getFullYear()} professionals at home. {t('Todos los derechos reservados.')}</p>
           <p className="footer-legal">
             <Link to="/terminos-y-condiciones">{t('Términos y Condiciones')}</Link>
+            {' | '}
+            <Link to="/politicas-y-privacidad">{t('Políticas y Privacidad')}</Link>
           </p>
           <div className="footer-language-toggle" role="group" aria-label="Language selector">
             <button

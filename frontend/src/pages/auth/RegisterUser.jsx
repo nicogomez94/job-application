@@ -33,7 +33,7 @@ const getInitialForm = () => {
 export default function RegisterUser() {
   const [formData, setFormData] = useState(getInitialForm);
   const [loading, setLoading] = useState(false);
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [acceptedLegal, setAcceptedLegal] = useState(false);
   const { setAuth, logout } = useAuthStore();
   const navigate = useNavigate();
   const userType = 'user';
@@ -106,8 +106,8 @@ export default function RegisterUser() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!acceptedTerms) {
-      toast.error('Debés aceptar los términos y condiciones para continuar');
+    if (!acceptedLegal) {
+      toast.error('Debés aceptar los términos y condiciones y las políticas de privacidad para continuar');
       return;
     }
 
@@ -468,14 +468,18 @@ export default function RegisterUser() {
             <input
               id="register-user-terms"
               type="checkbox"
-              checked={acceptedTerms}
-              onChange={(e) => setAcceptedTerms(e.target.checked)}
+              checked={acceptedLegal}
+              onChange={(e) => setAcceptedLegal(e.target.checked)}
               style={{ marginTop: '0.2rem', accentColor: 'var(--primary-600)', cursor: 'pointer', flexShrink: 0 }}
             />
             <label htmlFor="register-user-terms" style={{ color: '#5e4d38', fontSize: '0.9rem', cursor: 'pointer' }}>
               Acepto los{' '}
               <Link to="/terminos-y-condiciones" target="_blank" rel="noopener noreferrer">
                 Términos y Condiciones
+              </Link>{' '}
+              y las{' '}
+              <Link to="/politicas-y-privacidad" target="_blank" rel="noopener noreferrer">
+                Políticas y Privacidad
               </Link>
             </label>
           </div>

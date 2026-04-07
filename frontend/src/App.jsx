@@ -37,6 +37,7 @@ import CompanySubscription from './pages/company/Subscription';
 
 // Legal
 import TermsAndConditions from './pages/TermsAndConditions';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 // Admin Dashboard
 import AdminDashboard from './pages/admin/Dashboard';
@@ -76,6 +77,7 @@ function App() {
         <Route path="planes-y-precios" element={<PlanesYPrecios />} />
         <Route path="sugerencias" element={<Sugerencias />} />
         <Route path="terminos-y-condiciones" element={<TermsAndConditions />} />
+        <Route path="politicas-y-privacidad" element={<PrivacyPolicy />} />
         
         {/* Auth */}
         <Route
