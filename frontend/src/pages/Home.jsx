@@ -380,7 +380,11 @@ export default function Home() {
           <div className="home-stats-header">
             <p className="home-stats-eyebrow">Empresas</p>
             <h2>Planes y precios en versión resumida</h2>
-            <p>Incluye 2 meses gratis en la inscripción inicial más beneficios por calidad y referidos.</p>
+            <p>
+              *Incluye 2 meses gratis en la inscripción inicia
+              <br />
+              *Beneficios por calidad de servicios y referidos en planes pagos.
+            </p>
           </div>
 
           <div className="home-pricing-preview-grid">

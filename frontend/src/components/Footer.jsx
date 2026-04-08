@@ -5,6 +5,10 @@ import './Footer.css';
 
 export default function Footer() {
   const { language, setLanguage, t } = useI18n();
+  const handleSocialClick = (event) => {
+    event.preventDefault();
+    alert('proximamente');
+  };
 
   return (
     <footer className="footer">
@@ -49,9 +53,9 @@ export default function Footer() {
             <ul className="footer-list">
               {/* <li>Email: contacto@professionalsathome.com</li> */}
               <li className="footer-social">
-                <a href="#"><Twitter className="footer-social-icon" /></a>
-                <a href="#"><Linkedin className="footer-social-icon" /></a>
-                <a href="#"><Github className="footer-social-icon" /></a>
+                <a href="#" onClick={handleSocialClick}><Twitter className="footer-social-icon" /></a>
+                <a href="#" onClick={handleSocialClick}><Linkedin className="footer-social-icon" /></a>
+                <a href="#" onClick={handleSocialClick}><Github className="footer-social-icon" /></a>
               </li>
             </ul>
           </div>
@@ -63,6 +67,9 @@ export default function Footer() {
             <Link to="/terminos-y-condiciones">{t('Términos y Condiciones')}</Link>
             {' | '}
             <Link to="/politicas-y-privacidad">{t('Políticas y Privacidad')}</Link>
+          </p>
+          <p>
+            hecho por <a href="https://zigodev.com.ar" target="_blank" rel="noreferrer">zigodev</a>
           </p>
           <div className="footer-language-toggle" role="group" aria-label="Language selector">
             <button
