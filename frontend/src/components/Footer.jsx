@@ -68,8 +68,16 @@ export default function Footer() {
             {' | '}
             <Link to="/politicas-y-privacidad">{t('Políticas y Privacidad')}</Link>
           </p>
-          <p>
-            hecho por <a href="https://zigodev.com.ar" target="_blank" rel="noreferrer">zigodev</a>
+          <p className="footer-credit">
+            Hecho por{' '}
+            <a
+              className="footer-credit-link"
+              href="https://zigodev.com.ar"
+              target="_blank"
+              rel="noreferrer"
+            >
+              zigodev
+            </a>
           </p>
           <div className="footer-language-toggle" role="group" aria-label="Language selector">
             <button
