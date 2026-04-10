@@ -381,7 +381,7 @@ export default function Home() {
             <p className="home-stats-eyebrow">Empresas</p>
             <h2>Planes y precios en versión resumida</h2>
             <p>
-              *Incluye 2 meses gratis en la inscripción inicia
+              *Incluye 2 meses gratis en la inscripción inicial
               <br />
               *Beneficios por calidad de servicios y referidos en planes pagos.
             </p>
