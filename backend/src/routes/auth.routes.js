@@ -9,6 +9,33 @@ const { generateToken } = require('../config/jwt');
 
 const getFrontendBaseUrl = () => process.env.FRONTEND_URL || 'http://localhost:5173';
 
+const normalizeOAuthErrorMessage = (errorLike) => {
+  const rawMessage = typeof errorLike === 'string' ? errorLike : errorLike?.message;
+  const message = String(rawMessage || '').trim();
+  const loweredMessage = message.toLowerCase();
+  const code = errorLike?.code;
+  const targetFields = Array.isArray(errorLike?.meta?.target)
+    ? errorLike.meta.target.map((field) => String(field).toLowerCase())
+    : [];
+
+  const isEmailDuplicate =
+    code === 'P2002' ||
+    targetFields.includes('email') ||
+    (loweredMessage.includes('ya existe') && loweredMessage.includes('email')) ||
+    loweredMessage.includes('unique constraint') ||
+    loweredMessage.includes('duplicate');
+
+  if (isEmailDuplicate) {
+    return 'Ese email ya esta registrado. Inicia sesion o recupera tu clave.';
+  }
+
+  if (!message) {
+    return 'No se pudo completar el login con Google';
+  }
+
+  return message;
+};
+
 const buildOAuthCallbackRedirect = ({ token, type, error }) => {
   const params = new URLSearchParams({ type });
   if (token) params.set('token', token);
@@ -19,12 +46,12 @@ const buildOAuthCallbackRedirect = ({ token, type, error }) => {
 const handleOAuthCallback = (strategyName, accountType) => (req, res, next) => {
   passport.authenticate(strategyName, { session: false }, (err, account, info) => {
     if (err) {
-      const errorMessage = err.message || 'No se pudo completar el login con Google';
+      const errorMessage = normalizeOAuthErrorMessage(err);
       return res.redirect(buildOAuthCallbackRedirect({ type: accountType, error: errorMessage }));
     }
 
     if (!account) {
-      const errorMessage = info?.message || 'No se pudo completar el login con Google';
+      const errorMessage = normalizeOAuthErrorMessage(info);
       return res.redirect(buildOAuthCallbackRedirect({ type: accountType, error: errorMessage }));
     }
 

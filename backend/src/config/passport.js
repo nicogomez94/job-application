@@ -9,6 +9,27 @@ const addMonths = (date, months) => {
 };
 const normalizeEmail = (email) => (email || '').trim().toLowerCase();
 const getGoogleEmail = (profile) => normalizeEmail(profile?.emails?.[0]?.value);
+const getUniqueConstraintFields = (error) =>
+  Array.isArray(error?.meta?.target)
+    ? error.meta.target.map((field) => String(field).toLowerCase())
+    : [];
+const isPrismaUniqueError = (error) => error?.code === 'P2002';
+
+const getOAuthPrismaErrorMessage = (error) => {
+  if (!isPrismaUniqueError(error)) return null;
+
+  const fields = getUniqueConstraintFields(error);
+  if (fields.includes('email')) {
+    return 'Ese email ya esta registrado. Inicia sesion o recupera tu clave.';
+  }
+
+  if (fields.includes('googleid')) {
+    return 'Esta cuenta de Google ya esta vinculada a otro usuario.';
+  }
+
+  return 'No se pudo completar el login con Google';
+};
+
 const getNameFromProfile = (profile) => {
   const rawGivenName = profile?.name?.givenName?.trim();
   const rawFamilyName = profile?.name?.familyName?.trim();
@@ -117,6 +138,11 @@ passport.use(
 
         return done(null, user);
       } catch (error) {
+        const friendlyMessage = getOAuthPrismaErrorMessage(error);
+        if (friendlyMessage) {
+          return done(null, false, { message: friendlyMessage });
+        }
+
         return done(error, null);
       }
     }
@@ -197,6 +223,11 @@ passport.use(
 
         return done(null, company);
       } catch (error) {
+        const friendlyMessage = getOAuthPrismaErrorMessage(error);
+        if (friendlyMessage) {
+          return done(null, false, { message: friendlyMessage });
+        }
+
         return done(error, null);
       }
     }
