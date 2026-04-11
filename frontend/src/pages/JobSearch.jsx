@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { categoryService, jobOfferService, userService } from '../services';
 import { BACKEND_BASE_URL } from '../services/apiBaseUrl';
 import { useAuthStore } from '../context/authStore';
+import { useI18n } from '../context/i18nStore';
 import { getJobPostingLanguageLabel, JOB_POSTING_LANGUAGE_OPTIONS } from '../constants/jobOfferLanguages';
 import { scrollToTopInstant } from '../utils/scrollToTop';
 import '../components/BackToDashboardButton.css';
@@ -32,6 +33,7 @@ const formatSalary = (min, max, period) => {
 
 export default function JobSearch() {
   const { isAuthenticated, userType } = useAuthStore();
+  const { t } = useI18n();
   const [searchParams, setSearchParams] = useSearchParams();
   const getFiltersFromParams = () => ({
     search: searchParams.get('search') || '',
@@ -214,7 +216,7 @@ export default function JobSearch() {
             <option value="">Todas las categorías ({totalCategoryOffers})</option>
             {categoriesOrdered.map((category) => (
               <option key={category.id} value={category.id}>
-                {category.name} ({getCategoryOffersCount(category)})
+                {t(category.name)} ({getCategoryOffersCount(category)})
               </option>
             ))}
           </select>

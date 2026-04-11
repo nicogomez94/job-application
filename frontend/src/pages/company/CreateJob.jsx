@@ -5,6 +5,7 @@ import { categoryService, companyService, jobOfferService } from '../../services
 import { DEBUG_FORM_DATA, DEBUG_MODE } from '../../config/debug';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
 import { JOB_POSTING_LANGUAGE_OPTIONS } from '../../constants/jobOfferLanguages';
+import { useI18n } from '../../context/i18nStore';
 import './JobForm.css';
 
 const getInitialForm = () =>
@@ -43,6 +44,7 @@ const parseCommaToArray = (text) =>
     .filter(Boolean);
 
 export default function CreateJob() {
+  const { t } = useI18n();
   const [formData, setFormData] = useState(getInitialForm);
   const [categories, setCategories] = useState([]);
   const [isBlocked, setIsBlocked] = useState(false);
@@ -190,7 +192,7 @@ export default function CreateJob() {
                 <option value="">Seleccionar categoría</option>
                 {categories.map((category) => (
                   <option key={category.id} value={category.id}>
-                    {category.name}
+                    {t(category.name)}
                   </option>
                 ))}
               </select>

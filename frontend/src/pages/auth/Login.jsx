@@ -4,16 +4,11 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { authService, subscriptionService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
+import { useI18n } from '../../context/i18nStore';
 import { DEBUG_MODE, getDebugLoginData } from '../../config/debug';
 import { API_BASE_URL } from '../../services/apiBaseUrl';
 import { Briefcase, Mail, Lock } from 'lucide-react';
 import './Login.css';
-
-const USER_TYPE_LABELS = {
-  user: 'Profesional',
-  company: 'Empresa',
-  admin: 'Admin',
-};
 
 export default function Login({
   allowedUserTypes = ['user', 'company', 'admin'],
@@ -27,12 +22,18 @@ export default function Login({
   const [isRecoveryModalOpen, setIsRecoveryModalOpen] = useState(false);
   const [recoveryEmail, setRecoveryEmail] = useState('');
   const [recoveryLoading, setRecoveryLoading] = useState(false);
+  const { language } = useI18n();
   const { register, handleSubmit, reset, getValues, formState: { errors } } = useForm({
     defaultValues: DEBUG_MODE ? getDebugLoginData(initialType) : { email: '', password: '' },
   });
   const { setAuth } = useAuthStore();
   const navigate = useNavigate();
   const apiBaseURL = API_BASE_URL;
+  const userTypeLabels = {
+    user: language === 'en' ? 'Professional' : 'Profesional',
+    company: language === 'en' ? 'Company' : 'Empresa',
+    admin: 'Admin',
+  };
 
   useEffect(() => {
     if (!allowedUserTypes.includes(userType)) {
@@ -149,7 +150,7 @@ export default function Login({
                       : 'login-user-type-btn-inactive'
                   }`}
                 >
-                  {USER_TYPE_LABELS[type] || type}
+                  {userTypeLabels[type] || type}
                 </button>
               ))}
             </div>

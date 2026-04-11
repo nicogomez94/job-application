@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { categoryService, jobOfferService } from '../../services';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
 import { JOB_POSTING_LANGUAGE_OPTIONS } from '../../constants/jobOfferLanguages';
+import { useI18n } from '../../context/i18nStore';
 import './JobForm.css';
 
 const parseTextToArray = (text) =>
@@ -24,6 +25,7 @@ const toDateInputValue = (dateValue) => {
 };
 
 export default function EditJob() {
+  const { t } = useI18n();
   const { id } = useParams();
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
@@ -175,7 +177,7 @@ export default function EditJob() {
                 <option value="">Seleccionar categoría</option>
                 {categories.map((category) => (
                   <option key={category.id} value={category.id}>
-                    {category.name}
+                    {t(category.name)}
                   </option>
                 ))}
               </select>

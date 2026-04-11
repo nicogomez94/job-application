@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { authService, userService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
+import { useI18n } from '../../context/i18nStore';
 import { DEBUG_FORM_DATA, DEBUG_MODE } from '../../config/debug';
 import './Register.css';
 
@@ -34,6 +35,7 @@ export default function RegisterUser() {
   const [formData, setFormData] = useState(getInitialForm);
   const [loading, setLoading] = useState(false);
   const [acceptedLegal, setAcceptedLegal] = useState(false);
+  const { language } = useI18n();
   const { setAuth, logout } = useAuthStore();
   const navigate = useNavigate();
   const userType = 'user';
@@ -234,7 +236,7 @@ export default function RegisterUser() {
                   : 'register-user-type-btn-inactive'
               }`}
             >
-              Profesional
+              {language === 'en' ? 'Professional' : 'Profesional'}
             </button>
             <button
               type="button"
@@ -245,7 +247,7 @@ export default function RegisterUser() {
                   : 'register-user-type-btn-inactive'
               }`}
             >
-              Empresa
+              {language === 'en' ? 'Company' : 'Empresa'}
             </button>
           </div>
 
