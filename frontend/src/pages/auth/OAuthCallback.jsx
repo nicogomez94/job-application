@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+﻿import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { authService, subscriptionService } from '../../services';
@@ -19,15 +19,22 @@ export default function OAuthCallback() {
     const finishOAuth = async () => {
       const token = searchParams.get('token');
       const typeFromQuery = searchParams.get('type');
+      const errorFromQuery = searchParams.get('error');
+
+      if (errorFromQuery) {
+        toast.error(errorFromQuery);
+        navigate('/login', { replace: true });
+        return;
+      }
 
       if (!token) {
-        toast.error('No se recibió token de autenticación');
+        toast.error('No se recibio token de autenticacion');
         navigate('/login', { replace: true });
         return;
       }
 
       if (!typeFromQuery || !['user', 'company', 'admin'].includes(typeFromQuery)) {
-        toast.error('Tipo de usuario inválido');
+        toast.error('Tipo de usuario invalido');
         navigate('/login', { replace: true });
         return;
       }
@@ -42,10 +49,10 @@ export default function OAuthCallback() {
         }
 
         setAuth(profile, resolvedType, token);
-        toast.success('Sesión iniciada con Google');
+        toast.success('Sesion iniciada con Google');
 
         if (resolvedType === 'company') {
-          // Si la empresa no tiene suscripción activa, redirigir a selección de plan
+          // Si la empresa no tiene suscripcion activa, redirigir a seleccion de plan
           try {
             await subscriptionService.getActive();
             navigate('/company/dashboard', { replace: true });
@@ -70,7 +77,7 @@ export default function OAuthCallback() {
 
   return (
     <div style={{ minHeight: '60vh', display: 'grid', placeItems: 'center', padding: '2rem' }}>
-      <p style={{ color: '#6f604b', fontSize: '1rem' }}>Completando autenticación...</p>
+      <p style={{ color: '#6f604b', fontSize: '1rem' }}>Completando autenticacion...</p>
     </div>
   );
 }

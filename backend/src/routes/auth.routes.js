@@ -5,6 +5,33 @@ const validate = require('../middlewares/validator.middleware');
 const authController = require('../controllers/auth.controller');
 const { authenticate } = require('../middlewares/auth.middleware');
 const passport = require('../config/passport');
+const { generateToken } = require('../config/jwt');
+
+const getFrontendBaseUrl = () => process.env.FRONTEND_URL || 'http://localhost:5173';
+
+const buildOAuthCallbackRedirect = ({ token, type, error }) => {
+  const params = new URLSearchParams({ type });
+  if (token) params.set('token', token);
+  if (error) params.set('error', error);
+  return `${getFrontendBaseUrl()}/auth/callback?${params.toString()}`;
+};
+
+const handleOAuthCallback = (strategyName, accountType) => (req, res, next) => {
+  passport.authenticate(strategyName, { session: false }, (err, account, info) => {
+    if (err) {
+      const errorMessage = err.message || 'No se pudo completar el login con Google';
+      return res.redirect(buildOAuthCallbackRedirect({ type: accountType, error: errorMessage }));
+    }
+
+    if (!account) {
+      const errorMessage = info?.message || 'No se pudo completar el login con Google';
+      return res.redirect(buildOAuthCallbackRedirect({ type: accountType, error: errorMessage }));
+    }
+
+    const token = generateToken({ id: account.id, type: accountType });
+    return res.redirect(buildOAuthCallbackRedirect({ token, type: accountType }));
+  })(req, res, next);
+};
 
 // Validaciones
 const registerUserValidation = [
@@ -53,14 +80,7 @@ router.post('/user/login', loginValidation, authController.loginUser);
 
 // Google OAuth para usuarios
 router.get('/user/google', passport.authenticate('google-user', { scope: ['profile', 'email'], session: false }));
-router.get('/user/google/callback',
-  passport.authenticate('google-user', { session: false }),
-  (req, res) => {
-    const { generateToken } = require('../config/jwt');
-    const token = generateToken({ id: req.user.id, type: 'user' });
-    res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${token}&type=user`);
-  }
-);
+router.get('/user/google/callback', handleOAuthCallback('google-user', 'user'));
 
 // ==================== EMPRESAS ====================
 
@@ -70,14 +90,7 @@ router.post('/company/login', loginValidation, authController.loginCompany);
 
 // Google OAuth para empresas
 router.get('/company/google', passport.authenticate('google-company', { scope: ['profile', 'email'], session: false }));
-router.get('/company/google/callback',
-  passport.authenticate('google-company', { session: false }),
-  (req, res) => {
-    const { generateToken } = require('../config/jwt');
-    const token = generateToken({ id: req.user.id, type: 'company' });
-    res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${token}&type=company`);
-  }
-);
+router.get('/company/google/callback', handleOAuthCallback('google-company', 'company'));
 
 // ==================== ADMINISTRADORES ====================
 

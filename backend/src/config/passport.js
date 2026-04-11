@@ -7,6 +7,27 @@ const addMonths = (date, months) => {
   value.setMonth(value.getMonth() + months);
   return value;
 };
+const normalizeEmail = (email) => (email || '').trim().toLowerCase();
+const getGoogleEmail = (profile) => normalizeEmail(profile?.emails?.[0]?.value);
+const getNameFromProfile = (profile) => {
+  const rawGivenName = profile?.name?.givenName?.trim();
+  const rawFamilyName = profile?.name?.familyName?.trim();
+
+  if (rawGivenName && rawFamilyName) {
+    return { firstName: rawGivenName, lastName: rawFamilyName };
+  }
+
+  const displayName = profile?.displayName?.trim() || '';
+  if (!displayName) {
+    return { firstName: 'Usuario', lastName: 'Google' };
+  }
+
+  const [firstName, ...lastNameParts] = displayName.split(/\s+/);
+  return {
+    firstName: firstName || 'Usuario',
+    lastName: lastNameParts.join(' ') || 'Google',
+  };
+};
 
 // JWT Strategy
 const jwtOptions = {
@@ -49,22 +70,49 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
+        const googleEmail = getGoogleEmail(profile);
+        const googlePhoto = profile?.photos?.[0]?.value || null;
+
+        if (!googleEmail) {
+          return done(new Error('Google no devolvio un email para esta cuenta'), null);
+        }
+
         // Buscar usuario existente
         let user = await prisma.user.findUnique({
           where: { googleId: profile.id },
         });
 
         if (!user) {
-          // Crear nuevo usuario
-          user = await prisma.user.create({
-            data: {
-              googleId: profile.id,
-              email: profile.emails[0].value,
-              firstName: profile.name.givenName,
-              lastName: profile.name.familyName,
-              profileImage: profile.photos?.[0]?.value,
-            },
+          const existingUserByEmail = await prisma.user.findFirst({
+            where: { email: { equals: googleEmail, mode: 'insensitive' } },
           });
+
+          if (existingUserByEmail) {
+            if (existingUserByEmail.googleId && existingUserByEmail.googleId !== profile.id) {
+              return done(null, false, { message: 'Esta cuenta ya esta vinculada a otro acceso de Google' });
+            }
+
+            const updateData = { googleId: profile.id };
+            if (!existingUserByEmail.profileImage && googlePhoto) {
+              updateData.profileImage = googlePhoto;
+            }
+
+            user = await prisma.user.update({
+              where: { id: existingUserByEmail.id },
+              data: updateData,
+            });
+          } else {
+            const { firstName, lastName } = getNameFromProfile(profile);
+            user = await prisma.user.create({
+              data: {
+                googleId: profile.id,
+                email: googleEmail,
+                firstName,
+                lastName,
+                profileImage: googlePhoto,
+              },
+            });
+          }
         }
 
         return done(null, user);
@@ -86,38 +134,65 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
+        const googleEmail = getGoogleEmail(profile);
+        const googlePhoto = profile?.photos?.[0]?.value || null;
+
+        if (!googleEmail) {
+          return done(new Error('Google no devolvio un email para esta cuenta'), null);
+        }
+
         let company = await prisma.company.findUnique({
           where: { googleId: profile.id },
         });
 
         if (!company) {
-          company = await prisma.$transaction(async (tx) => {
-            const createdCompany = await tx.company.create({
-              data: {
-                googleId: profile.id,
-                email: profile.emails[0].value,
-                companyName: profile.displayName,
-                companyLogo: profile.photos?.[0]?.value,
-              },
-            });
-
-            const startDate = new Date();
-            await tx.subscription.create({
-              data: {
-                companyId: createdCompany.id,
-                plan: 'TRIAL',
-                status: 'ACTIVE',
-                startDate,
-                endDate: addMonths(startDate, 2),
-                amount: 0,
-                currency: 'USD',
-                paymentStatus: 'free',
-                paymentMethod: 'free',
-              },
-            });
-
-            return createdCompany;
+          const existingCompanyByEmail = await prisma.company.findFirst({
+            where: { email: { equals: googleEmail, mode: 'insensitive' } },
           });
+
+          if (existingCompanyByEmail) {
+            if (existingCompanyByEmail.googleId && existingCompanyByEmail.googleId !== profile.id) {
+              return done(null, false, { message: 'Esta empresa ya esta vinculada a otro acceso de Google' });
+            }
+
+            const updateData = { googleId: profile.id };
+            if (!existingCompanyByEmail.companyLogo && googlePhoto) {
+              updateData.companyLogo = googlePhoto;
+            }
+
+            company = await prisma.company.update({
+              where: { id: existingCompanyByEmail.id },
+              data: updateData,
+            });
+          } else {
+            company = await prisma.$transaction(async (tx) => {
+              const createdCompany = await tx.company.create({
+                data: {
+                  googleId: profile.id,
+                  email: googleEmail,
+                  companyName: profile.displayName || googleEmail.split('@')[0],
+                  companyLogo: googlePhoto,
+                },
+              });
+
+              const startDate = new Date();
+              await tx.subscription.create({
+                data: {
+                  companyId: createdCompany.id,
+                  plan: 'TRIAL',
+                  status: 'ACTIVE',
+                  startDate,
+                  endDate: addMonths(startDate, 2),
+                  amount: 0,
+                  currency: 'USD',
+                  paymentStatus: 'free',
+                  paymentMethod: 'free',
+                },
+              });
+
+              return createdCompany;
+            });
+          }
         }
 
         return done(null, company);

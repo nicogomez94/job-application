@@ -197,6 +197,97 @@ const ES_TO_EN = {
   '¿Contratas talento?': 'Hiring talent?',
   'Publica ofertas laborales, gestiona postulantes y encuentra a los mejores profesionales para tu empresa.':
     'Post job openings, manage applicants, and find the best professionals for your company.',
+  'Planes y precios en versiÃ³n resumida': 'Plans and pricing summary',
+  '*Incluye 2 meses gratis en la inscripciÃ³n inicial': '*Includes 2 free months in the initial registration',
+  '*Beneficios por calidad de servicios y referidos en planes pagos.': '*Benefits for service quality and referrals on paid plans.',
+  'Ver planes y precios': 'View plans and pricing',
+  'Solo por tiempo limitado': 'Limited-time offer',
+  Recomendado: 'Recommended',
+  'Mejor relaciÃ³n precio-tiempo': 'Best price-time ratio',
+  'Continuidad extendida para publicar': 'Extended continuity for posting',
+  'Incluye 1 mes sin costo': 'Includes 1 month at no extra cost',
+  '/ 3 meses': '/ 3 months',
+  '/ 7 meses': '/ 7 months',
+  '/ 13 meses': '/ 13 months',
+  'Plan 3 meses': '3-Month Plan',
+  'Plan 7 meses': '7-Month Plan',
+  'Plan 12 + 1': '12 + 1 Plan',
+  '3 meses': '3 months',
+  '7 meses': '7 months',
+  '13 meses': '13 months',
+  'Plan para empresas': 'Plan for companies',
+  'Pagás 12 meses y usás 13': 'Pay 12 months and use 13',
+  'Ingreso inicial para nuevas empresas': 'Initial access for new companies',
+  'MÃ¡s tiempo para contratar sin interrupciones': 'More time to hire without interruptions',
+  'PagÃ¡s 12 meses y usÃ¡s 13 meses': 'Pay 12 months and use 13 months',
+  'PublicaciÃ³n y gestiÃ³n de postulantes': 'Posting and applicant management',
+  'Ideal para validar el servicio': 'Ideal for validating the service',
+  'RenovaciÃ³n paga al finalizar': 'Paid renewal at the end',
+  'Mayor continuidad de publicaciones': 'Greater posting continuity',
+  'Mejor costo por mes': 'Better monthly cost',
+  '1 mes adicional sin costo incluido': '1 additional month included at no extra cost',
+  'Cobertura anual extendida': 'Extended yearly coverage',
+  'ElegÃ­ el plan que mejor se adapte al ritmo de contrataciÃ³n de tu empresa.': 'Choose the plan that best fits your company hiring pace.',
+  'Condiciones comerciales': 'Commercial terms',
+  'Condiciones comerciales solo por tiempo limitado.': 'Commercial terms for a limited time only.',
+  'InscripciÃ³n inicial: 2 meses gratis en tu primera vez en la plataforma.': 'Initial registration: 2 free months on your first time on the platform.',
+  'Periodo de renovaciÃ³n: todas las renovaciones son pagas en cualquiera de sus formas.': 'Renewal period: all renewals are paid under any modality.',
+  'Reconocimiento a la calidad: el empleador mejor calificado al finalizar su perÃ­odo pago recibe 2 meses sin costo.': 'Quality recognition: the highest-rated employer receives 2 months at no cost after its paid period.',
+  'Programa de referidos: por cada nueva empresa que se inscriba con plan pago, obtenÃ©s 2 meses gratis.': 'Referral program: for each new company that signs up with a paid plan, you get 2 free months.',
+  'Empezar ahora': 'Start now',
+  'Â¿Ya tenÃ©s cuenta de empresa?': 'Do you already have a company account?',
+  'Iniciar sesiÃ³n': 'Log in',
+  'Seleccione el plan que mejor se adapte a su empresa': 'Select the plan that best fits your company',
+  'Ideal para empezar': 'Ideal to start',
+  'La mejor relaciÃ³n precio-valor': 'Best price-value ratio',
+  'Para empresas en crecimiento': 'For growing companies',
+  'No se pudieron cargar los planes': 'Could not load plans',
+  'Cargando planes...': 'Loading plans...',
+  'Valor regular:': 'Regular price:',
+  'Activando...': 'Activating...',
+  'Seleccionar plan': 'Select plan',
+  'No se requiere tarjeta de crÃ©dito durante el perÃ­odo de lanzamiento. PodÃ©s cambiar de plan en cualquier momento desde tu panel de empresa.':
+    'No credit card is required during the launch period. You can change plan at any time from your company dashboard.',
+  'PrÃ³ximamente: pagos seguros con Mercado Pago.': 'Coming soon: secure payments with Mercado Pago.',
+  'No se requiere tarjeta de crédito durante el período de lanzamiento. Podés cambiar de plan en cualquier momento desde tu panel de empresa.':
+    'No credit card is required during the launch period. You can change plan at any time from your company dashboard.',
+  'Próximamente: pagos seguros con Mercado Pago.': 'Coming soon: secure payments with Mercado Pago.',
+  'SuscripciÃ³n activada': 'Subscription activated',
+  'SuscripciÃ³n cancelada': 'Subscription canceled',
+  'Â¿Cancelar la suscripciÃ³n activa?': 'Cancel active subscription?',
+  'Suscripción activada': 'Subscription activated',
+  'Suscripción cancelada': 'Subscription canceled',
+  '¿Cancelar la suscripción activa?': 'Cancel active subscription?',
+  'POR TIEMPO LIMITADO': 'LIMITED TIME',
+  'Tu empresa se registrÃ³ con un plan gratuito de 2 meses hasta el ': 'Your company was registered with a free 2-month plan until ',
+  'Luego deberÃ¡s cambiar a un plan pago de la lista para continuar sin interrupciones.':
+    'Then you must switch to a paid plan from the list to continue without interruptions.',
+  'Tu empresa se registró con un plan gratuito de 2 meses hasta el ': 'Your company was registered with a free 2-month plan until ',
+  'Luego deberás cambiar a un plan pago de la lista para continuar sin interrupciones.':
+    'Then you must switch to a paid plan from the list to continue without interruptions.',
+  'Elegir plan pago': 'Choose paid plan',
+  'Estado actual': 'Current status',
+  'Plan: ': 'Plan: ',
+  'Vigencia: ': 'Validity: ',
+  'Monto: ': 'Amount: ',
+  'Cancelando...': 'Canceling...',
+  'Cancelar suscripciÃ³n': 'Cancel subscription',
+  'Cancelar suscripción': 'Cancel subscription',
+  'Planes disponibles': 'Available plans',
+  'Procesando...': 'Processing...',
+  'Activar plan': 'Activate plan',
+  Historial: 'History',
+  'Sin historial de suscripciones.': 'No subscription history.',
+  'Prueba 2 meses': '2-Month Trial',
+  'Gana más': 'Earn more',
+  'Haciendo menos': 'Doing less',
+  'Cada mes, más de 3 millones de personas buscan trabajo en línea, realizando más de 140.000 postulaciones':
+    'Every month, more than 3 million people search for jobs online, making more than 140,000 applications.',
+  Categoría: 'Category',
+  'Buscar Trabajo': 'Search Jobs',
+  'Simplifica tu búsqueda de trabajo buscando por categorías': 'Simplify your job search by browsing categories',
+  'Explora las ofertas laborales': 'Explore job offers',
+  'Crear Cuenta de Profesional': 'Create Professional Account',
   'Ofertas Laborales': 'Job Offers',
   'Empresas Registradas': 'Registered Companies',
   'Candidatos Activos': 'Active Candidates',
@@ -215,6 +306,23 @@ const normalizeLanguage = (language) => (language === 'en' ? 'en' : 'es');
 const sortByLengthDesc = (values) => values.sort((a, b) => b.length - a.length);
 
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const repairMojibake = (value) => {
+  if (typeof value !== 'string') return value;
+
+  let next = value;
+  for (let i = 0; i < 3; i += 1) {
+    if (!/[\u00C3\u00C2]/.test(next)) break;
+    try {
+      const repaired = decodeURIComponent(escape(next));
+      if (!repaired || repaired === next) break;
+      next = repaired;
+    } catch {
+      break;
+    }
+  }
+  return next;
+};
 
 const isTranslationExcluded = (node) => {
   const element = node?.nodeType === Node.ELEMENT_NODE ? node : node?.parentElement;
@@ -292,15 +400,29 @@ export function I18nProvider({ children }) {
     return normalizeLanguage(localStorage.getItem(STORAGE_KEY));
   });
 
+  const esToEnDictionary = useMemo(() => {
+    const entries = Object.entries(ES_TO_EN);
+    const extras = [];
+
+    for (const [key, value] of entries) {
+      const repairedKey = repairMojibake(key);
+      if (repairedKey !== key && !ES_TO_EN[repairedKey]) {
+        extras.push([repairedKey, value]);
+      }
+    }
+
+    return Object.fromEntries([...entries, ...extras]);
+  }, []);
+
   const enToEsDictionary = useMemo(
     () =>
       Object.fromEntries(
-        Object.entries(ES_TO_EN).map(([esText, enText]) => [enText, esText]),
+        Object.entries(esToEnDictionary).map(([esText, enText]) => [enText, esText]),
       ),
-    [],
+    [esToEnDictionary],
   );
 
-  const sortedEsKeys = useMemo(() => sortByLengthDesc(Object.keys(ES_TO_EN)), []);
+  const sortedEsKeys = useMemo(() => sortByLengthDesc(Object.keys(esToEnDictionary)), [esToEnDictionary]);
   const sortedEnKeys = useMemo(() => sortByLengthDesc(Object.keys(enToEsDictionary)), [enToEsDictionary]);
 
   const setLanguage = useCallback((nextLanguage) => {
@@ -314,23 +436,23 @@ export function I18nProvider({ children }) {
   const t = useCallback(
     (text) => {
       if (language === 'en') {
-        return ES_TO_EN[text] || text;
+        return esToEnDictionary[text] || text;
       }
       return text;
     },
-    [language],
+    [esToEnDictionary, language],
   );
 
   const applyLanguage = useCallback(
     (rootNode = document.body) => {
       if (typeof document === 'undefined' || !rootNode) return;
       if (language === 'en') {
-        applyTranslationOnNode(rootNode, ES_TO_EN, sortedEsKeys);
+        applyTranslationOnNode(rootNode, esToEnDictionary, sortedEsKeys);
       } else {
         applyTranslationOnNode(rootNode, enToEsDictionary, sortedEnKeys);
       }
     },
-    [enToEsDictionary, language, sortedEnKeys, sortedEsKeys],
+    [enToEsDictionary, esToEnDictionary, language, sortedEnKeys, sortedEsKeys],
   );
 
   useEffect(() => {
