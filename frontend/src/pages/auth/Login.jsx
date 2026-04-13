@@ -10,6 +10,9 @@ import { API_BASE_URL } from '../../services/apiBaseUrl';
 import { Briefcase, Mail, Lock } from 'lucide-react';
 import './Login.css';
 
+const PASSWORD_RECOVERY_CONTACT_ENDPOINT = 'https://contact-form-service-e8aa.onrender.com/api/contact';
+const BASIC_EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function Login({
   allowedUserTypes = ['user', 'company', 'admin'],
   defaultUserType = 'user',
@@ -29,6 +32,8 @@ export default function Login({
   const { setAuth } = useAuthStore();
   const navigate = useNavigate();
   const apiBaseURL = API_BASE_URL;
+  const passwordRecoveryTo = String(import.meta.env.VITE_PASSWORD_RECOVERY_TO || '').trim();
+  const passwordRecoverySite = String(import.meta.env.VITE_PASSWORD_RECOVERY_SITE || '').trim();
   const userTypeLabels = {
     user: language === 'en' ? 'Professional' : 'Profesional',
     company: language === 'en' ? 'Company' : 'Empresa',
@@ -104,22 +109,47 @@ export default function Login({
 
     const trimmedEmail = recoveryEmail.trim();
     if (!trimmedEmail) {
-      toast.error('Ingresá un email válido');
+      toast.error('Ingresa un email valido');
+      return;
+    }
+    if (!BASIC_EMAIL_REGEX.test(trimmedEmail)) {
+      toast.error('Ingresa un email valido');
+      return;
+    }
+    if (!passwordRecoveryTo || !passwordRecoverySite) {
+      toast.error('No se pudo procesar la recuperacion de clave');
       return;
     }
 
     setRecoveryLoading(true);
     try {
-      const payload = { email: trimmedEmail };
-      if (allowedUserTypes.includes(userType)) {
-        payload.userType = userType;
+      const payload = {
+        name: 'Solicitud recuperaci?n de contrase?a',
+        email: trimmedEmail,
+        to: passwordRecoveryTo,
+        message: `Solicitud de recuperaci?n de contrase?a para ${trimmedEmail}. Sitio: ${passwordRecoverySite}.`,
+        site: passwordRecoverySite,
+        company: '',
+      };
+
+      const response = await fetch(PASSWORD_RECOVERY_CONTACT_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      const responseBody = await response.json().catch(() => null);
+
+      if (response.ok && responseBody?.success === true) {
+        toast.success('Si el correo existe, te contactaremos para recuperar el acceso.');
+        setIsRecoveryModalOpen(false);
+        return;
       }
 
-      await authService.requestPasswordRecovery(payload);
-      toast.success('Si el email está registrado, te enviamos instrucciones para recuperar tu clave');
-      setIsRecoveryModalOpen(false);
-    } catch (error) {
-      toast.error(error.response?.data?.error || 'No se pudo procesar la recuperación de clave');
+      throw new Error('RECOVERY_REQUEST_FAILED');
+    } catch {
+      toast.error('No se pudo procesar la recuperacion de clave');
     } finally {
       setRecoveryLoading(false);
     }
@@ -191,7 +221,7 @@ export default function Login({
                     required: 'La contraseña es requerida',
                   })}
                   className="input login-input-with-icon"
-                  placeholder="••••••••"
+                  placeholder="⬢⬢⬢⬢⬢⬢⬢⬢"
                 />
               </div>
               {errors.password && (
@@ -294,9 +324,7 @@ export default function Login({
                 className="login-recovery-close-btn"
                 onClick={closeRecoveryModal}
                 aria-label="Cerrar"
-              >
-                ×
-              </button>
+              >?</button>
 
               <h3 id="login-recovery-title" className="login-recovery-title">
                 Recuperar tu clave

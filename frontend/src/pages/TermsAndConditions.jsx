@@ -1,304 +1,192 @@
+import { useI18n } from '../context/i18nStore';
 import './TermsAndConditions.css';
 
 export default function TermsAndConditions() {
+  const { language } = useI18n();
+  const isEn = language === 'en';
+
   return (
     <div className="terms-page">
       <section className="terms-hero">
         <div className="terms-container">
-          <h1>Términos y Condiciones de Uso</h1>
+          <h1>{isEn ? 'Terms and Conditions of Use' : 'T�rminos y Condiciones de Uso'}</h1>
           <p className="terms-subtitle">
-            Professionals At Home &mdash; Vigente a nivel global
+            {isEn
+              ? 'Professionals At Home - Effective globally'
+              : 'Professionals At Home - Vigente a nivel global'}
           </p>
-          <p className="terms-updated">Última actualización: Marzo 2026</p>
+          <p className="terms-updated">
+            {isEn ? 'Last updated: March 2026' : '�ltima actualizaci�n: Marzo 2026'}
+          </p>
         </div>
       </section>
 
       <section className="terms-content">
         <div className="terms-container terms-card">
-
           <div className="terms-section">
-            <h2>1. Aceptación de los Términos</h2>
+            <h2>{isEn ? '1. Acceptance of Terms' : '1. Aceptaci�n de los T�rminos'}</h2>
             <p>
-              Al acceder, registrarse o utilizar el sitio web <strong>professionalsathome.com</strong> (en adelante,
-              "la Plataforma"), ya sea en calidad de profesional independiente ("Profesional"),
-              contratante o empleador ("Empleador"), usted ("el Usuario") manifiesta de manera
-              expresa e irrevocable que ha leído, comprendido y aceptado quedar legalmente vinculado
-              por los presentes Términos y Condiciones (el "Acuerdo"), así como por todas las leyes y
-              regulaciones aplicables en su país de residencia o desde donde accede a la Plataforma.
+              {isEn
+                ? 'By accessing, registering, or using professionalsathome.com (the "Platform"), whether as an independent professional ("Professional") or a contracting employer ("Employer"), you expressly and irrevocably acknowledge that you have read, understood, and accepted these Terms and Conditions.'
+                : 'Al acceder, registrarse o utilizar el sitio web professionalsathome.com (la "Plataforma"), ya sea en calidad de profesional independiente ("Profesional") o empleador contratante ("Empleador"), usted manifiesta de manera expresa e irrevocable que ha le�do, comprendido y aceptado estos T�rminos y Condiciones.'}
             </p>
             <p>
-              Si no está de acuerdo con la totalidad de estos términos, no podrá acceder ni utilizar
-              los servicios ofrecidos por la Plataforma.
+              {isEn
+                ? 'If you do not agree with these terms in full, you must not use the Platform services.'
+                : 'Si no est� de acuerdo con la totalidad de estos t�rminos, no podr� acceder ni utilizar los servicios ofrecidos por la Plataforma.'}
             </p>
           </div>
 
           <div className="terms-section">
-            <h2>2. Naturaleza de la Plataforma y Limitación de Responsabilidad</h2>
+            <h2>
+              {isEn
+                ? '2. Nature of the Platform and Limitation of Liability'
+                : '2. Naturaleza de la Plataforma y Limitaci�n de Responsabilidad'}
+            </h2>
             <p>
-              <strong>Professionals At Home</strong> es una plataforma tecnológica de intermediación que actúa
-              exclusivamente como un mercado virtual, facilitando el contacto entre Profesionales que
-              ofrecen servicios remotos y Empleadores que buscan contratar dichos servicios.
+              {isEn
+                ? 'Professionals At Home is a technology platform that only facilitates contact between Professionals and Employers.'
+                : 'Professionals At Home es una plataforma tecnol�gica de intermediaci�n que facilita el contacto entre Profesionales y Empleadores.'}
             </p>
             <p className="terms-highlight">
-              LA PLATAFORMA NO ES PARTE EN NINGUNA RELACIÓN LABORAL, CONTRATO DE PRESTACIÓN DE
-              SERVICIOS O ACUERDO COMERCIAL ENTRE USUARIOS.
+              {isEn
+                ? 'THE PLATFORM IS NOT A PARTY TO ANY EMPLOYMENT RELATIONSHIP, SERVICE CONTRACT, OR COMMERCIAL AGREEMENT BETWEEN USERS.'
+                : 'LA PLATAFORMA NO ES PARTE EN NINGUNA RELACI�N LABORAL, CONTRATO DE PRESTACI�N DE SERVICIOS O ACUERDO COMERCIAL ENTRE USUARIOS.'}
             </p>
-            <p>En virtud de ello, se establece que:</p>
             <ol className="terms-list">
               <li>
-                <strong>No existe relación laboral:</strong> La Plataforma no actúa como empleador,
-                agente, representante, gestor, socio ni asesor de ninguno de los Usuarios. No existe
-                relación laboral, de sociedad, franquicia, o mandato entre la Plataforma y los Usuarios.
+                <strong>{isEn ? 'No employment relationship:' : 'No existe relaci�n laboral:'}</strong>{' '}
+                {isEn
+                  ? 'The Platform does not act as employer, agent, representative, or advisor of any user.'
+                  : 'La Plataforma no act�a como empleador, agente, representante, gestor ni asesor de ninguno de los Usuarios.'}
               </li>
               <li>
-                <strong>No injerencia:</strong> La Plataforma no tiene control ni asume responsabilidad
-                alguna sobre la calidad, veracidad, legalidad, idoneidad, seguridad, capacidad o
-                puntualidad de los servicios ofrecidos por los Profesionales, ni sobre la capacidad de
-                pago, solvencia o integridad de los Empleadores o vice versa.
+                <strong>{isEn ? 'No control:' : 'No injerencia:'}</strong>{' '}
+                {isEn
+                  ? 'The Platform does not control and is not responsible for service quality, legality, suitability, solvency, or payment behavior of users.'
+                  : 'La Plataforma no tiene control ni asume responsabilidad sobre la calidad, legalidad, idoneidad, solvencia o cumplimiento de pago de los usuarios.'}
               </li>
               <li>
-                <strong>Exención total de responsabilidad:</strong> En consecuencia,{' '}
-                <strong>
-                  professionalsathome.com, sus directivos, accionistas, empleados, colaboradores y
-                  empresas relacionadas, quedan totalmente eximidos de cualquier responsabilidad
-                </strong>{' '}
-                por disputas legales, contractuales, extracontractuales, incumplimientos, daños,
-                perjuicios, pérdidas, reclamos de índole fiscal, laboral, de seguridad social, o
-                cualquier otro conflicto que pudiera surgir entre los Usuarios, sus dependientes,
-                asesores o terceros, con independencia del país donde estos se encuentren.
+                <strong>{isEn ? 'Full disclaimer:' : 'Exenci�n total de responsabilidad:'}</strong>{' '}
+                {isEn
+                  ? 'professionalsathome.com and its team are released from disputes, damages, losses, or claims arising between users.'
+                  : 'professionalsathome.com y su equipo quedan eximidos de disputas, da�os, p�rdidas o reclamos que pudieran surgir entre usuarios.'}
               </li>
             </ol>
           </div>
 
           <div className="terms-section">
-            <h2>3. Código de Conducta Esencial: Colaboración y Respeto</h2>
-            <p>
-              La comunidad de <strong>Professionals At Home</strong> se fundamenta en los principios de
-              buena fe, colaboración y respeto mutuo. Por lo tanto, todos los Usuarios se comprometen a:
-            </p>
+            <h2>{isEn ? '3. Code of Conduct' : '3. C�digo de Conducta'}</h2>
             <ul className="terms-bullet-list">
               <li>
-                Mantener una comunicación profesional, ética, veraz y respetuosa en todo momento.
+                {isEn
+                  ? 'Maintain professional, truthful, and respectful communication.'
+                  : 'Mantener una comunicaci�n profesional, �tica, veraz y respetuosa.'}
               </li>
               <li>
-                Abstenerse de realizar cualquier acto que implique discriminación, acoso,
-                hostigamiento, difamación, calumnia, injuria o lenguaje ofensivo.
+                {isEn
+                  ? 'Avoid discrimination, harassment, defamation, or abusive language.'
+                  : 'Abstenerse de realizar actos de discriminaci�n, acoso, difamaci�n o lenguaje ofensivo.'}
               </li>
               <li>
-                Colaborar de manera proactiva y diligente para resolver diferencias de forma
-                amistosa antes de escalar cualquier disputa.
-              </li>
-            </ul>
-            <p>
-              El incumplimiento de esta cláusula esencial facultará a la Plataforma para tomar
-              medidas correctivas de inmediato, incluyendo la suspensión o cancelación definitiva de
-              la cuenta del Usuario infractor, sin perjuicio de las acciones legales que pudieran
-              corresponder.
-            </p>
-          </div>
-
-          <div className="terms-section">
-            <h2>4. Veracidad de la Información y Datos Personales</h2>
-            <p>
-              <strong>4.1. Declaración del Usuario:</strong> El Usuario declara, bajo juramento y
-              asumiendo plena responsabilidad, que toda la información, datos personales, credenciales
-              profesionales, portafolios, referencias y documentos proporcionados a la Plataforma son{' '}
-              <strong>auténticos, veraces, precisos, completos y se encuentran actualizados.</strong>
-            </p>
-            <p>
-              <strong>4.2. Responsabilidad Exclusiva:</strong> El Usuario será el único y exclusivo
-              responsable por cualquier reclamo, pérdida económica, daño o perjuicio ocasionado a la
-              Plataforma, a otros Usuarios o a terceros, derivados de la falsedad, inexactitud,
-              desactualización o ilegalidad de la información suministrada, comprometiéndose a
-              mantener indemne a la Plataforma en todo momento.
-            </p>
-            <p>
-              <strong>4.3. Datos Maliciosos o Fraudulentos:</strong> En caso de detectarse que el
-              Usuario ha proporcionado información errónea a sabiendas, con dolo, mala fe o con ánimo
-              fraudulento (incluyendo, de manera enunciativa mas no limitativa, suplantación de
-              identidad, presentación de documentos falsificados, uso de datos bancarios de terceros
-              sin autorización, o la creación de cuentas ficticias):
-            </p>
-            <ul className="terms-bullet-list">
-              <li>
-                La Plataforma se reserva el derecho de{' '}
-                <strong>dar de baja la cuenta de forma inmediata, definitiva y sin necesidad de previo aviso.</strong>
-              </li>
-              <li>
-                En caso de que el Usuario hubiera realizado algún pago por servicios, membresías o
-                cualquier otro concepto,{' '}
-                <strong>
-                  perderá automáticamente la totalidad del importe abonado
-                </strong>
-                , sin derecho a reembolso alguno, en concepto de penalización por el fraude cometido,
-                y sin perjuicio de ejercer las acciones legales correspondientes.
+                {isEn
+                  ? 'Collaborate in good faith to resolve differences before escalating disputes.'
+                  : 'Colaborar de buena fe para resolver diferencias antes de escalar conflictos.'}
               </li>
             </ul>
           </div>
 
           <div className="terms-section">
-            <h2>5. Incumplimiento por Parte del Empleador (Falta de Pago)</h2>
+            <h2>{isEn ? '4. Accuracy of Information' : '4. Veracidad de la Informaci�n'}</h2>
             <p>
-              El Empleador se compromete a cumplir puntual e íntegramente con las obligaciones de
-              pago pactadas de forma libre y voluntaria con el Profesional, en los términos y
-              condiciones acordados entre ambos (plazo, forma, moneda y monto).
+              {isEn
+                ? 'Users are solely responsible for ensuring that profile data, credentials, documents, and references are authentic, accurate, and updated.'
+                : 'El Usuario es responsable exclusivo de que los datos de perfil, credenciales, documentos y referencias sean aut�nticos, veraces y actualizados.'}
             </p>
             <p>
-              Si el Empleador recibe el servicio o trabajo solicitado, lo acepta como conforme, y{' '}
-              <strong>no realiza el pago acordado</strong> en el plazo estipulado:
+              {isEn
+                ? 'Fraudulent or malicious information may result in immediate permanent account termination and loss of paid amounts without refund.'
+                : 'La informaci�n fraudulenta o maliciosa podr� implicar la baja inmediata y definitiva de la cuenta y la p�rdida de importes abonados sin derecho a reembolso.'}
             </p>
-            <ol className="terms-list">
-              <li>
-                <strong>Suspensión/Baja:</strong> La Plataforma, tras ser notificada fehacientemente
-                y contar con elementos de juicio suficientes,{' '}
-                <strong>
-                  podrá suspender de manera temporal o eliminar definitivamente la cuenta del
-                  Empleador
-                </strong>{' '}
-                sin necesidad de previo aviso ni derecho a réplica en el seno de la Plataforma.
-              </li>
-              <li>
-                <strong>Pérdida de cuotas:</strong> En caso de haber abonado una membresía o
-                suscripción, el Empleador no tendrá derecho a reembolso, compensación ni devolución
-                alguna por el período no disfrutado.
-              </li>
-              <li>
-                <strong>Aclaración legal:</strong> La determinación de la existencia de la deuda, la
-                mora o el incumplimiento de pago es responsabilidad exclusiva de las partes
-                contratantes. La actuación de la Plataforma se limita a hacer cumplir sus normas
-                internas de convivencia, sin que ello implique reconocer derecho de crédito alguno ni
-                constituirse en árbitro de la disputa subyacente.
-              </li>
-            </ol>
           </div>
 
           <div className="terms-section">
-            <h2>6. Incumplimiento por Parte del Profesional (Falta de Entrega)</h2>
+            <h2>
+              {isEn
+                ? '5. Employer Breach (Non-payment)'
+                : '5. Incumplimiento del Empleador (Falta de Pago)'}
+            </h2>
             <p>
-              El Profesional se compromete a entregar los servicios contratados en el tiempo, forma y
-              calidad estipulados con el Empleador, actuando siempre con la diligencia de un buen
-              profesional.
+              {isEn
+                ? 'If an Employer accepts delivered services and does not pay the agreed amount, the Platform may suspend or terminate the account.'
+                : 'Si un Empleador acepta el servicio entregado y no realiza el pago acordado, la Plataforma podr� suspender o dar de baja su cuenta.'}
             </p>
-            <p>
-              Si el Profesional recibe el pago (parcial o total) y{' '}
-              <strong>no cumple con la entrega del trabajo en el plazo acordado</strong> sin una
-              justificación válida y aceptada de mutuo acuerdo por el Empleador:
-            </p>
-            <ol className="terms-list">
-              <li>
-                <strong>Baja y Deuda:</strong> La Plataforma podrá proceder a dar de baja al
-                Profesional de forma inmediata, reservándose el derecho de colaborar con las
-                autoridades competentes en caso de que la conducta pudiera ser constitutiva de delito
-                (ej. estafa).
-              </li>
-              <li>
-                <strong>Conflicto entre partes:</strong> La responsabilidad de resolver la deuda,
-                reclamar el pago de daños y perjuicios o resolver el conflicto es exclusivamente entre
-                el Profesional y el Empleador, quedando la Plataforma totalmente exonerada.
-              </li>
-            </ol>
           </div>
 
           <div className="terms-section">
-            <h2>7. Manejo de Conflictos y Disputas Legales</h2>
+            <h2>
+              {isEn
+                ? '6. Professional Breach (Non-delivery)'
+                : '6. Incumplimiento del Profesional (Falta de Entrega)'}
+            </h2>
             <p>
-              <strong>7.1. No intervención:</strong> La Plataforma no actuará como mediador, árbitro,
-              juez, conciliador ni perito en ningún conflicto derivado de la relación entre Usuarios,
-              ya sean de naturaleza contractual o extracontractual.
+              {isEn
+                ? 'If a Professional receives payment and fails to deliver without valid justification, the Platform may terminate the account and cooperate with authorities if needed.'
+                : 'Si un Profesional recibe pago y no cumple con la entrega sin justificaci�n v�lida, la Plataforma podr� dar de baja la cuenta y colaborar con autoridades cuando corresponda.'}
+            </p>
+          </div>
+
+          <div className="terms-section">
+            <h2>{isEn ? '7. Disputes' : '7. Conflictos y Disputas'}</h2>
+            <p>
+              {isEn
+                ? 'The Platform does not act as mediator, arbitrator, or judge in disputes between users.'
+                : 'La Plataforma no act�a como mediador, �rbitro ni juez en conflictos entre usuarios.'}
             </p>
             <p>
-              <strong>7.2. Exención en disputas legales:</strong> En el supuesto de que surja una
-              disputa legal, demanda, arbitraje o reclamo judicial entre las partes (Profesional vs.
-              Empleador) ante cualquier tribunal, corte, organismo gubernamental o centro de arbitraje
-              del mundo:
+              {isEn
+                ? 'The Platform may only provide records when required by a valid court order from competent authority.'
+                : 'La Plataforma solo podr� facilitar registros cuando exista una orden judicial v�lida de autoridad competente.'}
             </p>
+          </div>
+
+          <div className="terms-section">
+            <h2>{isEn ? '8. Sanctions and Account Termination' : '8. Sanciones y Baja de la Plataforma'}</h2>
             <ul className="terms-bullet-list">
+              <li>{isEn ? 'Temporary suspension of the account.' : 'Suspensi�n temporal de la cuenta.'}</li>
+              <li>{isEn ? 'Permanent account termination.' : 'Baja definitiva de la cuenta.'}</li>
               <li>
-                La Plataforma no podrá ser involucrada, ni considerada parte codemandada, responsable
-                solidario, vicario o principal.
-              </li>
-              <li>
-                La Plataforma queda exenta de cualquier responsabilidad legal, fiscal, económica o de
-                cualquier índole derivada de dicha disputa.
-              </li>
-            </ul>
-            <p>
-              <strong>7.3. Colaboración limitada:</strong> Únicamente, y en cumplimiento de una orden
-              judicial expresa y emanada de autoridad competente con jurisdicción válida sobre la
-              Plataforma, ésta podría facilitar los registros de comunicación (chats) intercambiados
-              dentro de la misma, exclusivamente para el esclarecimiento de los hechos entre las
-              partes involucradas y en la medida que dicha orden sea conforme a Derecho.
-            </p>
-          </div>
-
-          <div className="terms-section">
-            <h2>8. Sanciones y Baja de la Plataforma</h2>
-            <p>
-              El incumplimiento de cualquiera de las cláusulas anteriores, la realización de conductas
-              contrarias a la ley, la moral o el orden público, así como la violación de las leyes
-              locales, nacionales o internacionales aplicables, facultará a{' '}
-              <strong>professionalsathome.com</strong> para, sin necesidad de previo aviso y sin que
-              ello genere derecho a indemnización alguna:
-            </p>
-            <ul className="terms-bullet-list">
-              <li>Suspender la cuenta del Usuario de manera temporal o cautelar.</li>
-              <li>
-                Cancelar y dar de baja la cuenta del Usuario de manera definitiva e inmediata,
-                bloqueando su acceso a la Plataforma.
-              </li>
-              <li>
-                En ambos casos, el Usuario no tendrá derecho a reclamo, réplica o devolución de los
-                montos abonados, si los hubiere.
+                {isEn
+                  ? 'No refund is granted for amounts paid, where applicable.'
+                  : 'No habr� derecho a reembolso de montos abonados, cuando corresponda.'}
               </li>
             </ul>
           </div>
 
           <div className="terms-section">
-            <h2>9. Legislación Aplicable y Jurisdicción</h2>
+            <h2>{isEn ? '9. Governing Law and Jurisdiction' : '9. Legislaci�n Aplicable y Jurisdicci�n'}</h2>
             <p>
-              Dado el carácter global de la Plataforma, y con el fin de proporcionar un marco legal
-              claro y uniforme:
-            </p>
-            <ul className="terms-bullet-list">
-              <li>
-                <strong>Legislación Aplicable:</strong> El presente Acuerdo se regirá e interpretará
-                en todos sus aspectos por las leyes sustantivas de la{' '}
-                <strong>República de Panamá</strong>, por ser este el país de constitución y sede de
-                la empresa operadora de la Plataforma, sin tener en cuenta sus disposiciones sobre
-                conflicto de leyes que pudieran derivar en la aplicación de una legislación diferente.
-              </li>
-              <li>
-                <strong>Jurisdicción:</strong> Para cualquier controversia, disputa, reclamación o
-                diferencia que pudiera surgir entre el Usuario y{' '}
-                <strong>professionalsathome.com</strong> en relación con la interpretación,
-                cumplimiento o validez de estos Términos y Condiciones, las partes se someten
-                expresamente a la jurisdicción exclusiva de los{' '}
-                <strong>tribunales ordinarios de la Ciudad de Panamá, República de Panamá</strong>,
-                renunciando expresamente a cualquier otro fuero o jurisdicción que pudiera
-                corresponderles por razón de su domicilio presente o futuro.
-              </li>
-            </ul>
-            <p>
-              Al utilizar la Plataforma, usted acepta de forma voluntaria e informada someterse a la
-              jurisdicción personal de dichos tribunales para la resolución de cualquier disputa en la
-              que la Plataforma sea parte.
+              {isEn
+                ? 'These Terms are governed by the substantive laws of the Republic of Panama. Any dispute shall be submitted to the ordinary courts of Panama City, Republic of Panama.'
+                : 'Estos T�rminos se rigen por las leyes sustantivas de la Rep�blica de Panam�. Toda controversia se someter� a los tribunales ordinarios de la Ciudad de Panam�, Rep�blica de Panam�.'}
             </p>
           </div>
 
           <div className="terms-section">
-            <h2>10. Contacto</h2>
+            <h2>{isEn ? '10. Contact' : '10. Contacto'}</h2>
             <p>
-              Para cualquier consulta, notificación o comunicación sobre estos términos, puede
-              dirigirse a la Dirección General de <strong>Professionals At Home</strong> a través del
-              correo electrónico de contacto indicado en la Plataforma.
+              {isEn
+                ? 'For questions or notices regarding these terms, contact the general management of Professionals At Home through the official channels published on the Platform.'
+                : 'Para consultas o notificaciones sobre estos t�rminos, contacte a la Direcci�n General de Professionals At Home a trav�s de los canales oficiales publicados en la Plataforma.'}
             </p>
             <p className="terms-signature">
-              Atentamente,<br />
-              <strong>La Dirección General</strong><br />
+              {isEn ? 'Sincerely,' : 'Atentamente,'}
+              <br />
+              <strong>{isEn ? 'General Management' : 'La Direcci�n General'}</strong>
+              <br />
               <strong>Professionals At Home</strong>
             </p>
           </div>
-
         </div>
       </section>
     </div>

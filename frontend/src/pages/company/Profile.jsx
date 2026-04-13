@@ -150,6 +150,7 @@ export default function CompanyProfile() {
             border: '1px solid #ebdfcb',
             borderRadius: '0.7rem',
             background: '#fdf9f2',
+            overflow: 'hidden',
           }}
         >
           <img
@@ -164,9 +165,15 @@ export default function CompanyProfile() {
               background: '#f1eadf',
             }}
           />
-          <div style={{ display: 'grid', gap: '0.45rem' }}>
+          <div style={{ display: 'grid', gap: '0.45rem', minWidth: 0 }}>
             <label htmlFor="company-profile-logo" style={{ color: '#5e4d38', fontWeight: 600 }}>Logo de empresa (opcional)</label>
-            <input id="company-profile-logo" type="file" accept="image/*" onChange={(e) => setLogoFile(e.target.files?.[0] || null)} />
+            <input
+              id="company-profile-logo"
+              type="file"
+              accept="image/*"
+              onChange={(e) => setLogoFile(e.target.files?.[0] || null)}
+              style={{ display: 'block', width: '100%', maxWidth: '100%', minWidth: 0 }}
+            />
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
               <button className="btn btn-outline" type="button" onClick={handleUploadLogo} disabled={uploading}>
                 {uploading ? 'Subiendo...' : 'Subir logo'}
