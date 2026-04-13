@@ -9,14 +9,14 @@ export default function TermsAndConditions() {
     <div className="terms-page">
       <section className="terms-hero">
         <div className="terms-container">
-          <h1>{isEn ? 'Terms and Conditions of Use' : 'TÈrminos y Condiciones de Uso'}</h1>
+          <h1>{isEn ? 'Terms and Conditions of Use' : 'T√©rminos y Condiciones de Uso'}</h1>
           <p className="terms-subtitle">
             {isEn
               ? 'Professionals At Home - Effective globally'
               : 'Professionals At Home - Vigente a nivel global'}
           </p>
           <p className="terms-updated">
-            {isEn ? 'Last updated: March 2026' : '⁄ltima actualizaciÛn: Marzo 2026'}
+            {isEn ? 'Last updated: March 2026' : '√öltima actualizaci√≥n: Marzo 2026'}
           </p>
         </div>
       </section>
@@ -24,16 +24,16 @@ export default function TermsAndConditions() {
       <section className="terms-content">
         <div className="terms-container terms-card">
           <div className="terms-section">
-            <h2>{isEn ? '1. Acceptance of Terms' : '1. AceptaciÛn de los TÈrminos'}</h2>
+            <h2>{isEn ? '1. Acceptance of Terms' : '1. Aceptaci√≥n de los T√©rminos'}</h2>
             <p>
               {isEn
                 ? 'By accessing, registering, or using professionalsathome.com (the "Platform"), whether as an independent professional ("Professional") or a contracting employer ("Employer"), you expressly and irrevocably acknowledge that you have read, understood, and accepted these Terms and Conditions.'
-                : 'Al acceder, registrarse o utilizar el sitio web professionalsathome.com (la "Plataforma"), ya sea en calidad de profesional independiente ("Profesional") o empleador contratante ("Empleador"), usted manifiesta de manera expresa e irrevocable que ha leÌdo, comprendido y aceptado estos TÈrminos y Condiciones.'}
+                : 'Al acceder, registrarse o utilizar el sitio web professionalsathome.com (la "Plataforma"), ya sea en calidad de profesional independiente ("Profesional") o empleador contratante ("Empleador"), usted manifiesta de manera expresa e irrevocable que ha le√≠do, comprendido y aceptado estos T√©rminos y Condiciones.'}
             </p>
             <p>
               {isEn
                 ? 'If you do not agree with these terms in full, you must not use the Platform services.'
-                : 'Si no est· de acuerdo con la totalidad de estos tÈrminos, no podr· acceder ni utilizar los servicios ofrecidos por la Plataforma.'}
+                : 'Si no est√° de acuerdo con la totalidad de estos t√©rminos, no podr√° acceder ni utilizar los servicios ofrecidos por la Plataforma.'}
             </p>
           </div>
 
@@ -41,24 +41,24 @@ export default function TermsAndConditions() {
             <h2>
               {isEn
                 ? '2. Nature of the Platform and Limitation of Liability'
-                : '2. Naturaleza de la Plataforma y LimitaciÛn de Responsabilidad'}
+                : '2. Naturaleza de la Plataforma y Limitaci√≥n de Responsabilidad'}
             </h2>
             <p>
               {isEn
                 ? 'Professionals At Home is a technology platform that only facilitates contact between Professionals and Employers.'
-                : 'Professionals At Home es una plataforma tecnolÛgica de intermediaciÛn que facilita el contacto entre Profesionales y Empleadores.'}
+                : 'Professionals At Home es una plataforma tecnol√≥gica de intermediaci√≥n que facilita el contacto entre Profesionales y Empleadores.'}
             </p>
             <p className="terms-highlight">
               {isEn
                 ? 'THE PLATFORM IS NOT A PARTY TO ANY EMPLOYMENT RELATIONSHIP, SERVICE CONTRACT, OR COMMERCIAL AGREEMENT BETWEEN USERS.'
-                : 'LA PLATAFORMA NO ES PARTE EN NINGUNA RELACI”N LABORAL, CONTRATO DE PRESTACI”N DE SERVICIOS O ACUERDO COMERCIAL ENTRE USUARIOS.'}
+                : 'LA PLATAFORMA NO ES PARTE EN NINGUNA RELACI√ìN LABORAL, CONTRATO DE PRESTACI√ìN DE SERVICIOS O ACUERDO COMERCIAL ENTRE USUARIOS.'}
             </p>
             <ol className="terms-list">
               <li>
-                <strong>{isEn ? 'No employment relationship:' : 'No existe relaciÛn laboral:'}</strong>{' '}
+                <strong>{isEn ? 'No employment relationship:' : 'No existe relaci√≥n laboral:'}</strong>{' '}
                 {isEn
                   ? 'The Platform does not act as employer, agent, representative, or advisor of any user.'
-                  : 'La Plataforma no act˙a como empleador, agente, representante, gestor ni asesor de ninguno de los Usuarios.'}
+                  : 'La Plataforma no act√∫a como empleador, agente, representante, gestor ni asesor de ninguno de los Usuarios.'}
               </li>
               <li>
                 <strong>{isEn ? 'No control:' : 'No injerencia:'}</strong>{' '}
@@ -67,26 +67,26 @@ export default function TermsAndConditions() {
                   : 'La Plataforma no tiene control ni asume responsabilidad sobre la calidad, legalidad, idoneidad, solvencia o cumplimiento de pago de los usuarios.'}
               </li>
               <li>
-                <strong>{isEn ? 'Full disclaimer:' : 'ExenciÛn total de responsabilidad:'}</strong>{' '}
+                <strong>{isEn ? 'Full disclaimer:' : 'Exenci√≥n total de responsabilidad:'}</strong>{' '}
                 {isEn
                   ? 'professionalsathome.com and its team are released from disputes, damages, losses, or claims arising between users.'
-                  : 'professionalsathome.com y su equipo quedan eximidos de disputas, daÒos, pÈrdidas o reclamos que pudieran surgir entre usuarios.'}
+                  : 'professionalsathome.com y su equipo quedan eximidos de disputas, da√±os, p√©rdidas o reclamos que pudieran surgir entre usuarios.'}
               </li>
             </ol>
           </div>
 
           <div className="terms-section">
-            <h2>{isEn ? '3. Code of Conduct' : '3. CÛdigo de Conducta'}</h2>
+            <h2>{isEn ? '3. Code of Conduct' : '3. C√≥digo de Conducta'}</h2>
             <ul className="terms-bullet-list">
               <li>
                 {isEn
                   ? 'Maintain professional, truthful, and respectful communication.'
-                  : 'Mantener una comunicaciÛn profesional, Ètica, veraz y respetuosa.'}
+                  : 'Mantener una comunicaci√≥n profesional, √©tica, veraz y respetuosa.'}
               </li>
               <li>
                 {isEn
                   ? 'Avoid discrimination, harassment, defamation, or abusive language.'
-                  : 'Abstenerse de realizar actos de discriminaciÛn, acoso, difamaciÛn o lenguaje ofensivo.'}
+                  : 'Abstenerse de realizar actos de discriminaci√≥n, acoso, difamaci√≥n o lenguaje ofensivo.'}
               </li>
               <li>
                 {isEn
@@ -97,16 +97,16 @@ export default function TermsAndConditions() {
           </div>
 
           <div className="terms-section">
-            <h2>{isEn ? '4. Accuracy of Information' : '4. Veracidad de la InformaciÛn'}</h2>
+            <h2>{isEn ? '4. Accuracy of Information' : '4. Veracidad de la Informaci√≥n'}</h2>
             <p>
               {isEn
                 ? 'Users are solely responsible for ensuring that profile data, credentials, documents, and references are authentic, accurate, and updated.'
-                : 'El Usuario es responsable exclusivo de que los datos de perfil, credenciales, documentos y referencias sean autÈnticos, veraces y actualizados.'}
+                : 'El Usuario es responsable exclusivo de que los datos de perfil, credenciales, documentos y referencias sean aut√©nticos, veraces y actualizados.'}
             </p>
             <p>
               {isEn
                 ? 'Fraudulent or malicious information may result in immediate permanent account termination and loss of paid amounts without refund.'
-                : 'La informaciÛn fraudulenta o maliciosa podr· implicar la baja inmediata y definitiva de la cuenta y la pÈrdida de importes abonados sin derecho a reembolso.'}
+                : 'La informaci√≥n fraudulenta o maliciosa podr√° implicar la baja inmediata y definitiva de la cuenta y la p√©rdida de importes abonados sin derecho a reembolso.'}
             </p>
           </div>
 
@@ -119,7 +119,7 @@ export default function TermsAndConditions() {
             <p>
               {isEn
                 ? 'If an Employer accepts delivered services and does not pay the agreed amount, the Platform may suspend or terminate the account.'
-                : 'Si un Empleador acepta el servicio entregado y no realiza el pago acordado, la Plataforma podr· suspender o dar de baja su cuenta.'}
+                : 'Si un Empleador acepta el servicio entregado y no realiza el pago acordado, la Plataforma podr√° suspender o dar de baja su cuenta.'}
             </p>
           </div>
 
@@ -132,7 +132,7 @@ export default function TermsAndConditions() {
             <p>
               {isEn
                 ? 'If a Professional receives payment and fails to deliver without valid justification, the Platform may terminate the account and cooperate with authorities if needed.'
-                : 'Si un Profesional recibe pago y no cumple con la entrega sin justificaciÛn v·lida, la Plataforma podr· dar de baja la cuenta y colaborar con autoridades cuando corresponda.'}
+                : 'Si un Profesional recibe pago y no cumple con la entrega sin justificaci√≥n v√°lida, la Plataforma podr√° dar de baja la cuenta y colaborar con autoridades cuando corresponda.'}
             </p>
           </div>
 
@@ -141,34 +141,34 @@ export default function TermsAndConditions() {
             <p>
               {isEn
                 ? 'The Platform does not act as mediator, arbitrator, or judge in disputes between users.'
-                : 'La Plataforma no act˙a como mediador, ·rbitro ni juez en conflictos entre usuarios.'}
+                : 'La Plataforma no act√∫a como mediador, √°rbitro ni juez en conflictos entre usuarios.'}
             </p>
             <p>
               {isEn
                 ? 'The Platform may only provide records when required by a valid court order from competent authority.'
-                : 'La Plataforma solo podr· facilitar registros cuando exista una orden judicial v·lida de autoridad competente.'}
+                : 'La Plataforma solo podr√° facilitar registros cuando exista una orden judicial v√°lida de autoridad competente.'}
             </p>
           </div>
 
           <div className="terms-section">
             <h2>{isEn ? '8. Sanctions and Account Termination' : '8. Sanciones y Baja de la Plataforma'}</h2>
             <ul className="terms-bullet-list">
-              <li>{isEn ? 'Temporary suspension of the account.' : 'SuspensiÛn temporal de la cuenta.'}</li>
+              <li>{isEn ? 'Temporary suspension of the account.' : 'Suspensi√≥n temporal de la cuenta.'}</li>
               <li>{isEn ? 'Permanent account termination.' : 'Baja definitiva de la cuenta.'}</li>
               <li>
                 {isEn
                   ? 'No refund is granted for amounts paid, where applicable.'
-                  : 'No habr· derecho a reembolso de montos abonados, cuando corresponda.'}
+                  : 'No habr√° derecho a reembolso de montos abonados, cuando corresponda.'}
               </li>
             </ul>
           </div>
 
           <div className="terms-section">
-            <h2>{isEn ? '9. Governing Law and Jurisdiction' : '9. LegislaciÛn Aplicable y JurisdicciÛn'}</h2>
+            <h2>{isEn ? '9. Governing Law and Jurisdiction' : '9. Legislaci√≥n Aplicable y Jurisdicci√≥n'}</h2>
             <p>
               {isEn
                 ? 'These Terms are governed by the substantive laws of the Republic of Panama. Any dispute shall be submitted to the ordinary courts of Panama City, Republic of Panama.'
-                : 'Estos TÈrminos se rigen por las leyes sustantivas de la Rep˙blica de Panam·. Toda controversia se someter· a los tribunales ordinarios de la Ciudad de Panam·, Rep˙blica de Panam·.'}
+                : 'Estos T√©rminos se rigen por las leyes sustantivas de la Rep√∫blica de Panam√°. Toda controversia se someter√° a los tribunales ordinarios de la Ciudad de Panam√°, Rep√∫blica de Panam√°.'}
             </p>
           </div>
 
@@ -177,12 +177,12 @@ export default function TermsAndConditions() {
             <p>
               {isEn
                 ? 'For questions or notices regarding these terms, contact the general management of Professionals At Home through the official channels published on the Platform.'
-                : 'Para consultas o notificaciones sobre estos tÈrminos, contacte a la DirecciÛn General de Professionals At Home a travÈs de los canales oficiales publicados en la Plataforma.'}
+                : 'Para consultas o notificaciones sobre estos t√©rminos, contacte a la Direcci√≥n General de Professionals At Home a trav√©s de los canales oficiales publicados en la Plataforma.'}
             </p>
             <p className="terms-signature">
               {isEn ? 'Sincerely,' : 'Atentamente,'}
               <br />
-              <strong>{isEn ? 'General Management' : 'La DirecciÛn General'}</strong>
+              <strong>{isEn ? 'General Management' : 'La Direcci√≥n General'}</strong>
               <br />
               <strong>Professionals At Home</strong>
             </p>

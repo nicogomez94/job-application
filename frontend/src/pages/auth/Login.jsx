@@ -124,10 +124,10 @@ export default function Login({
     setRecoveryLoading(true);
     try {
       const payload = {
-        name: 'Solicitud recuperaci?n de contrase?a',
+        name: 'Solicitud recuperación de contraseña',
         email: trimmedEmail,
         to: passwordRecoveryTo,
-        message: `Solicitud de recuperaci?n de contrase?a para ${trimmedEmail}. Sitio: ${passwordRecoverySite}.`,
+        message: `Solicitud de recuperación de contraseña para ${trimmedEmail}. Sitio: ${passwordRecoverySite}.`,
         site: passwordRecoverySite,
         company: '',
       };
@@ -324,7 +324,9 @@ export default function Login({
                 className="login-recovery-close-btn"
                 onClick={closeRecoveryModal}
                 aria-label="Cerrar"
-              >?</button>
+              >
+                ×
+              </button>
 
               <h3 id="login-recovery-title" className="login-recovery-title">
                 Recuperar tu clave

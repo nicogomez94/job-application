@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { AUTO_ES_TO_EN } from './i18nAutoMap';
 
 const STORAGE_KEY = 'site-language';
 
@@ -448,6 +449,11 @@ const ES_TO_EN = {
   'Tasa de ?xito': 'Success Rate',
 };
 
+const COMBINED_ES_TO_EN = {
+  ...AUTO_ES_TO_EN,
+  ...ES_TO_EN,
+};
+
 const I18nContext = createContext({
   language: 'es',
   setLanguage: () => {},
@@ -460,6 +466,19 @@ const normalizeLanguage = (language) => (language === 'en' ? 'en' : 'es');
 const sortByLengthDesc = (values) => values.sort((a, b) => b.length - a.length);
 
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const scoreSpanishKeyQuality = (value) => {
+  if (typeof value !== 'string') return -999;
+  let score = 0;
+
+  if (/\\u[0-9a-f]{4}/i.test(value)) score -= 5;
+  if (/[\uFFFD]/.test(value)) score -= 8;
+  if (/[ÃÂ]/.test(value)) score -= 3;
+  if (/[\u00C0-\u017F]/.test(value)) score += 2;
+  if (/[\u00E1\u00E9\u00ED\u00F3\u00FA\u00F1\u00FC\u00BF\u00A1]/i.test(value)) score += 3;
+
+  return score;
+};
 
 const repairMojibake = (value) => {
   if (typeof value !== 'string') return value;
@@ -555,12 +574,12 @@ export function I18nProvider({ children }) {
   });
 
   const esToEnDictionary = useMemo(() => {
-    const entries = Object.entries(ES_TO_EN);
+    const entries = Object.entries(COMBINED_ES_TO_EN);
     const extras = [];
 
     for (const [key, value] of entries) {
       const repairedKey = repairMojibake(key);
-      if (repairedKey !== key && !ES_TO_EN[repairedKey]) {
+      if (repairedKey !== key && !COMBINED_ES_TO_EN[repairedKey]) {
         extras.push([repairedKey, value]);
       }
     }
@@ -569,10 +588,22 @@ export function I18nProvider({ children }) {
   }, []);
 
   const enToEsDictionary = useMemo(
-    () =>
-      Object.fromEntries(
-        Object.entries(esToEnDictionary).map(([esText, enText]) => [enText, esText]),
-      ),
+    () => {
+      const reverse = {};
+      const scores = {};
+
+      for (const [esText, enText] of Object.entries(esToEnDictionary)) {
+        if (!enText) continue;
+        const nextScore = scoreSpanishKeyQuality(esText);
+        const prevScore = scores[enText] ?? -999;
+        if (reverse[enText] === undefined || nextScore > prevScore) {
+          reverse[enText] = esText;
+          scores[enText] = nextScore;
+        }
+      }
+
+      return reverse;
+    },
     [esToEnDictionary],
   );
 
