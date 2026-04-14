@@ -136,7 +136,7 @@ export default function Home() {
       subtitle: 'Solo por tiempo limitado',
       price: 'USD 50',
       period: '/ 3 meses',
-      feature: 'Renovación paga al finalizar',
+      feature: 'Renovaci\u00f3n paga al finalizar',
     },
     {
       id: 'QUARTERLY',

@@ -34,6 +34,8 @@ export default function Login({
   const apiBaseURL = API_BASE_URL;
   const passwordRecoveryTo = String(import.meta.env.VITE_PASSWORD_RECOVERY_TO || '').trim();
   const passwordRecoverySite = String(import.meta.env.VITE_PASSWORD_RECOVERY_SITE || '').trim();
+  const emailPlaceholder = language === 'en' ? 'you@email.com' : 'tu@email.com';
+  const passwordLabel = language === 'en' ? 'Password' : 'Contrase\u00f1a';
   const userTypeLabels = {
     user: language === 'en' ? 'Professional' : 'Profesional',
     company: language === 'en' ? 'Company' : 'Empresa',
@@ -202,7 +204,7 @@ export default function Login({
                     },
                   })}
                   className="input login-input-with-icon"
-                  placeholder="tu@email.com"
+                  placeholder={emailPlaceholder}
                 />
               </div>
               {errors.email && (
@@ -211,7 +213,7 @@ export default function Login({
             </div>
 
             <div className="login-form-group">
-              <label className="login-label" htmlFor="login-password">Contraseña</label>
+              <label className="login-label" htmlFor="login-password">{passwordLabel}</label>
               <div className="login-input-wrapper">
                 <Lock className="login-input-icon" />
                 <input
@@ -343,7 +345,7 @@ export default function Login({
                   value={recoveryEmail}
                   onChange={(event) => setRecoveryEmail(event.target.value)}
                   className="input"
-                  placeholder="tu@email.com"
+                  placeholder={emailPlaceholder}
                   required
                 />
                 <button
