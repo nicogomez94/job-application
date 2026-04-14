@@ -447,6 +447,103 @@ const ES_TO_EN = {
     'Renewal period: all renewals are paid under any modality.',
   '?Ya ten?s cuenta de empresa?': 'Do you already have a company account?',
   'Tasa de ?xito': 'Success Rate',
+
+  // ── Profile / CV / files ──────────────────────────────────────────────────
+  'Seleccioná una imagen primero': 'Select an image first',
+  'CV actualizado': 'CV updated',
+  'CV eliminado': 'CV deleted',
+  'No se pudo eliminar el CV': 'Could not delete CV',
+  'Seleccioná un CV primero': 'Select a CV first',
+  'Archivos varios actualizados': 'Additional files updated',
+  'Seleccioná archivos para subir': 'Select files to upload',
+  'Archivo eliminado': 'File deleted',
+  'No se pudo eliminar el archivo': 'Could not delete file',
+  'CV cargado': 'CV loaded',
+  'Reemplazar CV': 'Replace CV',
+  'Subir CV': 'Upload CV',
+  'Subir archivos varios': 'Upload additional files',
+  'Subir foto': 'Upload photo',
+  'Todas las categorías': 'All categories',
+  'Todos los idiomas': 'All languages',
+  'Todavia no recibiste calificaciones': "You haven't received ratings yet",
+  'Formación Académica': 'Academic Background',
+  'Contá brevemente sobre vos': 'Tell us briefly about yourself',
+  'Experiencia laboral': 'Work experience',
+  'Contá brevemente tu experiencia laboral': 'Tell us briefly about your work experience',
+  'Whatsapp': 'WhatsApp',
+  'Podés subir hasta 4 archivos varios': 'You can upload up to 4 additional files',
+
+  // ── Ratings / applications ────────────────────────────────────────────────
+  'Puntuación guardada': 'Rating saved',
+  'Puntuar postulante': 'Rate applicant',
+  'Postulado': 'Applied',
+  'Ver CV': 'View CV',
+  'Estado actualizado': 'Status updated',
+  'Logo actualizado': 'Logo updated',
+
+  // ── Job applicants ────────────────────────────────────────────────────────
+  'Ocultar detalle': 'Hide details',
+  'Ampliar postulante': 'Expand applicant',
+  'Postulantes': 'Applicants',
+  'Finalización': 'Completion',
+  'Estado': 'Status',
+  'No disponible': 'Not available',
+  'Cargado': 'Uploaded',
+  'cargado(s)': 'uploaded',
+  'Esta oferta no tiene postulantes todavía.': 'This job has no applicants yet.',
+  'postulante': 'applicant',
+  'postulantes': 'applicants',
+  'postulación': 'application',
+  'postulaciones': 'applications',
+
+  // ── Company dashboard / jobs ──────────────────────────────────────────────
+  'No publicaste ofertas todavía.': "You haven't posted jobs yet.",
+  'Inicio: ': 'Start: ',
+  'Vence: ': 'Expires: ',
+  'días restantes': 'days remaining',
+  'Gestionar': 'Manage',
+  'Actualizando...': 'Updating...',
+  'Pausar': 'Pause',
+  'Activar': 'Activate',
+  'empleados': 'employees',
+
+  // ── Job form (create / edit) ──────────────────────────────────────────────
+  'Modalidad': 'Work mode',
+  'Periodicidad salarial': 'Salary period',
+  'Requisitos': 'Requirements',
+  'Responsabilidades': 'Responsibilities',
+  'Oferta activa': 'Active job posting',
+  'Descripción': 'Description',
+  'Industria': 'Industry',
+
+  // ── Job search ────────────────────────────────────────────────────────────
+  'Publicada: ': 'Posted: ',
+  'A convenir': 'To be agreed',
+  'Ver detalle': 'View details',
+
+  // ── Job detail ────────────────────────────────────────────────────────────
+  'Semi-senior': 'Mid-level',
+  'Líder': 'Lead',
+  'Publicada el ': 'Posted on ',
+  'Vence el ': 'Expires on ',
+  'Ya te postulaste a esta oferta': 'You have already applied to this job',
+  'Postularse': 'Apply',
+  'Solo candidatos pueden postularse.': 'Only candidates can apply.',
+  'Postularme': 'Apply now',
+  'Enviando...': 'Sending...',
+  'Enviar postulación': 'Send application',
+  'Cargando detalle...': 'Loading details...',
+
+  // ── Auth / OAuth ──────────────────────────────────────────────────────────
+  'Debés subir tu CV para iniciar sesión': 'You must upload your CV to log in',
+  'Completando autenticacion...': 'Completing authentication...',
+  'No se recibio token de autenticacion': 'Authentication token was not received',
+  'Tipo de usuario invalido': 'Invalid user type',
+
+  // ── Blog ──────────────────────────────────────────────────────────────────
+  'Leer más': 'Read more',
+  'Consejos': 'Tips',
+  'Tendencias': 'Trends',
 };
 
 const COMBINED_ES_TO_EN = {

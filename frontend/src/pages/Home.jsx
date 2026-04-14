@@ -378,12 +378,12 @@ export default function Home() {
       <section ref={statsRef} className={`home-stats animate-on-scroll ${statsVisible ? 'animate-visible' : ''}`}>
         <div className="home-stats-container">
           <div className="home-stats-header">
-            <p className="home-stats-eyebrow">Empresas</p>
-            <h2>Planes y precios en versión resumida</h2>
+            <p className="home-stats-eyebrow">{t('Empresas')}</p>
+            <h2>{t('Planes y precios en versión resumida')}</h2>
             <p>
-              *Incluye 2 meses gratis en la inscripción inicial
+              {t('*Incluye 2 meses gratis en la inscripción inicial')}
               <br />
-              *Beneficios por calidad de servicios y referidos en planes pagos.
+              {t('*Beneficios por calidad de servicios y referidos en planes pagos.')}
             </p>
           </div>
 
@@ -393,14 +393,14 @@ export default function Home() {
                 key={plan.id}
                 className={`home-pricing-preview-card ${plan.highlight ? 'home-pricing-preview-card-highlight' : ''}`}
               >
-                {plan.badge ? <span className="home-pricing-preview-badge">{plan.badge}</span> : null}
-                <h3>{plan.name}</h3>
-                <p className="home-pricing-preview-subtitle">{plan.subtitle}</p>
+                {plan.badge ? <span className="home-pricing-preview-badge">{t(plan.badge)}</span> : null}
+                <h3>{t(plan.name)}</h3>
+                <p className="home-pricing-preview-subtitle">{t(plan.subtitle)}</p>
                 <p className="home-pricing-preview-price">
                   {plan.price}
-                  <span>{plan.period}</span>
+                  <span>{t(plan.period)}</span>
                 </p>
-                <p className="home-pricing-preview-feature">{plan.feature}</p>
+                <p className="home-pricing-preview-feature">{t(plan.feature)}</p>
               </article>
             ))}
           </div>

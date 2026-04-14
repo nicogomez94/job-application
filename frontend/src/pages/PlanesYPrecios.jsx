@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Check, Star, Shield, Zap } from 'lucide-react';
 import { subscriptionService } from '../services';
+import { useI18n } from '../context/i18nStore';
 import './PlanesYPrecios.css';
 
 const FALLBACK_PLANS = [
@@ -59,14 +60,74 @@ const PLAN_META = {
   ANNUAL: { icon: Zap, subtitle: 'Pagás 12 meses y usás 13 meses' },
 };
 
-const formatPrice = (price, currency = 'ARS') =>
-  new Intl.NumberFormat('es-AR', {
+const PLAN_TEXT_TO_EN = {
+  Empresas: 'Companies',
+  'Planes y Precios': 'Plans and Pricing',
+  'Elegí el plan que mejor se adapte al ritmo de contratación de tu empresa.':
+    'Choose the plan that best fits your company hiring pace.',
+  'Condiciones comerciales': 'Commercial terms',
+  'Condiciones comerciales solo por tiempo limitado.':
+    'Commercial terms for a limited time only.',
+  'Inscripción inicial: 2 meses gratis en tu primera vez en la plataforma.':
+    'Initial registration: 2 free months on your first time on the platform.',
+  'Periodo de renovación: todas las renovaciones son pagas en cualquiera de sus formas.':
+    'Renewal period: all renewals are paid under any modality.',
+  'Reconocimiento a la calidad: el empleador mejor calificado al finalizar su período pago recibe 2 meses sin costo.':
+    'Quality recognition: the highest-rated employer receives 2 months at no cost after its paid period.',
+  'Programa de referidos: por cada nueva empresa que se inscriba con plan pago, obtenés 2 meses gratis.':
+    'Referral program: for each new company that signs up with a paid plan, you get 2 free months.',
+  'Plan 3 meses': '3-Month Plan',
+  'Plan 7 meses': '7-Month Plan',
+  'Plan 12 + 1': '12 + 1 Plan',
+  'Ingreso inicial para nuevas empresas': 'Initial access for new companies',
+  'Más tiempo para contratar sin interrupciones': 'More time to hire without interruptions',
+  'Pagás 12 meses y usás 13 meses': 'Pay 12 months and use 13 months',
+  Recomendado: 'Recommended',
+  '3 meses': '3 months',
+  '7 meses': '7 months',
+  '13 meses': '13 months',
+  'Publicación y gestión de postulantes': 'Posting and applicant management',
+  'Acceso a gestión de postulantes': 'Access to applicant management',
+  'Acceso a gestión de applicants': 'Access to applicant management',
+  'Ideal para validar el servicio': 'Ideal for validating the service',
+  'Renovación paga al finalizar': 'Paid renewal at the end',
+  'Mayor continuidad de publicaciones': 'Greater posting continuity',
+  'Mejor costo por mes': 'Better monthly cost',
+  '1 mes adicional sin costo incluido': '1 additional month included at no extra cost',
+  'Cobertura anual extendida': 'Extended yearly coverage',
+  'Cobertura extendida para contrataciones': 'Extended hiring coverage',
+  'Mayor continuidad anual': 'Greater annual continuity',
+  'Empezar ahora': 'Start now',
+  '¿Ya tenés cuenta de empresa?': 'Do you already have a company account?',
+  'Iniciar sesión': 'Log in',
+};
+
+const PLAN_TEXT_TO_ES = Object.fromEntries(
+  Object.entries(PLAN_TEXT_TO_EN).map(([es, en]) => [en, es]),
+);
+
+const normalizePlanText = (value, language, t) => {
+  if (typeof value !== 'string') return value;
+  const text = value.trim();
+  if (!text) return value;
+
+  if (language === 'en') {
+    return PLAN_TEXT_TO_EN[text] || t(text);
+  }
+
+  return PLAN_TEXT_TO_ES[text] || text;
+};
+
+const formatPrice = (price, currency = 'ARS', language = 'es') =>
+  new Intl.NumberFormat(language === 'en' ? 'en-US' : 'es-AR', {
     style: 'currency',
     currency,
     maximumFractionDigits: 0,
+    currencyDisplay: language === 'en' ? 'code' : 'symbol',
   }).format(Number(price || 0));
 
 export default function PlanesYPrecios() {
+  const { language, t } = useI18n();
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -105,19 +166,19 @@ export default function PlanesYPrecios() {
     <section className="pricing-page">
       <div className="pricing-container">
         <header className="pricing-header">
-          <p className="pricing-eyebrow">Empresas</p>
-          <h1>Planes y Precios</h1>
-          <p>Elegí el plan que mejor se adapte al ritmo de contratación de tu empresa.</p>
+          <p className="pricing-eyebrow">{normalizePlanText('Empresas', language, t)}</p>
+          <h1>{normalizePlanText('Planes y Precios', language, t)}</h1>
+          <p>{normalizePlanText('Elegí el plan que mejor se adapte al ritmo de contratación de tu empresa.', language, t)}</p>
         </header>
 
         <section className="pricing-conditions">
-          <h2>Condiciones comerciales</h2>
-          <p>Condiciones comerciales solo por tiempo limitado.</p>
+          <h2>{normalizePlanText('Condiciones comerciales', language, t)}</h2>
+          <p>{normalizePlanText('Condiciones comerciales solo por tiempo limitado.', language, t)}</p>
           <ul>
-            <li>Inscripción inicial: 2 meses gratis en tu primera vez en la plataforma.</li>
-            <li>Periodo de renovación: todas las renovaciones son pagas en cualquiera de sus formas.</li>
-            <li>Reconocimiento a la calidad: el empleador mejor calificado al finalizar su período pago recibe 2 meses sin costo.</li>
-            <li>Programa de referidos: por cada nueva empresa que se inscriba con plan pago, obtenés 2 meses gratis.</li>
+            <li>{normalizePlanText('Inscripción inicial: 2 meses gratis en tu primera vez en la plataforma.', language, t)}</li>
+            <li>{normalizePlanText('Periodo de renovación: todas las renovaciones son pagas en cualquiera de sus formas.', language, t)}</li>
+            <li>{normalizePlanText('Reconocimiento a la calidad: el empleador mejor calificado al finalizar su período pago recibe 2 meses sin costo.', language, t)}</li>
+            <li>{normalizePlanText('Programa de referidos: por cada nueva empresa que se inscriba con plan pago, obtenés 2 meses gratis.', language, t)}</li>
           </ul>
         </section>
 
@@ -129,26 +190,28 @@ export default function PlanesYPrecios() {
                 key={plan.id}
                 className={`pricing-card ${plan.highlight ? 'pricing-card-highlight' : ''}`}
               >
-                {plan.badge && <span className="pricing-badge">{plan.badge}</span>}
+                {plan.badge && (
+                  <span className="pricing-badge">{normalizePlanText(plan.badge, language, t)}</span>
+                )}
                 <div className="pricing-icon">
                   <Icon size={22} />
                 </div>
-                <h2>{plan.name}</h2>
-                <p className="pricing-subtitle">{plan.subtitle}</p>
+                <h2>{normalizePlanText(plan.name, language, t)}</h2>
+                <p className="pricing-subtitle">{normalizePlanText(plan.subtitle, language, t)}</p>
                 <p className="pricing-value">
-                  {formatPrice(plan.price, plan.currency)}
-                  <span> / {plan.duration || '3 meses'}</span>
+                  {formatPrice(plan.price, plan.currency, language)}
+                  <span> / {normalizePlanText(plan.duration || '3 meses', language, t)}</span>
                 </p>
                 <ul className="pricing-features">
                   {(plan.features || []).map((feature) => (
                     <li key={feature}>
                       <Check size={16} />
-                      {feature}
+                      {normalizePlanText(feature, language, t)}
                     </li>
                   ))}
                 </ul>
                 <Link to="/register/company" className="pricing-cta">
-                  Empezar ahora
+                  {normalizePlanText('Empezar ahora', language, t)}
                 </Link>
               </article>
             );
@@ -156,8 +219,8 @@ export default function PlanesYPrecios() {
         </div>
 
         <div className="pricing-bottom">
-          <p>¿Ya tenés cuenta de empresa?</p>
-          <Link to="/login">Iniciar sesión</Link>
+          <p>{normalizePlanText('¿Ya tenés cuenta de empresa?', language, t)}</p>
+          <Link to="/login">{normalizePlanText('Iniciar sesión', language, t)}</Link>
         </div>
       </div>
     </section>
