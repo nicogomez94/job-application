@@ -53,7 +53,7 @@ const normalizeUploadedFiles = (uploadedFiles) =>
 
 export default function JobApplicants() {
   const { id } = useParams();
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const [jobOffer, setJobOffer] = useState(null);
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -207,8 +207,8 @@ export default function JobApplicants() {
                   style={{ minWidth: '170px' }}
                 >
                   {expandedApplicationId === application.id
-                    ? t('Ocultar detalle')
-                    : t('Ampliar postulante')}
+                    ? (language === 'en' ? 'Hide details' : 'Ocultar detalle')
+                    : (language === 'en' ? 'Expand applicant' : 'Ampliar postulante')}
                 </button>
               </div>
 

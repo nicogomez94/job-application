@@ -186,6 +186,7 @@ const ES_TO_EN = {
   'Industria': 'Industry',
   'Profesiones': 'Professions',
   'Tecnología': 'Technology',
+  'Tecnologia': 'Technology',
   'Marketing': 'Marketing',
   'Finanzas': 'Finance',
   Salud: 'Healthcare',
