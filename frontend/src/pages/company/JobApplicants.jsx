@@ -8,6 +8,7 @@ import BackToDashboardButton from '../../components/BackToDashboardButton';
 import StarRatingInput from '../../components/StarRatingInput';
 import RatingSummary from '../../components/RatingSummary';
 import { scrollToTopInstant } from '../../utils/scrollToTop';
+import { useI18n } from '../../context/i18nStore';
 
 const toAssetUrl = (assetPath) => {
   if (!assetPath) return null;
@@ -52,6 +53,7 @@ const normalizeUploadedFiles = (uploadedFiles) =>
 
 export default function JobApplicants() {
   const { id } = useParams();
+  const { t } = useI18n();
   const [jobOffer, setJobOffer] = useState(null);
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -119,18 +121,18 @@ export default function JobApplicants() {
       <BackToDashboardButton to="/company/dashboard" />
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.8rem', marginBottom: '1rem' }}>
         <div>
-          <h1>Postulantes</h1>
+          <h1>{t('Postulantes')}</h1>
           <p style={{ color: '#6f604b' }}>{jobOffer?.title || 'Oferta'}</p>
         </div>
         <Link className="back-dashboard-btn" to="/company/jobs" onClick={scrollToTopInstant}>
           <ArrowLeft size={16} />
-          <span>Volver a ofertas</span>
+          <span>{t('Volver a ofertas')}</span>
         </Link>
       </div>
 
       {applications.length === 0 ? (
         <div className="card">
-          <p>Esta oferta no tiene postulantes todavía.</p>
+          <p>{t('Esta oferta no tiene postulantes todavía.')}</p>
         </div>
       ) : (
         <div style={{ display: 'grid', gap: '0.9rem' }}>
@@ -204,7 +206,9 @@ export default function JobApplicants() {
                   onClick={() => toggleExpanded(application.id)}
                   style={{ minWidth: '170px' }}
                 >
-                  {expandedApplicationId === application.id ? 'Ocultar detalle' : 'Ampliar postulante'}
+                  {expandedApplicationId === application.id
+                    ? t('Ocultar detalle')
+                    : t('Ampliar postulante')}
                 </button>
               </div>
 
@@ -332,7 +336,9 @@ export default function JobApplicants() {
 
                   {application.user?.bio && (
                     <div style={{ padding: '0.8rem', background: '#fcf7ef', borderRadius: '0.5rem' }}>
-                      <h3 style={{ marginBottom: '0.4rem', fontSize: '1rem', color: '#5a452f' }}>Sobre el postulante</h3>
+                      <h3 style={{ marginBottom: '0.4rem', fontSize: '1rem', color: '#5a452f' }}>
+                        {t('Sobre el postulante')}
+                      </h3>
                       <p style={{ color: '#5e4d38', whiteSpace: 'pre-wrap', margin: 0 }}>{application.user.bio}</p>
                     </div>
                   )}

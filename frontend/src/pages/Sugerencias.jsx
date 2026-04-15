@@ -1,11 +1,14 @@
 import './Sugerencias.css';
+import { useI18n } from '../context/i18nStore';
 
 export default function Sugerencias() {
+  const { t } = useI18n();
+
   return (
     <section className="tips-page">
       <div className="tips-doc-container">
         <header className="tips-doc-header">
-          <h1>Sugerencias para los Empleadores y Profesionales</h1>
+          <h1>{t('Sugerencias para los Empleadores y Profesionales')}</h1>
           <p className="tips-doc-subtitle">ProfessionalsAtHome.com - Recomendaciones para una Colaboración Exitosa</p>
         </header>
 
@@ -21,7 +24,7 @@ export default function Sugerencias() {
         </p>
 
         <section className="tips-doc-section">
-          <h2>1. Beneficios para Empleadores</h2>
+          <h2>{t('1. Beneficios para Empleadores')}</h2>
           <ul className="tips-doc-list">
             <li>
               <strong>Inscripción Inicial:</strong> Dos (2) meses gratis en su primera inscripción en la plataforma.
@@ -39,7 +42,7 @@ export default function Sugerencias() {
         </section>
 
         <section className="tips-doc-section">
-          <h2>2. Acuerdos Comerciales y de Pago</h2>
+          <h2>{t('2. Acuerdos Comerciales y de Pago')}</h2>
           <ul className="tips-doc-list">
             <li>
               <strong>Autonomía de las Partes:</strong> Los montos, formas de pago, facturación y cualquier otro término
@@ -54,7 +57,7 @@ export default function Sugerencias() {
         </section>
 
         <section className="tips-doc-section">
-          <h2>3. Sugerencias para la Fase Inicial del Proyecto</h2>
+          <h2>{t('3. Sugerencias para la Fase Inicial del Proyecto')}</h2>
           <p>Para establecer una base sólida desde el principio, se sugiere el siguiente flujo de trabajo:</p>
           <ol className="tips-doc-ordered-list">
             <li>
@@ -75,7 +78,7 @@ export default function Sugerencias() {
         </section>
 
         <section className="tips-doc-section">
-          <h2>4. Gestión de Acuerdos y Entrega Final</h2>
+          <h2>{t('4. Gestión de Acuerdos y Entrega Final')}</h2>
           <p>
             La transparencia y la comunicación son clave para el éxito de cualquier proyecto. Se recomienda:
           </p>
@@ -108,7 +111,7 @@ export default function Sugerencias() {
         </section>
 
         <section className="tips-doc-section">
-          <h2>5. Sistema de Evaluación</h2>
+          <h2>{t('5. Sistema de Evaluación')}</h2>
           <p>
             Al finalizar la interacción, ambas partes tienen la oportunidad de calificarse mutuamente mediante un
             sistema de estrellas. Este mecanismo es fundamental para:

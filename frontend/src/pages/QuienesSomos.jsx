@@ -1,14 +1,17 @@
 import './QuienesSomos.css';
+import { useI18n } from '../context/i18nStore';
 
 const aboutImageTop = '/675d0da6-25a1-489f-8b1a-a65243dc0322.jfif';
 const aboutImageBottom = '/7cf502a2-e693-4721-9f3c-278d72577747.jfif';
 
 export default function QuienesSomos() {
+  const { t } = useI18n();
+
   return (
     <div className="about-page">
       <section className="about-hero">
         <div className="about-container">
-          <h1>Quiénes Somos</h1>
+          <h1>{t('Quiénes Somos')}</h1>
           <p>Conectamos oportunidades con personas y empresas que quieren crecer.</p>
           <div className="about-image-grid">
             <div className="about-image-card about-image-card-large">
@@ -23,7 +26,7 @@ export default function QuienesSomos() {
 
       <section className="about-content">
         <div className="about-container about-card">
-          <h2>Empresa</h2>
+          <h2>{t('Empresa')}</h2>
           <p>Las grandes empresas vienen en tamaño pequeño. Los grandes negocios también.</p>
           <p>
             Las empresas como habitualmente las conocemos tienden a ser grandes edificios con
@@ -43,11 +46,11 @@ export default function QuienesSomos() {
             Las invitamos a compartir una visión cada día más realista, segura y próspera.
           </p>
 
-          <h2>Profesional</h2>
+          <h2>{t('Profesionales')}</h2>
           <p>Lo más simple suele ser lo más beneficioso y productivo.</p>
           <p>El derecho a la libertad, poder de decisión y autovaloración. Lo demás es puro cuento.</p>
 
-          <h2>Cómo trabajamos</h2>
+          <h2>{t('Cómo trabajamos')}</h2>
           <p>Nosotros trabajamos pensando en el bienestar de quienes deseen ser diferentes.</p>
           <p>
             Esta plataforma tiene en cuenta al individuo como primera persona, su bienestar
