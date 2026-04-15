@@ -4,12 +4,14 @@ import toast from 'react-hot-toast';
 import { jobOfferService } from '../../services';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
 import { getJobPostingLanguageLabel } from '../../constants/jobOfferLanguages';
+import { useI18n } from '../../context/i18nStore';
 import './Jobs.css';
 
 const formatDate = (date) =>
   new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(date));
 
 export default function CompanyJobs() {
+  const { t } = useI18n();
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
@@ -49,8 +51,10 @@ export default function CompanyJobs() {
 
   const handleToggleStatus = async (job) => {
     const nextStatus = !job.isActive;
-    const actionLabel = nextStatus ? 'activar' : 'pausar';
-    const confirmed = window.confirm(`¿Querés ${actionLabel} esta oferta laboral?`);
+    const confirmMessage = nextStatus
+      ? t('¿Querés activar esta oferta laboral?')
+      : t('¿Querés pausar esta oferta laboral?');
+    const confirmed = window.confirm(confirmMessage);
     if (!confirmed) return;
 
     setUpdatingStatusId(job.id);

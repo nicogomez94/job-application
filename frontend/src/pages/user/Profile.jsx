@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { userService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
+import { useI18n } from '../../context/i18nStore';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
 import RatingSummary from '../../components/RatingSummary';
@@ -72,6 +73,7 @@ export default function UserProfile() {
   const [uploadingOtherFiles, setUploadingOtherFiles] = useState(false);
   const [deletingOtherIndex, setDeletingOtherIndex] = useState(null);
   const { updateUser } = useAuthStore();
+  const { language } = useI18n();
   const getFileKey = (file) => `${file.name}-${file.size}-${file.lastModified}`;
 
   const toAssetUrl = (assetPath) => {
@@ -267,7 +269,11 @@ export default function UserProfile() {
     const mergedFiles = [...selectedOtherFiles, ...newUniqueFiles];
 
     if (otherFiles.length + mergedFiles.length > MAX_OTHER_FILES) {
-      toast.error(`Podés subir hasta ${MAX_OTHER_FILES} archivos varios`);
+      toast.error(
+        language === 'en'
+          ? `You can upload up to ${MAX_OTHER_FILES} additional files`
+          : `Podés subir hasta ${MAX_OTHER_FILES} archivos varios`
+      );
       e.target.value = '';
       return;
     }

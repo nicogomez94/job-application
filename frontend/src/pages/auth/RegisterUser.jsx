@@ -79,7 +79,11 @@ export default function RegisterUser() {
     const mergedFiles = [...formData.otherFiles, ...newUniqueFiles];
 
     if (mergedFiles.length > MAX_OTHER_FILES) {
-      toast.error(`Podés subir hasta ${MAX_OTHER_FILES} archivos`);
+      toast.error(
+        language === 'en'
+          ? `You can upload up to ${MAX_OTHER_FILES} files`
+          : `Podés subir hasta ${MAX_OTHER_FILES} archivos`
+      );
       e.target.value = '';
       return;
     }
@@ -170,9 +174,13 @@ export default function RegisterUser() {
         const totalUploaded = 1 + uploadedOtherFiles;
         if (totalUploaded > 0) {
           toast.success(
-            totalUploaded === 1
-              ? 'Archivo subido exitosamente'
-              : `${totalUploaded} archivos subidos exitosamente`
+            language === 'en'
+              ? totalUploaded === 1
+                ? 'File uploaded successfully'
+                : `${totalUploaded} files uploaded successfully`
+              : totalUploaded === 1
+                ? 'Archivo subido exitosamente'
+                : `${totalUploaded} archivos subidos exitosamente`
           );
         }
       } catch (uploadError) {

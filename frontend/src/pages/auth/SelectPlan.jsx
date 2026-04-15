@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Check, Star, Shield, Clock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { subscriptionService } from '../../services';
+import { useI18n } from '../../context/i18nStore';
 import './SelectPlan.css';
 
 const PLAN_META = {
@@ -25,6 +26,7 @@ const PLAN_META = {
 };
 
 export default function SelectPlan() {
+  const { language, t } = useI18n();
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activating, setActivating] = useState(null);
@@ -83,7 +85,11 @@ export default function SelectPlan() {
         paymentMethod: 'free',
       });
 
-      toast.success(`¡Plan ${plan.name} activado exitosamente!`);
+      const planName = t(plan.name);
+      const successMessage = language === 'en'
+        ? `${planName} plan activated successfully!`
+        : `¡Plan ${plan.name} activado exitosamente!`;
+      toast.success(successMessage);
       navigate('/company/dashboard', { replace: true });
     } catch (error) {
       toast.error(error.response?.data?.error || 'No se pudo activar el plan');

@@ -47,8 +47,8 @@ export default function QuienesSomos() {
           </p>
 
           <h2>{t('Profesionales')}</h2>
-          <p>Lo más simple suele ser lo más beneficioso y productivo.</p>
-          <p>El derecho a la libertad, poder de decisión y autovaloración. Lo demás es puro cuento.</p>
+          <p>{t('Lo más simple suele ser lo más beneficioso y productivo.')}</p>
+          <p>{t('El derecho a la libertad, poder de decisión y autovaloración. Lo demás es puro cuento.')}</p>
 
           <h2>{t('Cómo trabajamos')}</h2>
           <p>Nosotros trabajamos pensando en el bienestar de quienes deseen ser diferentes.</p>
