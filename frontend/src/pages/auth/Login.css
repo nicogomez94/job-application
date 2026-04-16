@@ -275,3 +275,25 @@
   width: 100%;
   margin-top: 0.25rem;
 }
+
+.login-recovery-textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.login-recovery-status {
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+}
+
+.login-recovery-status-loading {
+  color: var(--gray-600);
+}
+
+.login-recovery-status-error {
+  color: #dc2626;
+}
+
+.login-recovery-status-success {
+  color: #16a34a;
+}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -11,6 +11,8 @@ import { Briefcase, Mail, Lock } from 'lucide-react';
 import './Login.css';
 
 const PASSWORD_RECOVERY_CONTACT_ENDPOINT = 'https://contact-form-service-e8aa.onrender.com/api/contact';
+const PASSWORD_RECOVERY_TO = 'info@professionalsathome.com';
+const PASSWORD_RECOVERY_SITE = 'https://professionalsathome.com/';
 const BASIC_EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function Login({
@@ -23,8 +25,12 @@ export default function Login({
   const [userType, setUserType] = useState(initialType);
   const [loading, setLoading] = useState(false);
   const [isRecoveryModalOpen, setIsRecoveryModalOpen] = useState(false);
+  const [recoveryName, setRecoveryName] = useState('');
   const [recoveryEmail, setRecoveryEmail] = useState('');
+  const [recoveryMessage, setRecoveryMessage] = useState('');
   const [recoveryLoading, setRecoveryLoading] = useState(false);
+  const [recoveryStatus, setRecoveryStatus] = useState('idle');
+  const [recoveryStatusMessage, setRecoveryStatusMessage] = useState('');
   const { language } = useI18n();
   const { register, handleSubmit, reset, getValues, formState: { errors } } = useForm({
     defaultValues: DEBUG_MODE ? getDebugLoginData(initialType) : { email: '', password: '' },
@@ -32,8 +38,6 @@ export default function Login({
   const { setAuth } = useAuthStore();
   const navigate = useNavigate();
   const apiBaseURL = API_BASE_URL;
-  const passwordRecoveryTo = String(import.meta.env.VITE_PASSWORD_RECOVERY_TO || '').trim();
-  const passwordRecoverySite = String(import.meta.env.VITE_PASSWORD_RECOVERY_SITE || '').trim();
   const emailPlaceholder = language === 'en' ? 'you@email.com' : 'tu@email.com';
   const passwordLabel = language === 'en' ? 'Password' : 'Contrase\u00f1a';
   const userTypeLabels = {
@@ -70,12 +74,12 @@ export default function Login({
       const userData = user || company || admin;
       
       setAuth(userData, userType, token);
-      toast.success('¡Bienvenido!');
+      toast.success('Â¡Bienvenido!');
 
       if (userType === 'user') {
         navigate('/user/dashboard');
       } else if (userType === 'company') {
-        // Si la empresa no tiene suscripción activa, redirigir a selección de plan
+        // Si la empresa no tiene suscripciÃ³n activa, redirigir a selecciÃ³n de plan
         try {
           await subscriptionService.getActive();
           navigate('/company/dashboard');
@@ -90,14 +94,18 @@ export default function Login({
         navigate('/admin/dashboard');
       }
     } catch (error) {
-      toast.error(error.response?.data?.error || 'Error al iniciar sesión');
+      toast.error(error.response?.data?.error || 'Error al iniciar sesiÃ³n');
     } finally {
       setLoading(false);
     }
   };
 
   const openRecoveryModal = () => {
+    setRecoveryName('');
     setRecoveryEmail(getValues('email') || '');
+    setRecoveryMessage('');
+    setRecoveryStatus('idle');
+    setRecoveryStatusMessage('');
     setIsRecoveryModalOpen(true);
   };
 
@@ -109,28 +117,33 @@ export default function Login({
   const submitRecovery = async (event) => {
     event.preventDefault();
 
+    const trimmedName = recoveryName.trim();
     const trimmedEmail = recoveryEmail.trim();
-    if (!trimmedEmail) {
-      toast.error('Ingresa un email valido');
-      return;
-    }
-    if (!BASIC_EMAIL_REGEX.test(trimmedEmail)) {
-      toast.error('Ingresa un email valido');
-      return;
-    }
-    if (!passwordRecoveryTo || !passwordRecoverySite) {
-      toast.error('No se pudo procesar la recuperacion de clave');
+    const trimmedMessage = recoveryMessage.trim();
+
+    if (!trimmedName || !trimmedEmail || !trimmedMessage) {
+      setRecoveryStatus('error');
+      setRecoveryStatusMessage('Nombre, email y mensaje son obligatorios.');
       return;
     }
 
+    if (!BASIC_EMAIL_REGEX.test(trimmedEmail)) {
+      setRecoveryStatus('error');
+      setRecoveryStatusMessage('Ingresa un email valido.');
+      return;
+    }
+
+    setRecoveryStatus('loading');
+    setRecoveryStatusMessage('Enviando solicitud...');
     setRecoveryLoading(true);
+
     try {
       const payload = {
-        name: 'Solicitud recuperación de contraseña',
+        name: trimmedName,
         email: trimmedEmail,
-        to: passwordRecoveryTo,
-        message: `Solicitud de recuperación de contraseña para ${trimmedEmail}. Sitio: ${passwordRecoverySite}.`,
-        site: passwordRecoverySite,
+        to: PASSWORD_RECOVERY_TO,
+        message: trimmedMessage,
+        site: PASSWORD_RECOVERY_SITE,
         company: '',
       };
 
@@ -144,14 +157,18 @@ export default function Login({
       const responseBody = await response.json().catch(() => null);
 
       if (response.ok && responseBody?.success === true) {
-        toast.success('Si el correo existe, te contactaremos para recuperar el acceso.');
-        setIsRecoveryModalOpen(false);
+        setRecoveryStatus('success');
+        setRecoveryStatusMessage('Solicitud enviada correctamente.');
+        setRecoveryName('');
+        setRecoveryEmail('');
+        setRecoveryMessage('');
         return;
       }
 
       throw new Error('RECOVERY_REQUEST_FAILED');
     } catch {
-      toast.error('No se pudo procesar la recuperacion de clave');
+      setRecoveryStatus('error');
+      setRecoveryStatusMessage('No se pudo procesar la recuperacion de clave.');
     } finally {
       setRecoveryLoading(false);
     }
@@ -162,7 +179,7 @@ export default function Login({
       <div className="login-box">
         <div className="login-header">
           <Briefcase className="login-logo" />
-          <h2 className="login-title">Iniciar Sesión</h2>
+          <h2 className="login-title">Iniciar SesiÃ³n</h2>
           <p className="login-subtitle">
             Accede a tu cuenta de professionals at home
           </p>
@@ -200,7 +217,7 @@ export default function Login({
                     required: 'El email es requerido',
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: 'Email inválido',
+                      message: 'Email invÃ¡lido',
                     },
                   })}
                   className="input login-input-with-icon"
@@ -220,10 +237,10 @@ export default function Login({
                   id="login-password"
                   type="password"
                   {...register('password', {
-                    required: 'La contraseña es requerida',
+                    required: 'La contraseÃ±a es requerida',
                   })}
                   className="input login-input-with-icon"
-                  placeholder="⬢⬢⬢⬢⬢⬢⬢⬢"
+                  placeholder="â¬¢â¬¢â¬¢â¬¢â¬¢â¬¢â¬¢â¬¢"
                 />
               </div>
               {errors.password && (
@@ -246,7 +263,7 @@ export default function Login({
               disabled={loading}
               className="btn btn-primary login-submit-btn"
             >
-              {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+              {loading ? 'Iniciando sesiÃ³n...' : 'Iniciar SesiÃ³n'}
             </button>
           </form>
 
@@ -257,7 +274,7 @@ export default function Login({
                   <div className="login-divider-line-inner" />
                 </div>
                 <div className="login-divider-text-wrapper">
-                  <span className="login-divider-text">O continúa con</span>
+                  <span className="login-divider-text">O continÃºa con</span>
                 </div>
               </div>
 
@@ -297,12 +314,12 @@ export default function Login({
         {userType !== 'admin' && (
           <div className="login-register-link-wrapper">
             <p className="login-register-text">
-              ¿No tienes cuenta?{' '}
+              Â¿No tienes cuenta?{' '}
               <Link
                 to={userType === 'user' ? '/register/user' : '/register/company'}
                 className="login-register-link"
               >
-                Regístrate aquí
+                RegÃ­strate aquÃ­
               </Link>
             </p>
           </div>
@@ -327,17 +344,28 @@ export default function Login({
                 onClick={closeRecoveryModal}
                 aria-label="Cerrar"
               >
-                ×
+                Ã—
               </button>
 
               <h3 id="login-recovery-title" className="login-recovery-title">
                 Recuperar tu clave
               </h3>
               <p className="login-recovery-description">
-                Ingresá tu email y te enviaremos las instrucciones para restablecerla.
+                Completá nombre, email y mensaje para solicitar el reseteo.
               </p>
 
               <form className="login-recovery-form" onSubmit={submitRecovery}>
+                <label className="login-label" htmlFor="recovery-name">Nombre</label>
+                <input
+                  id="recovery-name"
+                  type="text"
+                  value={recoveryName}
+                  onChange={(event) => setRecoveryName(event.target.value)}
+                  className="input"
+                  placeholder="Nombre"
+                  required
+                />
+
                 <label className="login-label" htmlFor="recovery-email">Email</label>
                 <input
                   id="recovery-email"
@@ -348,12 +376,30 @@ export default function Login({
                   placeholder={emailPlaceholder}
                   required
                 />
+
+                <label className="login-label" htmlFor="recovery-message">Mensaje</label>
+                <textarea
+                  id="recovery-message"
+                  value={recoveryMessage}
+                  onChange={(event) => setRecoveryMessage(event.target.value)}
+                  className="input login-recovery-textarea"
+                  placeholder="Mensaje"
+                  rows={4}
+                  required
+                />
+
+                {recoveryStatus !== 'idle' && (
+                  <p className={`login-recovery-status login-recovery-status-${recoveryStatus}`}>
+                    {recoveryStatusMessage}
+                  </p>
+                )}
+
                 <button
                   type="submit"
                   disabled={recoveryLoading}
                   className="btn btn-primary login-recovery-submit-btn"
                 >
-                  {recoveryLoading ? 'Enviando...' : 'Enviar recuperación'}
+                  {recoveryLoading ? 'Enviando...' : 'Enviar recuperacion'}
                 </button>
               </form>
             </div>
@@ -363,3 +409,6 @@ export default function Login({
     </div>
   );
 }
+
+
+
