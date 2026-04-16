@@ -74,12 +74,12 @@ export default function Login({
       const userData = user || company || admin;
       
       setAuth(userData, userType, token);
-      toast.success('Â¡Bienvenido!');
+      toast.success('¡Bienvenido!');
 
       if (userType === 'user') {
         navigate('/user/dashboard');
       } else if (userType === 'company') {
-        // Si la empresa no tiene suscripciÃ³n activa, redirigir a selecciÃ³n de plan
+        // Si la empresa no tiene suscripción activa, redirigir a selección de plan
         try {
           await subscriptionService.getActive();
           navigate('/company/dashboard');
@@ -94,7 +94,7 @@ export default function Login({
         navigate('/admin/dashboard');
       }
     } catch (error) {
-      toast.error(error.response?.data?.error || 'Error al iniciar sesiÃ³n');
+      toast.error(error.response?.data?.error || 'Error al iniciar sesión');
     } finally {
       setLoading(false);
     }
@@ -179,7 +179,7 @@ export default function Login({
       <div className="login-box">
         <div className="login-header">
           <Briefcase className="login-logo" />
-          <h2 className="login-title">Iniciar SesiÃ³n</h2>
+          <h2 className="login-title">Iniciar Sesión</h2>
           <p className="login-subtitle">
             Accede a tu cuenta de professionals at home
           </p>
@@ -217,7 +217,7 @@ export default function Login({
                     required: 'El email es requerido',
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: 'Email invÃ¡lido',
+                      message: 'Email inválido',
                     },
                   })}
                   className="input login-input-with-icon"
@@ -237,10 +237,10 @@ export default function Login({
                   id="login-password"
                   type="password"
                   {...register('password', {
-                    required: 'La contraseÃ±a es requerida',
+                    required: 'La contraseña es requerida',
                   })}
                   className="input login-input-with-icon"
-                  placeholder="â¬¢â¬¢â¬¢â¬¢â¬¢â¬¢â¬¢â¬¢"
+                  placeholder="********"
                 />
               </div>
               {errors.password && (
@@ -263,7 +263,7 @@ export default function Login({
               disabled={loading}
               className="btn btn-primary login-submit-btn"
             >
-              {loading ? 'Iniciando sesiÃ³n...' : 'Iniciar SesiÃ³n'}
+              {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
             </button>
           </form>
 
@@ -274,7 +274,7 @@ export default function Login({
                   <div className="login-divider-line-inner" />
                 </div>
                 <div className="login-divider-text-wrapper">
-                  <span className="login-divider-text">O continÃºa con</span>
+                  <span className="login-divider-text">O continúa con</span>
                 </div>
               </div>
 
@@ -314,12 +314,12 @@ export default function Login({
         {userType !== 'admin' && (
           <div className="login-register-link-wrapper">
             <p className="login-register-text">
-              Â¿No tienes cuenta?{' '}
+              ¿No tienes cuenta?{' '}
               <Link
                 to={userType === 'user' ? '/register/user' : '/register/company'}
                 className="login-register-link"
               >
-                RegÃ­strate aquÃ­
+                Regístrate aquí
               </Link>
             </p>
           </div>
@@ -344,7 +344,7 @@ export default function Login({
                 onClick={closeRecoveryModal}
                 aria-label="Cerrar"
               >
-                Ã—
+                &times;
               </button>
 
               <h3 id="login-recovery-title" className="login-recovery-title">

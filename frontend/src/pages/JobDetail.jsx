@@ -316,7 +316,7 @@ export default function JobDetail() {
 
               <div style={{ marginBottom: '0.7rem' }}>
                 <RatingSummary
-                  title="Calificacion de la empresa"
+                  title="Calificacion Freelance"
                   average={job.company?.ratingSummary?.average}
                   total={job.company?.ratingSummary?.total}
                   emptyText="Todavia sin calificaciones"

@@ -460,7 +460,7 @@ const ES_TO_EN = {
   'Seleccion? un logo': 'Select a logo',
   'Subiendo...': 'Uploading...',
   'Subir logo': 'Upload logo',
-  'Calificacion de la empresa': 'Company rating',
+  'Calificacion Freelance': 'Freelance Rating',
   'Todavia no tenes calificaciones': "You don't have ratings yet",
   'Inscripci?n inicial: 2 meses gratis en tu primera vez en la plataforma.':
     'Initial registration: 2 free months on your first time on the platform.',

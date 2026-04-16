@@ -182,7 +182,7 @@ export default function CompanyProfile() {
           </div>
           <div style={{ marginLeft: 'auto' }}>
             <RatingSummary
-              title="Calificacion de la empresa"
+              title="Calificacion Freelance"
               average={ratingSummary.average}
               total={ratingSummary.total}
               emptyText="Todavia no tenes calificaciones"
