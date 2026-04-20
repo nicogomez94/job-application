@@ -120,6 +120,19 @@ h2 {
   box-shadow: 0 0 0 3px rgba(239, 200, 154, 0.22);
 }
 
+/* File inputs: hide native filename text ("No file chosen") and keep the button visible */
+input[type='file'] {
+  color: transparent;
+}
+
+input[type='file']::file-selector-button {
+  color: var(--gray-900);
+}
+
+input[type='file']::-webkit-file-upload-button {
+  color: var(--gray-900);
+}
+
 /* Cards */
 .card {
   background-color: white;

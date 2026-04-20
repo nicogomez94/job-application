@@ -1,4 +1,4 @@
-﻿import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Github, Twitter, Linkedin } from 'lucide-react';
 import { useI18n } from '../context/i18nStore';
 import './Footer.css';
