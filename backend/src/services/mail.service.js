@@ -8,12 +8,11 @@ const SITE_URL =
 const sendPasswordRecoveryEmail = async ({ to, resetUrl }) => {
   const payload = {
     name: 'professionals at home',
-    email: process.env.MAIL_REPLY_TO || 'no-reply@professionalsathome.com',
+    email: to,
     to,
-    subject: 'Recuperación de clave - professionals at home',
-    message: `Recibimos una solicitud para recuperar tu clave en professionals at home.\n\nRestablecé tu clave desde este enlace:\n${resetUrl}\n\nEste enlace vence en 30 minutos por seguridad. Si no solicitaste este cambio, podés ignorar este correo.`,
+    message: `Recuperación de clave\n\nRecibimos una solicitud para recuperar tu clave en professionals at home.\n\nRestablecé tu clave desde este enlace:\n${resetUrl}\n\nEste enlace vence en 30 minutos por seguridad. Si no solicitaste este cambio, podés ignorar este correo.`,
     site: SITE_URL,
-    company: 'professionals at home',
+    company: '',
   };
 
   const response = await fetch(CONTACT_FORM_ENDPOINT, {
