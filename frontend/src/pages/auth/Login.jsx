@@ -10,10 +10,7 @@ import { API_BASE_URL } from '../../services/apiBaseUrl';
 import { Briefcase, Mail, Lock } from 'lucide-react';
 import './Login.css';
 
-const PASSWORD_RECOVERY_CONTACT_ENDPOINT = 'https://contact-form-service-e8aa.onrender.com/api/contact';
-const PASSWORD_RECOVERY_TO = 'info@professionalsathome.com';
-const PASSWORD_RECOVERY_SITE = 'https://professionalsathome.com/';
-const BASIC_EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 
 export default function Login({
   allowedUserTypes = ['user', 'company', 'admin'],
@@ -25,9 +22,7 @@ export default function Login({
   const [userType, setUserType] = useState(initialType);
   const [loading, setLoading] = useState(false);
   const [isRecoveryModalOpen, setIsRecoveryModalOpen] = useState(false);
-  const [recoveryName, setRecoveryName] = useState('');
   const [recoveryEmail, setRecoveryEmail] = useState('');
-  const [recoveryMessage, setRecoveryMessage] = useState('');
   const [recoveryLoading, setRecoveryLoading] = useState(false);
   const [recoveryStatus, setRecoveryStatus] = useState('idle');
   const [recoveryStatusMessage, setRecoveryStatusMessage] = useState('');
@@ -101,9 +96,7 @@ export default function Login({
   };
 
   const openRecoveryModal = () => {
-    setRecoveryName('');
     setRecoveryEmail(getValues('email') || '');
-    setRecoveryMessage('');
     setRecoveryStatus('idle');
     setRecoveryStatusMessage('');
     setIsRecoveryModalOpen(true);
@@ -117,19 +110,10 @@ export default function Login({
   const submitRecovery = async (event) => {
     event.preventDefault();
 
-    const trimmedName = recoveryName.trim();
     const trimmedEmail = recoveryEmail.trim();
-    const trimmedMessage = recoveryMessage.trim();
-
-    if (!trimmedName || !trimmedEmail || !trimmedMessage) {
+    if (!trimmedEmail) {
       setRecoveryStatus('error');
-      setRecoveryStatusMessage('Nombre, email y mensaje son obligatorios.');
-      return;
-    }
-
-    if (!BASIC_EMAIL_REGEX.test(trimmedEmail)) {
-      setRecoveryStatus('error');
-      setRecoveryStatusMessage('Ingresa un email valido.');
+      setRecoveryStatusMessage('Ingresá tu email.');
       return;
     }
 
@@ -138,37 +122,14 @@ export default function Login({
     setRecoveryLoading(true);
 
     try {
-      const payload = {
-        name: trimmedName,
-        email: trimmedEmail,
-        to: PASSWORD_RECOVERY_TO,
-        message: trimmedMessage,
-        site: PASSWORD_RECOVERY_SITE,
-        company: '',
-      };
-
-      const response = await fetch(PASSWORD_RECOVERY_CONTACT_ENDPOINT, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-      const responseBody = await response.json().catch(() => null);
-
-      if (response.ok && responseBody?.success === true) {
-        setRecoveryStatus('success');
-        setRecoveryStatusMessage('Solicitud enviada correctamente.');
-        setRecoveryName('');
-        setRecoveryEmail('');
-        setRecoveryMessage('');
-        return;
-      }
-
-      throw new Error('RECOVERY_REQUEST_FAILED');
+      await authService.requestPasswordRecovery({ email: trimmedEmail, userType });
+      setRecoveryStatus('success');
+      setRecoveryStatusMessage(
+        'Si el email está registrado, recibirás un link para restablecer tu clave.',
+      );
     } catch {
       setRecoveryStatus('error');
-      setRecoveryStatusMessage('No se pudo procesar la recuperacion de clave.');
+      setRecoveryStatusMessage('No se pudo procesar la recuperación de clave.');
     } finally {
       setRecoveryLoading(false);
     }
@@ -351,21 +312,10 @@ export default function Login({
                 Recuperar tu clave
               </h3>
               <p className="login-recovery-description">
-                Completá nombre, email y mensaje para solicitar el reseteo.
+                Ingresá tu email y te enviaremos un link para restablecer tu clave.
               </p>
 
               <form className="login-recovery-form" onSubmit={submitRecovery}>
-                <label className="login-label" htmlFor="recovery-name">Nombre</label>
-                <input
-                  id="recovery-name"
-                  type="text"
-                  value={recoveryName}
-                  onChange={(event) => setRecoveryName(event.target.value)}
-                  className="input"
-                  placeholder="Nombre"
-                  required
-                />
-
                 <label className="login-label" htmlFor="recovery-email">Email</label>
                 <input
                   id="recovery-email"
@@ -375,17 +325,7 @@ export default function Login({
                   className="input"
                   placeholder={emailPlaceholder}
                   required
-                />
-
-                <label className="login-label" htmlFor="recovery-message">Mensaje</label>
-                <textarea
-                  id="recovery-message"
-                  value={recoveryMessage}
-                  onChange={(event) => setRecoveryMessage(event.target.value)}
-                  className="input login-recovery-textarea"
-                  placeholder="Mensaje"
-                  rows={4}
-                  required
+                  disabled={recoveryStatus === 'success'}
                 />
 
                 {recoveryStatus !== 'idle' && (
@@ -394,13 +334,15 @@ export default function Login({
                   </p>
                 )}
 
-                <button
-                  type="submit"
-                  disabled={recoveryLoading}
-                  className="btn btn-primary login-recovery-submit-btn"
-                >
-                  {recoveryLoading ? 'Enviando...' : 'Enviar recuperacion'}
-                </button>
+                {recoveryStatus !== 'success' && (
+                  <button
+                    type="submit"
+                    disabled={recoveryLoading}
+                    className="btn btn-primary login-recovery-submit-btn"
+                  >
+                    {recoveryLoading ? 'Enviando...' : 'Enviar link de recuperación'}
+                  </button>
+                )}
               </form>
             </div>
           </div>
