@@ -89,9 +89,18 @@
   color: inherit;
 }
 
+.psico-card-clickable {
+  cursor: pointer;
+}
+
 .psico-card:hover {
   box-shadow: 0 4px 18px rgba(44, 95, 122, 0.12);
   transform: translateY(-2px);
+}
+
+.psico-card-clickable:focus-visible {
+  outline: 3px solid rgba(44, 95, 122, 0.28);
+  outline-offset: 3px;
 }
 
 .psico-card-photo {

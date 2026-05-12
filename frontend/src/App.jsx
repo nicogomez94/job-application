@@ -59,28 +59,27 @@ import SelectPsychologistPlan from './pages/psicologos/SelectPsychologistPlan';
 import PsychologistDashboard from './pages/psicologos/PsychologistDashboard';
 import PsicoLogin from './pages/auth/PsicoLogin';
 
-function App() {
+function ProtectedRoute({ children, allowedTypes }) {
   const { isAuthenticated, userType } = useAuthStore();
 
-  // Componente de ruta protegida
-  const ProtectedRoute = ({ children, allowedTypes }) => {
-    if (!isAuthenticated) {
-      if (allowedTypes?.length === 1 && allowedTypes[0] === 'admin') {
-        return <Navigate to="/acceso-admin" replace />;
-      }
-      if (allowedTypes?.includes('psychologist')) {
-        return <Navigate to="/psicologos/login" replace />;
-      }
-      return <Navigate to="/login" replace />;
+  if (!isAuthenticated) {
+    if (allowedTypes?.length === 1 && allowedTypes[0] === 'admin') {
+      return <Navigate to="/acceso-admin" replace />;
     }
-
-    if (allowedTypes && !allowedTypes.includes(userType)) {
-      return <Navigate to="/" replace />;
+    if (allowedTypes?.includes('psychologist')) {
+      return <Navigate to="/psicologos/login" replace />;
     }
+    return <Navigate to="/login" replace />;
+  }
 
-    return children;
-  };
+  if (allowedTypes && !allowedTypes.includes(userType)) {
+    return <Navigate to="/" replace />;
+  }
 
+  return children;
+}
+
+function App() {
   return (
     <Routes>
       {/* Rutas públicas */}

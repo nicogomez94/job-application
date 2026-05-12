@@ -20,9 +20,11 @@ export default function SelectPsychologistPlan() {
   useEffect(() => {
     const init = async () => {
       try {
-        await psychologistService.getSubscription();
-        navigate('/psicologo/dashboard', { replace: true });
-        return;
+        const subscriptionRes = await psychologistService.getSubscription();
+        if (subscriptionRes.data?.hasActiveSubscription) {
+          navigate('/psicologo/dashboard', { replace: true });
+          return;
+        }
       } catch {
         // No active subscription — show plans
       }

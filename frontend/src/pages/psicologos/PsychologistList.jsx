@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { MessageCircle, Mail, Globe } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { psychologistService } from '../../services';
@@ -147,6 +147,7 @@ export default function PsychologistList() {
 }
 
 function PsychologistCard({ psychologist: p }) {
+  const navigate = useNavigate();
   const name = p.displayName || `${p.firstName} ${p.lastName}`;
   const photo = toAssetUrl(p.profileImage);
   const initials = `${p.firstName?.[0] || ''}${p.lastName?.[0] || ''}`.toUpperCase();
@@ -155,8 +156,30 @@ function PsychologistCard({ psychologist: p }) {
     ? `https://wa.me/${p.phone.replace(/\D/g, '')}`
     : null;
 
+  const openProfile = () => {
+    navigate(`/psicologos/${p.id}`);
+  };
+
+  const handleCardKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openProfile();
+    }
+  };
+
+  const stopCardNavigation = (e) => {
+    e.stopPropagation();
+  };
+
   return (
-    <Link to={`/psicologos/${p.id}`} className="psico-card">
+    <article
+      className="psico-card psico-card-clickable"
+      role="link"
+      tabIndex={0}
+      onClick={openProfile}
+      onKeyDown={handleCardKeyDown}
+      aria-label={`Ver perfil de ${name}`}
+    >
       <div className="psico-card-photo">
         {photo ? (
           <img src={photo} alt={name} onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
@@ -177,19 +200,29 @@ function PsychologistCard({ psychologist: p }) {
             ))}
           </div>
         )}
-        <div className="psico-card-contact" onClick={(e) => e.preventDefault()}>
+        <div className="psico-card-contact">
           {whatsappUrl && (
-            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="psico-btn-whatsapp">
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="psico-btn-whatsapp"
+              onClick={stopCardNavigation}
+            >
               <MessageCircle size={14} /> WhatsApp
             </a>
           )}
           {p.contactEmail && (
-            <a href={`mailto:${p.contactEmail}`} className="psico-btn-email">
+            <a
+              href={`mailto:${p.contactEmail}`}
+              className="psico-btn-email"
+              onClick={stopCardNavigation}
+            >
               <Mail size={14} /> Email
             </a>
           )}
         </div>
       </div>
-    </Link>
+    </article>
   );
 }

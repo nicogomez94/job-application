@@ -187,9 +187,9 @@ exports.getSubscription = async (req, res) => {
     });
 
     if (!subscription) {
-      return res.status(404).json({
-        error: 'No tienes una suscripción activa',
+      return res.json({
         hasActiveSubscription: false,
+        subscription: null,
       });
     }
 

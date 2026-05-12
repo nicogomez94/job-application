@@ -38,7 +38,6 @@ router.post(
 // Public listing + profile
 router.get('/', psychologistPublicController.list);
 router.get('/plans', psychologistController.getPlans);
-router.get('/:id', psychologistPublicController.getById);
 
 // ─── PROTECTED: PSYCHOLOGIST ─────────────────────────────────────────────────
 
@@ -85,5 +84,8 @@ router.post(
   [body('reason').optional().isString(), validate],
   psychologistController.adminReject
 );
+
+// Keep the dynamic public route at the end so static routes match first.
+router.get('/:id', psychologistPublicController.getById);
 
 module.exports = router;

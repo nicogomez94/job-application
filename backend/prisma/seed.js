@@ -145,6 +145,124 @@ async function main() {
     console.log('✅ Oferta de trabajo creada:', jobOffer.title);
   }
 
+  // Crear psicólogos de ejemplo visibles en el listado público
+  const psychologistPassword = await bcrypt.hash('psico123', 10);
+  const psychologistSeedData = [
+    {
+      email: 'lucia.fernandez.psico@example.com',
+      firstName: 'Lucia',
+      lastName: 'Fernandez',
+      displayName: 'Lic. Lucia Fernandez',
+      registrationType: 'ARGENTINA',
+      status: 'ACTIVE',
+      dateOfBirth: new Date('1988-04-12'),
+      phone: '+54 9 11 5555-1111',
+      contactEmail: 'lucia.fernandez.psico@example.com',
+      country: 'Argentina',
+      practiceProvince: 'Buenos Aires',
+      universityDegree: 'Lic. en Psicología',
+      graduationYear: 2013,
+      universityName: 'Universidad de Buenos Aires',
+      licenseNumber: 'MP 45821',
+      licenseProvince: 'Buenos Aires',
+      specialties: ['Psicología clínica y de la salud', 'Psicología (diversos enfoques)'],
+      ageRanges: ['Adultos', 'Adolescentes'],
+      yearsExperience: 10,
+      languages: ['Español', 'Inglés'],
+      remoteModality: 'Telepsicología / Telemedicina',
+      bio: 'Acompaño procesos de ansiedad, estrés y vínculos desde un enfoque clínico integrativo.',
+      approvedAt: new Date(),
+    },
+    {
+      email: 'camila.rojas.psico@example.com',
+      firstName: 'Camila',
+      lastName: 'Rojas',
+      displayName: 'Camila Rojas',
+      registrationType: 'INTERNATIONAL',
+      status: 'ACTIVE',
+      dateOfBirth: new Date('1991-09-03'),
+      phone: '+56 9 6789 1234',
+      contactEmail: 'camila.rojas.psico@example.com',
+      country: 'Chile',
+      region: 'Santiago',
+      licenseEntity: 'Colegio de Psicólogos de Chile',
+      licenseCountry: 'Chile',
+      degreeInstitution: 'Pontificia Universidad Católica de Chile',
+      specialties: ['Psicología perinatal y abordaje de ansiedad/depresión en embarazo o posparto'],
+      ageRanges: ['Adultos'],
+      yearsExperience: 8,
+      languages: ['Español'],
+      remoteModality: 'Telepsicología / Telemedicina',
+      bio: 'Trabajo con adultos y familias en temas de maternidad, ansiedad y regulación emocional.',
+      approvedAt: new Date(),
+    },
+    {
+      email: 'mariana.silva.psico@example.com',
+      firstName: 'Mariana',
+      lastName: 'Silva',
+      displayName: 'Dra. Mariana Silva',
+      registrationType: 'INTERNATIONAL',
+      status: 'ACTIVE',
+      dateOfBirth: new Date('1985-11-21'),
+      phone: '+55 11 98888 7777',
+      contactEmail: 'mariana.silva.psico@example.com',
+      country: 'Brasil',
+      region: 'São Paulo',
+      licenseEntity: 'Conselho Regional de Psicologia',
+      licenseCountry: 'Brasil',
+      degreeInstitution: 'Universidade de São Paulo',
+      specialties: ['Psicología social y comunitaria', 'Psicología del desarrollo y edades'],
+      ageRanges: ['Adultos', 'Infanto-juvenil'],
+      yearsExperience: 12,
+      languages: ['Portugués', 'Español'],
+      remoteModality: 'Telepsicología / Telemedicina',
+      bio: 'Atiendo adolescentes y adultos con foco en desarrollo personal, comunidad y bienestar emocional.',
+      approvedAt: new Date(),
+    },
+  ];
+
+  for (const psychologistData of psychologistSeedData) {
+    const psychologist = await prisma.psychologist.upsert({
+      where: { email: psychologistData.email },
+      update: {
+        ...psychologistData,
+        password: psychologistPassword,
+      },
+      create: {
+        ...psychologistData,
+        password: psychologistPassword,
+      },
+    });
+
+    const activeSubscription = await prisma.psychologistSubscription.findFirst({
+      where: {
+        psychologistId: psychologist.id,
+        status: 'ACTIVE',
+      },
+    });
+
+    if (!activeSubscription) {
+      const subscriptionStartDate = new Date();
+      const subscriptionEndDate = new Date();
+      subscriptionEndDate.setMonth(subscriptionEndDate.getMonth() + 1);
+
+      await prisma.psychologistSubscription.create({
+        data: {
+          psychologistId: psychologist.id,
+          plan: 'MONTHLY',
+          status: 'ACTIVE',
+          startDate: subscriptionStartDate,
+          endDate: subscriptionEndDate,
+          amount: 29.99,
+          currency: 'USD',
+          paymentStatus: 'approved',
+          paymentMethod: 'seed',
+        },
+      });
+    }
+  }
+  console.log(`âœ… ${psychologistSeedData.length} psicólogos de ejemplo creados`);
+
   console.log('');
   console.log('==========================================');
   console.log('✨ Seed completado exitosamente!');

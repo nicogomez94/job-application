@@ -40,7 +40,10 @@ export default function PsychologistDashboard() {
           updateUser(profileRes.value.data);
         }
         if (subRes.status === 'fulfilled') {
-          setSubscription(subRes.value.data.subscription);
+          setSubscription(subRes.value.data?.hasActiveSubscription ? subRes.value.data.subscription : null);
+        }
+        if (profileRes.status === 'rejected') {
+          toast.error('No se pudo cargar el perfil del psicólogo');
         }
       } catch {
         toast.error('No se pudo cargar el panel');
