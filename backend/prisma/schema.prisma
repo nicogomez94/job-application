@@ -256,3 +256,135 @@ enum SubscriptionStatus {
   CANCELLED
   PENDING
 }
+
+// ─── PSICÓLOGOS ─────────────────────────────────────────────────────────────
+
+enum PsychologistStatus {
+  PENDING_DOCS   // Registered but documents not yet uploaded
+  PENDING        // Documents uploaded, awaiting admin approval (~5 business days)
+  APPROVED       // Approved, must now pick a subscription plan
+  REJECTED       // Rejected by admin
+  ACTIVE         // Has active subscription, visible in public listing
+}
+
+enum RegistrationType {
+  ARGENTINA
+  INTERNATIONAL
+}
+
+model Psychologist {
+  id                  String              @id @default(uuid())
+  email               String              @unique
+  password            String
+
+  // Registration type
+  registrationType    RegistrationType
+
+  // Status in verification / activation flow
+  status              PsychologistStatus  @default(PENDING_DOCS)
+
+  // ── Personal data (both types) ──────────────────────────────────────────
+  firstName           String
+  lastName            String
+  dateOfBirth         DateTime?
+  phone               String?             // WhatsApp number
+  contactEmail        String?             // Public contact email (may differ from login email)
+  profileImage        String?
+
+  // ── Argentina-specific ──────────────────────────────────────────────────
+  dni                 String?
+  cuitCuil            String?
+  // Address
+  addressStreet       String?
+  addressNumber       String?
+  addressFloor        String?
+  addressCity         String?
+  addressProvince     String?
+  addressPostalCode   String?
+  practiceProvince    String?             // Provincia donde ejerce
+
+  // Professional – AR
+  universityDegree    String?             // "Psicólogo" | "Lic. en Psicología"
+  graduationYear      Int?
+  universityName      String?
+  licenseNumber       String?             // Nro matrícula
+  licenseProvince     String?
+  healthMinistryReg   String?             // Registro Ministerio de Salud (optional)
+
+  // ── International-specific ──────────────────────────────────────────────
+  documentType        String?             // DNI / Pasaporte / Cédula
+  documentNumber      String?
+  taxId               String?             // Identificación fiscal
+  country             String?
+  region              String?             // Estado / Provincia / Región
+  licenseEntity       String?             // Entidad que expide la licencia
+  licenseCountry      String?
+  degreeInstitution   String?
+
+  // ── Professional (shared) ───────────────────────────────────────────────
+  specialties         String[]            // From PRD list
+  ageRanges           String[]            // ["Adultos", "Infanto-juvenil"]
+  yearsExperience     Int?
+  languages           String[]
+  remoteModality      String?             // "Telepsicología / Telemedicina"
+  bio                 String?             @db.Text
+
+  // ── Display name (nickname or full name) ────────────────────────────────
+  displayName         String?
+
+  // ── Timestamps ──────────────────────────────────────────────────────────
+  approvedAt          DateTime?
+  rejectionReason     String?
+
+  documents           PsychologistDocument[]
+  subscriptions       PsychologistSubscription[]
+
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+
+  @@index([status])
+  @@index([country])
+  @@map("psychologists")
+}
+
+model PsychologistDocument {
+  id              String        @id @default(uuid())
+  documentType    String        // e.g. "DNI", "TITLE", "LICENSE", etc.
+  fileUrl         String
+  originalName    String?
+
+  psychologist    Psychologist  @relation(fields: [psychologistId], references: [id], onDelete: Cascade)
+  psychologistId  String
+
+  createdAt       DateTime      @default(now())
+
+  @@index([psychologistId])
+  @@map("psychologist_documents")
+}
+
+model PsychologistSubscription {
+  id              String              @id @default(uuid())
+
+  plan            SubscriptionPlan    @default(MONTHLY)
+  status          SubscriptionStatus  @default(ACTIVE)
+
+  startDate       DateTime
+  endDate         DateTime
+
+  amount          Decimal             @db.Decimal(10, 2)
+  currency        String              @default("USD")
+
+  paymentId       String?             @unique
+  paymentStatus   String?
+  paymentMethod   String?
+
+  psychologist    Psychologist        @relation(fields: [psychologistId], references: [id], onDelete: Cascade)
+  psychologistId  String
+
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@index([psychologistId])
+  @@index([status])
+  @@map("psychologist_subscriptions")
+}

@@ -170,6 +170,12 @@ export default function Home() {
             <p className="home-hero-subtitle">
               {t('Cada mes, más de 3 millones de personas buscan trabajo en línea, realizando más de 140.000 postulaciones')}
             </p>
+            <Link
+              to="/psicologos"
+              className="home-hero-psico-btn"
+            >
+              🧠 Psicólogos en Línea →
+            </Link>
           </div>
 
           <div className="home-hero-right">

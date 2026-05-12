@@ -88,11 +88,47 @@ const checkActiveSubscription = async (req, res, next) => {
   }
 };
 
+// Middleware específico para psicólogos
+const authenticatePsychologist = [
+  authenticate,
+  authorizeRole('psychologist')
+];
+
+// Middleware para verificar si el psicólogo tiene suscripción activa
+const checkActivePsychologistSubscription = async (req, res, next) => {
+  try {
+    const prisma = require('../config/database');
+
+    const activeSubscription = await prisma.psychologistSubscription.findFirst({
+      where: {
+        psychologistId: req.user.id,
+        status: 'ACTIVE',
+        endDate: { gte: new Date() },
+      },
+    });
+
+    if (!activeSubscription) {
+      return res.status(403).json({
+        error: 'Suscripción inactiva o vencida',
+        message: 'Necesitas una suscripción activa para realizar esta acción',
+      });
+    }
+
+    req.subscription = activeSubscription;
+    next();
+  } catch (error) {
+    console.error('Error verificando suscripción de psicólogo:', error);
+    res.status(500).json({ error: 'Error al verificar suscripción' });
+  }
+};
+
 module.exports = {
   authenticate,
   authorizeRole,
   authenticateUser,
   authenticateCompany,
   authenticateAdmin,
+  authenticatePsychologist,
   checkActiveSubscription,
+  checkActivePsychologistSubscription,
 };

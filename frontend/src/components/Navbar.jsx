@@ -62,6 +62,8 @@ export default function Navbar() {
         return '/company/dashboard';
       case 'admin':
         return '/admin/dashboard';
+      case 'psychologist':
+        return '/psicologo/dashboard';
       default:
         return '/';
     }
@@ -73,6 +75,8 @@ export default function Navbar() {
         return '/user/profile';
       case 'company':
         return '/company/profile';
+      case 'psychologist':
+        return '/psicologo/dashboard';
       default:
         return getDashboardLink();
     }
@@ -84,6 +88,8 @@ export default function Navbar() {
         return '/user/applications';
       case 'company':
         return '/company/jobs';
+      case 'psychologist':
+        return '/psicologos';
       default:
         return '';
     }
@@ -95,6 +101,8 @@ export default function Navbar() {
         return t('Mis Postulaciones');
       case 'company':
         return t('Mis Ofertas Laborales');
+      case 'psychologist':
+        return t('Psicólogos en Línea');
       default:
         return '';
     }

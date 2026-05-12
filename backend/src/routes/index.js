@@ -7,6 +7,7 @@ const applicationRoutes = require('./application.routes');
 const adminRoutes = require('./admin.routes');
 const subscriptionRoutes = require('./subscription.routes');
 const categoryRoutes = require('./category.routes');
+const psychologistRoutes = require('./psychologist.routes');
 
 const router = express.Router();
 
@@ -28,5 +29,6 @@ router.use('/applications', applicationRoutes);
 router.use('/admin', adminRoutes);
 router.use('/subscriptions', subscriptionRoutes);
 router.use('/categories', categoryRoutes);
+router.use('/psychologists', psychologistRoutes);
 
 module.exports = router;

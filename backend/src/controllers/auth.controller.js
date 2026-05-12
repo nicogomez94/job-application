@@ -5,6 +5,7 @@ const {
   generatePasswordResetToken,
   verifyPasswordResetToken,
 } = require('../config/jwt');
+const { getDefaultFrontendUrl } = require('../config/frontend');
 const { sendPasswordRecoveryEmail } = require('../services/mail.service');
 const addMonths = (date, months) => {
   const value = new Date(date);
@@ -308,7 +309,7 @@ exports.requestPasswordRecovery = async (req, res) => {
         id: foundAccount.id,
         type: foundAccount.type,
       });
-      const frontendBaseUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+      const frontendBaseUrl = getDefaultFrontendUrl();
       const resetUrl = `${frontendBaseUrl}/reset-password?token=${encodeURIComponent(token)}`;
 
       await sendPasswordRecoveryEmail({

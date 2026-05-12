@@ -4,7 +4,14 @@ const fs = require('fs');
 
 // Crear directorios si no existen
 const createUploadDirs = () => {
-  const dirs = ['./uploads/cvs', './uploads/files', './uploads/profiles', './uploads/logos'];
+  const dirs = [
+    './uploads/cvs',
+    './uploads/files',
+    './uploads/profiles',
+    './uploads/logos',
+    './uploads/psychologist-profiles',
+    './uploads/psychologist-docs',
+  ];
   dirs.forEach(dir => {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
@@ -27,6 +34,10 @@ const storage = multer.diskStorage({
       uploadPath += 'profiles/';
     } else if (file.fieldname === 'companyLogo') {
       uploadPath += 'logos/';
+    } else if (file.fieldname === 'psychologistProfile') {
+      uploadPath += 'psychologist-profiles/';
+    } else if (file.fieldname === 'psychologistDoc') {
+      uploadPath += 'psychologist-docs/';
     }
     
     cb(null, uploadPath);
@@ -41,7 +52,7 @@ const storage = multer.diskStorage({
 const fileFilter = (req, file, cb) => {
   if (file.fieldname === 'cv') {
     cb(null, true);
-  } else if (file.fieldname === 'profileImage' || file.fieldname === 'companyLogo') {
+  } else if (file.fieldname === 'profileImage' || file.fieldname === 'companyLogo' || file.fieldname === 'psychologistProfile') {
     // Solo imágenes para perfiles y logos
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);

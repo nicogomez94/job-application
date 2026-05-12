@@ -202,6 +202,28 @@ margin: 0px auto 40px;
   max-width: 620px;
 }
 
+.home-hero-psico-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1.25rem;
+  padding: 0.65rem 1.3rem;
+  background: linear-gradient(135deg, #2c5f7a 0%, #1e4560 100%);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-radius: 10px;
+  text-decoration: none;
+  box-shadow: 0 3px 10px rgba(44, 95, 122, 0.28);
+  transition: opacity 0.15s, transform 0.15s;
+  align-self: flex-start;
+}
+
+.home-hero-psico-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
 .home-search-container {
   margin-top: 0.75rem;
   background: #fcf7ef;

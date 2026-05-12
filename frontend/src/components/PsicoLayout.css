@@ -1,0 +1,190 @@
+.psico-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #fafaf7;
+  font-family: inherit;
+}
+
+/* ── Header ────────────────────────────────────────────────── */
+.psico-layout-header {
+  background: #fff;
+  border-bottom: 2px solid #b8d9eb;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(44, 95, 122, 0.07);
+}
+
+.psico-layout-header-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+/* ── Brand ─────────────────────────────────────────────────── */
+.psico-layout-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.psico-layout-brand-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.psico-layout-brand span {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.psico-layout-brand-main {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #1e3a4a;
+  letter-spacing: -0.01em;
+}
+
+.psico-layout-brand-sub {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #2c5f7a;
+  text-transform: lowercase;
+  letter-spacing: 0.02em;
+}
+
+/* ── Nav ───────────────────────────────────────────────────── */
+.psico-layout-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.psico-layout-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2c5f7a;
+  text-decoration: none;
+  border-radius: 7px;
+  transition: background 0.14s, color 0.14s;
+}
+
+.psico-layout-nav-link:hover,
+.psico-layout-nav-link.active {
+  background: #ddeef7;
+  color: #1e3a4a;
+}
+
+.psico-layout-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 1.1rem;
+  background: #2c5f7a;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.14s;
+  margin-left: 0.25rem;
+}
+
+.psico-layout-nav-btn:hover {
+  background: #1e4560;
+}
+
+.psico-layout-nav-logout {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.45rem 0.85rem;
+  background: none;
+  border: none;
+  color: #c0392b;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 7px;
+  transition: background 0.14s;
+}
+
+.psico-layout-nav-logout:hover {
+  background: #fde8e2;
+}
+
+/* ── Main ──────────────────────────────────────────────────── */
+.psico-layout-main {
+  flex: 1;
+}
+
+/* ── Footer ────────────────────────────────────────────────── */
+.psico-layout-footer {
+  background: #1e3a4a;
+  color: #b0c8d8;
+  padding: 1.25rem 1.5rem;
+  font-size: 0.82rem;
+}
+
+.psico-layout-footer-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.psico-layout-footer strong {
+  color: #fff;
+}
+
+.psico-layout-footer-back {
+  color: #7ecfef;
+  text-decoration: none;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.psico-layout-footer-back:hover {
+  text-decoration: underline;
+}
+
+.psico-layout-footer-legal {
+  flex: 1;
+  min-width: 200px;
+  font-size: 0.77rem;
+  color: #7a9fb4;
+  font-style: italic;
+}
+
+@media (max-width: 680px) {
+  .psico-layout-header-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .psico-layout-nav {
+    width: 100%;
+  }
+
+  .psico-layout-footer-inner {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

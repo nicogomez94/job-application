@@ -6,8 +6,9 @@ const authController = require('../controllers/auth.controller');
 const { authenticate } = require('../middlewares/auth.middleware');
 const passport = require('../config/passport');
 const { generateToken } = require('../config/jwt');
+const { getDefaultFrontendUrl } = require('../config/frontend');
 
-const getFrontendBaseUrl = () => process.env.FRONTEND_URL || 'http://localhost:5173';
+const getFrontendBaseUrl = () => getDefaultFrontendUrl();
 
 const normalizeOAuthErrorMessage = (errorLike) => {
   const rawMessage = typeof errorLike === 'string' ? errorLike : errorLike?.message;

@@ -146,4 +146,44 @@ export const adminService = {
   
   // Admins
   createAdmin: (data) => api.post('/admin/admins', data),
+
+  // Psychologists
+  listPsychologists: (params) => api.get('/psychologists/admin/all', { params }),
+  approvePsychologist: (id) => api.post(`/psychologists/admin/${id}/approve`),
+  rejectPsychologist: (id, reason) => api.post(`/psychologists/admin/${id}/reject`, { reason }),
+};
+
+// ==================== PSYCHOLOGISTS ====================
+
+export const psychologistAuthService = {
+  register: (data) => api.post('/psychologists/auth/register', data),
+  login: (data) => api.post('/psychologists/auth/login', data),
+};
+
+export const psychologistService = {
+  // Public
+  list: (params) => api.get('/psychologists', { params }),
+  getById: (id) => api.get(`/psychologists/${id}`),
+  getPlans: () => api.get('/psychologists/plans'),
+
+  // Authenticated psychologist
+  getProfile: () => api.get('/psychologists/me/profile'),
+  updateProfile: (data) => api.put('/psychologists/me/profile', data),
+  uploadProfileImage: (file) => {
+    const formData = new FormData();
+    formData.append('psychologistProfile', file);
+    return api.post('/psychologists/me/profile-image', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+  uploadDocuments: (files, documentTypes) => {
+    const formData = new FormData();
+    files.forEach((file) => formData.append('psychologistDoc', file));
+    formData.append('documentTypes', JSON.stringify(documentTypes));
+    return api.post('/psychologists/me/documents', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+  getSubscription: () => api.get('/psychologists/me/subscription'),
+  createSubscription: (data) => api.post('/psychologists/me/subscription', data),
 };

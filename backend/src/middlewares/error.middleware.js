@@ -1,7 +1,9 @@
+const { getDefaultFrontendUrl, normalizeUrl } = require('../config/frontend');
+
 const OAUTH_CALLBACK_PATH_REGEX = /^\/api\/auth\/(user|company|admin)\/google\/callback$/i;
 
 const getFrontendBaseUrl = (req) => {
-  const envBaseUrl = String(process.env.FRONTEND_URL || '').trim().replace(/\/+$/, '');
+  const envBaseUrl = normalizeUrl(process.env.FRONTEND_URL);
   if (envBaseUrl) return envBaseUrl;
 
   const forwardedProto = String(req.headers['x-forwarded-proto'] || '')
@@ -11,7 +13,7 @@ const getFrontendBaseUrl = (req) => {
   const host = req.get('host');
   if (host) return `${protocol}://${host}`;
 
-  return 'http://localhost:5173';
+  return getDefaultFrontendUrl();
 };
 
 const getOAuthFriendlyErrorMessage = (err) => {

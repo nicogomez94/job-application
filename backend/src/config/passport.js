@@ -68,6 +68,8 @@ passport.use(
         user = await prisma.company.findUnique({ where: { id: payload.id } });
       } else if (payload.type === 'admin') {
         user = await prisma.admin.findUnique({ where: { id: payload.id } });
+      } else if (payload.type === 'psychologist') {
+        user = await prisma.psychologist.findUnique({ where: { id: payload.id } });
       }
 
       if (user) {

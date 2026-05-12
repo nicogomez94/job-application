@@ -3,6 +3,7 @@ import { useAuthStore } from './context/authStore';
 
 // Layouts
 import Layout from './components/Layout';
+import PsicoLayout from './components/PsicoLayout';
 
 // Pages - Public
 import Home from './pages/Home';
@@ -46,6 +47,18 @@ import AdminCompanies from './pages/admin/Companies';
 import AdminJobOffers from './pages/admin/JobOffers';
 import AdminSubscriptions from './pages/admin/Subscriptions';
 
+// Psicólogos
+import PsychologistList from './pages/psicologos/PsychologistList';
+import PsychologistProfile from './pages/psicologos/PsychologistProfile';
+import RegisterPsychologistType from './pages/psicologos/RegisterPsychologistType';
+import RegisterPsychologistAR from './pages/psicologos/RegisterPsychologistAR';
+import RegisterPsychologistINTL from './pages/psicologos/RegisterPsychologistINTL';
+import RegisterPsychologistDocs from './pages/psicologos/RegisterPsychologistDocs';
+import RegisterPsychologistConfirmation from './pages/psicologos/RegisterPsychologistConfirmation';
+import SelectPsychologistPlan from './pages/psicologos/SelectPsychologistPlan';
+import PsychologistDashboard from './pages/psicologos/PsychologistDashboard';
+import PsicoLogin from './pages/auth/PsicoLogin';
+
 function App() {
   const { isAuthenticated, userType } = useAuthStore();
 
@@ -54,6 +67,9 @@ function App() {
     if (!isAuthenticated) {
       if (allowedTypes?.length === 1 && allowedTypes[0] === 'admin') {
         return <Navigate to="/acceso-admin" replace />;
+      }
+      if (allowedTypes?.includes('psychologist')) {
+        return <Navigate to="/psicologos/login" replace />;
       }
       return <Navigate to="/login" replace />;
     }
@@ -229,6 +245,48 @@ function App() {
 
         {/* 404 */}
         <Route path="*" element={<div>404 - Página no encontrada</div>} />
+      </Route>
+
+      {/* ── Psicólogos ── sub-mundo separado con su propio layout ── */}
+      <Route path="/" element={<PsicoLayout />}>
+        <Route path="psicologos" element={<PsychologistList />} />
+        <Route path="psicologos/login" element={<PsicoLogin />} />
+        <Route path="psicologos/:id" element={<PsychologistProfile />} />
+        <Route path="register/psicologo" element={<RegisterPsychologistType />} />
+        <Route path="register/psicologo/argentina" element={<RegisterPsychologistAR />} />
+        <Route path="register/psicologo/internacional" element={<RegisterPsychologistINTL />} />
+        <Route
+          path="register/psicologo/documentos"
+          element={
+            <ProtectedRoute allowedTypes={['psychologist']}>
+              <RegisterPsychologistDocs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="register/psicologo/confirmacion"
+          element={
+            <ProtectedRoute allowedTypes={['psychologist']}>
+              <RegisterPsychologistConfirmation />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="psicologo/plan"
+          element={
+            <ProtectedRoute allowedTypes={['psychologist']}>
+              <SelectPsychologistPlan />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="psicologo/dashboard"
+          element={
+            <ProtectedRoute allowedTypes={['psychologist']}>
+              <PsychologistDashboard />
+            </ProtectedRoute>
+          }
+        />
       </Route>
     </Routes>
   );

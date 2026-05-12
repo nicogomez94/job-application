@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { authService, subscriptionService } from '../../services';
+import { authService, subscriptionService, psychologistAuthService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
 import { useI18n } from '../../context/i18nStore';
 import { DEBUG_MODE, getDebugLoginData } from '../../config/debug';
@@ -39,6 +39,7 @@ export default function Login({
     user: language === 'en' ? 'Professional' : 'Profesional',
     company: language === 'en' ? 'Company' : 'Empresa',
     admin: 'Admin',
+    psychologist: language === 'en' ? 'Psychologist' : 'Psicólogo',
   };
 
   useEffect(() => {
@@ -61,12 +62,14 @@ export default function Login({
         response = await authService.loginUser(data);
       } else if (userType === 'company') {
         response = await authService.loginCompany(data);
+      } else if (userType === 'psychologist') {
+        response = await psychologistAuthService.login(data);
       } else {
         response = await authService.loginAdmin(data);
       }
 
-      const { user, company, admin, token } = response.data;
-      const userData = user || company || admin;
+      const { user, company, admin, psychologist, token } = response.data;
+      const userData = user || company || admin || psychologist;
       
       setAuth(userData, userType, token);
       toast.success('¡Bienvenido!');
@@ -84,6 +87,17 @@ export default function Login({
           } else {
             navigate('/company/dashboard');
           }
+        }
+      } else if (userType === 'psychologist') {
+        const status = userData?.status;
+        if (status === 'PENDING_DOCS') {
+          navigate('/register/psicologo/documentos');
+        } else if (status === 'PENDING' || status === 'REJECTED') {
+          navigate('/register/psicologo/confirmacion');
+        } else if (status === 'APPROVED') {
+          navigate('/psicologo/plan');
+        } else {
+          navigate('/psicologo/dashboard');
         }
       } else {
         navigate('/admin/dashboard');
