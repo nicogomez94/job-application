@@ -170,12 +170,6 @@ export default function Home() {
             <p className="home-hero-subtitle">
               {t('Cada mes, más de 3 millones de personas buscan trabajo en línea, realizando más de 140.000 postulaciones')}
             </p>
-            <Link
-              to="/psicologos"
-              className="home-hero-psico-btn"
-            >
-              🧠 Psicólogos en Línea →
-            </Link>
           </div>
 
           <div className="home-hero-right">
@@ -186,6 +180,18 @@ export default function Home() {
               <div className="hero-image-wrapper hero-image-main">
                 <img src={heroImageMain} alt="Persona trabajando desde casa" />
               </div>
+              <Link to="/psicologos" className="home-hero-psico-card">
+                <div className="home-hero-psico-card-head">
+                  <span className="home-hero-psico-card-title">Sección de Psicología</span>
+                  <span className="home-hero-psico-card-subtitle">
+                    Otro servicio de <strong>professionals at home</strong>
+                  </span>
+                </div>
+                <div className="home-hero-psico-card-cta">
+                  <span>Accedé a Psicólogos en Línea</span>
+                  <strong>SOLO AQUÍ!</strong>
+                </div>
+              </Link>
             </div>
           </div>
         </div>
@@ -269,7 +275,7 @@ export default function Home() {
       <section ref={categoriesRef} className={`home-categories animate-on-scroll ${categoriesVisible ? 'animate-visible' : ''}`}>
         <div className="home-categories-container">
           <h2 className="categories-title">{t('Navegá por categoría')}</h2>
-          <p className="categories-subtitle">{t('Simplifica tu búsqueda de trabajo buscando por categorías')}</p>
+          <p className="categories-subtitle">{t('Simplifica tu b�squeda de trabajo buscando por categor?as')}</p>
           
           <div className="categories-carousel">
             <button className="carousel-btn carousel-btn-prev" onClick={prevSlide} disabled={categoriesForCarousel.length <= itemsPerSlide}>

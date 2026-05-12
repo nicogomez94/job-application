@@ -26,7 +26,7 @@ export default function SelectPsychologistPlan() {
           return;
         }
       } catch {
-        // No active subscription — show plans
+        // No active subscription; show plans.
       }
 
       try {

@@ -1,4 +1,5 @@
 import api from './api';
+import { repairMojibakeDeep } from '../utils/textEncoding';
 
 // ==================== AUTH ====================
 
@@ -156,19 +157,40 @@ export const adminService = {
 // ==================== PSYCHOLOGISTS ====================
 
 export const psychologistAuthService = {
-  register: (data) => api.post('/psychologists/auth/register', data),
-  login: (data) => api.post('/psychologists/auth/login', data),
+  register: async (data) => {
+    const response = await api.post('/psychologists/auth/register', data);
+    return { ...response, data: repairMojibakeDeep(response.data) };
+  },
+  login: async (data) => {
+    const response = await api.post('/psychologists/auth/login', data);
+    return { ...response, data: repairMojibakeDeep(response.data) };
+  },
 };
 
 export const psychologistService = {
   // Public
-  list: (params) => api.get('/psychologists', { params }),
-  getById: (id) => api.get(`/psychologists/${id}`),
-  getPlans: () => api.get('/psychologists/plans'),
+  list: async (params) => {
+    const response = await api.get('/psychologists', { params });
+    return { ...response, data: repairMojibakeDeep(response.data) };
+  },
+  getById: async (id) => {
+    const response = await api.get(`/psychologists/${id}`);
+    return { ...response, data: repairMojibakeDeep(response.data) };
+  },
+  getPlans: async () => {
+    const response = await api.get('/psychologists/plans');
+    return { ...response, data: repairMojibakeDeep(response.data) };
+  },
 
   // Authenticated psychologist
-  getProfile: () => api.get('/psychologists/me/profile'),
-  updateProfile: (data) => api.put('/psychologists/me/profile', data),
+  getProfile: async () => {
+    const response = await api.get('/psychologists/me/profile');
+    return { ...response, data: repairMojibakeDeep(response.data) };
+  },
+  updateProfile: async (data) => {
+    const response = await api.put('/psychologists/me/profile', data);
+    return { ...response, data: repairMojibakeDeep(response.data) };
+  },
   uploadProfileImage: (file) => {
     const formData = new FormData();
     formData.append('psychologistProfile', file);
@@ -184,6 +206,12 @@ export const psychologistService = {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
-  getSubscription: () => api.get('/psychologists/me/subscription'),
-  createSubscription: (data) => api.post('/psychologists/me/subscription', data),
+  getSubscription: async () => {
+    const response = await api.get('/psychologists/me/subscription');
+    return { ...response, data: repairMojibakeDeep(response.data) };
+  },
+  createSubscription: async (data) => {
+    const response = await api.post('/psychologists/me/subscription', data);
+    return { ...response, data: repairMojibakeDeep(response.data) };
+  },
 };

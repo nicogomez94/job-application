@@ -1284,3 +1284,153 @@
   .psico-home-section-inner { flex-direction: column; text-align: center; }
   .psico-home-section-text p { max-width: 100%; }
 }
+
+/* Psychology palette override */
+:root {
+  --psico-accent-50: #fdf1f7;
+  --psico-accent-100: #f8e1ec;
+  --psico-accent-200: #efbfd4;
+  --psico-accent-500: #cc6698;
+  --psico-accent-600: #b45784;
+  --psico-accent-700: #964468;
+  --psico-accent-900: #5f2340;
+  --psico-accent-shadow: rgba(204, 102, 152, 0.18);
+  --psico-accent-shadow-strong: rgba(204, 102, 152, 0.28);
+}
+
+.psico-list-hero,
+.psico-register-cta {
+  color: #fff;
+}
+
+.psico-list-hero {
+  background: linear-gradient(135deg, var(--psico-accent-500) 0%, var(--psico-accent-700) 100%);
+}
+
+.psico-register-cta {
+  background: linear-gradient(135deg, var(--psico-accent-700) 0%, var(--psico-accent-500) 100%);
+}
+
+.psico-filter-group select:focus,
+.psico-form-grid input:focus,
+.psico-form-grid select:focus,
+.psico-form-grid textarea:focus {
+  border-color: var(--psico-accent-500);
+}
+
+.psico-card:hover {
+  box-shadow: 0 4px 18px var(--psico-accent-shadow);
+}
+
+.psico-card-clickable:focus-visible {
+  outline-color: var(--psico-accent-shadow-strong);
+}
+
+.psico-card-initials,
+.psico-profile-initials {
+  color: var(--psico-accent-700);
+  background: linear-gradient(135deg, var(--psico-accent-50) 0%, var(--psico-accent-200) 100%);
+}
+
+.psico-card-info h3,
+.psico-profile-main-info h1,
+.psico-profile-section h2,
+.psico-register-type-container h1,
+.psico-type-card h2,
+.psico-register-container h1,
+.psico-legal-section h3,
+.psico-docs-uploaded h3,
+.psico-confirmation-box h1,
+.psico-dashboard-container h1,
+.psico-dashboard-card-header,
+.psico-dashboard-profile h3,
+.psico-home-section-text h2 {
+  color: var(--psico-accent-900);
+}
+
+.psico-card-specialty,
+.psico-back-link,
+.psico-register-type-login a,
+.psico-register-back a,
+.psico-legal-section a,
+.psico-doc-file-type,
+.psico-quick-actions li a {
+  color: var(--psico-accent-700);
+}
+
+.psico-tag {
+  background: var(--psico-accent-100);
+  color: var(--psico-accent-700);
+  border-color: var(--psico-accent-200);
+}
+
+.psico-btn-primary {
+  background: var(--psico-accent-500);
+}
+
+.psico-btn-primary:hover {
+  background: var(--psico-accent-700);
+}
+
+.psico-btn-secondary {
+  color: var(--psico-accent-700);
+  border-color: var(--psico-accent-500);
+}
+
+.psico-btn-secondary:hover,
+.psico-btn-email:hover,
+.psico-icon-btn:hover,
+.psico-doc-upload-btn:hover {
+  background: var(--psico-accent-100);
+}
+
+.psico-btn-email,
+.psico-doc-upload-btn {
+  background: #fbf2f7;
+  color: var(--psico-accent-700);
+  border-color: var(--psico-accent-200);
+}
+
+.psico-icon-btn {
+  color: var(--psico-accent-700);
+}
+
+.psico-type-card:hover {
+  border-color: var(--psico-accent-500);
+  box-shadow: 0 6px 24px var(--psico-accent-shadow);
+}
+
+.psico-type-card-icon {
+  background: var(--psico-accent-100);
+  color: var(--psico-accent-700);
+}
+
+.psico-step.active {
+  background: var(--psico-accent-500);
+}
+
+.psico-step.done {
+  background: var(--psico-accent-100);
+  color: var(--psico-accent-700);
+}
+
+.psico-step.done .psico-step-dot {
+  background: var(--psico-accent-600);
+  border-color: var(--psico-accent-600);
+}
+
+.psico-checkbox-item input[type="checkbox"] {
+  accent-color: var(--psico-accent-500);
+}
+
+.psico-status-blue {
+  background: var(--psico-accent-100);
+  color: var(--psico-accent-700);
+  border-color: var(--psico-accent-200);
+}
+
+.psico-home-section {
+  background: linear-gradient(135deg, #fff6fa 0%, var(--psico-accent-100) 100%);
+  border-top-color: var(--psico-accent-200);
+  border-bottom-color: var(--psico-accent-200);
+}

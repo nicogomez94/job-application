@@ -113,3 +113,17 @@
 .psico-login-back:hover {
   text-decoration: underline;
 }
+
+.psico-login-icon,
+.psico-login-links a,
+.psico-login-back {
+  color: #964468;
+}
+
+.psico-login-card h1 {
+  color: #5f2340;
+}
+
+.psico-login-field input:focus {
+  border-color: #cc6698;
+}

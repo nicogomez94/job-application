@@ -188,3 +188,54 @@
     gap: 0.5rem;
   }
 }
+
+.psico-layout {
+  --psico-accent-100: #f8e1ec;
+  --psico-accent-200: #efbfd4;
+  --psico-accent-500: #cc6698;
+  --psico-accent-700: #964468;
+  --psico-accent-900: #5f2340;
+  --psico-accent-shadow: rgba(204, 102, 152, 0.16);
+}
+
+.psico-layout-header {
+  border-bottom-color: var(--psico-accent-200);
+  box-shadow: 0 2px 8px var(--psico-accent-shadow);
+}
+
+.psico-layout-brand-main,
+.psico-layout-nav-link:hover,
+.psico-layout-nav-link.active {
+  color: var(--psico-accent-900);
+}
+
+.psico-layout-brand-sub,
+.psico-layout-nav-link {
+  color: var(--psico-accent-700);
+}
+
+.psico-layout-nav-link:hover,
+.psico-layout-nav-link.active {
+  background: var(--psico-accent-100);
+}
+
+.psico-layout-nav-btn {
+  background: var(--psico-accent-500);
+}
+
+.psico-layout-nav-btn:hover {
+  background: var(--psico-accent-700);
+}
+
+.psico-layout-footer {
+  background: var(--psico-accent-900);
+  color: #f0cadb;
+}
+
+.psico-layout-footer-back {
+  color: #f6b6d3;
+}
+
+.psico-layout-footer-legal {
+  color: #d8a8bf;
+}

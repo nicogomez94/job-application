@@ -16,13 +16,13 @@ const toAssetUrl = (p) => {
 const STATUS_LABELS = {
   PENDING_DOCS: { label: 'Pendiente de documentación', icon: FileText, color: 'orange' },
   PENDING: { label: 'En revisión (~5 días hábiles)', icon: Clock, color: 'orange' },
-  APPROVED: { label: 'Aprobado — Elegí tu plan para activarte', icon: CheckCircle, color: 'blue' },
+  APPROVED: { label: 'Aprobado - Elegí tu plan para activarte', icon: CheckCircle, color: 'blue' },
   REJECTED: { label: 'Rechazado', icon: XCircle, color: 'red' },
-  ACTIVE: { label: 'Activo — Visible para pacientes', icon: CheckCircle, color: 'green' },
+  ACTIVE: { label: 'Activo - Visible para pacientes', icon: CheckCircle, color: 'green' },
 };
 
 export default function PsychologistDashboard() {
-  const { user, updateUser } = useAuthStore();
+  const { updateUser } = useAuthStore();
   const [profile, setProfile] = useState(null);
   const [subscription, setSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -73,7 +73,6 @@ export default function PsychologistDashboard() {
       <div className="psico-dashboard-container">
         <h1>Mi panel de psicólogo</h1>
 
-        {/* Status Banner */}
         <div className={`psico-status-banner psico-status-${statusInfo.color}`}>
           <StatusIcon size={20} />
           <span>{statusInfo.label}</span>
@@ -88,7 +87,6 @@ export default function PsychologistDashboard() {
         </div>
 
         <div className="psico-dashboard-grid">
-          {/* Profile card */}
           <div className="psico-dashboard-card">
             <div className="psico-dashboard-card-header">
               <User size={18} />
@@ -120,7 +118,6 @@ export default function PsychologistDashboard() {
             </div>
           </div>
 
-          {/* Subscription card */}
           <div className="psico-dashboard-card">
             <div className="psico-dashboard-card-header">
               <CreditCard size={18} />
@@ -144,18 +141,17 @@ export default function PsychologistDashboard() {
             )}
           </div>
 
-          {/* Quick actions */}
           <div className="psico-dashboard-card">
             <div className="psico-dashboard-card-header">
               <h2>Acciones rápidas</h2>
             </div>
             <ul className="psico-quick-actions">
-              <li><Link to="/psicologo/perfil">✏️ Editar perfil</Link></li>
-              <li><Link to="/psicologo/documentos">📎 Ver / subir documentos</Link></li>
+              <li><Link to="/psicologo/perfil">Editar perfil</Link></li>
+              <li><Link to="/psicologo/documentos">Ver / subir documentos</Link></li>
               {(p?.status === 'APPROVED' || p?.status === 'ACTIVE') && (
-                <li><Link to="/psicologo/plan">💳 Gestionar suscripción</Link></li>
+                <li><Link to="/psicologo/plan">Gestionar suscripción</Link></li>
               )}
-              <li><Link to="/psicologos">👁️ Ver cómo aparezco en el listado</Link></li>
+              <li><Link to="/psicologos">Ver cómo aparezco en el listado</Link></li>
             </ul>
           </div>
         </div>

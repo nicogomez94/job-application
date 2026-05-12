@@ -1,7 +1,7 @@
 import { useLayoutEffect } from 'react';
 import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../context/authStore';
-import { LogOut, LayoutDashboard, User } from 'lucide-react';
+import { LogOut, LayoutDashboard } from 'lucide-react';
 import { scrollToTopInstant } from '../utils/scrollToTop';
 import './PsicoLayout.css';
 
@@ -46,33 +46,20 @@ export default function PsicoLayout() {
 
             {!isPsychologist ? (
               <>
-                <Link
-                  to="/register/psicologo"
-                  className="psico-layout-nav-link"
-                >
+                <Link to="/register/psicologo" className="psico-layout-nav-link">
                   Registrarme
                 </Link>
-                <Link
-                  to="/psicologos/login"
-                  className="psico-layout-nav-btn"
-                >
+                <Link to="/psicologos/login" className="psico-layout-nav-btn">
                   Ingresar
                 </Link>
               </>
             ) : (
               <>
-                <Link
-                  to="/psicologo/dashboard"
-                  className="psico-layout-nav-link"
-                >
+                <Link to="/psicologo/dashboard" className="psico-layout-nav-link">
                   <LayoutDashboard size={15} />
                   {displayName || 'Mi panel'}
                 </Link>
-                <button
-                  type="button"
-                  className="psico-layout-nav-logout"
-                  onClick={handleLogout}
-                >
+                <button type="button" className="psico-layout-nav-logout" onClick={handleLogout}>
                   <LogOut size={15} />
                   Salir
                 </button>

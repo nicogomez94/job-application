@@ -74,7 +74,6 @@ export default function PsychologistList() {
       </div>
 
       <div className="psico-list-container">
-        {/* Filters */}
         <div className="psico-filters">
           <div className="psico-filter-group">
             <label htmlFor="language">Idioma</label>
@@ -96,7 +95,6 @@ export default function PsychologistList() {
           </div>
         </div>
 
-        {/* Results */}
         {loading ? (
           <div className="psico-loading">Cargando psicólogos...</div>
         ) : psychologists.length === 0 ? (
@@ -111,7 +109,6 @@ export default function PsychologistList() {
           </div>
         )}
 
-        {/* Pagination */}
         {totalPages > 1 && (
           <div className="psico-pagination">
             <button
@@ -131,7 +128,6 @@ export default function PsychologistList() {
         )}
       </div>
 
-      {/* Register CTA */}
       <div className="psico-register-cta">
         <div className="psico-register-cta-content">
           <Globe size={32} />

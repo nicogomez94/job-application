@@ -91,7 +91,7 @@ export default function PsicoLogin() {
             style={{ width: '100%', justifyContent: 'center', marginTop: '0.5rem' }}
             disabled={loading}
           >
-            {loading ? 'Ingresando…' : 'Ingresar'}
+            {loading ? 'Ingresando...' : 'Ingresar'}
           </button>
         </form>
 

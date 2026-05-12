@@ -178,13 +178,13 @@ export default function RegisterPsychologistAR() {
         <div className="psico-register-back">
           <Link to="/register/psicologo">← Cambiar tipo de registro</Link>
         </div>
-        <h1>Registro — Psicólogo en Argentina</h1>
+        <h1>Registro - Psicólogo en Argentina</h1>
 
         {/* Stepper */}
         <div className="psico-stepper">
           {STEPS.map((s, i) => (
             <div key={s} className={`psico-step ${i === step ? 'active' : i < step ? 'done' : ''}`}>
-              <div className="psico-step-dot">{i < step ? '✓' : i + 1}</div>
+              <div className="psico-step-dot">{i < step ? '' : i + 1}</div>
               <span>{s}</span>
             </div>
           ))}
