@@ -48,6 +48,7 @@ import AdminJobOffers from './pages/admin/JobOffers';
 import AdminSubscriptions from './pages/admin/Subscriptions';
 
 // Psicólogos
+import PsicologosHome from './pages/psicologos/PsicologosHome';
 import PsychologistList from './pages/psicologos/PsychologistList';
 import PsychologistProfile from './pages/psicologos/PsychologistProfile';
 import RegisterPsychologistType from './pages/psicologos/RegisterPsychologistType';
@@ -248,7 +249,8 @@ function App() {
 
       {/* ── Psicólogos ── sub-mundo separado con su propio layout ── */}
       <Route path="/" element={<PsicoLayout />}>
-        <Route path="psicologos" element={<PsychologistList />} />
+        <Route path="psicologos" element={<PsicologosHome />} />
+        <Route path="psicologos/buscar" element={<PsychologistList />} />
         <Route path="psicologos/login" element={<PsicoLogin />} />
         <Route path="psicologos/:id" element={<PsychologistProfile />} />
         <Route path="register/psicologo" element={<RegisterPsychologistType />} />

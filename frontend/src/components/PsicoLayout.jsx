@@ -38,8 +38,8 @@ export default function PsicoLayout() {
 
           <nav className="psico-layout-nav">
             <Link
-              to="/psicologos"
-              className={`psico-layout-nav-link ${location.pathname === '/psicologos' ? 'active' : ''}`}
+              to="/psicologos/buscar"
+              className={`psico-layout-nav-link ${location.pathname === '/psicologos/buscar' ? 'active' : ''}`}
             >
               Buscar psicólogo
             </Link>

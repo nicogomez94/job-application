@@ -1,0 +1,495 @@
+/* ============================================================
+   PSICÓLOGOS — Home / Landing page
+   ============================================================ */
+
+.psico-home {
+  width: 100%;
+  overflow-x: hidden;
+  background: #fafaf7;
+}
+
+/* ── HERO ───────────────────────────────────────────────────── */
+.psico-home-hero {
+  position: relative;
+  width: 100%;
+  min-height: 420px;
+  background-size: cover;
+  background-position: center 60%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.psico-home-hero-overlay {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 3rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.psico-home-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.25) 0%,
+    rgba(0, 0, 0, 0.45) 100%
+  );
+  z-index: 0;
+}
+
+.psico-home-hero-title {
+  font-size: clamp(2.2rem, 6vw, 4.5rem);
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.55);
+  letter-spacing: -0.01em;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.psico-home-hero-sub {
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.88);
+  margin: 0;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+}
+
+.psico-home-hero-ctas {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.psico-home-hero-btn {
+  padding: 0.65rem 2rem;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s, transform 0.15s;
+  letter-spacing: 0.02em;
+}
+
+.psico-home-hero-btn--outline {
+  border: 2px solid #fff;
+  color: #fff;
+  background: transparent;
+}
+
+.psico-home-hero-btn--outline:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-2px);
+}
+
+.psico-home-hero-btn--solid {
+  background: #f08080;
+  border: 2px solid #f08080;
+  color: #fff;
+}
+
+.psico-home-hero-btn--solid:hover {
+  background: #e06060;
+  border-color: #e06060;
+  transform: translateY(-2px);
+}
+
+/* ── BENEFITS HEADER BAR ────────────────────────────────────── */
+.psico-home-benefits-header {
+  background: #f08080;
+  text-align: center;
+  padding: 1rem 1.5rem;
+}
+
+.psico-home-benefits-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.01em;
+}
+
+/* ── GENERAL BENEFITS (texto 1) ─────────────────────────────── */
+.psico-home-general {
+  background: #fff;
+  padding: 2.5rem 1.5rem;
+}
+
+.psico-home-general-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 2rem 2.5rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.psico-home-general-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #1e3a4a;
+  margin: 0 0 0.5rem;
+}
+
+.psico-home-general-intro {
+  color: #555;
+  font-size: 0.95rem;
+  margin: 0 0 1.2rem;
+}
+
+.psico-home-general-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.psico-home-general-item {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  font-size: 0.92rem;
+  color: #333;
+  line-height: 1.5;
+}
+
+.psico-home-general-check {
+  color: #f08080;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 0.05rem;
+}
+
+/* ── SPECIAL GROUPS (texto 2, 3, 4) ────────────────────────── */
+.psico-home-groups {
+  background: #fff;
+  padding: 0 1.5rem 2.5rem;
+}
+
+.psico-home-groups-grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.psico-home-group-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.psico-home-group-card {
+  padding: 1.5rem;
+  background: #fff;
+  flex: 1;
+}
+
+.psico-home-group-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #1e3a4a;
+  margin: 0 0 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 2px solid #f08080;
+}
+
+.psico-home-group-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.psico-home-group-list li {
+  display: flex;
+  gap: 0.55rem;
+  font-size: 0.875rem;
+  color: #444;
+  line-height: 1.5;
+  align-items: flex-start;
+}
+
+.psico-home-group-check {
+  color: #f08080;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 0.05rem;
+}
+
+.psico-home-group-img-wrap {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.psico-home-group-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.psico-home-group-col:hover .psico-home-group-img {
+  transform: scale(1.04);
+}
+
+/* ── PLANES DE PAGO ─────────────────────────────────────────── */
+.psico-home-plans {
+  background: linear-gradient(135deg, #f4a0a0 0%, #f08080 100%);
+  padding: 3rem 1.5rem;
+}
+
+.psico-home-plans-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.psico-home-plans-title {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #1e1e1e;
+  margin: 0 0 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.psico-home-plans-sub {
+  font-size: 1rem;
+  color: #1e1e1e;
+  opacity: 0.82;
+  margin: 0 0 2.2rem;
+}
+
+.psico-home-plans-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.psico-home-plan-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 1.8rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
+  position: relative;
+  transition: transform 0.2s;
+}
+
+.psico-home-plan-card:hover {
+  transform: translateY(-4px);
+}
+
+.psico-home-plan-card--highlight {
+  border: 2px solid #f08080;
+  box-shadow: 0 6px 28px rgba(240, 128, 128, 0.3);
+}
+
+.psico-home-plan-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #f08080;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.25rem 0.9rem;
+  border-radius: 50px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.psico-home-plan-name {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #1e3a4a;
+  margin: 0;
+}
+
+.psico-home-plan-subtitle {
+  font-size: 0.82rem;
+  color: #666;
+  margin: 0;
+}
+
+.psico-home-plan-price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  margin: 0.4rem 0;
+}
+
+.psico-home-plan-currency {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #888;
+}
+
+.psico-home-plan-amount {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #f08080;
+  line-height: 1;
+}
+
+.psico-home-plan-period {
+  font-size: 0.82rem;
+  color: #888;
+}
+
+.psico-home-plan-features {
+  list-style: none;
+  padding: 0;
+  margin: 0.4rem 0 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  text-align: left;
+}
+
+.psico-home-plan-features li {
+  display: flex;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+  color: #444;
+  align-items: flex-start;
+}
+
+.psico-home-plan-check {
+  color: #f08080;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.psico-home-plan-btn {
+  display: block;
+  text-align: center;
+  padding: 0.65rem 1rem;
+  border-radius: 50px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-decoration: none;
+  background: #f0f0f0;
+  color: #1e3a4a;
+  margin-top: auto;
+  transition: background 0.2s, color 0.2s;
+}
+
+.psico-home-plan-btn:hover {
+  background: #e0e0e0;
+}
+
+.psico-home-plan-btn--highlight {
+  background: #f08080;
+  color: #fff;
+}
+
+.psico-home-plan-btn--highlight:hover {
+  background: #e06060;
+}
+
+.psico-home-plans-note {
+  font-size: 0.88rem;
+  color: rgba(30, 30, 30, 0.82);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* ── IMPORTANTE ─────────────────────────────────────────────── */
+.psico-home-important {
+  background: #2c2c2c;
+  color: #ccc;
+  padding: 2.5rem 1.5rem;
+}
+
+.psico-home-important-inner {
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.psico-home-important-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 0 0 1rem;
+}
+
+.psico-home-important p {
+  font-size: 0.82rem;
+  line-height: 1.7;
+  margin: 0 0 1.5rem;
+  color: #bbb;
+}
+
+.psico-home-important-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.2rem;
+}
+
+.psico-home-important-links a {
+  font-size: 0.85rem;
+  color: #ccc;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.psico-home-important-links a:hover {
+  color: #f08080;
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .psico-home-groups-grid,
+  .psico-home-plans-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .psico-home-plan-card--highlight {
+    order: -1;
+  }
+}
+
+@media (max-width: 600px) {
+  .psico-home-hero {
+    min-height: 320px;
+  }
+
+  .psico-home-general-inner {
+    padding: 1.5rem;
+  }
+
+  .psico-home-plans-title {
+    font-size: 1.7rem;
+  }
+}
