@@ -92,7 +92,13 @@ async function main() {
   const endDate = new Date();
   endDate.setMonth(endDate.getMonth() + 1);
 
-  const subscription = await prisma.subscription.create({
+  const subscription = await prisma.subscription.findFirst({
+    where: {
+      companyId: company.id,
+      plan: 'MONTHLY',
+      status: 'ACTIVE',
+    },
+  }) || await prisma.subscription.create({
     data: {
       companyId: company.id,
       plan: 'MONTHLY',
@@ -102,6 +108,7 @@ async function main() {
       amount: 9999,
       currency: 'ARS',
       paymentStatus: 'approved',
+      paymentMethod: 'seed',
     },
   });
   console.log('✅ Suscripción creada para:', company.companyName);
@@ -110,7 +117,14 @@ async function main() {
   const techCategory = await prisma.category.findUnique({ where: { slug: 'ingeniero-software' } });
   
   if (techCategory) {
-    const jobOffer = await prisma.jobOffer.create({
+    const existingJobOffer = await prisma.jobOffer.findFirst({
+      where: {
+        companyId: company.id,
+        title: 'Desarrollador Full Stack Senior',
+      },
+    });
+
+    const jobOffer = existingJobOffer || await prisma.jobOffer.create({
       data: {
         title: 'Desarrollador Full Stack Senior',
         description: 'Buscamos un desarrollador Full Stack con experiencia en React y Node.js para unirse a nuestro equipo de desarrollo.',

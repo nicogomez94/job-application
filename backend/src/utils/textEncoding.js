@@ -24,6 +24,10 @@ const repairMojibakeDeep = (value) => {
     return value.map(repairMojibakeDeep);
   }
 
+  if (value instanceof Date) {
+    return value;
+  }
+
   if (value && typeof value === 'object') {
     return Object.fromEntries(
       Object.entries(value).map(([key, entryValue]) => [key, repairMojibakeDeep(entryValue)])
