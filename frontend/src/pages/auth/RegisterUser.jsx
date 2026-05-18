@@ -12,6 +12,78 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 const getFilesExceedingSize = (files) => files.filter((file) => file.size > MAX_FILE_SIZE);
 
+const getValidationMessage = (details) => {
+  const firstDetail = Array.isArray(details) ? details[0] : null;
+  return firstDetail?.message || null;
+};
+
+const getReadableRegisterError = (error) => {
+  const status = error.response?.status;
+  const serverMessage = error.response?.data?.error;
+  const validationMessage = getValidationMessage(error.response?.data?.details);
+
+  if (validationMessage) {
+    return validationMessage;
+  }
+
+  if (serverMessage && serverMessage !== 'Datos de entrada inválidos') {
+    return serverMessage;
+  }
+
+  if (!error.response) {
+    if (error.code === 'ECONNABORTED') {
+      return 'La conexión tardó demasiado. Probá nuevamente en unos segundos.';
+    }
+
+    return 'No pudimos conectarnos con el servidor. Revisá tu conexión e intentá otra vez.';
+  }
+
+  if (status === 400) {
+    return 'Revisá los datos ingresados. Puede haber un email inválido, una clave muy corta o un campo incompleto.';
+  }
+
+  if (status === 401 || status === 403) {
+    return 'La sesión no se pudo validar. Actualizá la página e intentá crear la cuenta nuevamente.';
+  }
+
+  if (status === 409) {
+    return 'Ese email ya está registrado. Probá iniciar sesión o recuperar la contraseña.';
+  }
+
+  if (status === 413) {
+    return 'Alguno de los archivos es demasiado grande. Probá subir archivos de hasta 5 MB.';
+  }
+
+  if (status >= 500) {
+    return 'El servidor tuvo un problema al crear la cuenta. Probá nuevamente en unos minutos.';
+  }
+
+  return 'No se pudo crear la cuenta. Revisá los datos e intentá nuevamente.';
+};
+
+const getReadableUploadError = (error, fallbackMessage) => {
+  const status = error.response?.status;
+  const serverMessage = error.response?.data?.error;
+
+  if (serverMessage) {
+    return serverMessage;
+  }
+
+  if (!error.response) {
+    return 'No pudimos subir el archivo por un problema de conexión. Probá nuevamente.';
+  }
+
+  if (status === 413) {
+    return 'El archivo es demasiado grande. Probá subir uno de hasta 5 MB.';
+  }
+
+  if (status >= 500) {
+    return 'El servidor tuvo un problema al subir el archivo. Probá nuevamente en unos minutos.';
+  }
+
+  return fallbackMessage;
+};
+
 const getInitialForm = () => {
   const base = DEBUG_MODE
     ? { ...DEBUG_FORM_DATA.registerUser }
@@ -155,13 +227,14 @@ export default function RegisterUser() {
       try {
         await userService.uploadCV(formData.cvFile);
       } catch (cvError) {
+        console.error('Error al subir el CV durante el registro:', cvError);
         try {
-          await userService.deleteAccount();
+          await userService.deleteAccount(token);
         } catch (deleteError) {
           console.error('No se pudo eliminar la cuenta tras fallar la subida del CV:', deleteError);
         }
         logout();
-        toast.error(cvError.response?.data?.error || 'No se pudo subir el CV');
+        toast.error(getReadableUploadError(cvError, 'No se pudo subir el CV. Probá con otro archivo.'));
         return;
       }
 
@@ -184,13 +257,20 @@ export default function RegisterUser() {
           );
         }
       } catch (uploadError) {
-        toast.error(uploadError.response?.data?.error || 'No se pudieron subir los archivos');
+        console.error('Error al subir archivos adicionales durante el registro:', uploadError);
+        toast.error(
+          getReadableUploadError(
+            uploadError,
+            'La cuenta se creó, pero no se pudieron subir algunos archivos adicionales.'
+          )
+        );
       }
 
       toast.success('Cuenta creada exitosamente');
       navigate('/user/dashboard');
     } catch (error) {
-      toast.error(error.response?.data?.error || 'No se pudo crear la cuenta');
+      console.error('Error al crear cuenta de profesional:', error);
+      toast.error(getReadableRegisterError(error));
     } finally {
       setLoading(false);
     }

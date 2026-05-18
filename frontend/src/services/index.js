@@ -51,7 +51,8 @@ export const userService = {
     });
   },
   getMyApplications: () => api.get('/users/applications'),
-  deleteAccount: () => api.delete('/users/account'),
+  deleteAccount: (token) =>
+    api.delete('/users/account', token ? { headers: { Authorization: `Bearer ${token}` } } : undefined),
 };
 
 // ==================== COMPANIES ====================
