@@ -155,6 +155,22 @@
   font-weight: 800;
 }
 
+.select-plan-original-price--struck {
+  color: #7e705c;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+
+.select-plan-free-label {
+  color: #16a34a;
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 1.05;
+  margin-bottom: 0.25rem;
+}
+
 .select-plan-discount {
   font-size: 0.8rem;
   color: #f59e0b;

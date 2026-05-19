@@ -203,7 +203,7 @@ exports.getSubscription = async (req, res) => {
 // ─── CREATE SUBSCRIPTION ──────────────────────────────────────────────────────
 exports.createSubscription = async (req, res) => {
   try {
-    const { plan, amount, currency, paymentId, paymentStatus, paymentMethod } = req.body;
+    const { plan, currency, paymentId } = req.body;
 
     const startDate = new Date();
     let durationInMonths = 3;
@@ -228,11 +228,11 @@ exports.createSubscription = async (req, res) => {
         status: 'ACTIVE',
         startDate,
         endDate,
-        amount,
+        amount: '0',
         currency: currency || 'USD',
         paymentId,
-        paymentStatus,
-        paymentMethod,
+        paymentStatus: 'free',
+        paymentMethod: 'free',
       },
     });
 
@@ -265,7 +265,7 @@ exports.getPlans = async (req, res) => {
         currency: 'USD',
         duration: '3 meses',
         isFreeMode,
-        features: ['Solo por tiempo limitado', 'Renovación paga al finalizar', 'Perfil visible para pacientes'],
+        features: ['Solo por tiempo limitado', 'Plan bonificado', 'Perfil visible para pacientes'],
       },
       {
         id: 'QUARTERLY',
@@ -275,7 +275,7 @@ exports.getPlans = async (req, res) => {
         duration: '7 meses',
         discount: 'Recomendado',
         isFreeMode,
-        features: ['Solo por tiempo limitado', 'Renovación paga al finalizar', 'Cobertura extendida'],
+        features: ['Solo por tiempo limitado', 'Plan bonificado', 'Cobertura extendida'],
       },
       {
         id: 'ANNUAL',
@@ -285,7 +285,7 @@ exports.getPlans = async (req, res) => {
         duration: '13 meses',
         discount: '1 mes gratis incluido',
         isFreeMode,
-        features: ['Pagás 12 meses y usás 13', 'Renovación paga al finalizar', 'Mayor continuidad anual'],
+        features: ['Precio regular de referencia', 'Plan bonificado', 'Mayor continuidad anual'],
       },
     ],
   });

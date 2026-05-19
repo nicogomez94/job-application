@@ -98,8 +98,9 @@ export default function SelectPsychologistPlan() {
                 </div>
 
                 <div className="select-plan-price-section">
-                  <div className="select-plan-original-price">
-                    Valor regular: ${plan.price?.toLocaleString('es-AR')} {plan.currency}/{plan.duration}
+                  <div className="select-plan-free-label">Gratis</div>
+                  <div className="select-plan-original-price select-plan-original-price--struck">
+                    Precio regular: ${plan.price?.toLocaleString('es-AR')} {plan.currency}/{plan.duration}
                   </div>
                   {plan.discount && (
                     <div className="select-plan-discount">{plan.discount}</div>
@@ -120,7 +121,7 @@ export default function SelectPsychologistPlan() {
                   onClick={() => handleSelectPlan(plan)}
                   disabled={activating !== null}
                 >
-                  {isActivating ? <span className="select-plan-btn-loading">Activando...</span> : 'Seleccionar plan'}
+                  {isActivating ? <span className="select-plan-btn-loading">Activando...</span> : 'Activar gratis'}
                 </button>
               </div>
             );
@@ -129,7 +130,7 @@ export default function SelectPsychologistPlan() {
 
         <div className="select-plan-footer">
           <p>
-            No se requiere tarjeta de crédito durante el período de lanzamiento.
+            No se requiere tarjeta de crédito. Los planes para psicólogos están bonificados.
           </p>
           <p className="select-plan-footer-mp">
             Próximamente: pagos seguros con <strong>Mercado Pago</strong>.

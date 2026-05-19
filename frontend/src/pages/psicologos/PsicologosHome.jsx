@@ -90,7 +90,7 @@ const PLANS = [
     features: [
       'Perfil visible para pacientes',
       'Ideal para validar el servicio',
-      'Renovación paga al finalizar',
+      'Bonificado para psicólogos',
     ],
     highlight: false,
   },
@@ -104,7 +104,7 @@ const PLANS = [
     features: [
       'Mayor continuidad de publicaciones',
       'Mejor costo por mes',
-      'Renovación paga al finalizar',
+      'Bonificado para psicólogos',
     ],
     highlight: true,
     badge: 'Recomendado',
@@ -119,7 +119,7 @@ const PLANS = [
     features: [
       '1 mes adicional sin costo incluido',
       'Cobertura anual extendida',
-      'Renovación paga al finalizar',
+      'Bonificado para psicólogos',
     ],
     highlight: false,
   },
@@ -209,9 +209,9 @@ export default function PsicologosHome() {
       {/* ── PLANES DE PAGO ────────────────────────────────────── */}
       <section className="psico-home-plans">
         <div className="psico-home-plans-inner">
-          <h2 className="psico-home-plans-title">Plan de Pago</h2>
+          <h2 className="psico-home-plans-title">Planes para Psicólogos</h2>
           <p className="psico-home-plans-sub">
-            Elegí el plan que mejor se adapte a tu práctica profesional.
+            Elegí el plan que mejor se adapte a tu práctica profesional. Hoy están gratis.
           </p>
 
           <div className="psico-home-plans-grid">
@@ -226,9 +226,10 @@ export default function PsicologosHome() {
                 <h3 className="psico-home-plan-name">{plan.name}</h3>
                 <p className="psico-home-plan-subtitle">{plan.subtitle}</p>
                 <div className="psico-home-plan-price">
-                  <span className="psico-home-plan-currency">USD</span>
-                  <span className="psico-home-plan-amount">{plan.price}</span>
-                  <span className="psico-home-plan-period">/ {plan.duration}</span>
+                  <span className="psico-home-plan-free">Gratis</span>
+                  <span className="psico-home-plan-regular">
+                    USD {plan.price} / {plan.duration}
+                  </span>
                 </div>
                 <ul className="psico-home-plan-features">
                   {plan.features.map((f) => (
@@ -249,8 +250,8 @@ export default function PsicologosHome() {
           </div>
 
           <p className="psico-home-plans-note">
-            <strong>Inscripción inicial:</strong> 2 meses gratis en tu primera vez en la plataforma.
-            Todas las renovaciones son pagas en cualquiera de sus formas.
+            <strong>Promoción vigente:</strong> el precio regular figura como referencia, pero el acceso
+            a los planes para psicólogos está bonificado.
           </p>
         </div>
       </section>

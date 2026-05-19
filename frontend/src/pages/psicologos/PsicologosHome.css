@@ -339,9 +339,26 @@
 
 .psico-home-plan-price {
   display: flex;
-  align-items: baseline;
-  gap: 0.3rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.45rem;
   margin: 0.4rem 0;
+}
+
+.psico-home-plan-free {
+  color: #16a34a;
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.psico-home-plan-regular {
+  color: #888;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
 }
 
 .psico-home-plan-currency {

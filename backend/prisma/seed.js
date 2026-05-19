@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
 const { DEFAULT_CATEGORIES } = require('../src/constants/defaultCategories');
@@ -416,7 +418,7 @@ async function main() {
       });
     }
   }
-  console.log(`âœ… ${psychologistSeedData.length} psicólogos de ejemplo creados`);
+  console.log(`✅ ${psychologistSeedData.length} psicólogos de ejemplo creados`);
 
   console.log('');
   console.log('==========================================');
