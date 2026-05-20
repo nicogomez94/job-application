@@ -74,14 +74,16 @@ export default function PsychologistList() {
         <h1>Psicólogos en Línea</h1>
         <p>Encontrá un profesional de la salud mental que te acompañe de forma remota.</p>
         {isAuthenticated && userType === 'user' && (
-          <Link to="/psicologos/mi-cuenta" className="psico-btn-secondary" style={{ marginTop: '1rem', display: 'inline-flex' }}>
-            Mis solicitudes
-          </Link>
+          <div className="psico-list-hero-btns">
+            <Link to="/psicologos/mi-cuenta" className="psico-hero-btn-solid">
+              Mis solicitudes
+            </Link>
+          </div>
         )}
         {!isAuthenticated && (
-          <div style={{ marginTop: '1rem', display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link to="/psicologos/login-paciente" className="psico-btn-secondary">Iniciar sesión</Link>
-            <Link to="/psicologos/registro-paciente" className="psico-btn-primary">Crear cuenta</Link>
+          <div className="psico-list-hero-btns">
+            <Link to="/psicologos/login-paciente" className="psico-hero-btn-outline">Iniciar sesión</Link>
+            <Link to="/psicologos/registro-paciente" className="psico-hero-btn-solid">Crear cuenta</Link>
           </div>
         )}
       </div>
