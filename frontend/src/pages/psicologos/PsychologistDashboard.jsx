@@ -151,6 +151,10 @@ export default function PsychologistDashboard() {
                 )}
               </div>
             </div>
+            <p className="psico-independent-notice psico-independent-notice--sm">
+              Este profesional actúa de manera independiente.<br />
+              La plataforma no interviene en sesiones, pagos ni resultados del servicio.
+            </p>
           </div>
 
           <div className="psico-dashboard-card">

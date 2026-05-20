@@ -311,6 +311,11 @@ export default function PsychologistProfile() {
           <div className="psico-profile-disclaimer">
             <strong>Aviso:</strong> La atención remota no es recomendada para crisis aguda con riesgo de vida o psicosis activa que requiera contención física inmediata, las cuales necesitan atención presencial de emergencia.
           </div>
+
+          <div className="psico-independent-notice">
+            El profesional actúa de manera independiente.<br />
+            La plataforma no interviene en sesiones, pagos ni resultados del servicio.
+          </div>
         </div>
       </div>
     </div>
