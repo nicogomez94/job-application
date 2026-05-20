@@ -1434,3 +1434,249 @@
   border-top-color: var(--psico-accent-200);
   border-bottom-color: var(--psico-accent-200);
 }
+
+/* ── Hire button ─────────────────────────────────────────────── */
+.psico-btn-hire {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.38rem 0.85rem;
+  background: #2c5f7a;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.psico-btn-hire:hover {
+  background: #1e4560;
+}
+
+/* ── Accept / Danger buttons ─────────────────────────────────── */
+.psico-btn-accept {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.75rem;
+  background: #22c55e;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.psico-btn-accept:hover:not(:disabled) {
+  background: #16a34a;
+}
+
+.psico-btn-accept:disabled,
+.psico-btn-danger-sm:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.psico-btn-danger-sm {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.75rem;
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.psico-btn-danger-sm:hover:not(:disabled) {
+  background: #dc2626;
+}
+
+/* ── Status badges ───────────────────────────────────────────── */
+.psico-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.28rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+.psico-status-green {
+  background: #dcfce7;
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+
+.psico-status-orange {
+  background: #fef3c7;
+  color: #b45309;
+  border-color: #fde68a;
+}
+
+.psico-status-red {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-color: #fecaca;
+}
+
+/* ── Patient request list ────────────────────────────────────── */
+.patient-requests-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.patient-request-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  background: #f8fafc;
+  border: 1px solid #e2eaf0;
+  border-radius: 10px;
+  flex-wrap: wrap;
+}
+
+.patient-request-psy {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+.patient-request-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+}
+
+.patient-request-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
+.psico-request-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.psico-request-message {
+  font-style: italic;
+  color: #4b6e85;
+  font-size: 0.82rem;
+  margin: 0.2rem 0 0;
+}
+
+.psico-requests-group {
+  margin-bottom: 1.25rem;
+}
+
+.psico-requests-group-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+/* ── Inline psico-card-photo small variant ───────────────────── */
+.psico-card-photo-sm {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+/* ── Hire section on profile page ───────────────────────────── */
+.psico-hire-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.psico-hire-message {
+  width: 100%;
+  max-width: 420px;
+  padding: 0.6rem 0.8rem;
+  border: 1.5px solid #b8d9eb;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  resize: vertical;
+  color: #1e3a4a;
+  background: #f8fbfd;
+}
+
+.psico-hire-message:focus {
+  outline: none;
+  border-color: #2c5f7a;
+}
+
+/* ── Badge count ─────────────────────────────────────────────── */
+.psico-badge-count {
+  display: inline-block;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  margin-left: auto;
+}
+
+/* ── Dashboard requests card (full-width) ───────────────────── */
+.psico-dashboard-requests-card {
+  grid-column: 1 / -1;
+  margin-top: 1.5rem;
+}
+
+/* ── Misc helpers ────────────────────────────────────────────── */
+.psico-secondary-text {
+  color: #6b7280;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.psico-date-text {
+  font-size: 0.78rem;
+}
+
+.psico-link-subtle {
+  color: #2c5f7a;
+  font-size: 0.82rem;
+  text-decoration: none;
+}
+
+.psico-link-subtle:hover {
+  text-decoration: underline;
+}
+
+.psico-dashboard-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}

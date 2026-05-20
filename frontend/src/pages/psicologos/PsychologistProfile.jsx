@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { MessageCircle, Mail, ArrowLeft, MapPin, Languages, Star, BookOpen, Clock } from 'lucide-react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { MessageCircle, Mail, ArrowLeft, MapPin, Languages, Star, BookOpen, Clock, UserPlus, CheckCircle, XCircle, Loader } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { psychologistService } from '../../services';
+import { psychologistService, psychologistRequestService } from '../../services';
+import { useAuthStore } from '../../context/authStore';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
 import './Psicologos.css';
 
@@ -14,8 +15,19 @@ const toAssetUrl = (p) => {
 
 export default function PsychologistProfile() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { isAuthenticated, userType } = useAuthStore();
   const [psychologist, setPsychologist] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Request state for logged-in common users
+  const [myRequest, setMyRequest] = useState(null); // null = not loaded yet / no request
+  const [requestLoading, setRequestLoading] = useState(false);
+  const [sendingRequest, setSendingRequest] = useState(false);
+  const [message, setMessage] = useState('');
+  const [contactInfo, setContactInfo] = useState(null);
+
+  const isCommonUser = isAuthenticated && userType === 'user';
 
   useEffect(() => {
     const load = async () => {
@@ -30,6 +42,67 @@ export default function PsychologistProfile() {
     };
     load();
   }, [id]);
+
+  // Load the user's existing request for this psychologist
+  useEffect(() => {
+    if (!isCommonUser) return;
+    const loadRequest = async () => {
+      setRequestLoading(true);
+      try {
+        const res = await psychologistRequestService.getMyRequests();
+        const existing = (res.data || []).find((r) => r.psychologistId === id || r.psychologist?.id === id);
+        setMyRequest(existing || null);
+
+        if (existing?.status === 'ACCEPTED') {
+          // Load contact info
+          try {
+            const contactRes = await psychologistRequestService.getContactInfo(id);
+            setContactInfo(contactRes.data);
+          } catch {
+            // contact info may not be available yet
+          }
+        }
+      } catch {
+        // silently ignore
+      } finally {
+        setRequestLoading(false);
+      }
+    };
+    loadRequest();
+  }, [id, isCommonUser]);
+
+  const handleSendRequest = async () => {
+    if (!isAuthenticated || userType !== 'user') {
+      navigate('/psicologos/login-paciente', { state: { from: `/psicologos/${id}` } });
+      return;
+    }
+    setSendingRequest(true);
+    try {
+      const res = await psychologistRequestService.send(id, message || undefined);
+      setMyRequest(res.data.request);
+      setMessage('');
+      toast.success('¡Solicitud enviada! El psicólogo la revisará pronto.');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Error al enviar la solicitud');
+    } finally {
+      setSendingRequest(false);
+    }
+  };
+
+  const handleCancelRequest = async () => {
+    if (!myRequest) return;
+    if (!window.confirm('¿Cancelar esta solicitud?')) return;
+    setSendingRequest(true);
+    try {
+      await psychologistRequestService.cancel(myRequest.id);
+      setMyRequest(null);
+      toast.success('Solicitud cancelada');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Error al cancelar');
+    } finally {
+      setSendingRequest(false);
+    }
+  };
 
   if (loading) {
     return <div className="psico-loading psico-page-loading">Cargando perfil...</div>;
@@ -52,9 +125,15 @@ export default function PsychologistProfile() {
   const name = p.displayName || `${p.firstName} ${p.lastName}`;
   const photo = toAssetUrl(p.profileImage);
   const initials = `${p.firstName?.[0] || ''}${p.lastName?.[0] || ''}`.toUpperCase();
-  const whatsappUrl = p.phone
-    ? `https://wa.me/${p.phone.replace(/\D/g, '')}`
-    : null;
+
+  // Determine contact info source: from accepted request or from profile (if available)
+  const phone = contactInfo?.phone || p.phone;
+  const contactEmail = contactInfo?.contactEmail || p.contactEmail;
+  const whatsappUrl = phone ? `https://wa.me/${phone.replace(/\D/g, '')}` : null;
+
+  const requestAccepted = myRequest?.status === 'ACCEPTED';
+  const requestPending = myRequest?.status === 'PENDING';
+  const requestRejected = myRequest?.status === 'REJECTED';
 
   return (
     <div className="psico-profile-page">
@@ -79,15 +158,90 @@ export default function PsychologistProfile() {
               </div>
             )}
             <div className="psico-profile-contact-btns">
-              {whatsappUrl && (
-                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="psico-btn-whatsapp psico-btn-large">
-                  <MessageCircle size={18} /> Contactar por WhatsApp
-                </a>
+              {/* ACCEPTED: show real contact buttons */}
+              {requestAccepted && (
+                <>
+                  <span className="psico-status-badge psico-status-green" style={{ marginBottom: '0.5rem' }}>
+                    <CheckCircle size={14} /> Solicitud aceptada
+                  </span>
+                  {whatsappUrl && (
+                    <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="psico-btn-whatsapp psico-btn-large">
+                      <MessageCircle size={18} /> Contactar por WhatsApp
+                    </a>
+                  )}
+                  {contactEmail && (
+                    <a href={`mailto:${contactEmail}`} className="psico-btn-email psico-btn-large">
+                      <Mail size={18} /> {contactEmail}
+                    </a>
+                  )}
+                </>
               )}
-              {p.contactEmail && (
-                <a href={`mailto:${p.contactEmail}`} className="psico-btn-email psico-btn-large">
-                  <Mail size={18} /> Enviar Email
-                </a>
+
+              {/* PENDING: show waiting status */}
+              {requestPending && (
+                <div className="psico-hire-section">
+                  <span className="psico-status-badge psico-status-orange">
+                    <Clock size={14} /> Solicitud enviada — esperando respuesta
+                  </span>
+                  <button
+                    className="psico-btn-danger-sm"
+                    onClick={handleCancelRequest}
+                    disabled={sendingRequest}
+                    style={{ marginTop: '0.5rem' }}
+                  >
+                    {sendingRequest ? 'Cancelando...' : 'Cancelar solicitud'}
+                  </button>
+                </div>
+              )}
+
+              {/* REJECTED: allow retrying */}
+              {requestRejected && (
+                <div className="psico-hire-section">
+                  <span className="psico-status-badge psico-status-red">
+                    <XCircle size={14} /> Este psicólogo no está disponible por ahora
+                  </span>
+                </div>
+              )}
+
+              {/* No request yet */}
+              {!myRequest && !requestLoading && (
+                <div className="psico-hire-section">
+                  {isCommonUser ? (
+                    <>
+                      <textarea
+                        className="psico-hire-message"
+                        placeholder="Mensaje opcional para el psicólogo (ej. motivo de consulta)..."
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        rows={3}
+                      />
+                      <button
+                        className="psico-btn-primary psico-btn-large"
+                        onClick={handleSendRequest}
+                        disabled={sendingRequest}
+                      >
+                        {sendingRequest ? (
+                          <><Loader size={16} /> Enviando...</>
+                        ) : (
+                          <><UserPlus size={18} /> Solicitar consulta</>
+                        )}
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      className="psico-btn-primary psico-btn-large"
+                      onClick={() => navigate('/psicologos/login-paciente', { state: { from: `/psicologos/${id}` } })}
+                    >
+                      <UserPlus size={18} /> Iniciar sesión para solicitar consulta
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {requestLoading && (
+                <div className="psico-loading" style={{ fontSize: '0.85rem', padding: '0.5rem 0' }}>
+                  Cargando estado...
+                </div>
               )}
             </div>
           </div>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { User, FileText, CreditCard, CheckCircle, Clock, XCircle, Edit } from 'lucide-react';
+import { User, FileText, CreditCard, CheckCircle, Clock, XCircle, Edit, Users, Check, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { psychologistService } from '../../services';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
@@ -26,6 +26,9 @@ export default function PsychologistDashboard() {
   const [profile, setProfile] = useState(null);
   const [subscription, setSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [incomingRequests, setIncomingRequests] = useState([]);
+  const [requestsLoading, setRequestsLoading] = useState(false);
+  const [updatingRequest, setUpdatingRequest] = useState(null);
 
   useEffect(() => {
     const load = async () => {
@@ -52,6 +55,20 @@ export default function PsychologistDashboard() {
       }
     };
     load();
+
+    // Load incoming hiring requests
+    const loadRequests = async () => {
+      setRequestsLoading(true);
+      try {
+        const res = await psychologistService.getIncomingRequests();
+        setIncomingRequests(res.data || []);
+      } catch {
+        // silently ignore
+      } finally {
+        setRequestsLoading(false);
+      }
+    };
+    loadRequests();
   }, []);
 
   if (loading) {
@@ -67,6 +84,24 @@ export default function PsychologistDashboard() {
 
   const formatDate = (d) =>
     d ? new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(d)) : '-';
+
+  const handleRequestStatus = async (requestId, status) => {
+    setUpdatingRequest(requestId);
+    try {
+      await psychologistService.updateRequestStatus(requestId, status);
+      setIncomingRequests((prev) =>
+        prev.map((r) => (r.id === requestId ? { ...r, status } : r)),
+      );
+      toast.success(status === 'ACCEPTED' ? 'Solicitud aceptada' : 'Solicitud rechazada');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Error al actualizar la solicitud');
+    } finally {
+      setUpdatingRequest(null);
+    }
+  };
+
+  const pendingRequests = incomingRequests.filter((r) => r.status === 'PENDING');
+  const resolvedRequests = incomingRequests.filter((r) => r.status !== 'PENDING');
 
   return (
     <div className="psico-dashboard-page">
@@ -154,6 +189,105 @@ export default function PsychologistDashboard() {
               <li><Link to="/psicologos">Ver cómo aparezco en el listado</Link></li>
             </ul>
           </div>
+        </div>
+
+        {/* ── Incoming Hiring Requests ── */}
+        <div className="psico-dashboard-card psico-dashboard-requests-card">
+          <div className="psico-dashboard-card-header">
+            <Users size={18} />
+            <h2>Solicitudes de consulta</h2>
+            {pendingRequests.length > 0 && (
+              <span className="psico-badge-count">{pendingRequests.length} pendiente{pendingRequests.length !== 1 ? 's' : ''}</span>
+            )}
+          </div>
+
+          {requestsLoading ? (
+            <p className="psico-secondary-text">Cargando solicitudes...</p>
+          ) : incomingRequests.length === 0 ? (
+            <p className="psico-secondary-text">Aún no recibiste solicitudes de consulta.</p>
+          ) : (
+            <>
+              {pendingRequests.length > 0 && (
+                <div className="psico-requests-group">
+                  <h3 className="psico-requests-group-title">Pendientes</h3>
+                  <ul className="patient-requests-list">
+                    {pendingRequests.map((req) => {
+                      const u = req.user;
+                      const userName = `${u?.firstName || ''} ${u?.lastName || ''}`.trim();
+                      return (
+                        <li key={req.id} className="patient-request-item">
+                          <div className="patient-request-psy">
+                            <div className="psico-card-photo psico-card-photo-sm">
+                              <div className="psico-card-initials">
+                                {`${u?.firstName?.[0] || ''}${u?.lastName?.[0] || ''}`.toUpperCase()}
+                              </div>
+                            </div>
+                            <div>
+                              <strong>{userName}</strong>
+                              <p className="psico-secondary-text">{u?.email}</p>
+                              {req.message && (
+                                <p className="psico-request-message">"{req.message}"</p>
+                              )}
+                              <span className="psico-secondary-text psico-date-text">
+                                {formatDate(req.createdAt)}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="psico-request-actions">
+                            <button
+                              className="psico-btn-accept"
+                              onClick={() => handleRequestStatus(req.id, 'ACCEPTED')}
+                              disabled={updatingRequest === req.id}
+                            >
+                              <Check size={14} /> Aceptar
+                            </button>
+                            <button
+                              className="psico-btn-danger-sm"
+                              onClick={() => handleRequestStatus(req.id, 'REJECTED')}
+                              disabled={updatingRequest === req.id}
+                            >
+                              <X size={14} /> Rechazar
+                            </button>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              )}
+
+              {resolvedRequests.length > 0 && (
+                <div className="psico-requests-group">
+                  <h3 className="psico-requests-group-title">Historial</h3>
+                  <ul className="patient-requests-list">
+                    {resolvedRequests.map((req) => {
+                      const u = req.user;
+                      const userName = `${u?.firstName || ''} ${u?.lastName || ''}`.trim();
+                      const isAccepted = req.status === 'ACCEPTED';
+                      return (
+                        <li key={req.id} className="patient-request-item">
+                          <div className="patient-request-psy">
+                            <div className="psico-card-photo psico-card-photo-sm">
+                              <div className="psico-card-initials">
+                                {`${u?.firstName?.[0] || ''}${u?.lastName?.[0] || ''}`.toUpperCase()}
+                              </div>
+                            </div>
+                            <div>
+                              <strong>{userName}</strong>
+                              <p className="psico-secondary-text">{u?.email}</p>
+                            </div>
+                          </div>
+                          <span className={`psico-status-badge psico-status-${isAccepted ? 'green' : 'red'}`}>
+                            {isAccepted ? <><CheckCircle size={13} /> Aceptado</> : <><XCircle size={13} /> Rechazado</>}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>

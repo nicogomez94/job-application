@@ -7,7 +7,8 @@ const upload = require('../config/upload');
 const psychologistAuthController = require('../controllers/psychologistAuth.controller');
 const psychologistController = require('../controllers/psychologist.controller');
 const psychologistPublicController = require('../controllers/psychologistPublic.controller');
-const { authenticatePsychologist, authenticateAdmin, checkActivePsychologistSubscription } = require('../middlewares/auth.middleware');
+const psychologistRequestController = require('../controllers/psychologistRequest.controller');
+const { authenticatePsychologist, authenticateAdmin, authenticateUser } = require('../middlewares/auth.middleware');
 
 // ─── PUBLIC ROUTES ───────────────────────────────────────────────────────────
 
@@ -74,6 +75,40 @@ router.post(
   psychologistController.createSubscription
 );
 
+// Psychologist views incoming hiring requests
+router.get('/me/requests', authenticatePsychologist, psychologistRequestController.getIncomingRequests);
+
+// ─── PROTECTED: USER (common patient) ────────────────────────────────────────
+
+// Send a hiring request
+router.post(
+  '/requests',
+  authenticateUser,
+  [
+    body('psychologistId').notEmpty().withMessage('El id del psicólogo es requerido'),
+    body('message').optional().isString().withMessage('El mensaje debe ser texto'),
+    validate,
+  ],
+  psychologistRequestController.sendRequest
+);
+
+// List own requests
+router.get('/requests/mine', authenticateUser, psychologistRequestController.getMyRequests);
+
+// Cancel a PENDING request
+router.delete('/requests/:id', authenticateUser, psychologistRequestController.cancelRequest);
+
+// Psychologist accepts or rejects a request
+router.put(
+  '/requests/:id/status',
+  authenticatePsychologist,
+  [
+    body('status').isIn(['ACCEPTED', 'REJECTED']).withMessage('Estado inválido'),
+    validate,
+  ],
+  psychologistRequestController.updateRequestStatus
+);
+
 // ─── PROTECTED: ADMIN ────────────────────────────────────────────────────────
 
 router.get('/admin/all', authenticateAdmin, psychologistController.adminList);
@@ -86,6 +121,7 @@ router.post(
 );
 
 // Keep the dynamic public route at the end so static routes match first.
+router.get('/:id/contact', authenticateUser, psychologistRequestController.getContactInfo);
 router.get('/:id', psychologistPublicController.getById);
 
 module.exports = router;

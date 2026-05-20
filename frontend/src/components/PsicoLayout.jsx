@@ -1,7 +1,7 @@
-import { useLayoutEffect } from 'react';
+import { useLayoutEffect, useState, useRef, useEffect } from 'react';
 import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../context/authStore';
-import { LogOut, LayoutDashboard } from 'lucide-react';
+import { LogOut, LayoutDashboard, ChevronDown, ClipboardList } from 'lucide-react';
 import { scrollToTopInstant } from '../utils/scrollToTop';
 import './PsicoLayout.css';
 
@@ -10,6 +10,21 @@ export default function PsicoLayout() {
   const navigate = useNavigate();
   const { isAuthenticated, userType, user, logout } = useAuthStore();
   const isPsychologist = isAuthenticated && userType === 'psychologist';
+  const isPatient = isAuthenticated && userType === 'user';
+
+  const [loginOpen, setLoginOpen] = useState(false);
+  const loginRef = useRef(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handler = (e) => {
+      if (loginRef.current && !loginRef.current.contains(e.target)) {
+        setLoginOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   useLayoutEffect(() => {
     scrollToTopInstant();
@@ -44,16 +59,25 @@ export default function PsicoLayout() {
               Buscar psicólogo
             </Link>
 
-            {!isPsychologist ? (
+            {/* ── Authenticated as patient (common user) ── */}
+            {isPatient && (
               <>
-                <Link to="/register/psicologo" className="psico-layout-nav-link">
-                  Registrarme
+                <Link to="/psicologos/mi-cuenta" className="psico-layout-nav-link">
+                  <ClipboardList size={15} />
+                  Mis solicitudes
                 </Link>
-                <Link to="/psicologos/login" className="psico-layout-nav-btn">
-                  Ingresar
-                </Link>
+                {displayName && (
+                  <span className="psico-layout-nav-user">{displayName}</span>
+                )}
+                <button type="button" className="psico-layout-nav-logout" onClick={handleLogout}>
+                  <LogOut size={15} />
+                  Salir
+                </button>
               </>
-            ) : (
+            )}
+
+            {/* ── Authenticated as psychologist ── */}
+            {isPsychologist && (
               <>
                 <Link to="/psicologo/dashboard" className="psico-layout-nav-link">
                   <LayoutDashboard size={15} />
@@ -63,6 +87,51 @@ export default function PsicoLayout() {
                   <LogOut size={15} />
                   Salir
                 </button>
+              </>
+            )}
+
+            {/* ── Not authenticated ── */}
+            {!isPsychologist && !isPatient && (
+              <>
+                <Link to="/register/psicologo" className="psico-layout-nav-link">
+                  Soy psicólogo
+                </Link>
+
+                {/* Login dropdown */}
+                <div className="psico-login-dropdown" ref={loginRef}>
+                  <button
+                    type="button"
+                    className="psico-layout-nav-btn"
+                    onClick={() => setLoginOpen((o) => !o)}
+                    aria-haspopup="true"
+                    aria-expanded={loginOpen}
+                  >
+                    Ingresar <ChevronDown size={14} style={{ marginLeft: '0.15rem', transform: loginOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }} />
+                  </button>
+                  {loginOpen && (
+                    <div className="psico-login-dropdown-menu" role="menu">
+                      <Link
+                        to="/psicologos/login-paciente"
+                        className="psico-login-dropdown-item"
+                        role="menuitem"
+                        onClick={() => setLoginOpen(false)}
+                      >
+                        <span className="psico-login-dropdown-label">Soy paciente</span>
+                        <span className="psico-login-dropdown-sub">Busco un psicólogo</span>
+                      </Link>
+                      <div className="psico-login-dropdown-divider" />
+                      <Link
+                        to="/psicologos/login"
+                        className="psico-login-dropdown-item"
+                        role="menuitem"
+                        onClick={() => setLoginOpen(false)}
+                      >
+                        <span className="psico-login-dropdown-label">Soy psicólogo</span>
+                        <span className="psico-login-dropdown-sub">Acceder a mi panel</span>
+                      </Link>
+                    </div>
+                  )}
+                </div>
               </>
             )}
           </nav>

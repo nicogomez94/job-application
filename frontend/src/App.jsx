@@ -58,6 +58,9 @@ import RegisterPsychologistDocs from './pages/psicologos/RegisterPsychologistDoc
 import RegisterPsychologistConfirmation from './pages/psicologos/RegisterPsychologistConfirmation';
 import SelectPsychologistPlan from './pages/psicologos/SelectPsychologistPlan';
 import PsychologistDashboard from './pages/psicologos/PsychologistDashboard';
+import RegisterPatient from './pages/psicologos/RegisterPatient';
+import LoginPatient from './pages/psicologos/LoginPatient';
+import PatientDashboard from './pages/psicologos/PatientDashboard';
 import PsicoLogin from './pages/auth/PsicoLogin';
 
 function ProtectedRoute({ children, allowedTypes }) {
@@ -67,8 +70,11 @@ function ProtectedRoute({ children, allowedTypes }) {
     if (allowedTypes?.length === 1 && allowedTypes[0] === 'admin') {
       return <Navigate to="/acceso-admin" replace />;
     }
-    if (allowedTypes?.includes('psychologist')) {
+    if (allowedTypes?.includes('psychologist') && !allowedTypes?.includes('user')) {
       return <Navigate to="/psicologos/login" replace />;
+    }
+    if (allowedTypes?.includes('user') && !allowedTypes?.includes('psychologist')) {
+      return <Navigate to="/psicologos/login-paciente" replace />;
     }
     return <Navigate to="/login" replace />;
   }
@@ -252,6 +258,8 @@ function App() {
         <Route path="psicologos" element={<PsicologosHome />} />
         <Route path="psicologos/buscar" element={<PsychologistList />} />
         <Route path="psicologos/login" element={<PsicoLogin />} />
+        <Route path="psicologos/login-paciente" element={<LoginPatient />} />
+        <Route path="psicologos/registro-paciente" element={<RegisterPatient />} />
         <Route path="psicologos/:id" element={<PsychologistProfile />} />
         <Route path="register/psicologo" element={<RegisterPsychologistType />} />
         <Route path="register/psicologo/argentina" element={<RegisterPsychologistAR />} />
@@ -285,6 +293,14 @@ function App() {
           element={
             <ProtectedRoute allowedTypes={['psychologist']}>
               <PsychologistDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="psicologos/mi-cuenta"
+          element={
+            <ProtectedRoute allowedTypes={['user']}>
+              <PatientDashboard />
             </ProtectedRoute>
           }
         />

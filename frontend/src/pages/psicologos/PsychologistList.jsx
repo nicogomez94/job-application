@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
-import { MessageCircle, Mail, Globe } from 'lucide-react';
+import { Globe, UserPlus } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { psychologistService } from '../../services';
+import { useAuthStore } from '../../context/authStore';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
 import './Psicologos.css';
 
@@ -33,6 +34,7 @@ export default function PsychologistList() {
     country: searchParams.get('country') || '',
     page: Number(searchParams.get('page') || 1),
   });
+  const { isAuthenticated, userType } = useAuthStore();
 
   const load = async (f) => {
     setLoading(true);
@@ -71,6 +73,17 @@ export default function PsychologistList() {
       <div className="psico-list-hero">
         <h1>Psicólogos en Línea</h1>
         <p>Encontrá un profesional de la salud mental que te acompañe de forma remota.</p>
+        {isAuthenticated && userType === 'user' && (
+          <Link to="/psicologos/mi-cuenta" className="psico-btn-secondary" style={{ marginTop: '1rem', display: 'inline-flex' }}>
+            Mis solicitudes
+          </Link>
+        )}
+        {!isAuthenticated && (
+          <div style={{ marginTop: '1rem', display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link to="/psicologos/login-paciente" className="psico-btn-secondary">Iniciar sesión</Link>
+            <Link to="/psicologos/registro-paciente" className="psico-btn-primary">Crear cuenta</Link>
+          </div>
+        )}
       </div>
 
       <div className="psico-list-container">
@@ -144,13 +157,10 @@ export default function PsychologistList() {
 
 function PsychologistCard({ psychologist: p }) {
   const navigate = useNavigate();
+  const { isAuthenticated, userType } = useAuthStore();
   const name = p.displayName || `${p.firstName} ${p.lastName}`;
   const photo = toAssetUrl(p.profileImage);
   const initials = `${p.firstName?.[0] || ''}${p.lastName?.[0] || ''}`.toUpperCase();
-
-  const whatsappUrl = p.phone
-    ? `https://wa.me/${p.phone.replace(/\D/g, '')}`
-    : null;
 
   const openProfile = () => {
     navigate(`/psicologos/${p.id}`);
@@ -165,6 +175,15 @@ function PsychologistCard({ psychologist: p }) {
 
   const stopCardNavigation = (e) => {
     e.stopPropagation();
+  };
+
+  const handleHireClick = (e) => {
+    stopCardNavigation(e);
+    if (!isAuthenticated || userType !== 'user') {
+      navigate('/psicologos/login-paciente', { state: { from: `/psicologos/${p.id}` } });
+    } else {
+      navigate(`/psicologos/${p.id}`);
+    }
   };
 
   return (
@@ -197,26 +216,12 @@ function PsychologistCard({ psychologist: p }) {
           </div>
         )}
         <div className="psico-card-contact">
-          {whatsappUrl && (
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="psico-btn-whatsapp"
-              onClick={stopCardNavigation}
-            >
-              <MessageCircle size={14} /> WhatsApp
-            </a>
-          )}
-          {p.contactEmail && (
-            <a
-              href={`mailto:${p.contactEmail}`}
-              className="psico-btn-email"
-              onClick={stopCardNavigation}
-            >
-              <Mail size={14} /> Email
-            </a>
-          )}
+          <button
+            className="psico-btn-hire"
+            onClick={handleHireClick}
+          >
+            <UserPlus size={14} /> Contratar
+          </button>
         </div>
       </div>
     </article>

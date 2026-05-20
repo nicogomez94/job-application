@@ -139,12 +139,16 @@ export default function PsicologosHome() {
             Professionals at Home · Terapia online, donde estés
           </p>
           <div className="psico-home-hero-ctas">
-            <Link to="/register/psicologo" className="psico-home-hero-btn psico-home-hero-btn--outline">
-              Registros
+            <Link to="/psicologos/buscar" className="psico-home-hero-btn psico-home-hero-btn--outline">
+              Buscar psicólogo
             </Link>
-            <Link to="/psicologos/login" className="psico-home-hero-btn psico-home-hero-btn--solid">
-              Ingresar
+            <Link to="/psicologos/registro-paciente" className="psico-home-hero-btn psico-home-hero-btn--solid">
+              Soy paciente →
             </Link>
+          </div>
+          <div className="psico-home-hero-psy-link">
+            ¿Sos psicólogo?{' '}
+            <Link to="/register/psicologo">Registrate aquí</Link>
           </div>
         </div>
       </section>

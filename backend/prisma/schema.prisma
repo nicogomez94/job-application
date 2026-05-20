@@ -36,7 +36,8 @@ model User {
   portfolioUrl  String?
   
   // Relaciones
-  applications  Application[]
+  applications           Application[]
+  psychologistRequests   PsychologistRequest[]
   
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
@@ -338,6 +339,7 @@ model Psychologist {
 
   documents           PsychologistDocument[]
   subscriptions       PsychologistSubscription[]
+  requests            PsychologistRequest[]
 
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
@@ -387,4 +389,32 @@ model PsychologistSubscription {
   @@index([psychologistId])
   @@index([status])
   @@map("psychologist_subscriptions")
+}
+
+// ─── PSYCHOLOGIST REQUESTS (hiring requests by common users) ────────────────
+
+enum PsychologistRequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model PsychologistRequest {
+  id              String                    @id @default(uuid())
+  status          PsychologistRequestStatus @default(PENDING)
+  message         String?                   @db.Text
+
+  user            User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String
+
+  psychologist    Psychologist              @relation(fields: [psychologistId], references: [id], onDelete: Cascade)
+  psychologistId  String
+
+  createdAt       DateTime                  @default(now())
+  updatedAt       DateTime                  @updatedAt
+
+  @@unique([userId, psychologistId])
+  @@index([userId])
+  @@index([psychologistId])
+  @@map("psychologist_requests")
 }

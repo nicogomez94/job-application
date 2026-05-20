@@ -102,6 +102,22 @@
   transform: translateY(-2px);
 }
 
+.psico-home-hero-psy-link {
+  margin-top: 1rem;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.psico-home-hero-psy-link a {
+  color: #fff;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.psico-home-hero-psy-link a:hover {
+  opacity: 0.85;
+}
+
 /* ── BENEFITS HEADER BAR ────────────────────────────────────── */
 .psico-home-benefits-header {
   background: #f08080;

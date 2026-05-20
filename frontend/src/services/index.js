@@ -215,4 +215,18 @@ export const psychologistService = {
     const response = await api.post('/psychologists/me/subscription', data);
     return { ...response, data: repairMojibakeDeep(response.data) };
   },
+  getIncomingRequests: () => api.get('/psychologists/me/requests'),
+  updateRequestStatus: (id, status) =>
+    api.put(`/psychologists/requests/${id}/status`, { status }),
+};
+
+// ==================== PSYCHOLOGIST REQUESTS (patient side) ====================
+
+export const psychologistRequestService = {
+  send: (psychologistId, message) =>
+    api.post('/psychologists/requests', { psychologistId, message }),
+  getMyRequests: () => api.get('/psychologists/requests/mine'),
+  cancel: (id) => api.delete(`/psychologists/requests/${id}`),
+  getContactInfo: (psychologistId) =>
+    api.get(`/psychologists/${psychologistId}/contact`),
 };
