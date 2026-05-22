@@ -294,9 +294,21 @@ exports.getPlans = async (req, res) => {
 // ─── ADMIN: LIST PSYCHOLOGISTS ────────────────────────────────────────────────
 exports.adminList = async (req, res) => {
   try {
-    const { status, page = 1, limit = 20 } = req.query;
+    const { status, search, page = 1, limit = 20 } = req.query;
     const where = {};
     if (status) where.status = status;
+    if (search) {
+      where.OR = [
+        { email: { contains: search, mode: 'insensitive' } },
+        { firstName: { contains: search, mode: 'insensitive' } },
+        { lastName: { contains: search, mode: 'insensitive' } },
+        { displayName: { contains: search, mode: 'insensitive' } },
+        { licenseNumber: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
+    const pageNumber = Number(page);
+    const pageSize = Number(limit);
 
     const [total, psychologists] = await Promise.all([
       prisma.psychologist.count({ where }),
@@ -304,17 +316,30 @@ exports.adminList = async (req, res) => {
         where,
         select: {
           id: true, email: true, firstName: true, lastName: true,
-          registrationType: true, status: true, country: true,
-          specialties: true, createdAt: true,
-          documents: { select: { id: true, documentType: true, fileUrl: true } },
+          displayName: true, registrationType: true, status: true,
+          phone: true, contactEmail: true, country: true, licenseNumber: true,
+          licenseProvince: true, licenseCountry: true, specialties: true,
+          createdAt: true, approvedAt: true, rejectionReason: true,
+          documents: { select: { id: true, documentType: true, fileUrl: true, originalName: true } },
         },
         orderBy: { createdAt: 'desc' },
-        skip: (Number(page) - 1) * Number(limit),
-        take: Number(limit),
+        skip: (pageNumber - 1) * pageSize,
+        take: pageSize,
       }),
     ]);
 
-    res.json({ total, page: Number(page), limit: Number(limit), psychologists });
+    res.json({
+      total,
+      page: pageNumber,
+      limit: pageSize,
+      psychologists,
+      pagination: {
+        page: pageNumber,
+        limit: pageSize,
+        total,
+        pages: Math.ceil(total / pageSize),
+      },
+    });
   } catch (error) {
     console.error('Error en adminList psychologists:', error);
     res.status(500).json({ error: 'Error al listar psicólogos' });
@@ -326,9 +351,18 @@ exports.adminApprove = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const psychologist = await prisma.psychologist.findUnique({ where: { id } });
+    const psychologist = await prisma.psychologist.findUnique({
+      where: { id },
+      include: { documents: { select: { id: true } } },
+    });
     if (!psychologist) {
       return res.status(404).json({ error: 'Psicólogo no encontrado' });
+    }
+    if (psychologist.status === 'ACTIVE') {
+      return res.status(400).json({ error: 'El psicólogo ya está activo' });
+    }
+    if (psychologist.status === 'PENDING_DOCS' || psychologist.documents.length === 0) {
+      return res.status(400).json({ error: 'No se puede aprobar una cuenta sin documentación cargada' });
     }
 
     const updated = await prisma.psychologist.update({
@@ -338,7 +372,7 @@ exports.adminApprove = async (req, res) => {
 
     // Send approval email
     const fullName = `${updated.firstName} ${updated.lastName}`;
-    const loginUrl = `${SITE_URL}/login`;
+    const loginUrl = `${SITE_URL}/psicologos/login`;
     try {
       await fetch(CONTACT_FORM_ENDPOINT, {
         method: 'POST',
@@ -373,6 +407,9 @@ exports.adminReject = async (req, res) => {
     const psychologist = await prisma.psychologist.findUnique({ where: { id } });
     if (!psychologist) {
       return res.status(404).json({ error: 'Psicólogo no encontrado' });
+    }
+    if (psychologist.status === 'ACTIVE') {
+      return res.status(400).json({ error: 'No se puede rechazar una cuenta activa desde la validación inicial' });
     }
 
     const updated = await prisma.psychologist.update({

@@ -7,7 +7,7 @@ import './Admin.css';
 
 export default function AdminDashboard() {
   const [metrics, setMetrics] = useState(null);
-  const [recent, setRecent] = useState({ users: [], companies: [], jobOffers: [] });
+  const [recent, setRecent] = useState({ users: [], companies: [], jobOffers: [], psychologists: [] });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -16,7 +16,7 @@ export default function AdminDashboard() {
       try {
         const response = await adminService.getDashboardMetrics();
         setMetrics(response.data?.metrics || null);
-        setRecent(response.data?.recent || { users: [], companies: [], jobOffers: [] });
+        setRecent(response.data?.recent || { users: [], companies: [], jobOffers: [], psychologists: [] });
       } catch (error) {
         toast.error(error.response?.data?.error || 'No se pudo cargar el panel de administración');
       } finally {
@@ -49,6 +49,7 @@ export default function AdminDashboard() {
         <Link className="btn btn-outline" to="/admin/companies">Gestionar empresas</Link>
         <Link className="btn btn-outline" to="/admin/subscriptions">Control de suscripciones</Link>
         <Link className="btn btn-outline" to="/admin/job-offers">Gestionar ofertas</Link>
+        <Link className="btn btn-outline" to="/admin/psychologists">Validar psicólogos</Link>
       </div>
 
       <section className="admin-kpi-grid">
@@ -71,6 +72,14 @@ export default function AdminDashboard() {
         <article className="card">
           <p className="admin-kpi-label">Suscripciones activas</p>
           <h2 className="admin-kpi-value">{metrics?.activeSubscriptions ?? 0}</h2>
+        </article>
+        <article className="card">
+          <p className="admin-kpi-label">Psicólogos totales</p>
+          <h2 className="admin-kpi-value">{metrics?.totalPsychologists ?? 0}</h2>
+        </article>
+        <article className="card">
+          <p className="admin-kpi-label">Psicólogos por validar</p>
+          <h2 className="admin-kpi-value">{metrics?.pendingPsychologistValidations ?? 0}</h2>
         </article>
       </section>
 
@@ -123,6 +132,24 @@ export default function AdminDashboard() {
             </div>
           ) : (
             <p className="admin-muted">No hay ofertas recientes.</p>
+          )}
+        </article>
+
+        <article className="card">
+          <h2 style={{ marginBottom: '0.8rem' }}>Psicólogos recientes</h2>
+          {recent.psychologists?.length ? (
+            <div className="admin-list">
+              {recent.psychologists.map((psychologist) => (
+                <div key={psychologist.id} className="admin-list-item">
+                  <p><strong>{psychologist.firstName} {psychologist.lastName}</strong></p>
+                  <p className="admin-muted">{psychologist.email}</p>
+                  <p className="admin-muted">Estado: {psychologist.status}</p>
+                  <p className="admin-muted">Alta: {formatDate(psychologist.createdAt)}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="admin-muted">No hay psicólogos recientes.</p>
           )}
         </article>
       </section>

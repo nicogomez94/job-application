@@ -150,9 +150,9 @@ export const adminService = {
   createAdmin: (data) => api.post('/admin/admins', data),
 
   // Psychologists
-  listPsychologists: (params) => api.get('/psychologists/admin/all', { params }),
-  approvePsychologist: (id) => api.post(`/psychologists/admin/${id}/approve`),
-  rejectPsychologist: (id, reason) => api.post(`/psychologists/admin/${id}/reject`, { reason }),
+  listPsychologists: (params) => api.get('/admin/psychologists', { params }),
+  approvePsychologist: (id) => api.post(`/admin/psychologists/${id}/approve`),
+  rejectPsychologist: (id, reason) => api.post(`/admin/psychologists/${id}/reject`, { reason }),
 };
 
 // ==================== PSYCHOLOGISTS ====================

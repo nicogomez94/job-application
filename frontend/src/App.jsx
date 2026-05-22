@@ -46,6 +46,7 @@ import AdminUsers from './pages/admin/Users';
 import AdminCompanies from './pages/admin/Companies';
 import AdminJobOffers from './pages/admin/JobOffers';
 import AdminSubscriptions from './pages/admin/Subscriptions';
+import AdminPsychologists from './pages/admin/Psychologists';
 
 // Psicólogos
 import PsicologosHome from './pages/psicologos/PsicologosHome';
@@ -245,6 +246,14 @@ function App() {
           element={
             <ProtectedRoute allowedTypes={['admin']}>
               <AdminSubscriptions />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="admin/psychologists"
+          element={
+            <ProtectedRoute allowedTypes={['admin']}>
+              <AdminPsychologists />
             </ProtectedRoute>
           }
         />

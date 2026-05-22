@@ -12,9 +12,12 @@ exports.getDashboardMetrics = async (req, res) => {
       totalJobOffers,
       totalApplications,
       activeSubscriptions,
+      totalPsychologists,
+      pendingPsychologistValidations,
       recentUsers,
       recentCompanies,
       recentJobOffers,
+      recentPsychologists,
     ] = await Promise.all([
       prisma.user.count(),
       prisma.company.count(),
@@ -25,6 +28,10 @@ exports.getDashboardMetrics = async (req, res) => {
           status: 'ACTIVE',
           endDate: { gte: new Date() },
         },
+      }),
+      prisma.psychologist.count(),
+      prisma.psychologist.count({
+        where: { status: 'PENDING' },
       }),
       prisma.user.findMany({
         take: 10,
@@ -63,6 +70,19 @@ exports.getDashboardMetrics = async (req, res) => {
           },
         },
       }),
+      prisma.psychologist.findMany({
+        take: 10,
+        orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          registrationType: true,
+          status: true,
+          createdAt: true,
+        },
+      }),
     ]);
 
     res.json({
@@ -72,11 +92,14 @@ exports.getDashboardMetrics = async (req, res) => {
         totalJobOffers,
         totalApplications,
         activeSubscriptions,
+        totalPsychologists,
+        pendingPsychologistValidations,
       },
       recent: {
         users: recentUsers,
         companies: recentCompanies,
         jobOffers: recentJobOffers,
+        psychologists: recentPsychologists,
       },
     });
   } catch (error) {

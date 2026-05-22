@@ -90,6 +90,17 @@
   min-width: 220px;
 }
 
+.admin-field-label {
+  display: block;
+  color: #5e4d38;
+  margin-bottom: 0.35rem;
+  font-weight: 600;
+}
+
+.admin-filter-field {
+  min-width: 220px;
+}
+
 .admin-table-wrap {
   overflow-x: auto;
   border: 1px solid #e7dcc6;
@@ -101,6 +112,10 @@
   width: 100%;
   border-collapse: collapse;
   min-width: 800px;
+}
+
+.admin-table-wide {
+  min-width: 1060px;
 }
 
 .admin-table th,
@@ -133,6 +148,53 @@
 .admin-actions .btn {
   font-size: 0.84rem;
   padding: 0.4rem 0.65rem;
+}
+
+.admin-actions .btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+.admin-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.admin-cell-primary {
+  color: #2f2416;
+  font-weight: 700;
+  margin: 0;
+}
+
+.admin-rejection-note {
+  max-width: 240px;
+  margin-top: 0.35rem;
+}
+
+.admin-document-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  max-width: 260px;
+}
+
+.admin-document-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.22rem;
+  color: #5f4528;
+  background: #fdf8ef;
+  border: 1px solid #e7dcc6;
+  border-radius: 999px;
+  padding: 0.22rem 0.48rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.admin-document-links a:hover {
+  background: #f9e8d5;
 }
 
 .admin-pagination {
@@ -192,6 +254,10 @@
 
   .admin-toolbar .input {
     min-width: 0;
+  }
+
+  .admin-filter-field {
+    min-width: 100%;
   }
 
   .admin-pagination {

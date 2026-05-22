@@ -3,6 +3,7 @@ const router = express.Router();
 const { body } = require('express-validator');
 const validate = require('../middlewares/validator.middleware');
 const adminController = require('../controllers/admin.controller');
+const psychologistController = require('../controllers/psychologist.controller');
 const { authenticateAdmin } = require('../middlewares/auth.middleware');
 
 // Todas las rutas requieren autenticación de admin
@@ -31,6 +32,14 @@ router.get('/subscriptions', adminController.getAllSubscriptions);
 // ==================== OFERTAS ====================
 router.get('/job-offers', adminController.getAllJobOffers);
 router.delete('/job-offers/:id', adminController.deleteJobOffer);
+
+// ==================== PSICÓLOGOS ====================
+router.get('/psychologists', psychologistController.adminList);
+router.post('/psychologists/:id/approve', psychologistController.adminApprove);
+router.post('/psychologists/:id/reject', [
+  body('reason').optional().isString().withMessage('El motivo debe ser texto'),
+  validate,
+], psychologistController.adminReject);
 
 // ==================== ADMINISTRADORES ====================
 router.post('/admins', [
