@@ -5,10 +5,11 @@ const validate = require('../middlewares/validator.middleware');
 const upload = require('../config/upload');
 
 const psychologistAuthController = require('../controllers/psychologistAuth.controller');
+const patientAuthController = require('../controllers/patientAuth.controller');
 const psychologistController = require('../controllers/psychologist.controller');
 const psychologistPublicController = require('../controllers/psychologistPublic.controller');
 const psychologistRequestController = require('../controllers/psychologistRequest.controller');
-const { authenticatePsychologist, authenticateAdmin, authenticateUser } = require('../middlewares/auth.middleware');
+const { authenticatePsychologist, authenticateAdmin, authenticatePatient } = require('../middlewares/auth.middleware');
 
 // ─── PUBLIC ROUTES ───────────────────────────────────────────────────────────
 
@@ -34,6 +35,30 @@ router.post(
     validate,
   ],
   psychologistAuthController.login
+);
+
+// Patient auth for the psychology section. This is intentionally separate from
+// the Professionals at Home postulante account.
+router.post(
+  '/patients/auth/register',
+  [
+    body('email').isEmail().normalizeEmail().withMessage('Email inválido'),
+    body('password').isLength({ min: 6 }).withMessage('La contraseña debe tener al menos 6 caracteres'),
+    body('firstName').notEmpty().withMessage('El nombre es obligatorio'),
+    body('lastName').notEmpty().withMessage('El apellido es obligatorio'),
+    validate,
+  ],
+  patientAuthController.register
+);
+
+router.post(
+  '/patients/auth/login',
+  [
+    body('email').isEmail().normalizeEmail().withMessage('Email inválido'),
+    body('password').notEmpty().withMessage('La contraseña es obligatoria'),
+    validate,
+  ],
+  patientAuthController.login
 );
 
 // Public listing + profile
@@ -78,12 +103,12 @@ router.post(
 // Psychologist views incoming hiring requests
 router.get('/me/requests', authenticatePsychologist, psychologistRequestController.getIncomingRequests);
 
-// ─── PROTECTED: USER (common patient) ────────────────────────────────────────
+// ─── PROTECTED: PATIENT ──────────────────────────────────────────────────────
 
 // Send a hiring request
 router.post(
   '/requests',
-  authenticateUser,
+  authenticatePatient,
   [
     body('psychologistId').notEmpty().withMessage('El id del psicólogo es requerido'),
     body('message').optional().isString().withMessage('El mensaje debe ser texto'),
@@ -93,10 +118,10 @@ router.post(
 );
 
 // List own requests
-router.get('/requests/mine', authenticateUser, psychologistRequestController.getMyRequests);
+router.get('/requests/mine', authenticatePatient, psychologistRequestController.getMyRequests);
 
 // Cancel a PENDING request
-router.delete('/requests/:id', authenticateUser, psychologistRequestController.cancelRequest);
+router.delete('/requests/:id', authenticatePatient, psychologistRequestController.cancelRequest);
 
 // Psychologist accepts or rejects a request
 router.put(
@@ -121,7 +146,7 @@ router.post(
 );
 
 // Keep the dynamic public route at the end so static routes match first.
-router.get('/:id/contact', authenticateUser, psychologistRequestController.getContactInfo);
+router.get('/:id/contact', authenticatePatient, psychologistRequestController.getContactInfo);
 router.get('/:id', psychologistPublicController.getById);
 
 module.exports = router;

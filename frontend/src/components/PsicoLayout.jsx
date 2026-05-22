@@ -10,7 +10,7 @@ export default function PsicoLayout() {
   const navigate = useNavigate();
   const { isAuthenticated, userType, user, logout } = useAuthStore();
   const isPsychologist = isAuthenticated && userType === 'psychologist';
-  const isPatient = isAuthenticated && userType === 'user';
+  const isPatient = isAuthenticated && userType === 'patient';
 
   const [loginOpen, setLoginOpen] = useState(false);
   const loginRef = useRef(null);
@@ -59,7 +59,7 @@ export default function PsicoLayout() {
               Buscar psicólogo
             </Link>
 
-            {/* ── Authenticated as patient (common user) ── */}
+            {/* ── Authenticated as patient ── */}
             {isPatient && (
               <>
                 <Link to="/psicologos/mi-cuenta" className="psico-layout-nav-link">

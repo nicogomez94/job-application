@@ -5,7 +5,7 @@ export const useAuthStore = create(
   persist(
     (set) => ({
       user: null,
-      userType: null, // 'user', 'company', 'admin'
+      userType: null, // 'user', 'company', 'patient', 'psychologist', 'admin'
       token: null,
       isAuthenticated: false,
 

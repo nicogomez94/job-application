@@ -35,6 +35,12 @@ const authenticateUser = [
   authorizeRole('user')
 ];
 
+// Middleware específico para pacientes
+const authenticatePatient = [
+  authenticate,
+  authorizeRole('patient')
+];
+
 // Middleware específico para empresas
 const authenticateCompany = [
   authenticate,
@@ -126,6 +132,7 @@ module.exports = {
   authenticate,
   authorizeRole,
   authenticateUser,
+  authenticatePatient,
   authenticateCompany,
   authenticateAdmin,
   authenticatePsychologist,

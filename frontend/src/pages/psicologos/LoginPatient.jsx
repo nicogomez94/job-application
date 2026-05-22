@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Mail, Lock, Brain } from 'lucide-react';
-import { authService } from '../../services';
+import { patientAuthService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
 import './Psicologos.css';
 import '../auth/PsicoLogin.css';
@@ -21,9 +21,9 @@ export default function LoginPatient() {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      const res = await authService.loginUser(data);
-      const { user, token } = res.data;
-      setAuth(user, 'user', token);
+      const res = await patientAuthService.login(data);
+      const { patient, token } = res.data;
+      setAuth(patient, 'patient', token);
       toast.success('¡Bienvenido/a!');
       navigate(from, { replace: true });
     } catch (error) {

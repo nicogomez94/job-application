@@ -2,10 +2,11 @@ const prisma = require('../config/database');
 const { repairMojibake, repairMojibakeDeep } = require('../utils/textEncoding');
 
 // PUBLIC LISTING
-// GET /api/psychologists?language=Español&country=Argentina&page=1&limit=20
+// GET /api/psychologists?search=ana&language=Español&country=Argentina&page=1&limit=20
 exports.list = async (req, res) => {
   try {
-    const { language, country, page = 1, limit = 20 } = req.query;
+    const { search, language, country, page = 1, limit = 20 } = req.query;
+    const requestedSearch = repairMojibake(search);
     const requestedLanguage = repairMojibake(language);
     const requestedCountry = repairMojibake(country);
 
@@ -45,11 +46,24 @@ exports.list = async (req, res) => {
       return { ...p, age, dateOfBirth: undefined };
     });
 
+    const searchTerm = normalizeSearchText(requestedSearch);
+
     const filtered = normalized.filter((psychologist) => {
+      const searchableText = normalizeSearchText([
+        psychologist.displayName,
+        psychologist.firstName,
+        psychologist.lastName,
+        psychologist.country,
+        psychologist.specialties,
+        psychologist.languages,
+        psychologist.ageRanges,
+        psychologist.yearsExperience,
+      ]);
+      const matchesSearch = !searchTerm || searchableText.includes(searchTerm);
       const matchesLanguage = !requestedLanguage || psychologist.languages?.includes(requestedLanguage);
       const matchesCountry = !requestedCountry
         || psychologist.country?.toLowerCase().includes(requestedCountry.toLowerCase());
-      return matchesLanguage && matchesCountry;
+      return matchesSearch && matchesLanguage && matchesCountry;
     });
 
     const pageNumber = Number(page);
@@ -62,6 +76,16 @@ exports.list = async (req, res) => {
     console.error('Error en list psychologists:', error);
     res.status(500).json({ error: 'Error al obtener psicólogos' });
   }
+};
+
+const normalizeSearchText = (value) => {
+  const text = Array.isArray(value) ? value.flat(Infinity).join(' ') : String(value || '');
+
+  return text
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
 };
 
 // PUBLIC PROFILE

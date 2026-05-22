@@ -2,12 +2,16 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
 const prisma = require('./database');
+const {
+  normalizeEmail,
+  findAccountByEmail,
+  getEmailAlreadyRegisteredMessage,
+} = require('../utils/accountEmail');
 const addMonths = (date, months) => {
   const value = new Date(date);
   value.setMonth(value.getMonth() + months);
   return value;
 };
-const normalizeEmail = (email) => (email || '').trim().toLowerCase();
 const getGoogleEmail = (profile) => normalizeEmail(profile?.emails?.[0]?.value);
 const getUniqueConstraintFields = (error) =>
   Array.isArray(error?.meta?.target)
@@ -68,6 +72,8 @@ passport.use(
         user = await prisma.company.findUnique({ where: { id: payload.id } });
       } else if (payload.type === 'admin') {
         user = await prisma.admin.findUnique({ where: { id: payload.id } });
+      } else if (payload.type === 'patient') {
+        user = await prisma.patient.findUnique({ where: { id: payload.id } });
       } else if (payload.type === 'psychologist') {
         user = await prisma.psychologist.findUnique({ where: { id: payload.id } });
       }
@@ -111,6 +117,14 @@ passport.use(
           });
 
           if (existingUserByEmail) {
+            const existingOtherAccount = await findAccountByEmail(prisma, googleEmail, {
+              excludeType: 'user',
+              excludeId: existingUserByEmail.id,
+            });
+            if (existingOtherAccount) {
+              return done(null, false, { message: getEmailAlreadyRegisteredMessage(existingOtherAccount) });
+            }
+
             if (existingUserByEmail.googleId && existingUserByEmail.googleId !== profile.id) {
               return done(null, false, { message: 'Esta cuenta ya esta vinculada a otro acceso de Google' });
             }
@@ -125,6 +139,11 @@ passport.use(
               data: updateData,
             });
           } else {
+            const existingOtherAccount = await findAccountByEmail(prisma, googleEmail);
+            if (existingOtherAccount) {
+              return done(null, false, { message: getEmailAlreadyRegisteredMessage(existingOtherAccount) });
+            }
+
             const { firstName, lastName } = getNameFromProfile(profile);
             user = await prisma.user.create({
               data: {
@@ -179,6 +198,14 @@ passport.use(
           });
 
           if (existingCompanyByEmail) {
+            const existingOtherAccount = await findAccountByEmail(prisma, googleEmail, {
+              excludeType: 'company',
+              excludeId: existingCompanyByEmail.id,
+            });
+            if (existingOtherAccount) {
+              return done(null, false, { message: getEmailAlreadyRegisteredMessage(existingOtherAccount) });
+            }
+
             if (existingCompanyByEmail.googleId && existingCompanyByEmail.googleId !== profile.id) {
               return done(null, false, { message: 'Esta empresa ya esta vinculada a otro acceso de Google' });
             }
@@ -193,6 +220,11 @@ passport.use(
               data: updateData,
             });
           } else {
+            const existingOtherAccount = await findAccountByEmail(prisma, googleEmail);
+            if (existingOtherAccount) {
+              return done(null, false, { message: getEmailAlreadyRegisteredMessage(existingOtherAccount) });
+            }
+
             company = await prisma.$transaction(async (tx) => {
               const createdCompany = await tx.company.create({
                 data: {

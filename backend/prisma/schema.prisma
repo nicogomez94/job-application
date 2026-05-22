@@ -37,7 +37,6 @@ model User {
   
   // Relaciones
   applications           Application[]
-  psychologistRequests   PsychologistRequest[]
   
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
@@ -349,6 +348,23 @@ model Psychologist {
   @@map("psychologists")
 }
 
+model Patient {
+  id                  String                @id @default(uuid())
+  email               String                @unique
+  password            String
+  firstName           String
+  lastName            String
+  phone               String?
+  profileImage        String?
+
+  psychologistRequests PsychologistRequest[]
+
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+
+  @@map("patients")
+}
+
 model PsychologistDocument {
   id              String        @id @default(uuid())
   documentType    String        // e.g. "DNI", "TITLE", "LICENSE", etc.
@@ -404,8 +420,8 @@ model PsychologistRequest {
   status          PsychologistRequestStatus @default(PENDING)
   message         String?                   @db.Text
 
-  user            User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId          String
+  patient         Patient                   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  patientId       String
 
   psychologist    Psychologist              @relation(fields: [psychologistId], references: [id], onDelete: Cascade)
   psychologistId  String
@@ -413,8 +429,8 @@ model PsychologistRequest {
   createdAt       DateTime                  @default(now())
   updatedAt       DateTime                  @updatedAt
 
-  @@unique([userId, psychologistId])
-  @@index([userId])
+  @@unique([patientId, psychologistId])
+  @@index([patientId])
   @@index([psychologistId])
   @@map("psychologist_requests")
 }

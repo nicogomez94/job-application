@@ -7,6 +7,11 @@ const {
 } = require('../config/jwt');
 const { getDefaultFrontendUrl } = require('../config/frontend');
 const { sendPasswordRecoveryEmail } = require('../services/mail.service');
+const {
+  normalizeEmail,
+  findAccountByEmail,
+  getEmailAlreadyRegisteredMessage,
+} = require('../utils/accountEmail');
 const addMonths = (date, months) => {
   const value = new Date(date);
   value.setMonth(value.getMonth() + months);
@@ -19,11 +24,12 @@ const addMonths = (date, months) => {
 exports.registerUser = async (req, res) => {
   try {
     const { email, password, firstName, lastName, phone } = req.body;
+    const normalizedEmail = normalizeEmail(email);
 
-    // Verificar si el usuario ya existe
-    const existingUser = await prisma.user.findUnique({ where: { email } });
-    if (existingUser) {
-      return res.status(400).json({ error: 'El email ya está registrado' });
+    // Verificar si el email ya existe en cualquiera de las cuentas del sitio
+    const existingAccount = await findAccountByEmail(prisma, normalizedEmail);
+    if (existingAccount) {
+      return res.status(400).json({ error: getEmailAlreadyRegisteredMessage(existingAccount) });
     }
 
     // Hash de contraseña
@@ -32,7 +38,7 @@ exports.registerUser = async (req, res) => {
     // Crear usuario
     const user = await prisma.user.create({
       data: {
-        email,
+        email: normalizedEmail,
         password: hashedPassword,
         firstName,
         lastName,
@@ -115,11 +121,12 @@ exports.loginUser = async (req, res) => {
 exports.registerCompany = async (req, res) => {
   try {
     const { email, password, companyName, description, website, location, industry, size } = req.body;
+    const normalizedEmail = normalizeEmail(email);
 
-    // Verificar si la empresa ya existe
-    const existingCompany = await prisma.company.findUnique({ where: { email } });
-    if (existingCompany) {
-      return res.status(400).json({ error: 'El email ya está registrado' });
+    // Verificar si el email ya existe en cualquiera de las cuentas del sitio
+    const existingAccount = await findAccountByEmail(prisma, normalizedEmail);
+    if (existingAccount) {
+      return res.status(400).json({ error: getEmailAlreadyRegisteredMessage(existingAccount) });
     }
 
     // Hash de contraseña
@@ -128,7 +135,7 @@ exports.registerCompany = async (req, res) => {
     const company = await prisma.$transaction(async (tx) => {
       const newCompany = await tx.company.create({
         data: {
-          email,
+          email: normalizedEmail,
           password: hashedPassword,
           companyName,
           description,
@@ -284,6 +291,16 @@ exports.requestPasswordRecovery = async (req, res) => {
           where: { email: { equals: normalizedEmail, mode: 'insensitive' } },
           select: { id: true, email: true, password: true },
         }),
+      patient: () =>
+        prisma.patient.findFirst({
+          where: { email: { equals: normalizedEmail, mode: 'insensitive' } },
+          select: { id: true, email: true, password: true },
+        }),
+      psychologist: () =>
+        prisma.psychologist.findFirst({
+          where: { email: { equals: normalizedEmail, mode: 'insensitive' } },
+          select: { id: true, email: true, password: true },
+        }),
       admin: () =>
         prisma.admin.findFirst({
           where: { email: { equals: normalizedEmail, mode: 'insensitive' } },
@@ -291,7 +308,7 @@ exports.requestPasswordRecovery = async (req, res) => {
         }),
     };
 
-    const selectedTypes = userType ? [userType] : ['user', 'company', 'admin'];
+    const selectedTypes = userType ? [userType] : ['user', 'company', 'patient', 'psychologist', 'admin'];
     let foundAccount = null;
 
     for (const type of selectedTypes) {
@@ -345,6 +362,16 @@ exports.resetPassword = async (req, res) => {
       });
     } else if (decoded.type === 'company') {
       await prisma.company.update({
+        where: { id: decoded.id },
+        data: { password: hashedPassword },
+      });
+    } else if (decoded.type === 'patient') {
+      await prisma.patient.update({
+        where: { id: decoded.id },
+        data: { password: hashedPassword },
+      });
+    } else if (decoded.type === 'psychologist') {
+      await prisma.psychologist.update({
         where: { id: decoded.id },
         data: { password: hashedPassword },
       });
@@ -416,6 +443,38 @@ exports.getProfile = async (req, res) => {
           size: true,
           isActive: true,
           isBlocked: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+    } else if (type === 'patient') {
+      profile = await prisma.patient.findUnique({
+        where: { id },
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          phone: true,
+          profileImage: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+    } else if (type === 'psychologist') {
+      profile = await prisma.psychologist.findUnique({
+        where: { id },
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          phone: true,
+          contactEmail: true,
+          profileImage: true,
+          registrationType: true,
+          status: true,
+          displayName: true,
           createdAt: true,
           updatedAt: true,
         },

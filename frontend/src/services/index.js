@@ -168,6 +168,17 @@ export const psychologistAuthService = {
   },
 };
 
+export const patientAuthService = {
+  register: async (data) => {
+    const response = await api.post('/psychologists/patients/auth/register', data);
+    return { ...response, data: repairMojibakeDeep(response.data) };
+  },
+  login: async (data) => {
+    const response = await api.post('/psychologists/patients/auth/login', data);
+    return { ...response, data: repairMojibakeDeep(response.data) };
+  },
+};
+
 export const psychologistService = {
   // Public
   list: async (params) => {

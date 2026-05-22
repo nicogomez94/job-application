@@ -87,7 +87,7 @@ const recoverPasswordValidation = [
   body('email').trim().normalizeEmail().isEmail().withMessage('Email inválido'),
   body('userType')
     .optional()
-    .isIn(['user', 'company', 'admin'])
+    .isIn(['user', 'company', 'patient', 'psychologist', 'admin'])
     .withMessage('Tipo de usuario inválido'),
   validate,
 ];

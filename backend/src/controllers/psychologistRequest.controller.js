@@ -1,11 +1,11 @@
 const prisma = require('../config/database');
 
 // ─────────────────────────────────────────────────────────────────────────────
-// USER ENDPOINTS
+// PATIENT ENDPOINTS
 // ─────────────────────────────────────────────────────────────────────────────
 
 // POST /api/psychologists/requests
-// Authenticated user sends a hiring request to a psychologist
+// Authenticated patient sends a hiring request to a psychologist
 exports.sendRequest = async (req, res) => {
   try {
     const { psychologistId, message } = req.body;
@@ -27,8 +27,8 @@ exports.sendRequest = async (req, res) => {
     // Check for existing request
     const existing = await prisma.psychologistRequest.findUnique({
       where: {
-        userId_psychologistId: {
-          userId: req.user.id,
+        patientId_psychologistId: {
+          patientId: req.user.id,
           psychologistId,
         },
       },
@@ -40,7 +40,7 @@ exports.sendRequest = async (req, res) => {
 
     const request = await prisma.psychologistRequest.create({
       data: {
-        userId: req.user.id,
+        patientId: req.user.id,
         psychologistId,
         message: message || null,
         status: 'PENDING',
@@ -70,11 +70,11 @@ exports.sendRequest = async (req, res) => {
 };
 
 // GET /api/psychologists/requests/mine
-// Authenticated user lists all their requests
+// Authenticated patient lists all their requests
 exports.getMyRequests = async (req, res) => {
   try {
     const requests = await prisma.psychologistRequest.findMany({
-      where: { userId: req.user.id },
+      where: { patientId: req.user.id },
       include: {
         psychologist: {
           select: {
@@ -112,13 +112,13 @@ exports.getMyRequests = async (req, res) => {
 };
 
 // DELETE /api/psychologists/requests/:id
-// Authenticated user cancels a PENDING request
+// Authenticated patient cancels a PENDING request
 exports.cancelRequest = async (req, res) => {
   try {
     const { id } = req.params;
 
     const request = await prisma.psychologistRequest.findFirst({
-      where: { id, userId: req.user.id },
+      where: { id, patientId: req.user.id },
     });
 
     if (!request) {
@@ -139,14 +139,14 @@ exports.cancelRequest = async (req, res) => {
 };
 
 // GET /api/psychologists/:id/contact
-// Authenticated user gets private contact data if they have an ACCEPTED request
+// Authenticated patient gets private contact data if they have an ACCEPTED request
 exports.getContactInfo = async (req, res) => {
   try {
     const { id } = req.params;
 
     const acceptedRequest = await prisma.psychologistRequest.findFirst({
       where: {
-        userId: req.user.id,
+        patientId: req.user.id,
         psychologistId: id,
         status: 'ACCEPTED',
       },
@@ -185,7 +185,7 @@ exports.getIncomingRequests = async (req, res) => {
     const requests = await prisma.psychologistRequest.findMany({
       where: { psychologistId: req.user.id },
       include: {
-        user: {
+        patient: {
           select: {
             id: true,
             firstName: true,
@@ -236,7 +236,7 @@ exports.updateRequestStatus = async (req, res) => {
       where: { id },
       data: { status },
       include: {
-        user: {
+        patient: {
           select: { id: true, firstName: true, lastName: true, email: true },
         },
       },

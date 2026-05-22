@@ -70,10 +70,10 @@ function ProtectedRoute({ children, allowedTypes }) {
     if (allowedTypes?.length === 1 && allowedTypes[0] === 'admin') {
       return <Navigate to="/acceso-admin" replace />;
     }
-    if (allowedTypes?.includes('psychologist') && !allowedTypes?.includes('user')) {
+    if (allowedTypes?.length === 1 && allowedTypes[0] === 'psychologist') {
       return <Navigate to="/psicologos/login" replace />;
     }
-    if (allowedTypes?.includes('user') && !allowedTypes?.includes('psychologist')) {
+    if (allowedTypes?.length === 1 && allowedTypes[0] === 'patient') {
       return <Navigate to="/psicologos/login-paciente" replace />;
     }
     return <Navigate to="/login" replace />;
@@ -299,7 +299,7 @@ function App() {
         <Route
           path="psicologos/mi-cuenta"
           element={
-            <ProtectedRoute allowedTypes={['user']}>
+            <ProtectedRoute allowedTypes={['patient']}>
               <PatientDashboard />
             </ProtectedRoute>
           }

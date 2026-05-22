@@ -7,12 +7,11 @@ const {
   getEmailAlreadyRegisteredMessage,
 } = require('../utils/accountEmail');
 
-// ─── REGISTER ───────────────────────────────────────────────────────────────
 exports.register = async (req, res) => {
   try {
-    const { email, password, firstName, lastName, registrationType } = req.body;
-
+    const { email, password, firstName, lastName, phone } = req.body;
     const normalizedEmail = normalizeEmail(email);
+
     const existingAccount = await findAccountByEmail(prisma, normalizedEmail);
     if (existingAccount) {
       return res.status(400).json({ error: getEmailAlreadyRegisteredMessage(existingAccount) });
@@ -20,72 +19,68 @@ exports.register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const psychologist = await prisma.psychologist.create({
+    const patient = await prisma.patient.create({
       data: {
         email: normalizedEmail,
         password: hashedPassword,
         firstName,
         lastName,
-        registrationType, // 'ARGENTINA' | 'INTERNATIONAL'
-        status: 'PENDING_DOCS',
+        phone,
       },
       select: {
         id: true,
         email: true,
         firstName: true,
         lastName: true,
-        registrationType: true,
-        status: true,
+        phone: true,
         createdAt: true,
       },
     });
 
-    const token = generateToken({ id: psychologist.id, type: 'psychologist' });
+    const token = generateToken({ id: patient.id, type: 'patient' });
 
     res.status(201).json({
-      message: 'Registro iniciado. Por favor cargá tu documentación.',
-      psychologist,
+      message: 'Paciente registrado exitosamente',
+      patient,
       token,
     });
   } catch (error) {
-    console.error('Error en register psychologist:', error.message || error);
+    console.error('Error en register patient:', error.message || error);
     res.status(500).json({
-      error: 'Error al registrar psicólogo',
+      error: 'Error al registrar paciente',
       ...(process.env.NODE_ENV !== 'production' && { detail: error.message }),
     });
   }
 };
 
-// ─── LOGIN ───────────────────────────────────────────────────────────────────
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const normalizedEmail = normalizeEmail(email);
 
-    const psychologist = await prisma.psychologist.findFirst({
+    const patient = await prisma.patient.findFirst({
       where: { email: { equals: normalizedEmail, mode: 'insensitive' } },
     });
 
-    if (!psychologist) {
+    if (!patient) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
 
-    const passwordMatch = await bcrypt.compare(password, psychologist.password);
+    const passwordMatch = await bcrypt.compare(password, patient.password);
     if (!passwordMatch) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
 
-    const token = generateToken({ id: psychologist.id, type: 'psychologist' });
-
-    const { password: _pass, ...safeData } = psychologist;
+    const token = generateToken({ id: patient.id, type: 'patient' });
+    const { password: _pass, ...safeData } = patient;
 
     res.json({
       message: 'Login exitoso',
-      psychologist: safeData,
+      patient: safeData,
       token,
     });
   } catch (error) {
-    console.error('Error en login psychologist:', error.message || error);
+    console.error('Error en login patient:', error.message || error);
     res.status(500).json({ error: 'Error al iniciar sesión' });
   }
 };

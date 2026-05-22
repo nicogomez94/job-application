@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
-import { Globe, UserPlus } from 'lucide-react';
+import { Globe, Search, UserPlus } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { psychologistService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
@@ -30,6 +30,7 @@ export default function PsychologistList() {
   const [pagination, setPagination] = useState({ total: 0, page: 1, limit: 12 });
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
+    search: searchParams.get('search') || '',
     language: searchParams.get('language') || '',
     country: searchParams.get('country') || '',
     page: Number(searchParams.get('page') || 1),
@@ -40,6 +41,7 @@ export default function PsychologistList() {
     setLoading(true);
     try {
       const params = { limit: 12, page: f.page };
+      if (f.search) params.search = f.search;
       if (f.language) params.language = f.language;
       if (f.country) params.country = f.country;
       const res = await psychologistService.list(params);
@@ -61,6 +63,7 @@ export default function PsychologistList() {
     const next = { ...filters, [name]: value, page: 1 };
     setFilters(next);
     const params = {};
+    if (next.search) params.search = next.search;
     if (next.language) params.language = next.language;
     if (next.country) params.country = next.country;
     setSearchParams(params);
@@ -73,7 +76,7 @@ export default function PsychologistList() {
       <div className="psico-list-hero">
         <h1>Psicólogos en Línea</h1>
         <p>Encontrá un profesional de la salud mental que te acompañe de forma remota.</p>
-        {isAuthenticated && userType === 'user' && (
+        {isAuthenticated && userType === 'patient' && (
           <div className="psico-list-hero-btns">
             <Link to="/psicologos/mi-cuenta" className="psico-hero-btn-solid">
               Mis solicitudes
@@ -90,6 +93,20 @@ export default function PsychologistList() {
 
       <div className="psico-list-container">
         <div className="psico-filters">
+          <div className="psico-filter-group psico-filter-search">
+            <label htmlFor="search">Buscar psicólogo</label>
+            <div className="psico-search-input-wrap">
+              <Search size={18} aria-hidden="true" />
+              <input
+                id="search"
+                name="search"
+                type="search"
+                value={filters.search}
+                onChange={handleFilterChange}
+                placeholder="Nombre, especialidad, idioma o país"
+              />
+            </div>
+          </div>
           <div className="psico-filter-group">
             <label htmlFor="language">Idioma</label>
             <select id="language" name="language" value={filters.language} onChange={handleFilterChange}>
@@ -181,7 +198,7 @@ function PsychologistCard({ psychologist: p }) {
 
   const handleHireClick = (e) => {
     stopCardNavigation(e);
-    if (!isAuthenticated || userType !== 'user') {
+    if (!isAuthenticated || userType !== 'patient') {
       navigate('/psicologos/login-paciente', { state: { from: `/psicologos/${p.id}` } });
     } else {
       navigate(`/psicologos/${p.id}`);

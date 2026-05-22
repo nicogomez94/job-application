@@ -20,14 +20,14 @@ export default function PsychologistProfile() {
   const [psychologist, setPsychologist] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Request state for logged-in common users
+  // Request state for logged-in patients
   const [myRequest, setMyRequest] = useState(null); // null = not loaded yet / no request
   const [requestLoading, setRequestLoading] = useState(false);
   const [sendingRequest, setSendingRequest] = useState(false);
   const [message, setMessage] = useState('');
   const [contactInfo, setContactInfo] = useState(null);
 
-  const isCommonUser = isAuthenticated && userType === 'user';
+  const isPatient = isAuthenticated && userType === 'patient';
 
   useEffect(() => {
     const load = async () => {
@@ -45,7 +45,7 @@ export default function PsychologistProfile() {
 
   // Load the user's existing request for this psychologist
   useEffect(() => {
-    if (!isCommonUser) return;
+    if (!isPatient) return;
     const loadRequest = async () => {
       setRequestLoading(true);
       try {
@@ -69,10 +69,10 @@ export default function PsychologistProfile() {
       }
     };
     loadRequest();
-  }, [id, isCommonUser]);
+  }, [id, isPatient]);
 
   const handleSendRequest = async () => {
-    if (!isAuthenticated || userType !== 'user') {
+    if (!isAuthenticated || userType !== 'patient') {
       navigate('/psicologos/login-paciente', { state: { from: `/psicologos/${id}` } });
       return;
     }
@@ -206,7 +206,7 @@ export default function PsychologistProfile() {
               {/* No request yet */}
               {!myRequest && !requestLoading && (
                 <div className="psico-hire-section">
-                  {isCommonUser ? (
+                  {isPatient ? (
                     <>
                       <textarea
                         className="psico-hire-message"

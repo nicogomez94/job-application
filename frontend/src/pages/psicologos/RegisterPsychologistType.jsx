@@ -42,7 +42,7 @@ export default function RegisterPsychologistType() {
         </div>
 
         <p className="psico-register-type-login">
-          ¿Ya tenés cuenta? <Link to="/login">Ingresá acá</Link>
+          ¿Ya tenés cuenta? <Link to="/psicologos/login">Ingresá acá</Link>
         </p>
       </div>
     </div>

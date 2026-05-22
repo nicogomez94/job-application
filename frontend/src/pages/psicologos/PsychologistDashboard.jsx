@@ -216,19 +216,19 @@ export default function PsychologistDashboard() {
                   <h3 className="psico-requests-group-title">Pendientes</h3>
                   <ul className="patient-requests-list">
                     {pendingRequests.map((req) => {
-                      const u = req.user;
-                      const userName = `${u?.firstName || ''} ${u?.lastName || ''}`.trim();
+                      const patient = req.patient;
+                      const patientName = `${patient?.firstName || ''} ${patient?.lastName || ''}`.trim();
                       return (
                         <li key={req.id} className="patient-request-item">
                           <div className="patient-request-psy">
                             <div className="psico-card-photo psico-card-photo-sm">
                               <div className="psico-card-initials">
-                                {`${u?.firstName?.[0] || ''}${u?.lastName?.[0] || ''}`.toUpperCase()}
+                                {`${patient?.firstName?.[0] || ''}${patient?.lastName?.[0] || ''}`.toUpperCase()}
                               </div>
                             </div>
                             <div>
-                              <strong>{userName}</strong>
-                              <p className="psico-secondary-text">{u?.email}</p>
+                              <strong>{patientName}</strong>
+                              <p className="psico-secondary-text">{patient?.email}</p>
                               {req.message && (
                                 <p className="psico-request-message">"{req.message}"</p>
                               )}
@@ -265,20 +265,20 @@ export default function PsychologistDashboard() {
                   <h3 className="psico-requests-group-title">Historial</h3>
                   <ul className="patient-requests-list">
                     {resolvedRequests.map((req) => {
-                      const u = req.user;
-                      const userName = `${u?.firstName || ''} ${u?.lastName || ''}`.trim();
+                      const patient = req.patient;
+                      const patientName = `${patient?.firstName || ''} ${patient?.lastName || ''}`.trim();
                       const isAccepted = req.status === 'ACCEPTED';
                       return (
                         <li key={req.id} className="patient-request-item">
                           <div className="patient-request-psy">
                             <div className="psico-card-photo psico-card-photo-sm">
                               <div className="psico-card-initials">
-                                {`${u?.firstName?.[0] || ''}${u?.lastName?.[0] || ''}`.toUpperCase()}
+                                {`${patient?.firstName?.[0] || ''}${patient?.lastName?.[0] || ''}`.toUpperCase()}
                               </div>
                             </div>
                             <div>
-                              <strong>{userName}</strong>
-                              <p className="psico-secondary-text">{u?.email}</p>
+                              <strong>{patientName}</strong>
+                              <p className="psico-secondary-text">{patient?.email}</p>
                             </div>
                           </div>
                           <span className={`psico-status-badge psico-status-${isAccepted ? 'green' : 'red'}`}>

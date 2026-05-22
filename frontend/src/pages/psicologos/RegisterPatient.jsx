@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Mail, Lock, User, Brain } from 'lucide-react';
-import { authService } from '../../services';
+import { patientAuthService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
 import './Psicologos.css';
 import '../auth/PsicoLogin.css';
@@ -22,14 +22,14 @@ export default function RegisterPatient() {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      const res = await authService.registerUser({
+      const res = await patientAuthService.register({
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
         password: data.password,
       });
-      const { user, token } = res.data;
-      setAuth(user, 'user', token);
+      const { patient, token } = res.data;
+      setAuth(patient, 'patient', token);
       toast.success('¡Cuenta creada! Ya podés buscar un psicólogo.');
       navigate('/psicologos/buscar');
     } catch (error) {

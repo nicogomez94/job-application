@@ -99,6 +99,10 @@
   min-width: 200px;
 }
 
+.psico-filter-search {
+  flex: 1 1 320px;
+}
+
 .psico-filter-group label {
   font-size: 0.82rem;
   font-weight: 600;
@@ -107,17 +111,47 @@
   letter-spacing: 0.04em;
 }
 
-.psico-filter-group select {
+.psico-filter-group select,
+.psico-search-input-wrap {
   padding: 0.55rem 0.75rem;
   border: 1.5px solid #d4c9b5;
   border-radius: 8px;
   font-size: 0.95rem;
   background: #fff;
-  cursor: pointer;
   transition: border-color 0.15s;
 }
 
-.psico-filter-group select:focus {
+.psico-filter-group select {
+  cursor: pointer;
+}
+
+.psico-search-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.psico-search-input-wrap svg {
+  flex: 0 0 auto;
+  color: #7a3055;
+}
+
+.psico-search-input-wrap input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  font: inherit;
+  color: #222;
+  background: transparent;
+}
+
+.psico-search-input-wrap input::placeholder {
+  color: #8a8175;
+}
+
+.psico-filter-group select:focus,
+.psico-search-input-wrap:focus-within {
   outline: none;
   border-color: #2c5f7a;
 }
@@ -1382,6 +1416,7 @@
 }
 
 .psico-filter-group select:focus,
+.psico-search-input-wrap:focus-within,
 .psico-form-grid input:focus,
 .psico-form-grid select:focus,
 .psico-form-grid textarea:focus {
