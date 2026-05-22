@@ -1,5 +1,46 @@
 const prisma = require('../config/database');
 
+const getBlockInfo = (block, viewerType) => {
+  if (!block) return null;
+
+  const blockedByMe =
+    (viewerType === 'patient' && block.blockedBy === 'PATIENT') ||
+    (viewerType === 'psychologist' && block.blockedBy === 'PSYCHOLOGIST');
+  const blockedMe =
+    (viewerType === 'patient' && block.blockedBy === 'PSYCHOLOGIST') ||
+    (viewerType === 'psychologist' && block.blockedBy === 'PATIENT');
+
+  return {
+    id: block.id,
+    blockedBy: block.blockedBy,
+    blockedByMe,
+    blockedMe,
+    createdAt: block.createdAt,
+    message: blockedByMe
+      ? 'Bloqueaste a este usuario. Los datos de contacto ya no están disponibles.'
+      : 'Este usuario te bloqueó. Ya no podés ver sus datos.',
+  };
+};
+
+const keepPsychologistIdentityOnly = (psychologist) => {
+  if (!psychologist) return psychologist;
+  return {
+    id: psychologist.id,
+    firstName: psychologist.firstName,
+    lastName: psychologist.lastName,
+    displayName: psychologist.displayName,
+  };
+};
+
+const keepPatientIdentityOnly = (patient) => {
+  if (!patient) return patient;
+  return {
+    id: patient.id,
+    firstName: patient.firstName,
+    lastName: patient.lastName,
+  };
+};
+
 // ─────────────────────────────────────────────────────────────────────────────
 // PATIENT ENDPOINTS
 // ─────────────────────────────────────────────────────────────────────────────
@@ -95,13 +136,28 @@ exports.getMyRequests = async (req, res) => {
       orderBy: { createdAt: 'desc' },
     });
 
-    // Strip contact info from non-ACCEPTED requests
+    const blocks = await prisma.psychologistPatientBlock.findMany({
+      where: { patientId: req.user.id },
+    });
+    const blockByPsychologistId = new Map(blocks.map((block) => [block.psychologistId, block]));
+
+    // Strip contact info from non-ACCEPTED requests and all data from blocked relationships.
     const sanitized = requests.map((r) => {
+      const blockInfo = getBlockInfo(blockByPsychologistId.get(r.psychologistId), 'patient');
+      if (blockInfo) {
+        return {
+          ...r,
+          message: null,
+          blockInfo,
+          psychologist: keepPsychologistIdentityOnly(r.psychologist),
+        };
+      }
+
       if (r.status !== 'ACCEPTED') {
         const { phone, contactEmail, ...psychologistWithoutContact } = r.psychologist;
         return { ...r, psychologist: psychologistWithoutContact };
       }
-      return r;
+      return { ...r, blockInfo: null };
     });
 
     res.json(sanitized);
@@ -158,6 +214,22 @@ exports.getContactInfo = async (req, res) => {
       });
     }
 
+    const block = await prisma.psychologistPatientBlock.findUnique({
+      where: {
+        patientId_psychologistId: {
+          patientId: req.user.id,
+          psychologistId: id,
+        },
+      },
+    });
+
+    if (block) {
+      return res.status(403).json({
+        error: 'No podés ver los datos de contacto porque esta relación está bloqueada',
+        blockInfo: getBlockInfo(block, 'patient'),
+      });
+    }
+
     const psychologist = await prisma.psychologist.findFirst({
       where: { id, status: 'ACTIVE' },
       select: { phone: true, contactEmail: true },
@@ -198,10 +270,105 @@ exports.getIncomingRequests = async (req, res) => {
       orderBy: { createdAt: 'desc' },
     });
 
-    res.json(requests);
+    const blocks = await prisma.psychologistPatientBlock.findMany({
+      where: { psychologistId: req.user.id },
+    });
+    const blockByPatientId = new Map(blocks.map((block) => [block.patientId, block]));
+
+    const sanitized = requests.map((request) => {
+      const blockInfo = getBlockInfo(blockByPatientId.get(request.patientId), 'psychologist');
+      if (!blockInfo) {
+        return { ...request, blockInfo: null };
+      }
+
+      return {
+        ...request,
+        message: null,
+        blockInfo,
+        patient: keepPatientIdentityOnly(request.patient),
+      };
+    });
+
+    res.json(sanitized);
   } catch (error) {
     console.error('Error en getIncomingRequests:', error);
     res.status(500).json({ error: 'Error al obtener solicitudes entrantes' });
+  }
+};
+
+// POST /api/psychologists/requests/:id/block
+// Authenticated patient or psychologist blocks the other side after an accepted request.
+exports.blockRelationship = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const request = await prisma.psychologistRequest.findUnique({
+      where: { id },
+      include: {
+        patient: {
+          select: { id: true, firstName: true, lastName: true },
+        },
+        psychologist: {
+          select: { id: true, firstName: true, lastName: true, displayName: true },
+        },
+      },
+    });
+
+    if (!request) {
+      return res.status(404).json({ error: 'Solicitud no encontrada' });
+    }
+
+    const isPatientOwner = req.user.type === 'patient' && request.patientId === req.user.id;
+    const isPsychologistOwner = req.user.type === 'psychologist' && request.psychologistId === req.user.id;
+
+    if (!isPatientOwner && !isPsychologistOwner) {
+      return res.status(403).json({ error: 'No autorizado' });
+    }
+
+    if (request.status !== 'ACCEPTED') {
+      return res.status(400).json({
+        error: 'Solo podés bloquear después de que la solicitud fue aceptada',
+      });
+    }
+
+    const existingBlock = await prisma.psychologistPatientBlock.findUnique({
+      where: {
+        patientId_psychologistId: {
+          patientId: request.patientId,
+          psychologistId: request.psychologistId,
+        },
+      },
+    });
+
+    if (existingBlock) {
+      return res.status(400).json({
+        error: 'Esta relación ya está bloqueada',
+        blockInfo: getBlockInfo(existingBlock, req.user.type),
+      });
+    }
+
+    const block = await prisma.psychologistPatientBlock.create({
+      data: {
+        patientId: request.patientId,
+        psychologistId: request.psychologistId,
+        blockedBy: req.user.type === 'patient' ? 'PATIENT' : 'PSYCHOLOGIST',
+      },
+    });
+
+    res.status(201).json({
+      message: 'Usuario bloqueado correctamente',
+      blockInfo: getBlockInfo(block, req.user.type),
+      request: {
+        ...request,
+        message: null,
+        blockInfo: getBlockInfo(block, req.user.type),
+        patient: keepPatientIdentityOnly(request.patient),
+        psychologist: keepPsychologistIdentityOnly(request.psychologist),
+      },
+    });
+  } catch (error) {
+    console.error('Error en blockRelationship:', error);
+    res.status(500).json({ error: 'Error al bloquear usuario' });
   }
 };
 

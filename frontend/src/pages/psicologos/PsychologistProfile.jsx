@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { MessageCircle, Mail, ArrowLeft, MapPin, Languages, Star, BookOpen, Clock, UserPlus, CheckCircle, XCircle, Loader } from 'lucide-react';
+import { MessageCircle, Mail, ArrowLeft, MapPin, Languages, Star, BookOpen, Clock, UserPlus, CheckCircle, XCircle, Loader, Ban } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { psychologistService, psychologistRequestService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
@@ -24,6 +24,7 @@ export default function PsychologistProfile() {
   const [myRequest, setMyRequest] = useState(null); // null = not loaded yet / no request
   const [requestLoading, setRequestLoading] = useState(false);
   const [sendingRequest, setSendingRequest] = useState(false);
+  const [blockingUser, setBlockingUser] = useState(false);
   const [message, setMessage] = useState('');
   const [contactInfo, setContactInfo] = useState(null);
 
@@ -104,6 +105,28 @@ export default function PsychologistProfile() {
     }
   };
 
+  const handleBlockRequest = async () => {
+    if (!myRequest) return;
+    const blockName = psychologist?.displayName
+      || `${psychologist?.firstName || ''} ${psychologist?.lastName || ''}`.trim()
+      || 'este psicólogo';
+    if (!window.confirm(`¿Bloquear a ${blockName}? Ya no vas a poder ver sus datos de contacto.`)) return;
+    setBlockingUser(true);
+    try {
+      const res = await psychologistRequestService.blockRelationship(myRequest.id);
+      setMyRequest(res.data?.request || {
+        ...myRequest,
+        blockInfo: res.data?.blockInfo,
+      });
+      setContactInfo(null);
+      toast.success('Usuario bloqueado');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Error al bloquear');
+    } finally {
+      setBlockingUser(false);
+    }
+  };
+
   if (loading) {
     return <div className="psico-loading psico-page-loading">Cargando perfil...</div>;
   }
@@ -134,6 +157,8 @@ export default function PsychologistProfile() {
   const requestAccepted = myRequest?.status === 'ACCEPTED';
   const requestPending = myRequest?.status === 'PENDING';
   const requestRejected = myRequest?.status === 'REJECTED';
+  const blockInfo = p.blockInfo || myRequest?.blockInfo;
+  const requestBlocked = Boolean(p.isBlocked || blockInfo);
 
   return (
     <div className="psico-profile-page">
@@ -158,8 +183,19 @@ export default function PsychologistProfile() {
               </div>
             )}
             <div className="psico-profile-contact-btns">
+              {requestBlocked && (
+                <div className="psico-hire-section psico-blocked-panel">
+                  <span className="psico-status-badge psico-status-red">
+                    <Ban size={14} /> Relación bloqueada
+                  </span>
+                  <p className="psico-blocked-text">
+                    {blockInfo?.message || 'Esta relación está bloqueada. Ya no podés ver los datos de este usuario.'}
+                  </p>
+                </div>
+              )}
+
               {/* ACCEPTED: show real contact buttons */}
-              {requestAccepted && (
+              {requestAccepted && !requestBlocked && (
                 <>
                   <span className="psico-status-badge psico-status-green" style={{ marginBottom: '0.5rem' }}>
                     <CheckCircle size={14} /> Solicitud aceptada
@@ -174,11 +210,19 @@ export default function PsychologistProfile() {
                       <Mail size={18} /> {contactEmail}
                     </a>
                   )}
+                  <button
+                    type="button"
+                    className="psico-btn-danger-sm"
+                    onClick={handleBlockRequest}
+                    disabled={blockingUser}
+                  >
+                    <Ban size={14} /> {blockingUser ? 'Bloqueando...' : 'Bloquear'}
+                  </button>
                 </>
               )}
 
               {/* PENDING: show waiting status */}
-              {requestPending && (
+              {requestPending && !requestBlocked && (
                 <div className="psico-hire-section">
                   <span className="psico-status-badge psico-status-orange">
                     <Clock size={14} /> Solicitud enviada — esperando respuesta
@@ -195,7 +239,7 @@ export default function PsychologistProfile() {
               )}
 
               {/* REJECTED: allow retrying */}
-              {requestRejected && (
+              {requestRejected && !requestBlocked && (
                 <div className="psico-hire-section">
                   <span className="psico-status-badge psico-status-red">
                     <XCircle size={14} /> Este psicólogo no está disponible por ahora
@@ -204,7 +248,7 @@ export default function PsychologistProfile() {
               )}
 
               {/* No request yet */}
-              {!myRequest && !requestLoading && (
+              {!myRequest && !requestLoading && !requestBlocked && (
                 <div className="psico-hire-section">
                   {isPatient ? (
                     <>
@@ -247,76 +291,78 @@ export default function PsychologistProfile() {
           </div>
         </div>
 
-        <div className="psico-profile-body">
-          {p.specialties?.length > 0 && (
-            <section className="psico-profile-section">
-              <h2><Star size={16} /> Especialidades</h2>
-              <div className="psico-tags">
-                {p.specialties.map((s) => (
-                  <span key={s} className="psico-tag psico-tag-specialty">{s}</span>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {p.bio && (
-            <section className="psico-profile-section">
-              <h2><BookOpen size={16} /> Sobre mí</h2>
-              <p className="psico-profile-bio">{p.bio}</p>
-            </section>
-          )}
-
-          <div className="psico-profile-details-grid">
-            {p.languages?.length > 0 && (
-              <div className="psico-profile-detail-card">
-                <h3><Languages size={14} /> Idiomas</h3>
+        {!requestBlocked && (
+          <div className="psico-profile-body">
+            {p.specialties?.length > 0 && (
+              <section className="psico-profile-section">
+                <h2><Star size={16} /> Especialidades</h2>
                 <div className="psico-tags">
-                  {p.languages.map((l) => <span key={l} className="psico-tag">{l}</span>)}
+                  {p.specialties.map((s) => (
+                    <span key={s} className="psico-tag psico-tag-specialty">{s}</span>
+                  ))}
                 </div>
-              </div>
+              </section>
             )}
 
-            {p.ageRanges?.length > 0 && (
-              <div className="psico-profile-detail-card">
-                <h3>Rango etario de atención</h3>
-                <div className="psico-tags">
-                  {p.ageRanges.map((a) => <span key={a} className="psico-tag">{a}</span>)}
+            {p.bio && (
+              <section className="psico-profile-section">
+                <h2><BookOpen size={16} /> Sobre mí</h2>
+                <p className="psico-profile-bio">{p.bio}</p>
+              </section>
+            )}
+
+            <div className="psico-profile-details-grid">
+              {p.languages?.length > 0 && (
+                <div className="psico-profile-detail-card">
+                  <h3><Languages size={14} /> Idiomas</h3>
+                  <div className="psico-tags">
+                    {p.languages.map((l) => <span key={l} className="psico-tag">{l}</span>)}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {p.yearsExperience != null && (
-              <div className="psico-profile-detail-card">
-                <h3><Clock size={14} /> Experiencia</h3>
-                <p>{p.yearsExperience} {p.yearsExperience === 1 ? 'año' : 'años'}</p>
-              </div>
-            )}
+              {p.ageRanges?.length > 0 && (
+                <div className="psico-profile-detail-card">
+                  <h3>Rango etario de atención</h3>
+                  <div className="psico-tags">
+                    {p.ageRanges.map((a) => <span key={a} className="psico-tag">{a}</span>)}
+                  </div>
+                </div>
+              )}
 
-            {p.remoteModality && (
-              <div className="psico-profile-detail-card">
-                <h3>Modalidad</h3>
-                <p>{p.remoteModality}</p>
-              </div>
-            )}
+              {p.yearsExperience != null && (
+                <div className="psico-profile-detail-card">
+                  <h3><Clock size={14} /> Experiencia</h3>
+                  <p>{p.yearsExperience} {p.yearsExperience === 1 ? 'año' : 'años'}</p>
+                </div>
+              )}
 
-            {(p.universityDegree || p.universityName) && (
-              <div className="psico-profile-detail-card">
-                <h3>Formación</h3>
-                {p.universityDegree && <p>{p.universityDegree}</p>}
-                {p.universityName && <p className="psico-secondary-text">{p.universityName}</p>}
-              </div>
-            )}
+              {p.remoteModality && (
+                <div className="psico-profile-detail-card">
+                  <h3>Modalidad</h3>
+                  <p>{p.remoteModality}</p>
+                </div>
+              )}
+
+              {(p.universityDegree || p.universityName) && (
+                <div className="psico-profile-detail-card">
+                  <h3>Formación</h3>
+                  {p.universityDegree && <p>{p.universityDegree}</p>}
+                  {p.universityName && <p className="psico-secondary-text">{p.universityName}</p>}
+                </div>
+              )}
+            </div>
+
+            <div className="psico-profile-disclaimer">
+              <strong>Aviso:</strong> La atención remota no es recomendada para crisis aguda con riesgo de vida o psicosis activa que requiera contención física inmediata, las cuales necesitan atención presencial de emergencia.
+            </div>
+
+            <div className="psico-independent-notice">
+              El profesional actúa de manera independiente.<br />
+              La plataforma no interviene en sesiones, pagos ni resultados del servicio.
+            </div>
           </div>
-
-          <div className="psico-profile-disclaimer">
-            <strong>Aviso:</strong> La atención remota no es recomendada para crisis aguda con riesgo de vida o psicosis activa que requiera contención física inmediata, las cuales necesitan atención presencial de emergencia.
-          </div>
-
-          <div className="psico-independent-notice">
-            El profesional actúa de manera independiente.<br />
-            La plataforma no interviene en sesiones, pagos ni resultados del servicio.
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

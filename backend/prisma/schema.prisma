@@ -272,6 +272,11 @@ enum RegistrationType {
   INTERNATIONAL
 }
 
+enum PsychologistPatientBlockedBy {
+  PATIENT
+  PSYCHOLOGIST
+}
+
 model Psychologist {
   id                  String              @id @default(uuid())
   email               String              @unique
@@ -339,6 +344,7 @@ model Psychologist {
   documents           PsychologistDocument[]
   subscriptions       PsychologistSubscription[]
   requests            PsychologistRequest[]
+  patientBlocks       PsychologistPatientBlock[]
 
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
@@ -358,6 +364,7 @@ model Patient {
   profileImage        String?
 
   psychologistRequests PsychologistRequest[]
+  psychologistBlocks PsychologistPatientBlock[]
 
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
@@ -433,4 +440,23 @@ model PsychologistRequest {
   @@index([patientId])
   @@index([psychologistId])
   @@map("psychologist_requests")
+}
+
+model PsychologistPatientBlock {
+  id              String                       @id @default(uuid())
+  blockedBy       PsychologistPatientBlockedBy
+
+  patient         Patient                      @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  patientId       String
+
+  psychologist    Psychologist                 @relation(fields: [psychologistId], references: [id], onDelete: Cascade)
+  psychologistId  String
+
+  createdAt       DateTime                     @default(now())
+  updatedAt       DateTime                     @updatedAt
+
+  @@unique([patientId, psychologistId])
+  @@index([patientId])
+  @@index([psychologistId])
+  @@map("psychologist_patient_blocks")
 }

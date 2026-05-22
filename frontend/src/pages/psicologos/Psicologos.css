@@ -1657,6 +1657,11 @@
   flex-wrap: wrap;
 }
 
+.patient-request-item-blocked {
+  background: #fff7f7;
+  border-color: #fecaca;
+}
+
 .patient-request-psy {
   display: flex;
   align-items: flex-start;
@@ -1692,6 +1697,19 @@
   color: #4b6e85;
   font-size: 0.82rem;
   margin: 0.2rem 0 0;
+}
+
+.psico-blocked-text {
+  color: #991b1b;
+  font-size: 0.85rem;
+  margin: 0.25rem 0 0;
+}
+
+.psico-blocked-panel {
+  padding: 0.85rem;
+  background: #fff7f7;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
 }
 
 .psico-requests-group {

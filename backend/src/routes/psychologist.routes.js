@@ -9,7 +9,14 @@ const patientAuthController = require('../controllers/patientAuth.controller');
 const psychologistController = require('../controllers/psychologist.controller');
 const psychologistPublicController = require('../controllers/psychologistPublic.controller');
 const psychologistRequestController = require('../controllers/psychologistRequest.controller');
-const { authenticatePsychologist, authenticateAdmin, authenticatePatient } = require('../middlewares/auth.middleware');
+const {
+  authenticate,
+  authorizeRole,
+  optionalAuthenticate,
+  authenticatePsychologist,
+  authenticateAdmin,
+  authenticatePatient,
+} = require('../middlewares/auth.middleware');
 
 // ─── PUBLIC ROUTES ───────────────────────────────────────────────────────────
 
@@ -62,7 +69,7 @@ router.post(
 );
 
 // Public listing + profile
-router.get('/', psychologistPublicController.list);
+router.get('/', optionalAuthenticate, psychologistPublicController.list);
 router.get('/plans', psychologistController.getPlans);
 
 // ─── PROTECTED: PSYCHOLOGIST ─────────────────────────────────────────────────
@@ -123,6 +130,14 @@ router.get('/requests/mine', authenticatePatient, psychologistRequestController.
 // Cancel a PENDING request
 router.delete('/requests/:id', authenticatePatient, psychologistRequestController.cancelRequest);
 
+// Patient or psychologist blocks the other side after an ACCEPTED request
+router.post(
+  '/requests/:id/block',
+  authenticate,
+  authorizeRole('patient', 'psychologist'),
+  psychologistRequestController.blockRelationship
+);
+
 // Psychologist accepts or rejects a request
 router.put(
   '/requests/:id/status',
@@ -147,6 +162,6 @@ router.post(
 
 // Keep the dynamic public route at the end so static routes match first.
 router.get('/:id/contact', authenticatePatient, psychologistRequestController.getContactInfo);
-router.get('/:id', psychologistPublicController.getById);
+router.get('/:id', optionalAuthenticate, psychologistPublicController.getById);
 
 module.exports = router;

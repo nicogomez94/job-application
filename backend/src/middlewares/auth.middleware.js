@@ -14,6 +14,18 @@ const authenticate = (req, res, next) => {
   })(req, res, next);
 };
 
+const optionalAuthenticate = (req, res, next) => {
+  passport.authenticate('jwt', { session: false }, (error, user) => {
+    if (error) {
+      return res.status(500).json({ error: 'Error de autenticación' });
+    }
+    if (user) {
+      req.user = user;
+    }
+    next();
+  })(req, res, next);
+};
+
 // Middleware para verificar tipo de usuario específico
 const authorizeRole = (...allowedTypes) => {
   return (req, res, next) => {
@@ -130,6 +142,7 @@ const checkActivePsychologistSubscription = async (req, res, next) => {
 
 module.exports = {
   authenticate,
+  optionalAuthenticate,
   authorizeRole,
   authenticateUser,
   authenticatePatient,

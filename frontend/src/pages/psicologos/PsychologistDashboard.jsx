@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { User, FileText, CreditCard, CheckCircle, Clock, XCircle, Edit, Users, Check, X } from 'lucide-react';
+import { User, FileText, CreditCard, CheckCircle, Clock, XCircle, Edit, Users, Check, X, Ban } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { psychologistService } from '../../services';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
@@ -29,6 +29,7 @@ export default function PsychologistDashboard() {
   const [incomingRequests, setIncomingRequests] = useState([]);
   const [requestsLoading, setRequestsLoading] = useState(false);
   const [updatingRequest, setUpdatingRequest] = useState(null);
+  const [blockingRequest, setBlockingRequest] = useState(null);
 
   useEffect(() => {
     const load = async () => {
@@ -97,6 +98,32 @@ export default function PsychologistDashboard() {
       toast.error(error.response?.data?.error || 'Error al actualizar la solicitud');
     } finally {
       setUpdatingRequest(null);
+    }
+  };
+
+  const handleBlock = async (request) => {
+    const patient = request.patient;
+    const patientName = `${patient?.firstName || ''} ${patient?.lastName || ''}`.trim() || 'este paciente';
+    if (!window.confirm(`¿Bloquear a ${patientName}? Ya no vas a poder ver sus datos.`)) return;
+    setBlockingRequest(request.id);
+    try {
+      const res = await psychologistService.blockRelationship(request.id);
+      const nextRequest = res.data?.request || {
+        ...request,
+        message: null,
+        blockInfo: res.data?.blockInfo,
+        patient: {
+          id: patient?.id,
+          firstName: patient?.firstName,
+          lastName: patient?.lastName,
+        },
+      };
+      setIncomingRequests((prev) => prev.map((r) => (r.id === request.id ? nextRequest : r)));
+      toast.success('Usuario bloqueado');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Error al bloquear');
+    } finally {
+      setBlockingRequest(null);
     }
   };
 
@@ -218,8 +245,9 @@ export default function PsychologistDashboard() {
                     {pendingRequests.map((req) => {
                       const patient = req.patient;
                       const patientName = `${patient?.firstName || ''} ${patient?.lastName || ''}`.trim();
+                      const blockInfo = req.blockInfo;
                       return (
-                        <li key={req.id} className="patient-request-item">
+                        <li key={req.id} className={`patient-request-item ${blockInfo ? 'patient-request-item-blocked' : ''}`}>
                           <div className="patient-request-psy">
                             <div className="psico-card-photo psico-card-photo-sm">
                               <div className="psico-card-initials">
@@ -228,9 +256,12 @@ export default function PsychologistDashboard() {
                             </div>
                             <div>
                               <strong>{patientName}</strong>
-                              <p className="psico-secondary-text">{patient?.email}</p>
+                              {!blockInfo && <p className="psico-secondary-text">{patient?.email}</p>}
                               {req.message && (
                                 <p className="psico-request-message">"{req.message}"</p>
+                              )}
+                              {blockInfo && (
+                                <p className="psico-blocked-text">{blockInfo.message}</p>
                               )}
                               <span className="psico-secondary-text psico-date-text">
                                 {formatDate(req.createdAt)}
@@ -268,8 +299,9 @@ export default function PsychologistDashboard() {
                       const patient = req.patient;
                       const patientName = `${patient?.firstName || ''} ${patient?.lastName || ''}`.trim();
                       const isAccepted = req.status === 'ACCEPTED';
+                      const blockInfo = req.blockInfo;
                       return (
-                        <li key={req.id} className="patient-request-item">
+                        <li key={req.id} className={`patient-request-item ${blockInfo ? 'patient-request-item-blocked' : ''}`}>
                           <div className="patient-request-psy">
                             <div className="psico-card-photo psico-card-photo-sm">
                               <div className="psico-card-initials">
@@ -278,12 +310,30 @@ export default function PsychologistDashboard() {
                             </div>
                             <div>
                               <strong>{patientName}</strong>
-                              <p className="psico-secondary-text">{patient?.email}</p>
+                              {!blockInfo && <p className="psico-secondary-text">{patient?.email}</p>}
+                              {blockInfo && (
+                                <p className="psico-blocked-text">{blockInfo.message}</p>
+                              )}
                             </div>
                           </div>
-                          <span className={`psico-status-badge psico-status-${isAccepted ? 'green' : 'red'}`}>
-                            {isAccepted ? <><CheckCircle size={13} /> Aceptado</> : <><XCircle size={13} /> Rechazado</>}
-                          </span>
+                          <div className="psico-request-actions">
+                            <span className={`psico-status-badge psico-status-${isAccepted ? 'green' : 'red'}`}>
+                              {isAccepted ? <><CheckCircle size={13} /> Aceptado</> : <><XCircle size={13} /> Rechazado</>}
+                            </span>
+                            {blockInfo ? (
+                              <span className="psico-status-badge psico-status-red">
+                                <Ban size={13} /> Bloqueado
+                              </span>
+                            ) : isAccepted ? (
+                              <button
+                                className="psico-btn-danger-sm"
+                                onClick={() => handleBlock(req)}
+                                disabled={blockingRequest === req.id}
+                              >
+                                <Ban size={14} /> {blockingRequest === req.id ? 'Bloqueando...' : 'Bloquear'}
+                              </button>
+                            ) : null}
+                          </div>
                         </li>
                       );
                     })}

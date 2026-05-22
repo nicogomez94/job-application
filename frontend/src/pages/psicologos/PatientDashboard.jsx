@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { CheckCircle, Clock, XCircle, MessageCircle, Mail, Brain, Trash2 } from 'lucide-react';
+import { CheckCircle, Clock, XCircle, MessageCircle, Mail, Brain, Trash2, Ban } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { psychologistRequestService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
@@ -24,6 +24,7 @@ export default function PatientDashboard() {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(null);
+  const [blocking, setBlocking] = useState(null);
 
   const load = async () => {
     try {
@@ -51,6 +52,33 @@ export default function PatientDashboard() {
       toast.error(error.response?.data?.error || 'Error al cancelar');
     } finally {
       setCancelling(null);
+    }
+  };
+
+  const handleBlock = async (request) => {
+    const p = request.psychologist;
+    const psyName = p?.displayName || `${p?.firstName || ''} ${p?.lastName || ''}`.trim() || 'este psicólogo';
+    if (!window.confirm(`¿Bloquear a ${psyName}? Ya no vas a poder ver sus datos de contacto.`)) return;
+    setBlocking(request.id);
+    try {
+      const res = await psychologistRequestService.blockRelationship(request.id);
+      const nextRequest = res.data?.request || {
+        ...request,
+        message: null,
+        blockInfo: res.data?.blockInfo,
+        psychologist: {
+          id: p?.id,
+          firstName: p?.firstName,
+          lastName: p?.lastName,
+          displayName: p?.displayName,
+        },
+      };
+      setRequests((prev) => prev.map((r) => (r.id === request.id ? nextRequest : r)));
+      toast.success('Usuario bloqueado');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Error al bloquear');
+    } finally {
+      setBlocking(null);
     }
   };
 
@@ -96,9 +124,10 @@ export default function PatientDashboard() {
                   const psyName = p?.displayName || `${p?.firstName || ''} ${p?.lastName || ''}`.trim();
                   const photo = p?.profileImage ? toAssetUrl(p.profileImage) : null;
                   const initials = `${p?.firstName?.[0] || ''}${p?.lastName?.[0] || ''}`.toUpperCase();
+                  const blockInfo = req.blockInfo;
 
                   return (
-                    <li key={req.id} className="patient-request-item">
+                    <li key={req.id} className={`patient-request-item ${blockInfo ? 'patient-request-item-blocked' : ''}`}>
                       <div className="patient-request-psy">
                         <div className="psico-card-photo psico-card-photo-sm">
                           {photo ? (
@@ -111,9 +140,13 @@ export default function PatientDashboard() {
                           {p?.specialties?.length > 0 && (
                             <p className="psico-secondary-text">{p.specialties[0]}</p>
                           )}
-                          <Link to={`/psicologos/${p?.id}`} className="psico-link-subtle">
-                            Ver perfil →
-                          </Link>
+                          {blockInfo ? (
+                            <p className="psico-blocked-text">{blockInfo.message}</p>
+                          ) : (
+                            <Link to={`/psicologos/${p?.id}`} className="psico-link-subtle">
+                              Ver perfil →
+                            </Link>
+                          )}
                         </div>
                       </div>
 
@@ -121,12 +154,17 @@ export default function PatientDashboard() {
                         <span className={`psico-status-badge psico-status-${cfg.color}`}>
                           <StatusIcon size={13} /> {cfg.label}
                         </span>
+                        {blockInfo && (
+                          <span className="psico-status-badge psico-status-red">
+                            <Ban size={13} /> Bloqueado
+                          </span>
+                        )}
                         <span className="psico-secondary-text psico-date-text">
                           {new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(req.createdAt))}
                         </span>
                       </div>
 
-                      {req.status === 'ACCEPTED' && (
+                      {req.status === 'ACCEPTED' && !blockInfo && (
                         <div className="patient-request-contact">
                           {p?.phone && (
                             <a
@@ -146,7 +184,19 @@ export default function PatientDashboard() {
                         </div>
                       )}
 
-                      {req.status === 'PENDING' && (
+                      {req.status === 'ACCEPTED' && !blockInfo && (
+                        <button
+                          className="psico-btn-danger-sm"
+                          onClick={() => handleBlock(req)}
+                          disabled={blocking === req.id}
+                          title="Bloquear usuario"
+                        >
+                          <Ban size={14} />
+                          {blocking === req.id ? 'Bloqueando...' : 'Bloquear'}
+                        </button>
+                      )}
+
+                      {req.status === 'PENDING' && !blockInfo && (
                         <button
                           className="psico-btn-danger-sm"
                           onClick={() => handleCancel(req.id)}
