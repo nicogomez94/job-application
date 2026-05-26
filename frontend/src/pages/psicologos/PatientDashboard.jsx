@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { CheckCircle, Clock, XCircle, MessageCircle, Mail, Brain, Trash2, Ban } from 'lucide-react';
+import { CheckCircle, Clock, XCircle, MessageCircle, Mail, Brain, Trash2, Ban, Camera } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { psychologistRequestService } from '../../services';
+import { psychologistRequestService, patientAuthService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
 import './Psicologos.css';
@@ -20,11 +20,13 @@ const STATUS_CONFIG = {
 };
 
 export default function PatientDashboard() {
-  const { user } = useAuthStore();
+  const { user, updateUser } = useAuthStore();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(null);
   const [blocking, setBlocking] = useState(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const photoInputRef = useRef(null);
 
   const load = async () => {
     try {
@@ -40,6 +42,23 @@ export default function PatientDashboard() {
   useEffect(() => {
     load();
   }, []);
+
+  const handlePhotoChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingPhoto(true);
+    try {
+      const res = await patientAuthService.uploadProfileImage(file);
+      const nextImage = res.data?.profileImage || '';
+      updateUser({ profileImage: nextImage });
+      toast.success('Foto de perfil actualizada');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'No se pudo subir la foto de perfil');
+    } finally {
+      setUploadingPhoto(false);
+      if (photoInputRef.current) photoInputRef.current.value = '';
+    }
+  };
 
   const handleCancel = async (id) => {
     if (!window.confirm('¿Cancelar esta solicitud?')) return;
@@ -87,14 +106,34 @@ export default function PatientDashboard() {
   }
 
   const name = user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : '';
+  const patientPhoto = user?.profileImage ? toAssetUrl(user.profileImage) : null;
+  const patientInitials = `${user?.firstName?.[0] || ''}${user?.lastName?.[0] || ''}`.toUpperCase();
 
   return (
     <div className="psico-dashboard-page">
       <div className="psico-dashboard-container">
         <div className="psico-dashboard-header">
-          <div className="psico-login-icon" style={{ marginBottom: '0.5rem' }}>
-            <Brain size={28} strokeWidth={1.5} />
+          <div
+            className="psico-dashboard-photo psico-photo-upload-wrapper"
+            style={{ width: 64, height: 64, margin: '0 auto 0.5rem' }}
+            onClick={() => !uploadingPhoto && photoInputRef.current?.click()}
+            title="Cambiar foto de perfil"
+          >
+            {patientPhoto ? (
+              <img src={patientPhoto} alt={name} onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
+            ) : null}
+            <div className="psico-card-initials" style={patientPhoto ? { display: 'none' } : {}}>{patientInitials || <Brain size={22} strokeWidth={1.5} />}</div>
+            <div className="psico-photo-upload-overlay">
+              {uploadingPhoto ? <span className="psico-photo-uploading-dot" /> : <Camera size={14} />}
+            </div>
           </div>
+          <input
+            ref={photoInputRef}
+            type="file"
+            accept="image/*"
+            style={{ display: 'none' }}
+            onChange={handlePhotoChange}
+          />
           <h1>Mi cuenta</h1>
           {name && <p className="psico-login-subtitle">Hola, {name}</p>}
         </div>

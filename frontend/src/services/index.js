@@ -180,6 +180,13 @@ export const patientAuthService = {
     const response = await api.post('/psychologists/patients/auth/login', data);
     return { ...response, data: repairMojibakeDeep(response.data) };
   },
+  uploadProfileImage: (file) => {
+    const formData = new FormData();
+    formData.append('patientProfile', file);
+    return api.post('/psychologists/patients/me/profile-image', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
 };
 
 export const psychologistService = {

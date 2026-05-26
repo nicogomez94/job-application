@@ -130,6 +130,14 @@ router.get('/requests/mine', authenticatePatient, psychologistRequestController.
 // Cancel a PENDING request
 router.delete('/requests/:id', authenticatePatient, psychologistRequestController.cancelRequest);
 
+// Patient uploads their own profile image
+router.post(
+  '/patients/me/profile-image',
+  authenticatePatient,
+  upload.single('patientProfile'),
+  patientAuthController.uploadProfileImage
+);
+
 // Patient or psychologist blocks the other side after an ACCEPTED request
 router.post(
   '/requests/:id/block',

@@ -1307,6 +1307,42 @@
   object-fit: cover;
 }
 
+/* ── Clickable photo upload ─────────────────────────────────── */
+.psico-photo-upload-wrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+.psico-photo-upload-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.38);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  color: #fff;
+}
+
+.psico-photo-upload-wrapper:hover .psico-photo-upload-overlay {
+  opacity: 1;
+}
+
+.psico-photo-uploading-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  animation: psico-pulse 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes psico-pulse {
+  from { opacity: 0.3; transform: scale(0.8); }
+  to   { opacity: 1;   transform: scale(1.1); }
+}
+
 .psico-dashboard-profile h3 {
   font-size: 0.95rem;
   font-weight: 700;

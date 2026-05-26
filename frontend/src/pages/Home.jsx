@@ -275,7 +275,7 @@ export default function Home() {
       <section ref={categoriesRef} className={`home-categories animate-on-scroll ${categoriesVisible ? 'animate-visible' : ''}`}>
         <div className="home-categories-container">
           <h2 className="categories-title">{t('Navegá por categoría')}</h2>
-          <p className="categories-subtitle">{t('Simplifica tu b�squeda de trabajo buscando por categor?as')}</p>
+          <p className="categories-subtitle">{t('Simplifica tu búsqueda de trabajo buscando por categorías')}</p>
           
           <div className="categories-carousel">
             <button className="carousel-btn carousel-btn-prev" onClick={prevSlide} disabled={categoriesForCarousel.length <= itemsPerSlide}>

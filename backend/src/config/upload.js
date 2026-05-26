@@ -11,6 +11,7 @@ const createUploadDirs = () => {
     './uploads/logos',
     './uploads/psychologist-profiles',
     './uploads/psychologist-docs',
+    './uploads/patient-profiles',
   ];
   dirs.forEach(dir => {
     if (!fs.existsSync(dir)) {
@@ -36,6 +37,8 @@ const storage = multer.diskStorage({
       uploadPath += 'logos/';
     } else if (file.fieldname === 'psychologistProfile') {
       uploadPath += 'psychologist-profiles/';
+    } else if (file.fieldname === 'patientProfile') {
+      uploadPath += 'patient-profiles/';
     } else if (file.fieldname === 'psychologistDoc') {
       uploadPath += 'psychologist-docs/';
     }
@@ -52,7 +55,7 @@ const storage = multer.diskStorage({
 const fileFilter = (req, file, cb) => {
   if (file.fieldname === 'cv') {
     cb(null, true);
-  } else if (file.fieldname === 'profileImage' || file.fieldname === 'companyLogo' || file.fieldname === 'psychologistProfile') {
+  } else if (file.fieldname === 'profileImage' || file.fieldname === 'companyLogo' || file.fieldname === 'psychologistProfile' || file.fieldname === 'patientProfile') {
     // Solo imágenes para perfiles y logos
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);

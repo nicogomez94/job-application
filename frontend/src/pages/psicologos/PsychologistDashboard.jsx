@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { User, FileText, CreditCard, CheckCircle, Clock, XCircle, Edit, Users, Check, X, Ban } from 'lucide-react';
+import { User, FileText, CreditCard, CheckCircle, Clock, XCircle, Edit, Users, Check, X, Ban, Camera } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { psychologistService } from '../../services';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
@@ -30,6 +30,8 @@ export default function PsychologistDashboard() {
   const [requestsLoading, setRequestsLoading] = useState(false);
   const [updatingRequest, setUpdatingRequest] = useState(null);
   const [blockingRequest, setBlockingRequest] = useState(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const photoInputRef = useRef(null);
 
   useEffect(() => {
     const load = async () => {
@@ -85,6 +87,24 @@ export default function PsychologistDashboard() {
 
   const formatDate = (d) =>
     d ? new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(d)) : '-';
+
+  const handlePhotoChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingPhoto(true);
+    try {
+      const res = await psychologistService.uploadProfileImage(file);
+      const nextImage = res.data?.profileImage || '';
+      setProfile((prev) => ({ ...prev, profileImage: nextImage }));
+      updateUser({ profileImage: nextImage });
+      toast.success('Foto de perfil actualizada');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'No se pudo subir la foto de perfil');
+    } finally {
+      setUploadingPhoto(false);
+      if (photoInputRef.current) photoInputRef.current.value = '';
+    }
+  };
 
   const handleRequestStatus = async (requestId, status) => {
     setUpdatingRequest(requestId);
@@ -158,12 +178,22 @@ export default function PsychologistDashboard() {
               </Link>
             </div>
             <div className="psico-dashboard-profile">
-              <div className="psico-dashboard-photo">
+              <div className="psico-dashboard-photo psico-photo-upload-wrapper" onClick={() => !uploadingPhoto && photoInputRef.current?.click()} title="Cambiar foto de perfil">
                 {photo ? (
                   <img src={photo} alt={name} onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
                 ) : null}
                 <div className="psico-card-initials" style={photo ? { display: 'none' } : {}}>{initials}</div>
+                <div className="psico-photo-upload-overlay">
+                  {uploadingPhoto ? <span className="psico-photo-uploading-dot" /> : <Camera size={14} />}
+                </div>
               </div>
+              <input
+                ref={photoInputRef}
+                type="file"
+                accept="image/*"
+                style={{ display: 'none' }}
+                onChange={handlePhotoChange}
+              />
               <div>
                 <h3>{name}</h3>
                 <p>{p?.email}</p>
