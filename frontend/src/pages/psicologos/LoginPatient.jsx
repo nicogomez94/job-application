@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { Mail, Lock, Brain } from 'lucide-react';
 import { patientAuthService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
+import { getDebugLoginData, DEBUG_MODE } from '../../config/debug';
 import './Psicologos.css';
 import '../auth/PsicoLogin.css';
 
@@ -13,7 +14,9 @@ export default function LoginPatient() {
   const { setAuth } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    defaultValues: DEBUG_MODE ? getDebugLoginData('patient') : { email: '', password: '' },
+  });
 
   // Redirect to the page the user was trying to access, or to the listing
   const from = location.state?.from || '/psicologos/buscar';

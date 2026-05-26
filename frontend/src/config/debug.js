@@ -20,6 +20,10 @@ export const DEBUG_FORM_DATA = {
       email: 'psicologa.debug@example.com',
       password: 'debug123',
     },
+    patient: {
+      email: 'paciente.debug@example.com',
+      password: 'debug123',
+    },
   },
   registerUser: {
     firstName: 'Juan',
@@ -60,6 +64,14 @@ export const DEBUG_FORM_DATA = {
     whatsappNumber: '+54 11 5555 5555',
     contactEmail: 'rrhh@empresa-debug.com',
     expiresAt: '2026-12-31',
+  },
+  registerPatient: {
+    firstName: 'Carlos',
+    lastName: 'Lopez',
+    email: 'paciente.debug@example.com',
+    password: 'debug123',
+    confirmPassword: 'debug123',
+    gender: 'Hombre',
   },
   registerPsychologistAR: {
     email: 'psicologa.ar.debug@example.com',

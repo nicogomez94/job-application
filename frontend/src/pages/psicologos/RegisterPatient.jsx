@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { Mail, Lock, User, Brain, Users } from 'lucide-react';
 import { patientAuthService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
+import { DEBUG_FORM_DATA, DEBUG_MODE } from '../../config/debug';
 import './Psicologos.css';
 import '../auth/PsicoLogin.css';
 
@@ -17,7 +18,9 @@ export default function RegisterPatient() {
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm();
+  } = useForm({
+    defaultValues: DEBUG_MODE ? { ...DEBUG_FORM_DATA.registerPatient } : {},
+  });
 
   const onSubmit = async (data) => {
     setLoading(true);
