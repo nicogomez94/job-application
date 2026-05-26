@@ -64,10 +64,11 @@ export default function AdminPsychologists() {
   const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('PENDING');
+  const [typeFilter, setTypeFilter] = useState('');
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState(null);
 
-  const loadPsychologists = async (nextPage = 1, nextSearch = searchQuery, nextStatus = statusFilter) => {
+  const loadPsychologists = async (nextPage = 1, nextSearch = searchQuery, nextStatus = statusFilter, nextType = typeFilter) => {
     setLoading(true);
     try {
       const response = await adminService.listPsychologists({
@@ -75,6 +76,7 @@ export default function AdminPsychologists() {
         limit: DEFAULT_LIMIT,
         search: nextSearch || undefined,
         status: nextStatus || undefined,
+        registrationType: nextType || undefined,
       });
       setPsychologists(response.data?.psychologists || []);
       setPagination(getPagination(response.data));
@@ -86,20 +88,26 @@ export default function AdminPsychologists() {
   };
 
   useEffect(() => {
-    loadPsychologists(1, '', 'PENDING');
+    loadPsychologists(1, '', 'PENDING', '');
   }, []);
 
   const handleSearch = (event) => {
     event.preventDefault();
     const nextSearch = searchInput.trim();
     setSearchQuery(nextSearch);
-    loadPsychologists(1, nextSearch, statusFilter);
+    loadPsychologists(1, nextSearch, statusFilter, typeFilter);
   };
 
   const handleStatusChange = (event) => {
     const nextStatus = event.target.value;
     setStatusFilter(nextStatus);
-    loadPsychologists(1, searchQuery, nextStatus);
+    loadPsychologists(1, searchQuery, nextStatus, typeFilter);
+  };
+
+  const handleTypeChange = (event) => {
+    const nextType = event.target.value;
+    setTypeFilter(nextType);
+    loadPsychologists(1, searchQuery, statusFilter, nextType);
   };
 
   const handleApprove = async (psychologist) => {
@@ -112,7 +120,7 @@ export default function AdminPsychologists() {
     try {
       await adminService.approvePsychologist(psychologist.id);
       toast.success('Cuenta de psicólogo validada');
-      await loadPsychologists(pagination.page, searchQuery, statusFilter);
+      await loadPsychologists(pagination.page, searchQuery, statusFilter, typeFilter);
     } catch (error) {
       toast.error(error.response?.data?.error || 'No se pudo validar la cuenta');
     } finally {
@@ -130,7 +138,7 @@ export default function AdminPsychologists() {
     try {
       await adminService.rejectPsychologist(psychologist.id, reason.trim());
       toast.success('Cuenta marcada como no validada');
-      await loadPsychologists(pagination.page, searchQuery, statusFilter);
+      await loadPsychologists(pagination.page, searchQuery, statusFilter, typeFilter);
     } catch (error) {
       toast.error(error.response?.data?.error || 'No se pudo rechazar la cuenta');
     } finally {
@@ -142,7 +150,8 @@ export default function AdminPsychologists() {
     setSearchInput('');
     setSearchQuery('');
     setStatusFilter('');
-    loadPsychologists(1, '', '');
+    setTypeFilter('');
+    loadPsychologists(1, '', '', '');
   };
 
   if (loading) {
@@ -198,7 +207,23 @@ export default function AdminPsychologists() {
             </select>
           </div>
 
-          {(searchQuery || statusFilter) && (
+          <div className="admin-filter-field">
+            <label htmlFor="admin-psychologists-type" className="admin-field-label">
+              Tipo de registro
+            </label>
+            <select
+              id="admin-psychologists-type"
+              className="input"
+              value={typeFilter}
+              onChange={handleTypeChange}
+            >
+              <option value="">Todos</option>
+              <option value="ARGENTINA">Psicólogos Argentinos</option>
+              <option value="INTERNATIONAL">Psicólogos Internacionales</option>
+            </select>
+          </div>
+
+          {(searchQuery || statusFilter || typeFilter) && (
             <button type="button" className="btn btn-outline" onClick={clearFilters}>
               Limpiar
             </button>
@@ -317,7 +342,7 @@ export default function AdminPsychologists() {
                   type="button"
                   className="btn btn-outline"
                   disabled={pagination.page <= 1}
-                  onClick={() => loadPsychologists(pagination.page - 1, searchQuery, statusFilter)}
+                  onClick={() => loadPsychologists(pagination.page - 1, searchQuery, statusFilter, typeFilter)}
                 >
                   Anterior
                 </button>
@@ -325,7 +350,7 @@ export default function AdminPsychologists() {
                   type="button"
                   className="btn btn-outline"
                   disabled={pagination.page >= pagination.pages}
-                  onClick={() => loadPsychologists(pagination.page + 1, searchQuery, statusFilter)}
+                  onClick={() => loadPsychologists(pagination.page + 1, searchQuery, statusFilter, typeFilter)}
                 >
                   Siguiente
                 </button>

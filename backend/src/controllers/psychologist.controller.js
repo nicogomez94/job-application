@@ -294,9 +294,10 @@ exports.getPlans = async (req, res) => {
 // ─── ADMIN: LIST PSYCHOLOGISTS ────────────────────────────────────────────────
 exports.adminList = async (req, res) => {
   try {
-    const { status, search, page = 1, limit = 20 } = req.query;
+    const { status, search, registrationType, page = 1, limit = 20 } = req.query;
     const where = {};
     if (status) where.status = status;
+    if (registrationType) where.registrationType = registrationType;
     if (search) {
       where.OR = [
         { email: { contains: search, mode: 'insensitive' } },

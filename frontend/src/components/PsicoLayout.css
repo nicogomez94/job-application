@@ -91,19 +91,22 @@
 .psico-layout-nav-btn {
   display: inline-flex;
   align-items: center;
-  padding: 0.45rem 1.1rem;
-  background: #2c5f7a;
-  color: #fff;
+  gap: 0.25rem;
+  padding: 0.45rem 0.85rem;
+  background: transparent;
+  color: #964468;
   font-size: 0.9rem;
   font-weight: 700;
-  border-radius: 8px;
+  border: none;
+  border-radius: 7px;
   text-decoration: none;
+  cursor: pointer;
   transition: background 0.14s;
   margin-left: 0.25rem;
 }
 
 .psico-layout-nav-btn:hover {
-  background: #1e4560;
+  background: #f9eff4;
 }
 
 .psico-layout-nav-logout {
@@ -220,11 +223,12 @@
 }
 
 .psico-layout-nav-btn {
-  background: var(--psico-accent-500);
+  background: transparent;
+  color: #cc6698;
 }
 
 .psico-layout-nav-btn:hover {
-  background: var(--psico-accent-700);
+  background: rgba(255,255,255,0.15);
 }
 
 .psico-layout-footer {

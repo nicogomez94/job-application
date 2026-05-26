@@ -17,6 +17,9 @@ router.get('/users', adminController.getAllUsers);
 router.get('/users/:id', adminController.getUserById);
 router.delete('/users/:id', adminController.deleteUser);
 
+// ==================== PACIENTES ====================
+router.get('/patients', adminController.getAllPatients);
+
 // ==================== EMPRESAS ====================
 router.get('/companies', adminController.getAllCompanies);
 router.get('/companies/:id', adminController.getCompanyById);

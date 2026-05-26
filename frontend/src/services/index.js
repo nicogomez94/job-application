@@ -131,6 +131,9 @@ export const adminService = {
   getAllUsers: (params) => api.get('/admin/users', { params }),
   getUserById: (id) => api.get(`/admin/users/${id}`),
   deleteUser: (id) => api.delete(`/admin/users/${id}`),
+
+  // Patients (psychology section)
+  getAllPatients: (params) => api.get('/admin/patients', { params }),
   
   // Companies
   getAllCompanies: (params) => api.get('/admin/companies', { params }),

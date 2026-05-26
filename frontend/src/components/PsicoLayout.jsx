@@ -52,11 +52,14 @@ export default function PsicoLayout() {
           </Link>
 
           <nav className="psico-layout-nav">
+            <Link to="/" className="psico-layout-nav-link psico-layout-nav-link--back">
+              ← Sitio principal
+            </Link>
             <Link
-              to="/psicologos/buscar"
-              className={`psico-layout-nav-link ${location.pathname === '/psicologos/buscar' ? 'active' : ''}`}
+              to="/psicologos/registro-paciente"
+              className={`psico-layout-nav-link ${location.pathname === '/psicologos/registro-paciente' ? 'active' : ''}`}
             >
-              Buscar psicólogo
+              Registro usuario
             </Link>
 
             {/* ── Authenticated as patient ── */}
@@ -94,7 +97,7 @@ export default function PsicoLayout() {
             {!isPsychologist && !isPatient && (
               <>
                 <Link to="/register/psicologo" className="psico-layout-nav-link">
-                  Soy psicólogo
+                  Registro Psicólogos
                 </Link>
 
                 {/* Login dropdown */}
@@ -147,9 +150,7 @@ export default function PsicoLayout() {
           <span>
             <strong>Psicólogos en Línea</strong> · professionals at home
           </span>
-          <Link to="/" className="psico-layout-footer-back">
-            ← Volver al sitio principal
-          </Link>
+          <span className="psico-layout-footer-back-placeholder" />
           <span className="psico-layout-footer-legal">
             Las consultas son pactadas directamente entre el paciente y el profesional.
             La plataforma no interviene ni garantiza los servicios.

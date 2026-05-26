@@ -463,6 +463,59 @@ exports.deleteJobOffer = async (req, res) => {
   }
 };
 
+// ==================== GESTIÓN DE PACIENTES ====================
+
+// Listar todos los pacientes
+exports.getAllPatients = async (req, res) => {
+  try {
+    const { page = 1, limit = 20, search } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const where = {};
+    if (search) {
+      where.OR = [
+        { email: { contains: search, mode: 'insensitive' } },
+        { firstName: { contains: search, mode: 'insensitive' } },
+        { lastName: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
+    const [patients, total] = await Promise.all([
+      prisma.patient.findMany({
+        where,
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          phone: true,
+          createdAt: true,
+          _count: {
+            select: { psychologistRequests: true },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: parseInt(limit),
+      }),
+      prisma.patient.count({ where }),
+    ]);
+
+    res.json({
+      patients,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / parseInt(limit)),
+      },
+    });
+  } catch (error) {
+    console.error('Error en getAllPatients:', error);
+    res.status(500).json({ error: 'Error al obtener pacientes' });
+  }
+};
+
 // ==================== GESTIÓN DE ADMINISTRADORES ====================
 
 // Crear administrador

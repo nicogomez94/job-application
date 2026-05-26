@@ -118,6 +118,18 @@
   opacity: 0.85;
 }
 
+.psico-home-hero-disclaimer {
+  max-width: 680px;
+  background: rgba(255, 248, 225, 0.92);
+  border: 1.5px solid #f5d08a;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 0.82rem;
+  color: #7c5700;
+  text-align: left;
+  margin-top: 0.5rem;
+}
+
 /* ── BENEFITS HEADER BAR ────────────────────────────────────── */
 .psico-home-benefits-header {
   background: #f08080;

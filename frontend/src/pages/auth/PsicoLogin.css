@@ -11,12 +11,13 @@
   width: 100%;
   max-width: 420px;
   background: #fff;
-  border: 1.5px solid #e8ddc9;
+  border: none;
   border-radius: 16px;
   padding: 2.5rem 2rem;
   display: flex;
   flex-direction: column;
   gap: 0;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
 }
 
 .psico-login-icon {

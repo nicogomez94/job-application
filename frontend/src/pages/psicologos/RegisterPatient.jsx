@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { Mail, Lock, User, Brain } from 'lucide-react';
+import { Mail, Lock, User, Brain, Users } from 'lucide-react';
 import { patientAuthService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
 import './Psicologos.css';
@@ -27,6 +27,7 @@ export default function RegisterPatient() {
         lastName: data.lastName,
         email: data.email,
         password: data.password,
+        gender: data.gender,
       });
       const { patient, token } = res.data;
       setAuth(patient, 'patient', token);
@@ -77,6 +78,23 @@ export default function RegisterPatient() {
               {...register('lastName', { required: 'El apellido es obligatorio' })}
             />
             {errors.lastName && <span className="psico-login-error">{errors.lastName.message}</span>}
+          </div>
+
+          <div className="psico-login-field">
+            <label htmlFor="gender">
+              <Users size={14} /> Género
+            </label>
+            <select
+              id="gender"
+              {...register('gender', { required: 'Seleccioná tu género' })}
+              style={{ padding: '0.55rem 0.75rem', border: '1.5px solid #d4c9b5', borderRadius: '8px', fontSize: '0.95rem', background: '#fff', width: '100%' }}
+            >
+              <option value="">Seleccioná una opción</option>
+              <option value="Hombre">Hombre</option>
+              <option value="Mujer">Mujer</option>
+              <option value="Otro">Otro</option>
+            </select>
+            {errors.gender && <span className="psico-login-error">{errors.gender.message}</span>}
           </div>
 
           <div className="psico-login-field">

@@ -155,7 +155,7 @@ export default function RegisterPsychologistINTL() {
 
         {/* Disclaimer per PRD */}
         <div className="psico-intl-disclaimer">
-          <strong>Aviso importante:</strong> La atención remota no es recomendada para crisis aguda con riesgo de vida o psicosis activa que requiera contención física inmediata, las cuales necesitan atención presencial de emergencia.
+          <strong>Aviso importante:</strong> La atención remota no es recomendada para crisis aguda con riesgo de vida o psicosis activa que requiera contención física inmediata, las cuales necesitan atención presencial de emergencia. El costo de la o las sesiones serán tratadas directamente con el profesional de su elección. ¡SIN EXCEPCIÓN!
         </div>
 
         {/* Stepper */}
