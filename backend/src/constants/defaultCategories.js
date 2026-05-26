@@ -36,7 +36,7 @@ const DEFAULT_CATEGORIES = [
   { name: 'Product Manager', slug: 'product-manager', description: 'Definición y estrategia de producto digital.' },
   { name: 'Arquitecto', slug: 'arquitecto', description: 'Diseño y planificación arquitectónica.' },
   { name: 'Publicidad', slug: 'publicidad', description: 'Estrategias y producción publicitaria.' },
-  { name: 'Márquetin', slug: 'marquetin', description: 'Planificación y ejecución de acciones de márquetin.' },
+  { name: 'Marketing', slug: 'marquetin', description: 'Planificación y ejecución de acciones de marketing.' },
   { name: 'Traductor', slug: 'traductor', description: 'Traducción de documentos y contenidos.' },
   { name: 'Redactor', slug: 'redactor', description: 'Redacción general de textos.' },
   { name: 'Fotógrafo', slug: 'fotografo', description: 'Producción y edición fotográfica.' },

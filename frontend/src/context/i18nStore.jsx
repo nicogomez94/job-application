@@ -339,7 +339,6 @@ const ES_TO_EN = {
   'Product Manager': 'Product Manager',
   'Arquitecto': 'Architect',
   'Publicidad': 'Advertising',
-  'Márquetin': 'Marketing',
   Traductor: 'Translator',
   Redactor: 'Copywriter',
   'Fotógrafo': 'Photographer',
