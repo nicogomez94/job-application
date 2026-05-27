@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const prisma = require('../config/database');
+const { handlePrismaError } = require('../utils/accountEmail');
 
 const SITE_URL = process.env.FRONTEND_URL || 'https://professionalsathome.com';
 const CONTACT_FORM_ENDPOINT =
@@ -89,7 +90,10 @@ exports.updateProfile = async (req, res) => {
     res.json({ message: 'Perfil actualizado exitosamente', psychologist: safe });
   } catch (error) {
     console.error('Error en updateProfile psychologist:', error);
-    res.status(500).json({ error: 'Error al actualizar perfil' });
+    const userMessage = error?.code?.startsWith('P')
+      ? handlePrismaError(error, 'actualización de perfil')
+      : 'Error al actualizar el perfil. Verificá los datos e intentá nuevamente.';
+    res.status(500).json({ error: userMessage });
   }
 };
 

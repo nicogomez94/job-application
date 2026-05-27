@@ -78,6 +78,10 @@ export default function RegisterPsychologistAR() {
       if (!form.email || !form.password || !form.confirmPassword) {
         toast.error('Completá todos los campos'); return false;
       }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(form.email.trim())) {
+        toast.error('El email no tiene un formato válido (ej: nombre@dominio.com)'); return false;
+      }
       if (form.password !== form.confirmPassword) {
         toast.error('Las contraseñas no coinciden'); return false;
       }
@@ -120,53 +124,84 @@ export default function RegisterPsychologistAR() {
 
   const handleSubmit = async () => {
     setLoading(true);
+    let registrationDone = false;
     try {
-      // First register to get a token
-      const regRes = await psychologistAuthService.register({
-        email: form.email,
-        password: form.password,
-        firstName: form.firstName,
-        lastName: form.lastName,
-        registrationType: 'ARGENTINA',
-      });
-      const { token, psychologist } = regRes.data;
-      setAuth(psychologist, 'psychologist', token);
+      // Paso 1: Crear la cuenta
+      let regData;
+      try {
+        const regRes = await psychologistAuthService.register({
+          email: form.email,
+          password: form.password,
+          firstName: form.firstName,
+          lastName: form.lastName,
+          registrationType: 'ARGENTINA',
+        });
+        regData = regRes.data;
+      } catch (regErr) {
+        const status = regErr?.response?.status;
+        const serverMsg = regErr?.response?.data?.error;
+        if (serverMsg) {
+          toast.error(serverMsg);
+        } else if (status === 0 || !regErr?.response) {
+          toast.error('No se pudo conectar con el servidor. Verificá tu conexión a internet.');
+        } else if (status >= 500) {
+          toast.error('Error en el servidor al crear la cuenta. Intentá nuevamente en unos minutos.');
+        } else {
+          toast.error('No se pudo crear la cuenta. Verificá los datos e intentá nuevamente.');
+        }
+        setLoading(false);
+        return;
+      }
 
-      // Then send profile data (needs auth token in header)
-      // Import api directly to set profile with token already stored
-      const { default: api } = await import('../../services/api');
-      await api.put('/psychologists/me/profile', {
-        displayName: form.displayName,
-        phone: form.phone,
-        contactEmail: form.contactEmail || form.email,
-        dateOfBirth: form.dateOfBirth,
-        dni: form.dni,
-        cuitCuil: form.cuitCuil,
-        addressStreet: form.addressStreet,
-        addressNumber: form.addressNumber,
-        addressFloor: form.addressFloor,
-        addressCity: form.addressCity,
-        addressProvince: form.addressProvince,
-        addressPostalCode: form.addressPostalCode,
-        practiceProvince: form.practiceProvince,
-        universityDegree: form.universityDegree,
-        graduationYear: form.graduationYear,
-        universityName: form.universityName,
-        licenseNumber: form.licenseNumber,
-        licenseProvince: form.licenseProvince,
-        healthMinistryReg: form.healthMinistryReg,
-        yearsExperience: form.yearsExperience,
-        remoteModality: form.remoteModality,
-        bio: form.bio,
-        specialties: form.specialties,
-        ageRanges: form.ageRanges,
-        languages: form.languages,
-      });
+      const { token, psychologist } = regData;
+      setAuth(psychologist, 'psychologist', token);
+      registrationDone = true;
+
+      // Paso 2: Guardar perfil
+      try {
+        const { default: api } = await import('../../services/api');
+        await api.put('/psychologists/me/profile', {
+          displayName: form.displayName,
+          phone: form.phone,
+          contactEmail: form.contactEmail || form.email,
+          dateOfBirth: form.dateOfBirth,
+          dni: form.dni,
+          cuitCuil: form.cuitCuil,
+          addressStreet: form.addressStreet,
+          addressNumber: form.addressNumber,
+          addressFloor: form.addressFloor,
+          addressCity: form.addressCity,
+          addressProvince: form.addressProvince,
+          addressPostalCode: form.addressPostalCode,
+          practiceProvince: form.practiceProvince,
+          universityDegree: form.universityDegree,
+          graduationYear: form.graduationYear,
+          universityName: form.universityName,
+          licenseNumber: form.licenseNumber,
+          licenseProvince: form.licenseProvince,
+          healthMinistryReg: form.healthMinistryReg,
+          yearsExperience: form.yearsExperience,
+          remoteModality: form.remoteModality,
+          bio: form.bio,
+          specialties: form.specialties,
+          ageRanges: form.ageRanges,
+          languages: form.languages,
+        });
+      } catch (profileErr) {
+        // La cuenta ya fue creada — igualmente avanzamos pero avisamos
+        const serverMsg = profileErr?.response?.data?.error;
+        toast.error(
+          serverMsg
+            ? `Tu cuenta fue creada, pero hubo un error al guardar el perfil: ${serverMsg}. Podés completarlo desde tu panel.`
+            : 'Tu cuenta fue creada, pero no se pudo guardar el perfil completo. Podés completarlo desde tu panel.'
+        );
+      }
 
       navigate('/register/psicologo/documentos');
     } catch (err) {
-      const msg = err?.response?.data?.error || 'Error al registrarse';
-      toast.error(msg);
+      if (!registrationDone) {
+        toast.error('Ocurrió un error inesperado al registrarse. Intentá nuevamente.');
+      }
     } finally {
       setLoading(false);
     }

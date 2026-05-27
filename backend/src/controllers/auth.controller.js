@@ -11,6 +11,7 @@ const {
   normalizeEmail,
   findAccountByEmail,
   getEmailAlreadyRegisteredMessage,
+  handlePrismaError,
 } = require('../utils/accountEmail');
 const addMonths = (date, months) => {
   const value = new Date(date);
@@ -24,6 +25,18 @@ const addMonths = (date, months) => {
 exports.registerUser = async (req, res) => {
   try {
     const { email, password, firstName, lastName, phone } = req.body;
+
+    if (!email || !password || !firstName || !lastName) {
+      return res.status(400).json({ error: 'Faltan campos obligatorios: email, contraseña, nombre y apellido son requeridos.' });
+    }
+    if (password.length < 6) {
+      return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres.' });
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      return res.status(400).json({ error: 'El formato del email es inválido.' });
+    }
+
     const normalizedEmail = normalizeEmail(email);
 
     // Verificar si el email ya existe en cualquiera de las cuentas del sitio
@@ -63,11 +76,11 @@ exports.registerUser = async (req, res) => {
       token,
     });
   } catch (error) {
-    console.error('Error en registerUser:', error.message || error);
-    res.status(500).json({
-      error: 'Error al registrar usuario',
-      ...(process.env.NODE_ENV !== 'production' && { detail: error.message }),
-    });
+    console.error('Error en registerUser:', error);
+    const userMessage = error?.code?.startsWith('P')
+      ? handlePrismaError(error, 'registro')
+      : 'Error al registrar usuario. Intentá nuevamente en unos minutos.';
+    res.status(500).json({ error: userMessage });
   }
 };
 
