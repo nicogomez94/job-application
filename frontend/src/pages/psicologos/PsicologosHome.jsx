@@ -279,10 +279,10 @@ export default function PsicologosHome() {
             conocimiento de los mismos y bajo su propia decisión.
           </p>
           <div className="psico-home-important-links">
-            <Link to="/psicologos/terminos">Términos y condiciones</Link>
-            <Link to="/psicologos/privacidad">Privacidad</Link>
-            <Link to="/psicologos/contacto">Contacto</Link>
-            <Link to="/psicologo/plan">Planes de Pago</Link>
+            <Link to="/psicologos/terminos-y-condiciones">Términos y condiciones</Link>
+            <Link to="/psicologos/politicas-de-privacidad">Privacidad</Link>
+            {/* <Link to="/psicologos/contacto">Contacto</Link> */}
+            {/* <Link to="/psicologo/plan">Planes de Pago</Link> */}
           </div>
         </div>
       </section>
