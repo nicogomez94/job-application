@@ -184,6 +184,11 @@ export default function RegisterPatient() {
           </div>
 
           <button
+            type="submit"
+            className="psico-btn-primary"
+            style={{ width: '100%', justifyContent: 'center', marginTop: '0.5rem' }}
+            disabled={loading}
+          >
             {loading ? 'Creando cuenta...' : 'Crear cuenta'}
           </button>
         </form>
