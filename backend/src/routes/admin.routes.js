@@ -19,6 +19,7 @@ router.delete('/users/:id', adminController.deleteUser);
 
 // ==================== PACIENTES ====================
 router.get('/patients', adminController.getAllPatients);
+router.delete('/patients/:id', adminController.deletePatient);
 
 // ==================== EMPRESAS ====================
 router.get('/companies', adminController.getAllCompanies);
@@ -39,6 +40,7 @@ router.delete('/job-offers/:id', adminController.deleteJobOffer);
 // ==================== PSICÓLOGOS ====================
 router.get('/psychologists', psychologistController.adminList);
 router.post('/psychologists/:id/approve', psychologistController.adminApprove);
+router.delete('/psychologists/:id', psychologistController.adminDelete);
 router.post('/psychologists/:id/reject', [
   body('reason').optional().isString().withMessage('El motivo debe ser texto'),
   validate,

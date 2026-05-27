@@ -134,6 +134,7 @@ export const adminService = {
 
   // Patients (psychology section)
   getAllPatients: (params) => api.get('/admin/patients', { params }),
+  deletePatient: (id) => api.delete(`/admin/patients/${id}`),
   
   // Companies
   getAllCompanies: (params) => api.get('/admin/companies', { params }),
@@ -156,6 +157,7 @@ export const adminService = {
   listPsychologists: (params) => api.get('/admin/psychologists', { params }),
   approvePsychologist: (id) => api.post(`/admin/psychologists/${id}/approve`),
   rejectPsychologist: (id, reason) => api.post(`/admin/psychologists/${id}/reject`, { reason }),
+  deletePsychologist: (id) => api.delete(`/admin/psychologists/${id}`),
 };
 
 // ==================== PSYCHOLOGISTS ====================

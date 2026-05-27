@@ -25,6 +25,7 @@ export default function AdminUsers() {
   const [patientSearchQuery, setPatientSearchQuery] = useState('');
   const [patientsLoading, setPatientsLoading] = useState(false);
   const [patientsLoaded, setPatientsLoaded] = useState(false);
+  const [deletingPatientId, setDeletingPatientId] = useState(null);
 
   // ── Psychologists state ───────────────────────────────────────
   const [psychologists, setPsychologists] = useState([]);
@@ -33,6 +34,7 @@ export default function AdminUsers() {
   const [psychSearchQuery, setPsychSearchQuery] = useState('');
   const [psychLoading, setPsychLoading] = useState(false);
   const [psychLoaded, setPsychLoaded] = useState(false);
+  const [deletingPsychId, setDeletingPsychId] = useState(null);
 
   const loadUsers = async (nextPage = 1, nextSearch = searchQuery) => {
     setLoading(true);
@@ -135,6 +137,38 @@ export default function AdminUsers() {
       toast.error(error.response?.data?.error || 'No se pudo eliminar el usuario');
     } finally {
       setDeletingId(null);
+    }
+  };
+
+  const handleDeletePatient = async (patientId) => {
+    const confirmed = window.confirm('¿Eliminar este paciente? Esta acción no se puede deshacer.');
+    if (!confirmed) return;
+
+    setDeletingPatientId(patientId);
+    try {
+      await adminService.deletePatient(patientId);
+      toast.success('Paciente eliminado');
+      await loadPatients(patientPagination.page, patientSearchQuery);
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'No se pudo eliminar el paciente');
+    } finally {
+      setDeletingPatientId(null);
+    }
+  };
+
+  const handleDeletePsych = async (psychId) => {
+    const confirmed = window.confirm('¿Eliminar este psicólogo? Esta acción no se puede deshacer.');
+    if (!confirmed) return;
+
+    setDeletingPsychId(psychId);
+    try {
+      await adminService.deletePsychologist(psychId);
+      toast.success('Psicólogo eliminado');
+      await loadPsychologists(psychPagination.page, psychSearchQuery);
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'No se pudo eliminar el psicólogo');
+    } finally {
+      setDeletingPsychId(null);
     }
   };
 
@@ -336,6 +370,7 @@ export default function AdminUsers() {
                       <th>Teléfono</th>
                       <th>Solicitudes</th>
                       <th>Fecha alta</th>
+                      <th>Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -346,6 +381,18 @@ export default function AdminUsers() {
                         <td>{patient.phone || '-'}</td>
                         <td>{patient._count?.psychologistRequests || 0}</td>
                         <td>{formatDate(patient.createdAt)}</td>
+                        <td>
+                          <div className="admin-actions">
+                            <button
+                              type="button"
+                              className="btn admin-danger-btn"
+                              disabled={deletingPatientId === patient.id}
+                              onClick={() => handleDeletePatient(patient.id)}
+                            >
+                              {deletingPatientId === patient.id ? 'Eliminando...' : 'Eliminar'}
+                            </button>
+                          </div>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -431,6 +478,7 @@ export default function AdminUsers() {
                       <th>Estado</th>
                       <th>Tipo registro</th>
                       <th>Fecha alta</th>
+                      <th>Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -442,6 +490,18 @@ export default function AdminUsers() {
                         <td>{psych.status}</td>
                         <td>{psych.registrationType || '-'}</td>
                         <td>{formatDate(psych.createdAt)}</td>
+                        <td>
+                          <div className="admin-actions">
+                            <button
+                              type="button"
+                              className="btn admin-danger-btn"
+                              disabled={deletingPsychId === psych.id}
+                              onClick={() => handleDeletePsych(psych.id)}
+                            >
+                              {deletingPsychId === psych.id ? 'Eliminando...' : 'Eliminar'}
+                            </button>
+                          </div>
+                        </td>
                       </tr>
                     ))}
                   </tbody>

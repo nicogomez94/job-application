@@ -516,6 +516,22 @@ exports.getAllPatients = async (req, res) => {
   }
 };
 
+// Eliminar paciente
+exports.deletePatient = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await prisma.patient.delete({
+      where: { id },
+    });
+
+    res.json({ message: 'Paciente eliminado exitosamente' });
+  } catch (error) {
+    console.error('Error en deletePatient:', error);
+    res.status(500).json({ error: 'Error al eliminar paciente' });
+  }
+};
+
 // ==================== GESTIÓN DE ADMINISTRADORES ====================
 
 // Crear administrador

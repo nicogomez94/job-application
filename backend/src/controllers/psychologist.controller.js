@@ -448,3 +448,19 @@ exports.adminReject = async (req, res) => {
     res.status(500).json({ error: 'Error al rechazar psicólogo' });
   }
 };
+
+// ─── ADMIN: DELETE ────────────────────────────────────────────────────────────
+exports.adminDelete = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await prisma.psychologist.delete({
+      where: { id },
+    });
+
+    res.json({ message: 'Psicólogo eliminado exitosamente' });
+  } catch (error) {
+    console.error('Error en adminDelete psychologist:', error);
+    res.status(500).json({ error: 'Error al eliminar psicólogo' });
+  }
+};

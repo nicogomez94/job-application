@@ -38,6 +38,8 @@ export default function RegisterPsychologistINTL() {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState(getInitialForm);
   const [loading, setLoading] = useState(false);
+  const [acceptTerms, setAcceptTerms] = useState(false);
+  const [acceptPrivacy, setAcceptPrivacy] = useState(false);
   const { setAuth } = useAuthStore();
   const navigate = useNavigate();
 
@@ -85,6 +87,12 @@ export default function RegisterPsychologistINTL() {
     if (step === 3) {
       if (form.specialties.length === 0) {
         toast.error('Seleccioná al menos una especialidad'); return false;
+      }
+      if (!acceptTerms) {
+        toast.error('Debés aceptar los Términos y Condiciones'); return false;
+      }
+      if (!acceptPrivacy) {
+        toast.error('Debés aceptar la Política de Privacidad'); return false;
       }
     }
     return true;
@@ -200,7 +208,7 @@ export default function RegisterPsychologistINTL() {
         <div className="psico-stepper">
           {STEPS.map((s, i) => (
             <div key={s} className={`psico-step ${i === step ? 'active' : i < step ? 'done' : ''}`}>
-              <div className="psico-step-dot">{i < step ? '✓' : i + 1}</div>
+              <div className="psico-step-dot">{i < step ? '' : i + 1}</div>
               <span>{s}</span>
             </div>
           ))}
@@ -297,9 +305,29 @@ export default function RegisterPsychologistINTL() {
                   <li>Declaración jurada de que toda la información es verdadera.</li>
                   <li>Aceptación del Contrato de Prestación de Servicios de Suscripción.</li>
                   <li>Autorización para verificar datos ante organismos competentes.</li>
-                  <li>Aceptación de la Política de Privacidad.</li>
                 </ul>
-                <p>Al continuar, aceptás los términos anteriores. Consultá los <Link to="/terminos-y-condiciones" target="_blank">Términos y Condiciones</Link> y la <Link to="/politicas-y-privacidad" target="_blank">Política de Privacidad</Link>.</p>
+                <label className="psico-checkbox-item" style={{ margin: '0.75rem 0 0.4rem' }}>
+                  <input
+                    type="checkbox"
+                    checked={acceptTerms}
+                    onChange={(e) => setAcceptTerms(e.target.checked)}
+                  />
+                  <span style={{ fontSize: '0.88rem' }}>
+                    Acepto los{' '}
+                    <a href="/psicologos/terminos-y-condiciones" target="_blank" rel="noopener noreferrer" style={{ color: '#7a3055', fontWeight: 600 }}>Términos y Condiciones</a>
+                  </span>
+                </label>
+                <label className="psico-checkbox-item" style={{ margin: '0.4rem 0' }}>
+                  <input
+                    type="checkbox"
+                    checked={acceptPrivacy}
+                    onChange={(e) => setAcceptPrivacy(e.target.checked)}
+                  />
+                  <span style={{ fontSize: '0.88rem' }}>
+                    Acepto la{' '}
+                    <a href="/psicologos/politicas-de-privacidad" target="_blank" rel="noopener noreferrer" style={{ color: '#7a3055', fontWeight: 600 }}>Política de Privacidad</a>
+                  </span>
+                </label>
               </div>
             </div>
           )}
