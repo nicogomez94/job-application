@@ -200,7 +200,7 @@ export default function RegisterPsychologistINTL() {
         <div className="psico-stepper">
           {STEPS.map((s, i) => (
             <div key={s} className={`psico-step ${i === step ? 'active' : i < step ? 'done' : ''}`}>
-              <div className="psico-step-dot">{i < step ? '' : i + 1}</div>
+              <div className="psico-step-dot">{i < step ? '✓' : i + 1}</div>
               <span>{s}</span>
             </div>
           ))}
