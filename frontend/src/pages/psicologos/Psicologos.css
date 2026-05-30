@@ -957,11 +957,74 @@
   cursor: pointer;
 }
 
+.psico-form-grid label.psico-checkbox-item {
+  flex-direction: row;
+}
+
 .psico-checkbox-item input[type="checkbox"] {
   width: 16px;
   height: 16px;
   flex-shrink: 0;
   accent-color: #2c5f7a;
+}
+
+.psico-options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+}
+
+.psico-specialty-options {
+  align-items: stretch;
+}
+
+.psico-age-options {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.psico-option-card {
+  position: relative;
+  min-height: 52px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.85rem 0.95rem;
+  border: 1.5px solid #e5dccd;
+  border-radius: 8px;
+  background: #fff;
+  color: #31414b;
+  font-weight: 600;
+  line-height: 1.35;
+  transition: border-color 0.16s ease, background-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;
+}
+
+.psico-option-card:hover {
+  border-color: var(--psico-accent-300, #d28aa9);
+  background: #fffafd;
+  box-shadow: 0 8px 22px rgba(122, 48, 85, 0.08);
+  transform: translateY(-1px);
+}
+
+.psico-option-card:has(input[type="checkbox"]:checked) {
+  border-color: var(--psico-accent-500, #b83274);
+  background: var(--psico-accent-50, #fff4fa);
+  box-shadow: 0 0 0 3px rgba(184, 50, 116, 0.1);
+}
+
+.psico-option-card:has(input[type="checkbox"]:focus-visible) {
+  outline: 3px solid rgba(44, 95, 122, 0.22);
+  outline-offset: 2px;
+}
+
+.psico-option-card input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-top: 0.05rem;
+}
+
+.psico-option-card span {
+  min-width: 0;
 }
 
 /* ── Legal section in form ───────────────────────────────────── */
@@ -1058,6 +1121,13 @@
 }
 
 .psico-doc-upload-btn:hover { background: #ddeef7; }
+
+.psico-docs-validation {
+  margin: -0.6rem 0 1.5rem;
+  color: #b3261e;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
 
 .psico-docs-uploaded {
   background: #fff;

@@ -24,6 +24,11 @@ const INTL_DOCUMENT_TYPES = [
   { key: 'SPECIALTY_CERT', label: 'Certificado por especialidad declarada' },
 ];
 
+const MAX_FILES = 10;
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+const ALLOWED_EXTENSIONS = ['pdf', 'jpg', 'jpeg', 'png'];
+const ALLOWED_MIME_TYPES = ['application/pdf', 'image/jpeg', 'image/png'];
+
 export default function RegisterPsychologistDocs() {
   const { user } = useAuthStore();
   const navigate = useNavigate();
@@ -33,12 +38,53 @@ export default function RegisterPsychologistDocs() {
   const [files, setFiles] = useState([]);
   const [documentTypes, setDocumentTypes] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [submitAttempted, setSubmitAttempted] = useState(false);
+  const [validationMessage, setValidationMessage] = useState('');
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+  const getFileExtension = (fileName) => fileName.split('.').pop()?.toLowerCase() || '';
+
+  const validateFiles = (selected, existingCount = files.length) => {
+    if (existingCount + selected.length > MAX_FILES) {
+      return `Podés subir hasta ${MAX_FILES} archivos en total. Ya tenés ${existingCount} seleccionado(s).`;
+    }
+
+    const invalidType = selected.find((file) => {
+      const extension = getFileExtension(file.name);
+      return !ALLOWED_EXTENSIONS.includes(extension) && !ALLOWED_MIME_TYPES.includes(file.type);
+    });
+    if (invalidType) {
+      return `El archivo "${invalidType.name}" no tiene un formato permitido. Usá PDF, JPG o PNG.`;
+    }
+
+    const oversized = selected.find((file) => file.size > MAX_FILE_SIZE);
+    if (oversized) {
+      return `El archivo "${oversized.name}" supera el máximo de 5 MB.`;
+    }
+
+    return '';
+  };
 
   const handleFileAdd = (e, docType) => {
     const selected = Array.from(e.target.files);
+    if (selected.length === 0) {
+      e.target.value = '';
+      return;
+    }
+
+    const error = validateFiles(selected);
+    if (error) {
+      setValidationMessage(error);
+      toast.error(error);
+      e.target.value = '';
+      return;
+    }
+
     const newFiles = selected.map((f) => ({ file: f, docType, id: Math.random() }));
     setFiles((prev) => [...prev, ...newFiles]);
     setDocumentTypes((prev) => [...prev, ...selected.map(() => docType)]);
+    setSubmitAttempted(false);
+    setValidationMessage('');
     e.target.value = '';
   };
 
@@ -50,22 +96,45 @@ export default function RegisterPsychologistDocs() {
   };
 
   const handleSubmit = async () => {
+    setSubmitAttempted(true);
     if (files.length === 0) {
-      toast.error('Subí al menos un documento');
+      const message = 'Para enviar la documentación, primero agregá al menos un archivo.';
+      setValidationMessage(message);
+      toast.error(message);
       return;
     }
+
+    const error = validateFiles(files.map((f) => f.file), 0);
+    if (error) {
+      setValidationMessage(error);
+      toast.error(error);
+      return;
+    }
+
     setLoading(true);
+    setUploadProgress(0);
+    setValidationMessage('');
     try {
       await psychologistService.uploadDocuments(
         files.map((f) => f.file),
-        files.map((f) => f.docType)
+        files.map((f) => f.docType),
+        {
+          onUploadProgress: (progressEvent) => {
+            if (!progressEvent.total) return;
+            setUploadProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total));
+          },
+        }
       );
       navigate('/register/psicologo/confirmacion');
     } catch (err) {
-      const msg = err?.response?.data?.error || 'Error al subir documentos';
+      const msg = err?.code === 'ECONNABORTED'
+        ? 'La subida tardó demasiado. Probá subir menos archivos por vez o verificá tu conexión.'
+        : err?.response?.data?.error || 'Error al subir documentos';
+      setValidationMessage(msg);
       toast.error(msg);
     } finally {
       setLoading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -106,6 +175,12 @@ export default function RegisterPsychologistDocs() {
           ))}
         </div>
 
+        {(validationMessage || (submitAttempted && files.length === 0)) && (
+          <p className="psico-docs-validation" role="alert">
+            {validationMessage || 'Agregá al menos un archivo antes de enviar la documentación.'}
+          </p>
+        )}
+
         {files.length > 0 && (
           <div className="psico-docs-uploaded">
             <h3>Archivos seleccionados ({files.length})</h3>
@@ -141,9 +216,9 @@ export default function RegisterPsychologistDocs() {
             type="button"
             className="psico-btn-primary"
             onClick={handleSubmit}
-            disabled={loading || files.length === 0}
+            disabled={loading}
           >
-            {loading ? 'Subiendo...' : 'Enviar documentos'}
+            {loading ? `Subiendo${uploadProgress ? ` ${uploadProgress}%` : '...'}` : 'Enviar documentos'}
           </button>
         </div>
       </div>

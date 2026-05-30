@@ -222,12 +222,14 @@ export const psychologistService = {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
-  uploadDocuments: (files, documentTypes) => {
+  uploadDocuments: (files, documentTypes, config = {}) => {
     const formData = new FormData();
     files.forEach((file) => formData.append('psychologistDoc', file));
     formData.append('documentTypes', JSON.stringify(documentTypes));
     return api.post('/psychologists/me/documents', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 120000,
+      ...config,
     });
   },
   getSubscription: async () => {

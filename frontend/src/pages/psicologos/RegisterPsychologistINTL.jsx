@@ -280,22 +280,22 @@ export default function RegisterPsychologistINTL() {
             <div className="psico-form-grid">
               <div className="psico-full-col">
                 <label className="psico-checkbox-label-heading">Especialidades * <small>(puede marcar una o más)</small></label>
-                <div className="psico-checkbox-group psico-checkbox-group-col">
+                <div className="psico-checkbox-group psico-options-grid psico-specialty-options">
                   {SPECIALTIES.map((s) => (
-                    <label key={s} className="psico-checkbox-item">
+                    <label key={s} className="psico-checkbox-item psico-option-card">
                       <input type="checkbox" checked={form.specialties.includes(s)} onChange={() => toggleArrayField('specialties', s)} />
-                      {s}
+                      <span>{s}</span>
                     </label>
                   ))}
                 </div>
               </div>
               <div className="psico-full-col">
                 <label className="psico-checkbox-label-heading">Rango etario de atención</label>
-                <div className="psico-checkbox-group">
+                <div className="psico-checkbox-group psico-options-grid psico-age-options">
                   {['Adultos (mayor a 18 años)', 'Infanto-juvenil (hasta los 18 años)'].map((a) => (
-                    <label key={a} className="psico-checkbox-item">
+                    <label key={a} className="psico-checkbox-item psico-option-card">
                       <input type="checkbox" checked={form.ageRanges.includes(a)} onChange={() => toggleArrayField('ageRanges', a)} />
-                      {a}
+                      <span>{a}</span>
                     </label>
                   ))}
                 </div>
