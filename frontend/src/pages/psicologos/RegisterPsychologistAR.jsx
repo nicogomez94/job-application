@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { psychologistAuthService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
 import { DEBUG_FORM_DATA, DEBUG_MODE } from '../../config/debug';
+import PasswordInput from '../../components/PasswordInput';
 import './Psicologos.css';
 
 const SPECIALTIES = [
@@ -245,10 +246,10 @@ export default function RegisterPsychologistAR() {
                 <input type="email" name="email" value={form.email} onChange={handleChange} placeholder="tu@email.com" />
               </label>
               <label>Contraseña *
-                <input type="password" name="password" value={form.password} onChange={handleChange} placeholder="Mínimo 6 caracteres" />
+                <PasswordInput name="password" value={form.password} onChange={handleChange} placeholder="Mínimo 6 caracteres" />
               </label>
               <label>Confirmar contraseña *
-                <input type="password" name="confirmPassword" value={form.confirmPassword} onChange={handleChange} />
+                <PasswordInput name="confirmPassword" value={form.confirmPassword} onChange={handleChange} />
               </label>
             </div>
           )}

@@ -6,6 +6,7 @@ import { Mail, Lock, User, Brain, Users } from 'lucide-react';
 import { patientAuthService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
 import { DEBUG_FORM_DATA, DEBUG_MODE } from '../../config/debug';
+import PasswordInput from '../../components/PasswordInput';
 import './Psicologos.css';
 import '../auth/PsicoLogin.css';
 
@@ -121,9 +122,8 @@ export default function RegisterPatient() {
             <label htmlFor="password">
               <Lock size={14} /> Contraseña
             </label>
-            <input
+            <PasswordInput
               id="password"
-              type="password"
               placeholder="Mínimo 6 caracteres"
               autoComplete="new-password"
               {...register('password', {
@@ -138,9 +138,8 @@ export default function RegisterPatient() {
             <label htmlFor="confirmPassword">
               <Lock size={14} /> Confirmar contraseña
             </label>
-            <input
+            <PasswordInput
               id="confirmPassword"
-              type="password"
               placeholder="Repetí tu contraseña"
               autoComplete="new-password"
               {...register('confirmPassword', {

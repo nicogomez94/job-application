@@ -8,6 +8,7 @@ import { useI18n } from '../../context/i18nStore';
 import { DEBUG_MODE, getDebugLoginData } from '../../config/debug';
 import { API_BASE_URL } from '../../services/apiBaseUrl';
 import { Briefcase, Mail, Lock } from 'lucide-react';
+import PasswordInput from '../../components/PasswordInput';
 import './Login.css';
 
 
@@ -208,13 +209,12 @@ export default function Login({
               <label className="login-label" htmlFor="login-password">{passwordLabel}</label>
               <div className="login-input-wrapper">
                 <Lock className="login-input-icon" />
-                <input
+                <PasswordInput
                   id="login-password"
-                  type="password"
                   {...register('password', {
                     required: 'La contraseña es requerida',
                   })}
-                  className="input login-input-with-icon"
+                  inputClassName="input login-input-with-icon"
                   placeholder="********"
                 />
               </div>
@@ -365,6 +365,5 @@ export default function Login({
     </div>
   );
 }
-
 
 

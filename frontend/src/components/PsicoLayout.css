@@ -223,12 +223,12 @@
 }
 
 .psico-layout-nav-btn {
-  background: transparent;
-  color: #cc6698;
+  background: var(--psico-accent-100);
+  color: var(--psico-accent-700);
 }
 
 .psico-layout-nav-btn:hover {
-  background: rgba(255,255,255,0.15);
+  background: var(--psico-accent-200);
 }
 
 .psico-layout-footer {

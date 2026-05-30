@@ -5,6 +5,7 @@ import { authService, companyService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
 import { useI18n } from '../../context/i18nStore';
 import { DEBUG_FORM_DATA, DEBUG_MODE } from '../../config/debug';
+import PasswordInput from '../../components/PasswordInput';
 import './Register.css';
 
 const isValidImageFile = (file) => {
@@ -228,10 +229,9 @@ export default function RegisterCompany() {
               <label htmlFor="register-company-password" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
                 Contraseña
               </label>
-              <input
+              <PasswordInput
                 id="register-company-password"
-                className="input"
-                type="password"
+                inputClassName="input"
                 name="password"
                 placeholder="Contraseña (mín. 6)"
                 value={formData.password}
@@ -244,10 +244,9 @@ export default function RegisterCompany() {
               <label htmlFor="register-company-confirm-password" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
                 Confirmar contraseña
               </label>
-              <input
+              <PasswordInput
                 id="register-company-confirm-password"
-                className="input"
-                type="password"
+                inputClassName="input"
                 name="confirmPassword"
                 placeholder="Confirmar contraseña"
                 value={formData.confirmPassword}

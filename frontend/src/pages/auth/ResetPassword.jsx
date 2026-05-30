@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { Lock } from 'lucide-react';
 import { authService } from '../../services';
 import { scrollToTopInstant } from '../../utils/scrollToTop';
+import PasswordInput from '../../components/PasswordInput';
 import './ResetPassword.css';
 
 export default function ResetPassword() {
@@ -81,11 +82,10 @@ export default function ResetPassword() {
                 <label className="reset-password-label" htmlFor="newPassword">
                   Nueva contraseña
                 </label>
-                <input
+                <PasswordInput
                   id="newPassword"
                   name="newPassword"
-                  type="password"
-                  className="input"
+                  inputClassName="input"
                   value={formData.newPassword}
                   onChange={handleChange}
                   placeholder="Mínimo 6 caracteres"
@@ -97,11 +97,10 @@ export default function ResetPassword() {
                 <label className="reset-password-label" htmlFor="confirmPassword">
                   Confirmar contraseña
                 </label>
-                <input
+                <PasswordInput
                   id="confirmPassword"
                   name="confirmPassword"
-                  type="password"
-                  className="input"
+                  inputClassName="input"
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   placeholder="Repetí tu nueva contraseña"

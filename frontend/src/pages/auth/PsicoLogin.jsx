@@ -6,6 +6,7 @@ import { Mail, Lock, Brain } from 'lucide-react';
 import { psychologistAuthService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
 import { getDebugLoginData, DEBUG_MODE } from '../../config/debug';
+import PasswordInput from '../../components/PasswordInput';
 import '../psicologos/Psicologos.css';
 import './PsicoLogin.css';
 
@@ -75,9 +76,8 @@ export default function PsicoLogin() {
             <label htmlFor="password">
               <Lock size={14} /> Contraseña
             </label>
-            <input
+            <PasswordInput
               id="password"
-              type="password"
               placeholder="Tu contraseña"
               autoComplete="current-password"
               {...register('password', { required: 'La contraseña es obligatoria' })}
