@@ -180,6 +180,11 @@
   cursor: pointer;
 }
 
+.psico-card-highlighted {
+  border-color: #2c5f7a;
+  box-shadow: 0 0 0 3px rgba(44, 95, 122, 0.14);
+}
+
 .psico-card:hover {
   box-shadow: 0 4px 18px rgba(44, 95, 122, 0.12);
   transform: translateY(-2px);

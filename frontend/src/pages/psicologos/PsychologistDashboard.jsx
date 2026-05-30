@@ -84,6 +84,13 @@ export default function PsychologistDashboard() {
   const initials = `${p?.firstName?.[0] || ''}${p?.lastName?.[0] || ''}`.toUpperCase();
   const statusInfo = STATUS_LABELS[p?.status] || STATUS_LABELS.PENDING;
   const StatusIcon = statusInfo.icon;
+  const patientListingParams = new URLSearchParams();
+  if (name) patientListingParams.set('search', name);
+  if (p?.id) patientListingParams.set('highlight', p.id);
+  const patientListingQuery = patientListingParams.toString();
+  const patientListingUrl = patientListingQuery
+    ? `/psicologos/buscar?${patientListingQuery}`
+    : '/psicologos/buscar';
 
   const formatDate = (d) =>
     d ? new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(d)) : '-';
@@ -247,7 +254,7 @@ export default function PsychologistDashboard() {
               {(p?.status === 'APPROVED' || p?.status === 'ACTIVE') && (
                 <li><Link to="/psicologo/plan">Gestionar suscripción</Link></li>
               )}
-              <li><Link to="/psicologos/buscar">Ver cómo aparezco en el listado</Link></li>
+              <li><Link to={patientListingUrl}>Ver cómo aparezco en el listado del paciente</Link></li>
             </ul>
           </div>
         </div>

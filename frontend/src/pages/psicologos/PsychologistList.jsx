@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { Globe, Search, UserPlus } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -36,6 +36,9 @@ export default function PsychologistList() {
     page: Number(searchParams.get('page') || 1),
   });
   const { isAuthenticated, userType } = useAuthStore();
+  const highlightedId = searchParams.get('highlight');
+  const listContainerRef = useRef(null);
+  const highlightedCardRef = useRef(null);
 
   const load = async (f) => {
     setLoading(true);
@@ -57,6 +60,13 @@ export default function PsychologistList() {
   useEffect(() => {
     load(filters);
   }, [filters]);
+
+  useEffect(() => {
+    if (loading || !highlightedId) return;
+
+    const target = highlightedCardRef.current || listContainerRef.current;
+    target?.scrollIntoView({ behavior: 'auto', block: 'start' });
+  }, [highlightedId, loading, psychologists]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -91,7 +101,7 @@ export default function PsychologistList() {
         )}
       </div>
 
-      <div className="psico-list-container">
+      <div className="psico-list-container" ref={listContainerRef}>
         <div className="psico-filters">
           <div className="psico-filter-group psico-filter-search">
             <label htmlFor="search">Buscar psicólogo</label>
@@ -136,7 +146,12 @@ export default function PsychologistList() {
         ) : (
           <div className="psico-grid">
             {psychologists.map((p) => (
-              <PsychologistCard key={p.id} psychologist={p} />
+              <PsychologistCard
+                key={p.id}
+                psychologist={p}
+                highlighted={String(p.id) === highlightedId}
+                cardRef={String(p.id) === highlightedId ? highlightedCardRef : null}
+              />
             ))}
           </div>
         )}
@@ -176,7 +191,7 @@ export default function PsychologistList() {
   );
 }
 
-function PsychologistCard({ psychologist: p }) {
+function PsychologistCard({ psychologist: p, highlighted = false, cardRef = null }) {
   const navigate = useNavigate();
   const { isAuthenticated, userType } = useAuthStore();
   const name = p.displayName || `${p.firstName} ${p.lastName}`;
@@ -209,7 +224,8 @@ function PsychologistCard({ psychologist: p }) {
 
   return (
     <article
-      className="psico-card psico-card-clickable"
+      ref={cardRef}
+      className={`psico-card psico-card-clickable${highlighted ? ' psico-card-highlighted' : ''}`}
       role="link"
       tabIndex={0}
       onClick={openProfile}
