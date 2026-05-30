@@ -153,31 +153,29 @@ export default function RegisterPatient() {
             )}
           </div>
 
-          <div className="psico-login-field" style={{ marginTop: '0.25rem' }}>
-            <label style={{ flexDirection: 'row', alignItems: 'flex-start', gap: '0.5rem', fontWeight: 400, fontSize: '0.85rem', cursor: 'pointer' }}>
+          <div className="psico-login-field psico-login-legal-field">
+            <label className="psico-login-legal-check">
               <input
                 type="checkbox"
-                style={{ marginTop: '2px', flexShrink: 0 }}
                 {...register('acceptTerms', { required: 'Debés aceptar los Términos y Condiciones' })}
               />
               <span>
                 Acepto los{' '}
-                <a href="/psicologos/terminos-y-condiciones" target="_blank" rel="noopener noreferrer" style={{ color: '#7a3055', fontWeight: 600 }}>Términos y Condiciones</a>
+                <a href="/psicologos/terminos-y-condiciones" target="_blank" rel="noopener noreferrer">Términos y Condiciones</a>
               </span>
             </label>
             {errors.acceptTerms && <span className="psico-login-error">{errors.acceptTerms.message}</span>}
           </div>
 
-          <div className="psico-login-field">
-            <label style={{ flexDirection: 'row', alignItems: 'flex-start', gap: '0.5rem', fontWeight: 400, fontSize: '0.85rem', cursor: 'pointer' }}>
+          <div className="psico-login-field psico-login-legal-field">
+            <label className="psico-login-legal-check">
               <input
                 type="checkbox"
-                style={{ marginTop: '2px', flexShrink: 0 }}
                 {...register('acceptPrivacy', { required: 'Debés aceptar la Política de Privacidad' })}
               />
               <span>
                 Acepto la{' '}
-                <a href="/psicologos/politicas-de-privacidad" target="_blank" rel="noopener noreferrer" style={{ color: '#7a3055', fontWeight: 600 }}>Política de Privacidad</a>
+                <a href="/psicologos/politicas-de-privacidad" target="_blank" rel="noopener noreferrer">Política de Privacidad</a>
               </span>
             </label>
             {errors.acceptPrivacy && <span className="psico-login-error">{errors.acceptPrivacy.message}</span>}

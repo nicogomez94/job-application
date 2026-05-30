@@ -70,6 +70,43 @@
   border-color: #2c5f7a;
 }
 
+.psico-login-legal-field {
+  margin-top: 0.25rem;
+  margin-bottom: 0.85rem;
+}
+
+.psico-login-field .psico-login-legal-check {
+  align-items: flex-start;
+  color: #444;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 400;
+  gap: 0.55rem;
+  line-height: 1.35;
+}
+
+.psico-login-field .psico-login-legal-check input[type="checkbox"] {
+  accent-color: #964468;
+  cursor: pointer;
+  flex: 0 0 16px;
+  height: 16px;
+  margin: 0.15rem 0 0;
+  padding: 0;
+  width: 16px;
+}
+
+.psico-login-legal-check span {
+  flex: 1;
+  min-width: 0;
+}
+
+.psico-login-legal-check a {
+  color: #7a3055;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .psico-login-error {
   font-size: 0.8rem;
   color: #c0392b;
