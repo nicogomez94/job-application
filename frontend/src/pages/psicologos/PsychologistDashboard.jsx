@@ -247,7 +247,7 @@ export default function PsychologistDashboard() {
               {(p?.status === 'APPROVED' || p?.status === 'ACTIVE') && (
                 <li><Link to="/psicologo/plan">Gestionar suscripción</Link></li>
               )}
-              <li><Link to="/psicologos">Ver cómo aparezco en el listado</Link></li>
+              <li><Link to="/psicologos/buscar">Ver cómo aparezco en el listado</Link></li>
             </ul>
           </div>
         </div>

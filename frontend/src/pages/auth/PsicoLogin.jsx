@@ -102,7 +102,7 @@ export default function PsicoLogin() {
 
         <div className="psico-login-divider" />
 
-        <Link to="/psicologos" className="psico-login-back">
+        <Link to="/psicologos/buscar" className="psico-login-back">
           ← Volver al listado de psicólogos
         </Link>
       </div>

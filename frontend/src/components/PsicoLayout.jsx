@@ -55,12 +55,14 @@ export default function PsicoLayout() {
             <Link to="/" className="psico-layout-nav-link psico-layout-nav-link--back">
               ← Sitio principal
             </Link>
-            <Link
-              to="/psicologos/registro-paciente"
-              className={`psico-layout-nav-link ${location.pathname === '/psicologos/registro-paciente' ? 'active' : ''}`}
-            >
-              Registro usuario
-            </Link>
+            {!isAuthenticated && (
+              <Link
+                to="/psicologos/registro-paciente"
+                className={`psico-layout-nav-link ${location.pathname === '/psicologos/registro-paciente' ? 'active' : ''}`}
+              >
+                Registro usuario
+              </Link>
+            )}
 
             {/* ── Authenticated as patient ── */}
             {isPatient && (

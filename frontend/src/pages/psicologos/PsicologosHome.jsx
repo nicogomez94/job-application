@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useAuthStore } from '../../context/authStore';
 import './PsicologosHome.css';
 
 const HERO_IMAGE =
@@ -126,6 +127,10 @@ const PLANS = [
 ];
 
 export default function PsicologosHome() {
+  const { isAuthenticated, userType } = useAuthStore();
+  const isPatient = isAuthenticated && userType === 'patient';
+  const isPsychologist = isAuthenticated && userType === 'psychologist';
+
   return (
     <div className="psico-home">
       {/* ── HERO ───────────────────────────────────────────────── */}
@@ -145,14 +150,26 @@ export default function PsicologosHome() {
             <Link to="/psicologos/buscar" className="psico-home-hero-btn psico-home-hero-btn--outline">
               Buscar psicólogo
             </Link>
-            <Link to="/psicologos/registro-paciente" className="psico-home-hero-btn psico-home-hero-btn--solid">
-              Soy paciente →
-            </Link>
+            {!isAuthenticated ? (
+              <Link to="/psicologos/registro-paciente" className="psico-home-hero-btn psico-home-hero-btn--solid">
+                Soy paciente →
+              </Link>
+            ) : isPatient ? (
+              <Link to="/psicologos/mi-cuenta" className="psico-home-hero-btn psico-home-hero-btn--solid">
+                Mis solicitudes →
+              </Link>
+            ) : isPsychologist ? (
+              <Link to="/psicologo/dashboard" className="psico-home-hero-btn psico-home-hero-btn--solid">
+                Mi panel →
+              </Link>
+            ) : null}
           </div>
-          <div className="psico-home-hero-psy-link">
-            ¿Sos psicólogo?{' '}
-            <Link to="/register/psicologo">Registrate aquí</Link>
-          </div>
+          {!isAuthenticated && (
+            <div className="psico-home-hero-psy-link">
+              ¿Sos psicólogo?{' '}
+              <Link to="/register/psicologo">Registrate aquí</Link>
+            </div>
+          )}
         </div>
       </section>
 
@@ -246,12 +263,21 @@ export default function PsicologosHome() {
                     </li>
                   ))}
                 </ul>
-                <Link
-                  to="/register/psicologo"
-                  className={`psico-home-plan-btn ${plan.highlight ? 'psico-home-plan-btn--highlight' : ''}`}
-                >
-                  Comenzar
-                </Link>
+                {isPsychologist ? (
+                  <Link
+                    to="/psicologo/plan"
+                    className={`psico-home-plan-btn ${plan.highlight ? 'psico-home-plan-btn--highlight' : ''}`}
+                  >
+                    Ver mi plan
+                  </Link>
+                ) : !isAuthenticated ? (
+                  <Link
+                    to="/register/psicologo"
+                    className={`psico-home-plan-btn ${plan.highlight ? 'psico-home-plan-btn--highlight' : ''}`}
+                  >
+                    Comenzar
+                  </Link>
+                ) : null}
               </div>
             ))}
           </div>

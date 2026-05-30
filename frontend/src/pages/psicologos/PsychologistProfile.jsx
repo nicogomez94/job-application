@@ -136,7 +136,7 @@ export default function PsychologistProfile() {
       <div className="psico-profile-page">
         <div className="psico-profile-notfound">
           <p>No se encontró el psicólogo.</p>
-          <Link to="/psicologos" className="psico-btn-secondary">
+          <Link to="/psicologos/buscar" className="psico-btn-secondary">
             <ArrowLeft size={16} /> Volver al listado
           </Link>
         </div>
@@ -163,7 +163,7 @@ export default function PsychologistProfile() {
   return (
     <div className="psico-profile-page">
       <div className="psico-profile-container">
-        <Link to="/psicologos" className="psico-back-link">
+        <Link to="/psicologos/buscar" className="psico-back-link">
           <ArrowLeft size={16} /> Volver al listado
         </Link>
 

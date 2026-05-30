@@ -160,16 +160,18 @@ export default function PsychologistList() {
         )}
       </div>
 
-      <div className="psico-register-cta">
-        <div className="psico-register-cta-content">
-          <Globe size={32} />
-          <h2>¿Sos psicólogo/a?</h2>
-          <p>Registrarte en la plataforma y empezá a recibir pacientes de forma remota.</p>
-          <Link to="/register/psicologo" className="psico-btn-primary">
-            Registrarme como psicólogo
-          </Link>
+      {!isAuthenticated && (
+        <div className="psico-register-cta">
+          <div className="psico-register-cta-content">
+            <Globe size={32} />
+            <h2>¿Sos psicólogo/a?</h2>
+            <p>Registrarte en la plataforma y empezá a recibir pacientes de forma remota.</p>
+            <Link to="/register/psicologo" className="psico-btn-primary">
+              Registrarme como psicólogo
+            </Link>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
