@@ -2,8 +2,7 @@ import { Link } from 'react-router-dom';
 import { useAuthStore } from '../../context/authStore';
 import './PsicologosHome.css';
 
-const HERO_IMAGE =
-  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&q=80';
+const HERO_IMAGE = '/playa.jpeg';
 
 const IMG_EMBARAZADAS = '/psico-embarazadas.jpeg';
 const IMG_MOVILIDAD = '/psico-movilidad.jpeg';

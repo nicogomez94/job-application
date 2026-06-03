@@ -47,6 +47,12 @@ export default function PsicoLayout() {
     <div className="psico-layout">
       <header className="psico-layout-header">
         <div className="psico-layout-header-inner">
+          {/* Far left: back to main site */}
+          <Link to="/" className="psico-layout-nav-link psico-layout-nav-link--back">
+            Sitio principal
+          </Link>
+
+          {/* Brand */}
           <Link to="/psicologos" className="psico-layout-brand">
             <span>
               <span className="psico-layout-brand-main">Psicólogos en Línea</span>
@@ -54,6 +60,7 @@ export default function PsicoLayout() {
             </span>
           </Link>
 
+          {/* Center: logged-in user name */}
           {(isPatient || isPsychologist) && displayName && (
             <div className="psico-layout-session-user">
               {displayName}
@@ -61,9 +68,6 @@ export default function PsicoLayout() {
           )}
 
           <nav className="psico-layout-nav">
-            <Link to="/" className="psico-layout-nav-link psico-layout-nav-link--back">
-              ← Sitio principal
-            </Link>
             {!isAuthenticated && (
               <Link
                 to="/psicologos/registro-paciente"
