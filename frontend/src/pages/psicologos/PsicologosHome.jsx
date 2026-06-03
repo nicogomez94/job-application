@@ -143,9 +143,6 @@ export default function PsicologosHome() {
           <p className="psico-home-hero-sub">
             Professionals at Home · Terapia online, donde estés
           </p>
-          <div className="psico-home-hero-disclaimer">
-            <strong>Aviso:</strong> La atención remota no es recomendable para crisis aguda de psicosis, riesgo de la salud física del paciente, intento de atentar contra la vida propia o de otros, etc. En estos casos se recomienda llamar al número de emergencia más cercano para casos de esta índole.
-          </div>
           <div className="psico-home-hero-ctas">
             <Link to="/psicologos/buscar" className="psico-home-hero-btn psico-home-hero-btn--outline">
               Buscar psicólogo
@@ -176,6 +173,9 @@ export default function PsicologosHome() {
       {/* ── BENEFICIOS HEADER ──────────────────────────────────── */}
       <div className="psico-home-benefits-header">
         <h2>Beneficios de la terapia en línea / remota</h2>
+        <div className="psico-home-benefits-alert">
+          <strong>Atención:</strong> La atención remota no es recomendable para crisis aguda de psicosis, riesgo de la salud física del paciente, intento de atentar contra la vida propia o de otros, etc. En estos casos se recomienda llamar al número de emergencia más cercano para casos de esta índole.
+        </div>
       </div>
 
       {/* ── TEXTO 1: beneficios generales ─────────────────────── */}

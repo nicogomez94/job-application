@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { Mail, Lock, Brain } from 'lucide-react';
+import { Mail, Lock, User } from 'lucide-react';
 import { patientAuthService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
 import { getDebugLoginData, DEBUG_MODE } from '../../config/debug';
@@ -41,7 +41,7 @@ export default function LoginPatient() {
     <div className="psico-login-page">
       <div className="psico-login-card">
         <div className="psico-login-icon">
-          <Brain size={36} strokeWidth={1.5} />
+          <User size={36} strokeWidth={1.5} />
         </div>
         <h1>Ingresar como paciente</h1>
         <p className="psico-login-subtitle">

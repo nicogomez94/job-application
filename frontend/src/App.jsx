@@ -61,6 +61,7 @@ import RegisterPsychologistDocs from './pages/psicologos/RegisterPsychologistDoc
 import RegisterPsychologistConfirmation from './pages/psicologos/RegisterPsychologistConfirmation';
 import SelectPsychologistPlan from './pages/psicologos/SelectPsychologistPlan';
 import PsychologistDashboard from './pages/psicologos/PsychologistDashboard';
+import PsychologistEditProfile from './pages/psicologos/PsychologistEditProfile';
 import RegisterPatient from './pages/psicologos/RegisterPatient';
 import LoginPatient from './pages/psicologos/LoginPatient';
 import PatientDashboard from './pages/psicologos/PatientDashboard';
@@ -306,6 +307,22 @@ function App() {
           element={
             <ProtectedRoute allowedTypes={['psychologist']}>
               <PsychologistDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="psicologo/perfil"
+          element={
+            <ProtectedRoute allowedTypes={['psychologist']}>
+              <PsychologistEditProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="psicologo/documentos"
+          element={
+            <ProtectedRoute allowedTypes={['psychologist']}>
+              <RegisterPsychologistDocs />
             </ProtectedRoute>
           }
         />

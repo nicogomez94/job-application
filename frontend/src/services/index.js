@@ -244,6 +244,8 @@ export const psychologistService = {
   updateRequestStatus: (id, status) =>
     api.put(`/psychologists/requests/${id}/status`, { status }),
   blockRelationship: (id) => api.post(`/psychologists/requests/${id}/block`),
+  unblockRelationship: (id) => api.delete(`/psychologists/requests/${id}/block`),
+  acceptTermination: (id) => api.put(`/psychologists/requests/${id}/termination/accept`),
 };
 
 // ==================== PSYCHOLOGIST REQUESTS (patient side) ====================
@@ -254,6 +256,8 @@ export const psychologistRequestService = {
   getMyRequests: () => api.get('/psychologists/requests/mine'),
   cancel: (id) => api.delete(`/psychologists/requests/${id}`),
   blockRelationship: (id) => api.post(`/psychologists/requests/${id}/block`),
+  unblockRelationship: (id) => api.delete(`/psychologists/requests/${id}/block`),
+  requestTermination: (id) => api.post(`/psychologists/requests/${id}/termination`),
   getContactInfo: (psychologistId) =>
     api.get(`/psychologists/${psychologistId}/contact`),
 };

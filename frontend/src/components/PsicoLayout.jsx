@@ -30,7 +30,11 @@ export default function PsicoLayout() {
     scrollToTopInstant();
   }, [location.pathname, location.search]);
 
+  const accountRole = isPsychologist ? 'profesional' : isPatient ? 'usuario' : 'cuenta';
+
   const handleLogout = () => {
+    const accountName = displayName || accountRole;
+    if (!window.confirm(`¿Quiere salir de ${accountName} (${accountRole})?`)) return;
     logout();
     navigate('/psicologos');
   };
@@ -44,12 +48,17 @@ export default function PsicoLayout() {
       <header className="psico-layout-header">
         <div className="psico-layout-header-inner">
           <Link to="/psicologos" className="psico-layout-brand">
-            <span className="psico-layout-brand-icon">🧠</span>
             <span>
               <span className="psico-layout-brand-main">Psicólogos en Línea</span>
               <span className="psico-layout-brand-sub">professionals at home</span>
             </span>
           </Link>
+
+          {(isPatient || isPsychologist) && displayName && (
+            <div className="psico-layout-session-user">
+              {displayName}
+            </div>
+          )}
 
           <nav className="psico-layout-nav">
             <Link to="/" className="psico-layout-nav-link psico-layout-nav-link--back">
@@ -71,9 +80,6 @@ export default function PsicoLayout() {
                   <ClipboardList size={15} />
                   Mis solicitudes
                 </Link>
-                {displayName && (
-                  <span className="psico-layout-nav-user">{displayName}</span>
-                )}
                 <button type="button" className="psico-layout-nav-logout" onClick={handleLogout}>
                   <LogOut size={15} />
                   Salir
@@ -86,7 +92,7 @@ export default function PsicoLayout() {
               <>
                 <Link to="/psicologo/dashboard" className="psico-layout-nav-link">
                   <LayoutDashboard size={15} />
-                  {displayName || 'Mi panel'}
+                  Mi panel
                 </Link>
                 <button type="button" className="psico-layout-nav-logout" onClick={handleLogout}>
                   <LogOut size={15} />

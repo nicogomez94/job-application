@@ -146,6 +146,25 @@ router.post(
   psychologistRequestController.blockRelationship
 );
 
+router.delete(
+  '/requests/:id/block',
+  authenticate,
+  authorizeRole('patient', 'psychologist'),
+  psychologistRequestController.unblockRelationship
+);
+
+router.post(
+  '/requests/:id/termination',
+  authenticatePatient,
+  psychologistRequestController.requestTermination
+);
+
+router.put(
+  '/requests/:id/termination/accept',
+  authenticatePsychologist,
+  psychologistRequestController.acceptTermination
+);
+
 // Psychologist accepts or rejects a request
 router.put(
   '/requests/:id/status',

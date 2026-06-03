@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { User, FileText, CreditCard, CheckCircle, Clock, XCircle, Edit, Users, Check, X, Ban, Camera } from 'lucide-react';
+import { User, FileText, CreditCard, CheckCircle, Clock, XCircle, Edit, Users, Check, X, Ban, Camera, Mail, MessageCircle, Unlock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { psychologistService } from '../../services';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
@@ -116,11 +116,11 @@ export default function PsychologistDashboard() {
   const handleRequestStatus = async (requestId, status) => {
     setUpdatingRequest(requestId);
     try {
-      await psychologistService.updateRequestStatus(requestId, status);
+      const res = await psychologistService.updateRequestStatus(requestId, status);
       setIncomingRequests((prev) =>
-        prev.map((r) => (r.id === requestId ? { ...r, status } : r)),
+        prev.map((r) => (r.id === requestId ? { ...r, ...res.data?.request, status } : r)),
       );
-      toast.success(status === 'ACCEPTED' ? 'Solicitud aceptada' : 'Solicitud rechazada');
+      toast.success(status === 'ACCEPTED' ? 'Solicitud aceptada. El paciente verá tus datos de contacto.' : 'Solicitud rechazada');
     } catch (error) {
       toast.error(error.response?.data?.error || 'Error al actualizar la solicitud');
     } finally {
@@ -154,6 +154,38 @@ export default function PsychologistDashboard() {
     }
   };
 
+  const handleUnblock = async (request) => {
+    const patient = request.patient;
+    const patientName = `${patient?.firstName || ''} ${patient?.lastName || ''}`.trim() || 'este paciente';
+    if (!window.confirm(`¿Desbloquear a ${patientName}?`)) return;
+    setBlockingRequest(request.id);
+    try {
+      const res = await psychologistService.unblockRelationship(request.id);
+      setIncomingRequests((prev) => prev.map((r) => (r.id === request.id ? res.data?.request || { ...r, blockInfo: null } : r)));
+      toast.success('Usuario desbloqueado');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Error al desbloquear');
+    } finally {
+      setBlockingRequest(null);
+    }
+  };
+
+  const handleAcceptTermination = async (request) => {
+    const patient = request.patient;
+    const patientName = `${patient?.firstName || ''} ${patient?.lastName || ''}`.trim() || 'este paciente';
+    if (!window.confirm(`¿Aceptar la finalización de terapia solicitada por ${patientName}?`)) return;
+    setUpdatingRequest(request.id);
+    try {
+      const res = await psychologistService.acceptTermination(request.id);
+      setIncomingRequests((prev) => prev.map((r) => (r.id === request.id ? { ...r, ...res.data?.request } : r)));
+      toast.success('Finalización de terapia aceptada');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Error al aceptar la finalización');
+    } finally {
+      setUpdatingRequest(null);
+    }
+  };
+
   const pendingRequests = incomingRequests.filter((r) => r.status === 'PENDING');
   const resolvedRequests = incomingRequests.filter((r) => r.status !== 'PENDING');
 
@@ -176,7 +208,7 @@ export default function PsychologistDashboard() {
         </div>
 
         <div className="psico-dashboard-grid">
-          <div className="psico-dashboard-card">
+          <div className="psico-dashboard-card psico-dashboard-card--profile">
             <div className="psico-dashboard-card-header">
               <User size={18} />
               <h2>Mi perfil</h2>
@@ -337,6 +369,10 @@ export default function PsychologistDashboard() {
                       const patientName = `${patient?.firstName || ''} ${patient?.lastName || ''}`.trim();
                       const isAccepted = req.status === 'ACCEPTED';
                       const blockInfo = req.blockInfo;
+                      const hasTerminationRequest = Boolean(req.terminationRequestedAt && !req.terminationAcceptedAt);
+                      const terminationAccepted = Boolean(req.terminationAcceptedAt);
+                      const patientPhone = patient?.phone;
+                      const patientWhatsappUrl = patientPhone ? `https://wa.me/${patientPhone.replace(/\D/g, '')}` : null;
                       return (
                         <li key={req.id} className={`patient-request-item ${blockInfo ? 'patient-request-item-blocked' : ''}`}>
                           <div className="patient-request-psy">
@@ -348,6 +384,28 @@ export default function PsychologistDashboard() {
                             <div>
                               <strong>{patientName}</strong>
                               {!blockInfo && <p className="psico-secondary-text">{patient?.email}</p>}
+                              {isAccepted && !blockInfo && (
+                                <div className="patient-request-contact">
+                                  {patientWhatsappUrl && (
+                                    <a href={patientWhatsappUrl} target="_blank" rel="noopener noreferrer" className="psico-btn-whatsapp">
+                                      <MessageCircle size={14} /> WhatsApp
+                                    </a>
+                                  )}
+                                  {patient?.email && (
+                                    <a href={`mailto:${patient.email}`} className="psico-btn-email">
+                                      <Mail size={14} /> {patient.email}
+                                    </a>
+                                  )}
+                                </div>
+                              )}
+                              {hasTerminationRequest && (
+                                <p className="psico-request-message psico-request-message--termination">
+                                  "{req.message || 'El paciente desea finalizar la terapia por razones personales'}"
+                                </p>
+                              )}
+                              {terminationAccepted && (
+                                <p className="psico-secondary-text">Finalización de terapia aceptada.</p>
+                              )}
                               {blockInfo && (
                                 <p className="psico-blocked-text">{blockInfo.message}</p>
                               )}
@@ -358,17 +416,39 @@ export default function PsychologistDashboard() {
                               {isAccepted ? <><CheckCircle size={13} /> Aceptado</> : <><XCircle size={13} /> Rechazado</>}
                             </span>
                             {blockInfo ? (
-                              <span className="psico-status-badge psico-status-red">
-                                <Ban size={13} /> Bloqueado
-                              </span>
+                              <>
+                                <span className="psico-status-badge psico-status-red">
+                                  <Ban size={13} /> Bloqueado
+                                </span>
+                                {blockInfo.blockedByMe && (
+                                  <button
+                                    className="psico-btn-unblock-sm"
+                                    onClick={() => handleUnblock(req)}
+                                    disabled={blockingRequest === req.id}
+                                  >
+                                    <Unlock size={14} /> {blockingRequest === req.id ? 'Desbloqueando...' : 'Desbloquear'}
+                                  </button>
+                                )}
+                              </>
                             ) : isAccepted ? (
-                              <button
-                                className="psico-btn-danger-sm"
-                                onClick={() => handleBlock(req)}
-                                disabled={blockingRequest === req.id}
-                              >
-                                <Ban size={14} /> {blockingRequest === req.id ? 'Bloqueando...' : 'Bloquear'}
-                              </button>
+                              <>
+                                {hasTerminationRequest && (
+                                  <button
+                                    className="psico-btn-accept"
+                                    onClick={() => handleAcceptTermination(req)}
+                                    disabled={updatingRequest === req.id}
+                                  >
+                                    <Check size={14} /> Aceptar finalización
+                                  </button>
+                                )}
+                                <button
+                                  className="psico-btn-danger-sm"
+                                  onClick={() => handleBlock(req)}
+                                  disabled={blockingRequest === req.id}
+                                >
+                                  <Ban size={14} /> {blockingRequest === req.id ? 'Bloqueando...' : 'Bloquear'}
+                                </button>
+                              </>
                             ) : null}
                           </div>
                         </li>

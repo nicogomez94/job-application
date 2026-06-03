@@ -426,6 +426,8 @@ model PsychologistRequest {
   id              String                    @id @default(uuid())
   status          PsychologistRequestStatus @default(PENDING)
   message         String?                   @db.Text
+  terminationRequestedAt DateTime?
+  terminationAcceptedAt  DateTime?
 
   patient         Patient                   @relation(fields: [patientId], references: [id], onDelete: Cascade)
   patientId       String

@@ -257,7 +257,7 @@ function PsychologistCard({ psychologist: p, highlighted = false, cardRef = null
             className="psico-btn-hire"
             onClick={handleHireClick}
           >
-            <UserPlus size={14} /> Contratar
+            <UserPlus size={14} /> Solicitar consulta
           </button>
         </div>
       </div>

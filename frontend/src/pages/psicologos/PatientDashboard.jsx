@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { CheckCircle, Clock, XCircle, MessageCircle, Mail, Brain, Trash2, Ban, Camera } from 'lucide-react';
+import { CheckCircle, Clock, XCircle, MessageCircle, Mail, Trash2, Ban, Camera, Unlock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { psychologistRequestService, patientAuthService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
@@ -25,6 +25,7 @@ export default function PatientDashboard() {
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(null);
   const [blocking, setBlocking] = useState(null);
+  const [endingTherapy, setEndingTherapy] = useState(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const photoInputRef = useRef(null);
 
@@ -101,6 +102,38 @@ export default function PatientDashboard() {
     }
   };
 
+  const handleUnblock = async (request) => {
+    const p = request.psychologist;
+    const psyName = p?.displayName || `${p?.firstName || ''} ${p?.lastName || ''}`.trim() || 'este psicólogo';
+    if (!window.confirm(`¿Desbloquear a ${psyName}?`)) return;
+    setBlocking(request.id);
+    try {
+      const res = await psychologistRequestService.unblockRelationship(request.id);
+      setRequests((prev) => prev.map((r) => (r.id === request.id ? res.data?.request || { ...r, blockInfo: null } : r)));
+      toast.success('Usuario desbloqueado');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Error al desbloquear');
+    } finally {
+      setBlocking(null);
+    }
+  };
+
+  const handleRequestTherapyEnd = async (request) => {
+    const p = request.psychologist;
+    const psyName = p?.displayName || `${p?.firstName || ''} ${p?.lastName || ''}`.trim() || 'este psicólogo';
+    if (!window.confirm(`¿Enviar al profesional el pedido para finalizar la terapia con ${psyName}?`)) return;
+    setEndingTherapy(request.id);
+    try {
+      const res = await psychologistRequestService.requestTermination(request.id);
+      setRequests((prev) => prev.map((r) => (r.id === request.id ? res.data?.request || r : r)));
+      toast.success('Pedido enviado al profesional');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Error al pedir la finalización');
+    } finally {
+      setEndingTherapy(null);
+    }
+  };
+
   if (loading) {
     return <div className="psico-loading psico-page-loading">Cargando tus solicitudes...</div>;
   }
@@ -122,7 +155,7 @@ export default function PatientDashboard() {
             {patientPhoto ? (
               <img src={patientPhoto} alt={name} onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
             ) : null}
-            <div className="psico-card-initials" style={patientPhoto ? { display: 'none' } : {}}>{patientInitials || <Brain size={22} strokeWidth={1.5} />}</div>
+            <div className="psico-card-initials" style={patientPhoto ? { display: 'none' } : {}}>{patientInitials || 'PA'}</div>
             <div className="psico-photo-upload-overlay">
               {uploadingPhoto ? <span className="psico-photo-uploading-dot" /> : <Camera size={14} />}
             </div>
@@ -143,7 +176,7 @@ export default function PatientDashboard() {
             <div className="psico-dashboard-card-header">
               <h2>Mis solicitudes a psicólogos</h2>
               <Link to="/psicologos/buscar" className="psico-btn-primary psico-btn-sm">
-                Buscar psicólogos
+                Buscar psicólogo
               </Link>
             </div>
 
@@ -164,6 +197,8 @@ export default function PatientDashboard() {
                   const photo = p?.profileImage ? toAssetUrl(p.profileImage) : null;
                   const initials = `${p?.firstName?.[0] || ''}${p?.lastName?.[0] || ''}`.toUpperCase();
                   const blockInfo = req.blockInfo;
+                  const hasTerminationRequest = Boolean(req.terminationRequestedAt && !req.terminationAcceptedAt);
+                  const terminationAccepted = Boolean(req.terminationAcceptedAt);
 
                   return (
                     <li key={req.id} className={`patient-request-item ${blockInfo ? 'patient-request-item-blocked' : ''}`}>
@@ -186,6 +221,14 @@ export default function PatientDashboard() {
                               Ver perfil →
                             </Link>
                           )}
+                          {hasTerminationRequest && (
+                            <p className="psico-request-message psico-request-message--termination">
+                              "El paciente desea finalizar la terapia por razones personales"
+                            </p>
+                          )}
+                          {terminationAccepted && (
+                            <p className="psico-secondary-text">El profesional aceptó la finalización de la terapia.</p>
+                          )}
                         </div>
                       </div>
 
@@ -194,9 +237,20 @@ export default function PatientDashboard() {
                           <StatusIcon size={13} /> {cfg.label}
                         </span>
                         {blockInfo && (
-                          <span className="psico-status-badge psico-status-red">
-                            <Ban size={13} /> Bloqueado
-                          </span>
+                          <>
+                            <span className="psico-status-badge psico-status-red">
+                              <Ban size={13} /> Bloqueado
+                            </span>
+                            {blockInfo.blockedByMe && (
+                              <button
+                                className="psico-btn-unblock-sm"
+                                onClick={() => handleUnblock(req)}
+                                disabled={blocking === req.id}
+                              >
+                                <Unlock size={14} /> {blocking === req.id ? 'Desbloqueando...' : 'Desbloquear'}
+                              </button>
+                            )}
+                          </>
                         )}
                         <span className="psico-secondary-text psico-date-text">
                           {new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(req.createdAt))}
@@ -233,6 +287,18 @@ export default function PatientDashboard() {
                           <Ban size={14} />
                           {blocking === req.id ? 'Bloqueando...' : 'Bloquear'}
                         </button>
+                      )}
+
+                      {req.status === 'ACCEPTED' && !blockInfo && !terminationAccepted && (
+                        <div className="psico-therapy-end">
+                          <button
+                            className="psico-btn-therapy-end"
+                            onClick={() => handleRequestTherapyEnd(req)}
+                            disabled={endingTherapy === req.id || hasTerminationRequest}
+                          >
+                            {hasTerminationRequest ? 'Finalización solicitada' : 'El paciente finaliza la terapia'}
+                          </button>
+                        </div>
                       )}
 
                       {req.status === 'PENDING' && !blockInfo && (

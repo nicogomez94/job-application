@@ -41,6 +41,8 @@ const keepPatientIdentityOnly = (patient) => {
   };
 };
 
+const TERMINATION_MESSAGE = 'El paciente desea finalizar la terapia por razones personales';
+
 // ─────────────────────────────────────────────────────────────────────────────
 // PATIENT ENDPOINTS
 // ─────────────────────────────────────────────────────────────────────────────
@@ -263,6 +265,7 @@ exports.getIncomingRequests = async (req, res) => {
             firstName: true,
             lastName: true,
             email: true,
+            phone: true,
             profileImage: true,
           },
         },
@@ -372,6 +375,181 @@ exports.blockRelationship = async (req, res) => {
   }
 };
 
+// DELETE /api/psychologists/requests/:id/block
+// Authenticated patient or psychologist unblocks a relationship they blocked.
+exports.unblockRelationship = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const request = await prisma.psychologistRequest.findUnique({
+      where: { id },
+      include: {
+        patient: {
+          select: { id: true, firstName: true, lastName: true, email: true, phone: true },
+        },
+        psychologist: {
+          select: { id: true, firstName: true, lastName: true, displayName: true, profileImage: true, specialties: true, languages: true, country: true, phone: true, contactEmail: true },
+        },
+      },
+    });
+
+    if (!request) {
+      return res.status(404).json({ error: 'Solicitud no encontrada' });
+    }
+
+    const isPatientOwner = req.user.type === 'patient' && request.patientId === req.user.id;
+    const isPsychologistOwner = req.user.type === 'psychologist' && request.psychologistId === req.user.id;
+
+    if (!isPatientOwner && !isPsychologistOwner) {
+      return res.status(403).json({ error: 'No autorizado' });
+    }
+
+    const block = await prisma.psychologistPatientBlock.findUnique({
+      where: {
+        patientId_psychologistId: {
+          patientId: request.patientId,
+          psychologistId: request.psychologistId,
+        },
+      },
+    });
+
+    if (!block) {
+      return res.status(404).json({ error: 'La relación no está bloqueada' });
+    }
+
+    const blockedByCurrentUser =
+      (req.user.type === 'patient' && block.blockedBy === 'PATIENT') ||
+      (req.user.type === 'psychologist' && block.blockedBy === 'PSYCHOLOGIST');
+
+    if (!blockedByCurrentUser) {
+      return res.status(403).json({ error: 'Solo puede desbloquear quien realizó el bloqueo' });
+    }
+
+    await prisma.psychologistPatientBlock.delete({ where: { id: block.id } });
+
+    const responseRequest = { ...request, blockInfo: null };
+    if (req.user.type === 'patient' && responseRequest.status !== 'ACCEPTED') {
+      const { phone, contactEmail, ...psychologistWithoutContact } = responseRequest.psychologist;
+      responseRequest.psychologist = psychologistWithoutContact;
+    }
+
+    res.json({
+      message: 'Usuario desbloqueado correctamente',
+      request: responseRequest,
+    });
+  } catch (error) {
+    console.error('Error en unblockRelationship:', error);
+    res.status(500).json({ error: 'Error al desbloquear usuario' });
+  }
+};
+
+// POST /api/psychologists/requests/:id/termination
+// Authenticated patient asks to end an accepted therapy relationship.
+exports.requestTermination = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const request = await prisma.psychologistRequest.findFirst({
+      where: { id, patientId: req.user.id },
+    });
+
+    if (!request) {
+      return res.status(404).json({ error: 'Solicitud no encontrada' });
+    }
+
+    if (request.status !== 'ACCEPTED') {
+      return res.status(400).json({ error: 'Solo podés finalizar terapias aceptadas' });
+    }
+
+    const block = await prisma.psychologistPatientBlock.findUnique({
+      where: {
+        patientId_psychologistId: {
+          patientId: request.patientId,
+          psychologistId: request.psychologistId,
+        },
+      },
+    });
+
+    if (block) {
+      return res.status(400).json({
+        error: 'No podés finalizar desde una relación bloqueada',
+        blockInfo: getBlockInfo(block, 'patient'),
+      });
+    }
+
+    const updated = await prisma.psychologistRequest.update({
+      where: { id },
+      data: {
+        message: TERMINATION_MESSAGE,
+        terminationRequestedAt: new Date(),
+        terminationAcceptedAt: null,
+      },
+      include: {
+        psychologist: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            displayName: true,
+            profileImage: true,
+            specialties: true,
+            languages: true,
+            country: true,
+            phone: true,
+            contactEmail: true,
+          },
+        },
+      },
+    });
+
+    res.json({
+      message: 'Pedido de finalización enviado al profesional',
+      request: { ...updated, blockInfo: null },
+    });
+  } catch (error) {
+    console.error('Error en requestTermination:', error);
+    res.status(500).json({ error: 'Error al pedir la finalización de terapia' });
+  }
+};
+
+// PUT /api/psychologists/requests/:id/termination/accept
+// Authenticated psychologist accepts a patient's termination request.
+exports.acceptTermination = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const request = await prisma.psychologistRequest.findFirst({
+      where: { id, psychologistId: req.user.id },
+    });
+
+    if (!request) {
+      return res.status(404).json({ error: 'Solicitud no encontrada' });
+    }
+
+    if (request.status !== 'ACCEPTED' || !request.terminationRequestedAt) {
+      return res.status(400).json({ error: 'No hay pedido de finalización pendiente' });
+    }
+
+    const updated = await prisma.psychologistRequest.update({
+      where: { id },
+      data: { terminationAcceptedAt: new Date() },
+      include: {
+        patient: {
+          select: { id: true, firstName: true, lastName: true, email: true, phone: true, profileImage: true },
+        },
+      },
+    });
+
+    res.json({
+      message: 'Finalización de terapia aceptada',
+      request: { ...updated, blockInfo: null },
+    });
+  } catch (error) {
+    console.error('Error en acceptTermination:', error);
+    res.status(500).json({ error: 'Error al aceptar la finalización de terapia' });
+  }
+};
+
 // PUT /api/psychologists/requests/:id/status
 // Authenticated psychologist accepts or rejects a request
 exports.updateRequestStatus = async (req, res) => {
@@ -404,7 +582,7 @@ exports.updateRequestStatus = async (req, res) => {
       data: { status },
       include: {
         patient: {
-          select: { id: true, firstName: true, lastName: true, email: true },
+          select: { id: true, firstName: true, lastName: true, email: true, phone: true },
         },
       },
     });

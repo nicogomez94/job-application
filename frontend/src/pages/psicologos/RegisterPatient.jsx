@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { Mail, Lock, User, Brain, Users } from 'lucide-react';
+import { Mail, Lock, User, Users, Phone } from 'lucide-react';
 import { patientAuthService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
 import { DEBUG_FORM_DATA, DEBUG_MODE } from '../../config/debug';
@@ -30,6 +30,7 @@ export default function RegisterPatient() {
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
+        phone: data.phone,
         password: data.password,
         gender: data.gender,
       });
@@ -48,7 +49,7 @@ export default function RegisterPatient() {
     <div className="psico-login-page">
       <div className="psico-login-card">
         <div className="psico-login-icon">
-          <Brain size={36} strokeWidth={1.5} />
+          <User size={36} strokeWidth={1.5} />
         </div>
         <h1>Crear cuenta de paciente</h1>
         <p className="psico-login-subtitle">
@@ -99,6 +100,19 @@ export default function RegisterPatient() {
               <option value="Otro">Otro</option>
             </select>
             {errors.gender && <span className="psico-login-error">{errors.gender.message}</span>}
+          </div>
+
+          <div className="psico-login-field">
+            <label htmlFor="phone">
+              <Phone size={14} /> WhatsApp
+            </label>
+            <input
+              id="phone"
+              type="tel"
+              placeholder="+54 9 ..."
+              autoComplete="tel"
+              {...register('phone')}
+            />
           </div>
 
           <div className="psico-login-field">

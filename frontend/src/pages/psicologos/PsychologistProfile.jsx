@@ -25,6 +25,7 @@ export default function PsychologistProfile() {
   const [requestLoading, setRequestLoading] = useState(false);
   const [sendingRequest, setSendingRequest] = useState(false);
   const [blockingUser, setBlockingUser] = useState(false);
+  const [endingTherapy, setEndingTherapy] = useState(false);
   const [message, setMessage] = useState('');
   const [contactInfo, setContactInfo] = useState(null);
 
@@ -127,6 +128,24 @@ export default function PsychologistProfile() {
     }
   };
 
+  const handleRequestTherapyEnd = async () => {
+    if (!myRequest) return;
+    const blockName = psychologist?.displayName
+      || `${psychologist?.firstName || ''} ${psychologist?.lastName || ''}`.trim()
+      || 'este psicólogo';
+    if (!window.confirm(`¿Enviar al profesional el pedido para finalizar la terapia con ${blockName}?`)) return;
+    setEndingTherapy(true);
+    try {
+      const res = await psychologistRequestService.requestTermination(myRequest.id);
+      setMyRequest(res.data?.request || myRequest);
+      toast.success('Pedido enviado al profesional');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Error al pedir la finalización');
+    } finally {
+      setEndingTherapy(false);
+    }
+  };
+
   if (loading) {
     return <div className="psico-loading psico-page-loading">Cargando perfil...</div>;
   }
@@ -159,6 +178,8 @@ export default function PsychologistProfile() {
   const requestRejected = myRequest?.status === 'REJECTED';
   const blockInfo = p.blockInfo || myRequest?.blockInfo;
   const requestBlocked = Boolean(p.isBlocked || blockInfo);
+  const hasTerminationRequest = Boolean(myRequest?.terminationRequestedAt && !myRequest?.terminationAcceptedAt);
+  const terminationAccepted = Boolean(myRequest?.terminationAcceptedAt);
 
   return (
     <div className="psico-profile-page">
@@ -218,6 +239,26 @@ export default function PsychologistProfile() {
                   >
                     <Ban size={14} /> {blockingUser ? 'Bloqueando...' : 'Bloquear'}
                   </button>
+                  {!terminationAccepted && (
+                    <div className="psico-therapy-end">
+                      <button
+                        type="button"
+                        className="psico-btn-therapy-end"
+                        onClick={handleRequestTherapyEnd}
+                        disabled={endingTherapy || hasTerminationRequest}
+                      >
+                        {hasTerminationRequest ? 'Finalización solicitada' : 'El paciente finaliza la terapia'}
+                      </button>
+                    </div>
+                  )}
+                  {hasTerminationRequest && (
+                    <p className="psico-request-message psico-request-message--termination">
+                      "El paciente desea finalizar la terapia por razones personales"
+                    </p>
+                  )}
+                  {terminationAccepted && (
+                    <p className="psico-secondary-text">El profesional aceptó la finalización de la terapia.</p>
+                  )}
                 </>
               )}
 
