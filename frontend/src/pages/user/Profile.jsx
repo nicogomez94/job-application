@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { userService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
@@ -72,8 +73,10 @@ export default function UserProfile() {
   const [deletingCv, setDeletingCv] = useState(false);
   const [uploadingOtherFiles, setUploadingOtherFiles] = useState(false);
   const [deletingOtherIndex, setDeletingOtherIndex] = useState(null);
-  const { updateUser } = useAuthStore();
+  const [deletingAccount, setDeletingAccount] = useState(false);
+  const { updateUser, logout } = useAuthStore();
   const { language } = useI18n();
+  const navigate = useNavigate();
   const getFileKey = (file) => `${file.name}-${file.size}-${file.lastModified}`;
 
   const toAssetUrl = (assetPath) => {
@@ -333,6 +336,23 @@ export default function UserProfile() {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm('¿Seguro que querés borrar tu perfil? Esta acción elimina la cuenta definitivamente.');
+    if (!confirmed) return;
+
+    setDeletingAccount(true);
+    try {
+      await userService.deleteAccount();
+      logout();
+      toast.success('Perfil borrado');
+      navigate('/');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'No se pudo borrar el perfil');
+    } finally {
+      setDeletingAccount(false);
+    }
+  };
+
   if (loading) {
     return (
       <div style={{ minHeight: '50vh', display: 'grid', placeItems: 'center' }}>
@@ -581,6 +601,15 @@ export default function UserProfile() {
           {saving ? 'Guardando...' : 'Guardar cambios'}
         </button>
       </form>
+
+      <button
+        type="button"
+        className="user-profile-delete-account-btn"
+        onClick={handleDeleteAccount}
+        disabled={deletingAccount}
+      >
+        {deletingAccount ? 'Borrando perfil...' : 'Borrar perfil'}
+      </button>
     </div>
   );
 }

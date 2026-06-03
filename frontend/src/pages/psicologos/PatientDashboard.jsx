@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { CheckCircle, Clock, XCircle, MessageCircle, Mail, Trash2, Ban, Camera, Unlock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { psychologistRequestService, patientAuthService } from '../../services';
@@ -20,12 +20,14 @@ const STATUS_CONFIG = {
 };
 
 export default function PatientDashboard() {
-  const { user, updateUser } = useAuthStore();
+  const navigate = useNavigate();
+  const { user, updateUser, logout } = useAuthStore();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(null);
   const [blocking, setBlocking] = useState(null);
   const [endingTherapy, setEndingTherapy] = useState(null);
+  const [deletingAccount, setDeletingAccount] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const photoInputRef = useRef(null);
 
@@ -131,6 +133,23 @@ export default function PatientDashboard() {
       toast.error(error.response?.data?.error || 'Error al pedir la finalización');
     } finally {
       setEndingTherapy(null);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm('¿Seguro que querés borrar tu perfil? Esta acción elimina la cuenta definitivamente.');
+    if (!confirmed) return;
+
+    setDeletingAccount(true);
+    try {
+      await patientAuthService.deleteAccount();
+      logout();
+      toast.success('Perfil borrado');
+      navigate('/psicologos');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'No se pudo borrar el perfil');
+    } finally {
+      setDeletingAccount(false);
     }
   };
 
@@ -319,6 +338,15 @@ export default function PatientDashboard() {
             )}
           </div>
         </div>
+
+        <button
+          type="button"
+          className="psico-delete-profile-btn"
+          onClick={handleDeleteAccount}
+          disabled={deletingAccount}
+        >
+          {deletingAccount ? 'Borrando perfil...' : 'Borrar perfil'}
+        </button>
       </div>
     </div>
   );

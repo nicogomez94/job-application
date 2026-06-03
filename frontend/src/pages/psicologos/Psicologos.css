@@ -2056,6 +2056,26 @@
   cursor: not-allowed;
 }
 
+.psico-delete-profile-btn {
+  margin-top: 1rem;
+  border: none;
+  background: transparent;
+  color: #b91c1c;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0.5rem 0;
+}
+
+.psico-delete-profile-btn:hover:not(:disabled) {
+  color: #991b1b;
+  text-decoration: underline;
+}
+
+.psico-delete-profile-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
 @media (max-width: 680px) {
   .psico-edit-profile-header {
     flex-direction: column;

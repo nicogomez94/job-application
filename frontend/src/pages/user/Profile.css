@@ -185,6 +185,26 @@
   margin-top: 1rem;
 }
 
+.user-profile-delete-account-btn {
+  margin-top: 1rem;
+  border: none;
+  background: transparent;
+  color: #b91c1c;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0.5rem 0;
+}
+
+.user-profile-delete-account-btn:hover:not(:disabled) {
+  color: #991b1b;
+  text-decoration: underline;
+}
+
+.user-profile-delete-account-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
 @media (max-width: 768px) {
   .user-profile-upload-header {
     align-items: flex-start;

@@ -78,6 +78,8 @@ router.get('/me/profile', authenticatePsychologist, psychologistController.getPr
 
 router.put('/me/profile', authenticatePsychologist, psychologistController.updateProfile);
 
+router.delete('/me/account', authenticatePsychologist, psychologistController.deleteAccount);
+
 router.post(
   '/me/profile-image',
   authenticatePsychologist,
@@ -137,6 +139,8 @@ router.post(
   upload.single('patientProfile'),
   patientAuthController.uploadProfileImage
 );
+
+router.delete('/patients/me/account', authenticatePatient, patientAuthController.deleteAccount);
 
 // Patient or psychologist blocks the other side after an ACCEPTED request
 router.post(

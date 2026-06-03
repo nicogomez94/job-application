@@ -137,3 +137,16 @@ exports.uploadProfileImage = async (req, res) => {
     res.status(500).json({ error: 'Error al subir imagen de perfil' });
   }
 };
+
+exports.deleteAccount = async (req, res) => {
+  try {
+    await prisma.patient.delete({
+      where: { id: req.user.id },
+    });
+
+    res.json({ message: 'Cuenta eliminada exitosamente' });
+  } catch (error) {
+    console.error('Error en deleteAccount patient:', error);
+    res.status(500).json({ error: 'Error al eliminar cuenta' });
+  }
+};

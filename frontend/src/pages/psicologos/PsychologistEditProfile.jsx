@@ -32,10 +32,11 @@ const initialForm = {
 
 export default function PsychologistEditProfile() {
   const navigate = useNavigate();
-  const { updateUser } = useAuthStore();
+  const { updateUser, logout } = useAuthStore();
   const [form, setForm] = useState(initialForm);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -98,6 +99,23 @@ export default function PsychologistEditProfile() {
       toast.error(error.response?.data?.error || 'No se pudo actualizar el perfil');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm('¿Seguro que querés borrar tu perfil? Esta acción elimina la cuenta definitivamente.');
+    if (!confirmed) return;
+
+    setDeletingAccount(true);
+    try {
+      await psychologistService.deleteAccount();
+      logout();
+      toast.success('Perfil borrado');
+      navigate('/psicologos');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'No se pudo borrar el perfil');
+    } finally {
+      setDeletingAccount(false);
     }
   };
 
@@ -182,6 +200,15 @@ export default function PsychologistEditProfile() {
             </label>
           </div>
         </form>
+
+        <button
+          type="button"
+          className="psico-delete-profile-btn"
+          onClick={handleDeleteAccount}
+          disabled={deletingAccount}
+        >
+          {deletingAccount ? 'Borrando perfil...' : 'Borrar perfil'}
+        </button>
       </div>
     </div>
   );

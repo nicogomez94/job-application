@@ -127,6 +127,20 @@ exports.uploadProfileImage = async (req, res) => {
   }
 };
 
+// ─── DELETE ACCOUNT ──────────────────────────────────────────────────────────
+exports.deleteAccount = async (req, res) => {
+  try {
+    await prisma.psychologist.delete({
+      where: { id: req.user.id },
+    });
+
+    res.json({ message: 'Cuenta eliminada exitosamente' });
+  } catch (error) {
+    console.error('Error en deleteAccount psychologist:', error);
+    res.status(500).json({ error: 'Error al eliminar cuenta' });
+  }
+};
+
 // ─── UPLOAD DOCUMENTS ─────────────────────────────────────────────────────────
 // Accepts multiple files with field name 'psychologistDoc'
 // Each file can have a documentType passed in req.body.documentTypes (JSON array)

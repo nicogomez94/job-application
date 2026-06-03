@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { companyService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
@@ -24,7 +25,9 @@ export default function CompanyProfile() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const { updateUser } = useAuthStore();
+  const [deletingAccount, setDeletingAccount] = useState(false);
+  const { updateUser, logout } = useAuthStore();
+  const navigate = useNavigate();
 
   const toAssetUrl = (assetPath) => {
     if (!assetPath) return '/profile-placeholder.svg';
@@ -122,6 +125,23 @@ export default function CompanyProfile() {
       toast.error(error.response?.data?.error || 'No se pudo subir el logo');
     } finally {
       setUploading(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm('¿Seguro que querés borrar tu perfil? Esta acción elimina la cuenta definitivamente.');
+    if (!confirmed) return;
+
+    setDeletingAccount(true);
+    try {
+      await companyService.deleteAccount();
+      logout();
+      toast.success('Perfil borrado');
+      navigate('/');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'No se pudo borrar el perfil');
+    } finally {
+      setDeletingAccount(false);
     }
   };
 
@@ -254,6 +274,24 @@ export default function CompanyProfile() {
           {saving ? 'Guardando...' : 'Guardar cambios'}
         </button>
       </form>
+
+      <button
+        type="button"
+        onClick={handleDeleteAccount}
+        disabled={deletingAccount}
+        style={{
+          marginTop: '1rem',
+          border: 'none',
+          background: 'transparent',
+          color: '#b91c1c',
+          fontWeight: 700,
+          cursor: deletingAccount ? 'not-allowed' : 'pointer',
+          padding: '0.5rem 0',
+          opacity: deletingAccount ? 0.65 : 1,
+        }}
+      >
+        {deletingAccount ? 'Borrando perfil...' : 'Borrar perfil'}
+      </button>
     </div>
   );
 }

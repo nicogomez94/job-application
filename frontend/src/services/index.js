@@ -189,6 +189,7 @@ export const patientAuthService = {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
+  deleteAccount: () => api.delete('/psychologists/patients/me/account'),
 };
 
 export const psychologistService = {
@@ -222,6 +223,7 @@ export const psychologistService = {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
+  deleteAccount: () => api.delete('/psychologists/me/account'),
   uploadDocuments: (files, documentTypes, config = {}) => {
     const formData = new FormData();
     files.forEach((file) => formData.append('psychologistDoc', file));
