@@ -291,6 +291,7 @@ model Psychologist {
   // ── Personal data (both types) ──────────────────────────────────────────
   firstName           String
   lastName            String
+  gender              String?
   dateOfBirth         DateTime?
   phone               String?             // WhatsApp number
   contactEmail        String?             // Public contact email (may differ from login email)

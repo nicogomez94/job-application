@@ -25,6 +25,10 @@
   gap: 1rem;
 }
 
+.psico-layout-menu-toggle {
+  display: none;
+}
+
 /* ── Brand ─────────────────────────────────────────────────── */
 .psico-layout-brand {
   display: flex;
@@ -75,6 +79,10 @@
   text-decoration: none;
   border-radius: 7px;
   transition: background 0.14s, color 0.14s;
+}
+
+.psico-layout-nav-link--mobile-back {
+  display: none;
 }
 
 .psico-layout-nav-link:hover,
@@ -185,21 +193,115 @@
 
 @media (max-width: 680px) {
   .psico-layout-header-inner {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.6rem 0.9rem;
+  }
+
+  .psico-layout-nav-link--back {
+    display: none;
+  }
+
+  .psico-layout-brand {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .psico-layout-brand-main {
+    font-size: 0.96rem;
+    white-space: nowrap;
+  }
+
+  .psico-layout-brand-sub {
+    font-size: 0.68rem;
+  }
+
+  .psico-layout-menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 2.4rem;
+    height: 2.4rem;
+    margin-left: auto;
+    color: var(--psico-accent-700);
+    background: #fff;
+    border: 1.5px solid var(--psico-accent-200);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .psico-layout-menu-toggle:hover {
+    background: var(--psico-accent-100);
+    color: var(--psico-accent-900);
   }
 
   .psico-layout-nav {
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
     width: 100%;
     margin-left: 0;
+    gap: 0.3rem;
+    padding: 0.4rem 0 0.15rem;
+  }
+
+  .psico-layout-nav.is-open {
+    display: flex;
+  }
+
+  .psico-layout-nav-link,
+  .psico-layout-nav-logout,
+  .psico-layout-nav-btn {
+    justify-content: space-between;
+    width: 100%;
+    min-height: 2.45rem;
+    margin-left: 0;
+    padding: 0.55rem 0.7rem;
+    font-size: 0.9rem;
+    border-radius: 8px;
+  }
+
+  .psico-layout-nav-link {
+    color: var(--psico-accent-900);
+  }
+
+  .psico-layout-nav-link--mobile-back {
+    display: inline-flex;
+    color: var(--psico-accent-700);
+  }
+
+  .psico-login-dropdown {
+    width: 100%;
+  }
+
+  .psico-login-dropdown-menu {
+    position: static;
+    width: 100%;
+    min-width: 0;
+    margin-top: 0.35rem;
+    box-shadow: none;
+    border-radius: 8px;
   }
 
   .psico-layout-session-user {
+    order: 3;
+    width: 100%;
     flex: none;
     max-width: 100%;
     text-align: left;
+    font-size: 0.8rem;
+    color: var(--psico-accent-700);
+  }
+
+  .psico-layout-session-user + .psico-layout-menu-toggle {
+    order: 2;
+  }
+
+  .psico-layout-nav {
+    order: 4;
   }
 
   .psico-layout-footer-inner {

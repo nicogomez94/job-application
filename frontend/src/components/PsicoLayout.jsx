@@ -1,7 +1,7 @@
 import { useLayoutEffect, useState, useRef, useEffect } from 'react';
 import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../context/authStore';
-import { LogOut, LayoutDashboard, ChevronDown, ClipboardList } from 'lucide-react';
+import { LogOut, LayoutDashboard, ChevronDown, ClipboardList, Menu, X } from 'lucide-react';
 import { scrollToTopInstant } from '../utils/scrollToTop';
 import './PsicoLayout.css';
 
@@ -13,6 +13,7 @@ export default function PsicoLayout() {
   const isPatient = isAuthenticated && userType === 'patient';
 
   const [loginOpen, setLoginOpen] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const loginRef = useRef(null);
 
   // Close dropdown when clicking outside
@@ -28,6 +29,8 @@ export default function PsicoLayout() {
 
   useLayoutEffect(() => {
     scrollToTopInstant();
+    setLoginOpen(false);
+    setMobileNavOpen(false);
   }, [location.pathname, location.search]);
 
   const accountRole = isPsychologist ? 'profesional' : isPatient ? 'usuario' : 'cuenta';
@@ -35,8 +38,13 @@ export default function PsicoLayout() {
   const handleLogout = () => {
     const accountName = displayName || accountRole;
     if (!window.confirm(`¿Quiere salir de ${accountName} (${accountRole})?`)) return;
+    closeMobileNav();
     logout();
     navigate('/psicologos');
+  };
+
+  const closeMobileNav = () => {
+    setMobileNavOpen(false);
   };
 
   const displayName = user?.firstName
@@ -67,11 +75,34 @@ export default function PsicoLayout() {
             </div>
           )}
 
-          <nav className="psico-layout-nav">
+          <button
+            type="button"
+            className="psico-layout-menu-toggle"
+            onClick={() => setMobileNavOpen((open) => !open)}
+            aria-label={mobileNavOpen ? 'Cerrar menú' : 'Abrir menú'}
+            aria-expanded={mobileNavOpen}
+            aria-controls="psico-layout-nav"
+          >
+            {mobileNavOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+
+          <nav
+            id="psico-layout-nav"
+            className={`psico-layout-nav ${mobileNavOpen ? 'is-open' : ''}`}
+          >
+            <Link
+              to="/"
+              className="psico-layout-nav-link psico-layout-nav-link--mobile-back"
+              onClick={closeMobileNav}
+            >
+              Sitio principal
+            </Link>
+
             {!isAuthenticated && (
               <Link
                 to="/psicologos/registro-paciente"
                 className={`psico-layout-nav-link ${location.pathname === '/psicologos/registro-paciente' ? 'active' : ''}`}
+                onClick={closeMobileNav}
               >
                 Registro usuario
               </Link>
@@ -80,7 +111,7 @@ export default function PsicoLayout() {
             {/* ── Authenticated as patient ── */}
             {isPatient && (
               <>
-                <Link to="/psicologos/mi-cuenta" className="psico-layout-nav-link">
+                <Link to="/psicologos/mi-cuenta" className="psico-layout-nav-link" onClick={closeMobileNav}>
                   <ClipboardList size={15} />
                   Mis solicitudes
                 </Link>
@@ -94,7 +125,7 @@ export default function PsicoLayout() {
             {/* ── Authenticated as psychologist ── */}
             {isPsychologist && (
               <>
-                <Link to="/psicologo/dashboard" className="psico-layout-nav-link">
+                <Link to="/psicologo/dashboard" className="psico-layout-nav-link" onClick={closeMobileNav}>
                   <LayoutDashboard size={15} />
                   Mi panel
                 </Link>
@@ -108,7 +139,7 @@ export default function PsicoLayout() {
             {/* ── Not authenticated ── */}
             {!isPsychologist && !isPatient && (
               <>
-                <Link to="/register/psicologo" className="psico-layout-nav-link">
+                <Link to="/register/psicologo" className="psico-layout-nav-link" onClick={closeMobileNav}>
                   Registro Psicólogos
                 </Link>
 
@@ -129,7 +160,10 @@ export default function PsicoLayout() {
                         to="/psicologos/login-paciente"
                         className="psico-login-dropdown-item"
                         role="menuitem"
-                        onClick={() => setLoginOpen(false)}
+                        onClick={() => {
+                          setLoginOpen(false);
+                          closeMobileNav();
+                        }}
                       >
                         <span className="psico-login-dropdown-label">Soy paciente</span>
                         <span className="psico-login-dropdown-sub">Busco un psicólogo</span>
@@ -139,7 +173,10 @@ export default function PsicoLayout() {
                         to="/psicologos/login"
                         className="psico-login-dropdown-item"
                         role="menuitem"
-                        onClick={() => setLoginOpen(false)}
+                        onClick={() => {
+                          setLoginOpen(false);
+                          closeMobileNav();
+                        }}
                       >
                         <span className="psico-login-dropdown-label">Soy psicólogo</span>
                         <span className="psico-login-dropdown-sub">Acceder a mi panel</span>

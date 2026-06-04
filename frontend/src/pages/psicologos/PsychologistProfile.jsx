@@ -371,6 +371,13 @@ export default function PsychologistProfile() {
                 </div>
               )}
 
+              {p.gender && (
+                <div className="psico-profile-detail-card">
+                  <h3>Género</h3>
+                  <p>{p.gender}</p>
+                </div>
+              )}
+
               {p.yearsExperience != null && (
                 <div className="psico-profile-detail-card">
                   <h3><Clock size={14} /> Experiencia</h3>
@@ -392,11 +399,13 @@ export default function PsychologistProfile() {
                 </div>
               )}
 
-              {(p.universityDegree || p.universityName) && (
+              {(p.universityDegree || p.universityName || p.degreeInstitution) && (
                 <div className="psico-profile-detail-card">
                   <h3>Formación</h3>
                   {p.universityDegree && <p>{p.universityDegree}</p>}
-                  {p.universityName && <p className="psico-secondary-text">{p.universityName}</p>}
+                  {(p.universityName || p.degreeInstitution) && (
+                    <p className="psico-secondary-text">{p.universityName || p.degreeInstitution}</p>
+                  )}
                 </div>
               )}
             </div>

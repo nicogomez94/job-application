@@ -30,6 +30,17 @@ const PLAN_LABELS = {
 
 const formatList = (items) => (Array.isArray(items) && items.length > 0 ? items.join(', ') : '-');
 
+const getAge = (dateOfBirth) => {
+  if (!dateOfBirth) return null;
+  const dob = new Date(dateOfBirth);
+  if (Number.isNaN(dob.getTime())) return null;
+  const today = new Date();
+  let age = today.getFullYear() - dob.getFullYear();
+  const monthDiff = today.getMonth() - dob.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) age -= 1;
+  return age;
+};
+
 export default function PsychologistDashboard() {
   const { updateUser } = useAuthStore();
   const [profile, setProfile] = useState(null);
@@ -89,6 +100,10 @@ export default function PsychologistDashboard() {
 
   const p = profile;
   const name = `${p?.firstName || ''} ${p?.lastName || ''}`.trim();
+  const visibleCountry = p?.country || (p?.registrationType === 'ARGENTINA' ? 'Argentina' : '');
+  const visibleProvince = p?.practiceProvince || p?.licenseProvince || p?.region;
+  const visibleTitle = p?.universityDegree || p?.degreeInstitution;
+  const visibleAge = getAge(p?.dateOfBirth);
   const photo = toAssetUrl(p?.profileImage);
   const initials = `${p?.firstName?.[0] || ''}${p?.lastName?.[0] || ''}`.toUpperCase();
   const statusInfo = STATUS_LABELS[p?.status] || STATUS_LABELS.PENDING;
@@ -245,14 +260,18 @@ export default function PsychologistDashboard() {
               <div>
                 <h3>{name}</h3>
                 <p>{p?.email}</p>
-                {p?.country && <p>{p.country}</p>}
                 <div className="psico-profile-visible-summary">
                   <p><strong>Matrícula:</strong> {p?.licenseNumber || '-'}</p>
+                  <p><strong>País:</strong> {visibleCountry || '-'}</p>
+                  <p><strong>Provincia/Región:</strong> {visibleProvince || '-'}</p>
+                  <p><strong>Edad:</strong> {visibleAge ? `${visibleAge} años` : '-'}</p>
+                  <p><strong>Género:</strong> {p?.gender || '-'}</p>
                   <p><strong>Idiomas:</strong> {formatList(p?.languages)}</p>
-                  <p><strong>Especialidades:</strong> {formatList(p?.specialties)}</p>
+                  <p><strong>Experiencia:</strong> {p?.yearsExperience != null ? `${p.yearsExperience} ${p.yearsExperience === 1 ? 'año' : 'años'}` : '-'}</p>
+                  <p><strong>Modalidad:</strong> {p?.remoteModality || '-'}</p>
+                  <p><strong>Título profesional:</strong> {visibleTitle || '-'}</p>
                   <p><strong>Atiende a:</strong> {formatList(p?.ageRanges)}</p>
-                  {p?.remoteModality && <p><strong>Modalidad:</strong> {p.remoteModality}</p>}
-                  {p?.yearsExperience != null && <p><strong>Experiencia:</strong> {p.yearsExperience} {p.yearsExperience === 1 ? 'año' : 'años'}</p>}
+                  <p><strong>Especialidades:</strong> {formatList(p?.specialties)}</p>
                 </div>
                 {p?.specialties?.length > 0 && (
                   <div className="psico-tags psico-tags-sm">

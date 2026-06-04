@@ -53,7 +53,7 @@ exports.getProfile = async (req, res) => {
 exports.updateProfile = async (req, res) => {
   try {
     const {
-      firstName, lastName, displayName, dateOfBirth, phone, contactEmail, bio,
+      firstName, lastName, displayName, gender, dateOfBirth, phone, contactEmail, bio,
       // AR fields
       dni, cuitCuil, addressStreet, addressNumber, addressFloor, addressCity,
       addressProvince, addressPostalCode, practiceProvince,
@@ -69,7 +69,7 @@ exports.updateProfile = async (req, res) => {
     const updated = await prisma.psychologist.update({
       where: { id: req.user.id },
       data: {
-        firstName, lastName, displayName, phone, contactEmail, bio,
+        firstName, lastName, displayName, gender, phone, contactEmail, bio,
         dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : undefined,
         dni, cuitCuil, addressStreet, addressNumber, addressFloor, addressCity,
         addressProvince, addressPostalCode, practiceProvince,

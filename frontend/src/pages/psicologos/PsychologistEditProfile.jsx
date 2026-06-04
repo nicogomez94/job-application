@@ -17,11 +17,14 @@ const initialForm = {
   firstName: '',
   lastName: '',
   displayName: '',
+  gender: '',
   phone: '',
   contactEmail: '',
   country: '',
   region: '',
   practiceProvince: '',
+  universityDegree: '',
+  degreeInstitution: '',
   specialties: '',
   ageRanges: '',
   languages: '',
@@ -47,11 +50,14 @@ export default function PsychologistEditProfile() {
           firstName: p.firstName || '',
           lastName: p.lastName || '',
           displayName: p.displayName || '',
+          gender: p.gender || '',
           phone: p.phone || '',
           contactEmail: p.contactEmail || '',
           country: p.country || '',
           region: p.region || '',
           practiceProvince: p.practiceProvince || '',
+          universityDegree: p.universityDegree || '',
+          degreeInstitution: p.degreeInstitution || '',
           specialties: listToText(p.specialties),
           ageRanges: listToText(p.ageRanges),
           languages: listToText(p.languages),
@@ -155,6 +161,15 @@ export default function PsychologistEditProfile() {
               <input name="displayName" value={form.displayName} onChange={handleChange} />
             </label>
             <label>
+              Género
+              <select name="gender" value={form.gender} onChange={handleChange}>
+                <option value="">Seleccionar</option>
+                <option value="Hombre">Hombre</option>
+                <option value="Mujer">Mujer</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </label>
+            <label>
               WhatsApp
               <input name="phone" value={form.phone} onChange={handleChange} />
             </label>
@@ -175,6 +190,14 @@ export default function PsychologistEditProfile() {
               <input name="practiceProvince" value={form.practiceProvince} onChange={handleChange} />
             </label>
             <label>
+              Título profesional
+              <input name="universityDegree" value={form.universityDegree} onChange={handleChange} />
+            </label>
+            <label>
+              Institución del título
+              <input name="degreeInstitution" value={form.degreeInstitution} onChange={handleChange} />
+            </label>
+            <label>
               Especialidades
               <input name="specialties" value={form.specialties} onChange={handleChange} placeholder="Separadas por coma" />
             </label>
@@ -188,7 +211,7 @@ export default function PsychologistEditProfile() {
             </label>
             <label>
               Años de experiencia
-              <input name="yearsExperience" type="number" min="0" value={form.yearsExperience} onChange={handleChange} />
+              <input name="yearsExperience" type="number" min="0" max="50" value={form.yearsExperience} onChange={handleChange} />
             </label>
             <label className="psico-edit-profile-wide">
               Modalidad remota

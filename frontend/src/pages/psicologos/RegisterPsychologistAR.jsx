@@ -28,6 +28,8 @@ const PROVINCES = [
 
 const LANGUAGES = ['Español', 'Inglés', 'Portugués', 'Francés', 'Alemán', 'Italiano', 'Otro'];
 
+const GENDERS = ['Hombre', 'Mujer', 'Otro'];
+
 const DEGREES = ['Psicólogo', 'Lic. en Psicología'];
 
 const STEPS = ['Cuenta', 'Personal', 'Profesional', 'Especialidades'];
@@ -36,7 +38,7 @@ const initial = {
   // Step 1: account
   email: '', password: '', confirmPassword: '',
   // Step 2: personal
-  firstName: '', lastName: '', dateOfBirth: '', phone: '', contactEmail: '',
+  firstName: '', lastName: '', gender: '', dateOfBirth: '', phone: '', contactEmail: '',
   dni: '', cuitCuil: '',
   addressStreet: '', addressNumber: '', addressFloor: '', addressCity: '',
   addressProvince: '', addressPostalCode: '',
@@ -160,12 +162,14 @@ export default function RegisterPsychologistAR() {
       else if (!NAME_REGEX.test(trimmed(form.firstName))) errors.firstName = 'Usá solo letras y al menos 2 caracteres';
       if (!trimmed(form.lastName)) errors.lastName = 'Campo requerido';
       else if (!NAME_REGEX.test(trimmed(form.lastName))) errors.lastName = 'Usá solo letras y al menos 2 caracteres';
+      if (!trimmed(form.gender)) errors.gender = 'Campo requerido';
       if (!trimmed(form.dateOfBirth)) errors.dateOfBirth = 'Campo requerido';
       else if (!isValidBirthDate(form.dateOfBirth)) errors.dateOfBirth = 'Debe ser una fecha válida y mayor de 21 años';
       if (!trimmed(form.dni)) errors.dni = 'Campo requerido';
       else if (!/^\d{7,8}$/.test(digitsOnly(form.dni))) errors.dni = 'Ingresá 7 u 8 números';
       if (!isValidCuitCuil(form.cuitCuil)) errors.cuitCuil = 'CUIT/CUIL inválido';
-      if (!isValidPhone(form.phone)) errors.phone = 'Ingresá un WhatsApp válido, solo números y prefijo';
+      if (!trimmed(form.phone)) errors.phone = 'Campo requerido';
+      else if (!isValidPhone(form.phone)) errors.phone = 'Ingresá un WhatsApp válido, solo números y prefijo';
       if (!isValidOptionalEmail(form.contactEmail)) errors.contactEmail = 'Email inválido';
       if (trimmed(form.addressStreet) && !textLengthBetween(form.addressStreet, 2, 80)) errors.addressStreet = 'Ingresá una calle válida';
       if (trimmed(form.addressNumber) && !/^[a-zA-Z0-9\s/-]{1,12}$/.test(trimmed(form.addressNumber))) errors.addressNumber = 'Número inválido';
@@ -187,13 +191,15 @@ export default function RegisterPsychologistAR() {
       else if (!TEXT_WITH_NUMBER_REGEX.test(trimmed(form.licenseNumber))) errors.licenseNumber = 'La matrícula debe incluir números';
       if (!trimmed(form.licenseProvince)) errors.licenseProvince = 'Campo requerido';
       if (trimmed(form.healthMinistryReg) && !TEXT_WITH_NUMBER_REGEX.test(trimmed(form.healthMinistryReg))) errors.healthMinistryReg = 'Registro inválido';
-      if (trimmed(form.yearsExperience)) {
+      if (!trimmed(form.yearsExperience)) errors.yearsExperience = 'Campo requerido';
+      else {
         const years = Number(form.yearsExperience);
-        if (!Number.isInteger(years) || years < 0 || years > 80) errors.yearsExperience = 'Ingresá un número entre 0 y 80';
+        if (!Number.isInteger(years) || years < 0 || years > 50) errors.yearsExperience = 'Ingresá un número entre 0 y 50';
       }
       if (!trimmed(form.remoteModality)) errors.remoteModality = 'Campo requerido';
       else if (!textLengthBetween(form.remoteModality, 3, 80)) errors.remoteModality = 'Modalidad inválida';
-      if (trimmed(form.bio) && !textLengthBetween(form.bio, 20, 1000)) errors.bio = 'Mínimo 20 caracteres';
+      if (!trimmed(form.bio)) errors.bio = 'Campo requerido';
+      else if (!textLengthBetween(form.bio, 20, 1000)) errors.bio = 'Mínimo 20 caracteres';
       if (form.languages.length === 0) errors.languages = 'Seleccioná al menos un idioma';
       return showErrors(errors);
     }
@@ -261,6 +267,7 @@ export default function RegisterPsychologistAR() {
         await api.put('/psychologists/me/profile', {
           phone: form.phone,
           contactEmail: form.contactEmail || form.email,
+          gender: form.gender,
           dateOfBirth: form.dateOfBirth,
           dni: form.dni,
           cuitCuil: form.cuitCuil,
@@ -349,10 +356,17 @@ export default function RegisterPsychologistAR() {
             <div className="psico-form-grid">
               <label className={fieldClass('firstName')}>Nombre *<input type="text" name="firstName" value={form.firstName} onChange={handleChange} />{fieldError('firstName')}</label>
               <label className={fieldClass('lastName')}>Apellido *<input type="text" name="lastName" value={form.lastName} onChange={handleChange} />{fieldError('lastName')}</label>
+              <label className={fieldClass('gender')}>Género *
+                <select name="gender" value={form.gender} onChange={handleChange}>
+                  <option value="">Seleccionar</option>
+                  {GENDERS.map((g) => <option key={g} value={g}>{g}</option>)}
+                </select>
+                {fieldError('gender')}
+              </label>
               <label className={fieldClass('dateOfBirth')}>Fecha de nacimiento * <small>(mayor de 21 años con título)</small><input type="date" name="dateOfBirth" value={form.dateOfBirth} onChange={handleChange} />{fieldError('dateOfBirth')}</label>
               <label className={fieldClass('dni')}>DNI *<input type="text" name="dni" value={form.dni} onChange={handleChange} />{fieldError('dni')}</label>
               <label className={fieldClass('cuitCuil')}>CUIT/CUIL<input type="text" name="cuitCuil" value={form.cuitCuil} onChange={handleChange} />{fieldError('cuitCuil')}</label>
-              <label className={fieldClass('phone')}>WhatsApp<input type="text" name="phone" value={form.phone} onChange={handleChange} placeholder="+54 9 11 1234-5678" />{fieldError('phone')}</label>
+              <label className={fieldClass('phone')}>WhatsApp *<input type="text" name="phone" value={form.phone} onChange={handleChange} placeholder="+54 9 11 1234-5678" />{fieldError('phone')}</label>
               <label className={fieldClass('contactEmail')}>Email de contacto público<input type="email" name="contactEmail" value={form.contactEmail} onChange={handleChange} placeholder="El que verán los pacientes" />{fieldError('contactEmail')}</label>
               <label className={`psico-full-col ${fieldClass('addressStreet')}`}>Calle<input type="text" name="addressStreet" value={form.addressStreet} onChange={handleChange} />{fieldError('addressStreet')}</label>
               <label className={fieldClass('addressNumber')}>Número<input type="text" name="addressNumber" value={form.addressNumber} onChange={handleChange} />{fieldError('addressNumber')}</label>
@@ -394,9 +408,9 @@ export default function RegisterPsychologistAR() {
                 {fieldError('licenseProvince')}
               </label>
               <label className={fieldClass('healthMinistryReg')}>Nro. Ministerio de Salud <small>(opcional)</small><input type="text" name="healthMinistryReg" value={form.healthMinistryReg} onChange={handleChange} />{fieldError('healthMinistryReg')}</label>
-              <label className={fieldClass('yearsExperience')}>Años de experiencia<input type="number" name="yearsExperience" value={form.yearsExperience} onChange={handleChange} min="0" />{fieldError('yearsExperience')}</label>
-              <label className={fieldClass('remoteModality')}>Modalidad remota<input type="text" name="remoteModality" value={form.remoteModality} onChange={handleChange} />{fieldError('remoteModality')}</label>
-              <label className={`psico-full-col ${fieldClass('bio')}`}>Descripción / Experiencia
+              <label className={fieldClass('yearsExperience')}>Años de experiencia * <small>(entre 0 y 50)</small><input type="number" name="yearsExperience" value={form.yearsExperience} onChange={handleChange} min="0" max="50" />{fieldError('yearsExperience')}</label>
+              <label className={fieldClass('remoteModality')}>Modalidad remota *<input type="text" name="remoteModality" value={form.remoteModality} onChange={handleChange} />{fieldError('remoteModality')}</label>
+              <label className={`psico-full-col ${fieldClass('bio')}`}>Breve descripción de experiencia y estudios *
                 <textarea name="bio" value={form.bio} onChange={handleChange} rows={4} placeholder="Breve descripción de tu experiencia y estudios" />
                 {fieldError('bio')}
               </label>
