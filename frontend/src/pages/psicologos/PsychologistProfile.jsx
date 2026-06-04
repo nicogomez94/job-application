@@ -401,15 +401,15 @@ export default function PsychologistProfile() {
 
               {p.sessionCost && (
                 <div className="psico-profile-detail-card">
-                  <h3>Costo por sesión</h3>
+                  <h3>Costo final por sesión</h3>
                   <p>{p.sessionCost}</p>
                 </div>
               )}
 
               {p.sessionDuration && (
                 <div className="psico-profile-detail-card">
-                  <h3>Duración de la sesión</h3>
-                  <p>{p.sessionDuration}</p>
+                  <h3>Tiempo de sesión / promoción</h3>
+                  <p style={{ whiteSpace: 'pre-wrap' }}>{p.sessionDuration}</p>
                 </div>
               )}
 

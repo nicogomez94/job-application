@@ -204,12 +204,20 @@ export default function PsychologistEditProfile() {
               <input name="degreeInstitution" value={form.degreeInstitution} onChange={handleChange} />
             </label>
             <label>
-              Costo por sesión
+              Costo final por sesión
               <input name="sessionCost" value={form.sessionCost} onChange={handleChange} placeholder="Ej: ARS 25.000" required />
             </label>
-            <label>
-              Duración de la sesión
-              <input name="sessionDuration" value={form.sessionDuration} onChange={handleChange} placeholder="Ej: 50 minutos" required />
+            <label className="psico-edit-profile-wide">
+              Tiempo de sesión / promoción
+              <textarea
+                name="sessionDuration"
+                rows={4}
+                value={form.sessionDuration}
+                onChange={handleChange}
+                placeholder="Ej: 50 minutos
+Promoción: 2 sesiones al costo de una"
+                required
+              />
             </label>
             <label>
               Especialidades

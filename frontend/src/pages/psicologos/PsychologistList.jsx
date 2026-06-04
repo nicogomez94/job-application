@@ -261,10 +261,12 @@ function PsychologistCard({ psychologist: p, highlighted = false, cardRef = null
             <p className="psico-card-meta"><strong>Modalidad:</strong> {p.remoteModality}</p>
           )}
           {p.sessionCost && (
-            <p className="psico-card-meta"><strong>Costo por sesión:</strong> {p.sessionCost}</p>
+            <p className="psico-card-meta"><strong>Costo final por sesión:</strong> {p.sessionCost}</p>
           )}
           {p.sessionDuration && (
-            <p className="psico-card-meta"><strong>Duración de la sesión:</strong> {p.sessionDuration}</p>
+            <p className="psico-card-meta" style={{ whiteSpace: 'pre-wrap' }}>
+              <strong>Tiempo de sesión / promoción:</strong> {p.sessionDuration}
+            </p>
           )}
           {title && <p className="psico-card-meta"><strong>Título profesional:</strong> {title}</p>}
         </div>

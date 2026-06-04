@@ -198,9 +198,9 @@ export default function RegisterPsychologistAR() {
         errors.virtualConsultingAuthorization = 'Autorización inválida';
       }
       if (!trimmed(form.sessionCost)) errors.sessionCost = 'Campo requerido';
-      else if (!textLengthBetween(form.sessionCost, 2, 40)) errors.sessionCost = 'Costo inválido';
+      else if (!textLengthBetween(form.sessionCost, 2, 80)) errors.sessionCost = 'Costo inválido';
       if (!trimmed(form.sessionDuration)) errors.sessionDuration = 'Campo requerido';
-      else if (!textLengthBetween(form.sessionDuration, 2, 40)) errors.sessionDuration = 'Duración inválida';
+      else if (!textLengthBetween(form.sessionDuration, 2, 250)) errors.sessionDuration = 'Texto demasiado largo';
       if (!trimmed(form.yearsExperience)) errors.yearsExperience = 'Campo requerido';
       else {
         const years = Number(form.yearsExperience);
@@ -422,8 +422,17 @@ export default function RegisterPsychologistAR() {
               </label>
               <label className={fieldClass('healthMinistryReg')}>Nro. Ministerio de Salud <small>(opcional)</small><input type="text" name="healthMinistryReg" value={form.healthMinistryReg} onChange={handleChange} />{fieldError('healthMinistryReg')}</label>
               <label className={fieldClass('virtualConsultingAuthorization')}>Habilitación Especial de Consultorio Virtual<input type="text" name="virtualConsultingAuthorization" value={form.virtualConsultingAuthorization} onChange={handleChange} />{fieldError('virtualConsultingAuthorization')}</label>
-              <label className={fieldClass('sessionCost')}>Costo por sesión *<input type="text" name="sessionCost" value={form.sessionCost} onChange={handleChange} placeholder="Ej: ARS 25.000" />{fieldError('sessionCost')}</label>
-              <label className={fieldClass('sessionDuration')}>Duración de la sesión *<input type="text" name="sessionDuration" value={form.sessionDuration} onChange={handleChange} placeholder="Ej: 50 minutos" />{fieldError('sessionDuration')}</label>
+              <label className={fieldClass('sessionCost')}>Costo final por sesión *<input type="text" name="sessionCost" value={form.sessionCost} onChange={handleChange} placeholder="Ej: ARS 25.000 o USD 40" />{fieldError('sessionCost')}</label>
+              <label className={`psico-full-col ${fieldClass('sessionDuration')}`}>Tiempo de sesión / promoción *
+                <textarea
+                  name="sessionDuration"
+                  value={form.sessionDuration}
+                  onChange={handleChange}
+                  rows={4}
+                  placeholder={'Ej: 50 minutos\nPromoción: 2 sesiones al costo de una'}
+                />
+                {fieldError('sessionDuration')}
+              </label>
               <label className={fieldClass('yearsExperience')}>Años de experiencia * <small>(entre 0 y 50)</small><input type="number" name="yearsExperience" value={form.yearsExperience} onChange={handleChange} min="0" max="50" />{fieldError('yearsExperience')}</label>
               <label className={fieldClass('remoteModality')}>Modalidad remota *<input type="text" name="remoteModality" value={form.remoteModality} onChange={handleChange} />{fieldError('remoteModality')}</label>
               <label className={`psico-full-col ${fieldClass('bio')}`}>Breve descripción de experiencia y estudios *
