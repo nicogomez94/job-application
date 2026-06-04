@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { psychologistAuthService } from '../../services';
+import { psychologistAuthService, psychologistService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
 import { DEBUG_FORM_DATA, DEBUG_MODE } from '../../config/debug';
 import PasswordInput from '../../components/PasswordInput';
@@ -273,8 +273,7 @@ export default function RegisterPsychologistAR() {
 
       // Paso 2: Guardar perfil
       try {
-        const { default: api } = await import('../../services/api');
-        await api.put('/psychologists/me/profile', {
+        await psychologistService.updateProfile({
           phone: form.phone,
           contactEmail: form.contactEmail || form.email,
           gender: form.gender,
