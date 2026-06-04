@@ -399,6 +399,20 @@ export default function PsychologistProfile() {
                 </div>
               )}
 
+              {p.sessionCost && (
+                <div className="psico-profile-detail-card">
+                  <h3>Costo por sesión</h3>
+                  <p>{p.sessionCost}</p>
+                </div>
+              )}
+
+              {p.sessionDuration && (
+                <div className="psico-profile-detail-card">
+                  <h3>Duración de la sesión</h3>
+                  <p>{p.sessionDuration}</p>
+                </div>
+              )}
+
               {(p.universityDegree || p.universityName || p.degreeInstitution) && (
                 <div className="psico-profile-detail-card">
                   <h3>Formación</h3>

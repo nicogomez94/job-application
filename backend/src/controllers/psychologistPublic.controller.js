@@ -42,6 +42,8 @@ exports.list = async (req, res) => {
         licenseNumber: true,
         universityDegree: true,
         degreeInstitution: true,
+        sessionCost: true,
+        sessionDuration: true,
         specialties: true,
         languages: true,
         ageRanges: true,
@@ -158,6 +160,8 @@ exports.getById = async (req, res) => {
         licenseNumber: true,
         practiceProvince: true,
         region: true,
+        sessionCost: true,
+        sessionDuration: true,
       },
     });
 

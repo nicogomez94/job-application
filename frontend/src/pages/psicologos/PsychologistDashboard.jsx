@@ -271,6 +271,8 @@ export default function PsychologistDashboard() {
                   <p><strong>Idiomas:</strong> {formatList(p?.languages)}</p>
                   <p><strong>Experiencia:</strong> {p?.yearsExperience != null ? `${p.yearsExperience} ${p.yearsExperience === 1 ? 'año' : 'años'}` : '-'}</p>
                   <p><strong>Modalidad:</strong> {p?.remoteModality || '-'}</p>
+                  <p><strong>Costo por sesión:</strong> {p?.sessionCost || '-'}</p>
+                  <p><strong>Duración de la sesión:</strong> {p?.sessionDuration || '-'}</p>
                   <p><strong>Título profesional:</strong> {visibleTitle || '-'}</p>
                   <p><strong>Atiende a:</strong> {formatList(p?.ageRanges)}</p>
                   <p><strong>Especialidades:</strong> {formatList(p?.specialties)}</p>

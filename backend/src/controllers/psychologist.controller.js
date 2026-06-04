@@ -59,6 +59,7 @@ exports.updateProfile = async (req, res) => {
       addressProvince, addressPostalCode, practiceProvince,
       universityDegree, graduationYear, universityName, licenseNumber,
       licenseProvince, healthMinistryReg, virtualConsultingAuthorization,
+      sessionCost, sessionDuration,
       // INTL fields
       documentType, documentNumber, taxId, country, region,
       licenseEntity, licenseCountry, degreeInstitution,
@@ -77,6 +78,8 @@ exports.updateProfile = async (req, res) => {
         graduationYear: graduationYear ? Number(graduationYear) : undefined,
         universityName, licenseNumber, licenseProvince, healthMinistryReg,
         virtualConsultingAuthorization,
+        sessionCost,
+        sessionDuration,
         documentType, documentNumber, taxId, country, region,
         licenseEntity, licenseCountry, degreeInstitution,
         specialties: Array.isArray(specialties) ? specialties : undefined,

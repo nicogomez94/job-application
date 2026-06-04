@@ -33,6 +33,7 @@ const initial = {
   country: '', region: '',
   addressStreet: '', addressNumber: '', addressFloor: '', addressCity: '', addressPostalCode: '',
   universityDegree: '', licenseNumber: '', licenseEntity: '', licenseCountry: '', degreeInstitution: '',
+  sessionCost: '', sessionDuration: '',
   yearsExperience: '', remoteModality: 'Telepsicología / Telemedicina', bio: '', languages: [],
   specialties: [], ageRanges: [],
 };
@@ -161,6 +162,10 @@ export default function RegisterPsychologistINTL() {
       if (trimmed(form.licenseCountry) && !NAME_REGEX.test(trimmed(form.licenseCountry))) errors.licenseCountry = 'País inválido';
       if (!trimmed(form.degreeInstitution)) errors.degreeInstitution = 'Campo requerido';
       else if (!textLengthBetween(form.degreeInstitution, 3, 120)) errors.degreeInstitution = 'Institución inválida';
+      if (!trimmed(form.sessionCost)) errors.sessionCost = 'Campo requerido';
+      else if (!textLengthBetween(form.sessionCost, 2, 40)) errors.sessionCost = 'Costo inválido';
+      if (!trimmed(form.sessionDuration)) errors.sessionDuration = 'Campo requerido';
+      else if (!textLengthBetween(form.sessionDuration, 2, 40)) errors.sessionDuration = 'Duración inválida';
       if (!trimmed(form.yearsExperience)) errors.yearsExperience = 'Campo requerido';
       else {
         const years = Number(form.yearsExperience);
@@ -254,6 +259,8 @@ export default function RegisterPsychologistINTL() {
           licenseEntity: form.licenseEntity,
           licenseCountry: form.licenseCountry,
           degreeInstitution: form.degreeInstitution,
+          sessionCost: form.sessionCost,
+          sessionDuration: form.sessionDuration,
           yearsExperience: form.yearsExperience,
           remoteModality: form.remoteModality,
           bio: form.bio,
@@ -359,6 +366,8 @@ export default function RegisterPsychologistINTL() {
               <label className={fieldClass('licenseEntity')}>Entidad que expide la licencia<input type="text" name="licenseEntity" value={form.licenseEntity} onChange={handleChange} />{fieldError('licenseEntity')}</label>
               <label className={fieldClass('licenseCountry')}>País de emisión de la licencia<input type="text" name="licenseCountry" value={form.licenseCountry} onChange={handleChange} />{fieldError('licenseCountry')}</label>
               <label className={`psico-full-col ${fieldClass('degreeInstitution')}`}>Institución que otorgó el título *<input type="text" name="degreeInstitution" value={form.degreeInstitution} onChange={handleChange} />{fieldError('degreeInstitution')}</label>
+              <label className={fieldClass('sessionCost')}>Costo por sesión *<input type="text" name="sessionCost" value={form.sessionCost} onChange={handleChange} placeholder="Ej: USD 40" />{fieldError('sessionCost')}</label>
+              <label className={fieldClass('sessionDuration')}>Duración de la sesión *<input type="text" name="sessionDuration" value={form.sessionDuration} onChange={handleChange} placeholder="Ej: 50 minutos" />{fieldError('sessionDuration')}</label>
               <label className={fieldClass('yearsExperience')}>Años de experiencia * <small>(entre 0 y 50)</small><input type="number" name="yearsExperience" value={form.yearsExperience} onChange={handleChange} min="0" max="50" />{fieldError('yearsExperience')}</label>
               <label className={fieldClass('remoteModality')}>Modalidad remota *<input type="text" name="remoteModality" value={form.remoteModality} onChange={handleChange} />{fieldError('remoteModality')}</label>
               <label className={`psico-full-col ${fieldClass('bio')}`}>Breve descripción de experiencia y estudios *

@@ -25,6 +25,8 @@ const initialForm = {
   practiceProvince: '',
   universityDegree: '',
   degreeInstitution: '',
+  sessionCost: '',
+  sessionDuration: '',
   specialties: '',
   ageRanges: '',
   languages: '',
@@ -58,6 +60,8 @@ export default function PsychologistEditProfile() {
           practiceProvince: p.practiceProvince || '',
           universityDegree: p.universityDegree || '',
           degreeInstitution: p.degreeInstitution || '',
+          sessionCost: p.sessionCost || '',
+          sessionDuration: p.sessionDuration || '',
           specialties: listToText(p.specialties),
           ageRanges: listToText(p.ageRanges),
           languages: listToText(p.languages),
@@ -95,6 +99,8 @@ export default function PsychologistEditProfile() {
         specialties: textToList(form.specialties),
         ageRanges: textToList(form.ageRanges),
         languages: textToList(form.languages),
+        sessionCost: form.sessionCost,
+        sessionDuration: form.sessionDuration,
         yearsExperience: form.yearsExperience ? Number(form.yearsExperience) : undefined,
       };
       const res = await psychologistService.updateProfile(payload);
@@ -196,6 +202,14 @@ export default function PsychologistEditProfile() {
             <label>
               Institución del título
               <input name="degreeInstitution" value={form.degreeInstitution} onChange={handleChange} />
+            </label>
+            <label>
+              Costo por sesión
+              <input name="sessionCost" value={form.sessionCost} onChange={handleChange} placeholder="Ej: ARS 25.000" required />
+            </label>
+            <label>
+              Duración de la sesión
+              <input name="sessionDuration" value={form.sessionDuration} onChange={handleChange} placeholder="Ej: 50 minutos" required />
             </label>
             <label>
               Especialidades
