@@ -316,6 +316,7 @@ model Psychologist {
   licenseNumber       String?             // Nro matrícula
   licenseProvince     String?
   healthMinistryReg   String?             // Registro Ministerio de Salud (optional)
+  virtualConsultingAuthorization String?   // Habilitación especial de consultorio virtual
 
   // ── International-specific ──────────────────────────────────────────────
   documentType        String?             // DNI / Pasaporte / Cédula

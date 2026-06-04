@@ -76,7 +76,7 @@ export default function TermsAndConditions() {
           </div>
 
           <div className="terms-section">
-            <h2>{isEn ? '3. Code of Conduct' : '3. Código de Conducta'}</h2>
+            <h2>{isEn ? '3. Code of Ethical Conduct' : '3. Código de Conducta Ética'}</h2>
             <ul className="terms-bullet-list">
               <li>
                 {isEn

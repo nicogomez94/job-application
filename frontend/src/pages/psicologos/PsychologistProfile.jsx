@@ -253,7 +253,7 @@ export default function PsychologistProfile() {
                   )}
                   {hasTerminationRequest && (
                     <p className="psico-request-message psico-request-message--termination">
-                      "El paciente desea finalizar la terapia por razones personales"
+                      "El paciente a decidido finalizar la terapia por razones personales"
                     </p>
                   )}
                   {terminationAccepted && (
@@ -283,7 +283,7 @@ export default function PsychologistProfile() {
               {requestRejected && !requestBlocked && (
                 <div className="psico-hire-section">
                   <span className="psico-status-badge psico-status-red">
-                    <XCircle size={14} /> Este psicólogo no está disponible por ahora
+                    <XCircle size={14} /> Estimada/o. En estos momentos estamos con agenda completa. Será un gusto asistirle en un próximo contacto.
                   </span>
                 </div>
               )}

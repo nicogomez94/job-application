@@ -98,6 +98,7 @@ export const DEBUG_FORM_DATA = {
     licenseNumber: 'MP 45821',
     licenseProvince: 'Ciudad de Buenos Aires',
     healthMinistryReg: 'MSAL-AR-8821',
+    virtualConsultingAuthorization: 'Habilitación especial de consultorio virtual',
     yearsExperience: '9',
     remoteModality: 'Telepsicología / Telemedicina',
     bio: 'Psicóloga clínica con experiencia en atención online de adultos y parejas.',

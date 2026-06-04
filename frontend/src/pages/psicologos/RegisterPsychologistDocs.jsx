@@ -34,6 +34,7 @@ export default function RegisterPsychologistDocs() {
   const navigate = useNavigate();
   const isAR = user?.registrationType === 'ARGENTINA';
   const docTypes = isAR ? AR_DOCUMENT_TYPES : INTL_DOCUMENT_TYPES;
+  const requiredDocTypes = docTypes.slice(0, 4).map((docType) => docType.key);
 
   const [files, setFiles] = useState([]);
   const [documentTypes, setDocumentTypes] = useState([]);
@@ -63,6 +64,11 @@ export default function RegisterPsychologistDocs() {
     }
 
     return '';
+  };
+
+  const getMissingRequiredDocs = (selectedFiles) => {
+    const uploadedTypes = new Set(selectedFiles.map((file) => file.docType));
+    return requiredDocTypes.filter((docType) => !uploadedTypes.has(docType));
   };
 
   const handleFileAdd = (e, docType) => {
@@ -99,6 +105,17 @@ export default function RegisterPsychologistDocs() {
     setSubmitAttempted(true);
     if (files.length === 0) {
       const message = 'Para enviar la documentación, primero agregá al menos un archivo.';
+      setValidationMessage(message);
+      toast.error(message);
+      return;
+    }
+
+    const missingRequiredDocs = getMissingRequiredDocs(files);
+    if (missingRequiredDocs.length > 0) {
+      const missingLabels = missingRequiredDocs
+        .map((docType) => docTypes.find((doc) => doc.key === docType)?.label || docType)
+        .join(', ');
+      const message = `Faltan documentos obligatorios: ${missingLabels}.`;
       setValidationMessage(message);
       toast.error(message);
       return;
@@ -151,28 +168,35 @@ export default function RegisterPsychologistDocs() {
         <p className="psico-docs-subtitle">
           Subí los documentos que acrediten tu identidad y habilitación profesional.
           El equipo los revisará en aproximadamente 5 días hábiles.
+          {requiredDocTypes.length > 0 ? ' Los primeros 4 documentos son obligatorios para continuar.' : ''}
         </p>
 
         <div className="psico-docs-types">
-          {docTypes.map((dt) => (
-            <div key={dt.key} className="psico-doc-type-row">
-              <div className="psico-doc-type-label">
-                <FileText size={16} />
-                <span>{dt.label}</span>
-                <small>PDF, JPG o PNG · máx. 5 MB</small>
+          {docTypes.map((dt, index) => {
+            const isRequired = index < 4;
+            return (
+              <div key={dt.key} className="psico-doc-type-row">
+                <div className="psico-doc-type-label">
+                  <FileText size={16} />
+                  <span>
+                    {dt.label}
+                    {isRequired ? ' *' : ''}
+                  </span>
+                  <small>{isRequired ? 'Obligatorio' : 'Opcional'} · PDF, JPG o PNG · máx. 5 MB</small>
+                </div>
+                <label className="psico-doc-upload-btn">
+                  <Upload size={14} /> Agregar archivo
+                  <input
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    multiple
+                    onChange={(e) => handleFileAdd(e, dt.key)}
+                    style={{ display: 'none' }}
+                  />
+                </label>
               </div>
-              <label className="psico-doc-upload-btn">
-                <Upload size={14} /> Agregar archivo
-                <input
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  multiple
-                  onChange={(e) => handleFileAdd(e, dt.key)}
-                  style={{ display: 'none' }}
-                />
-              </label>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {(validationMessage || (submitAttempted && files.length === 0)) && (

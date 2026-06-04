@@ -270,6 +270,7 @@ export default function AdminPsychologists() {
                 <tbody>
                   {psychologists.map((psychologist) => {
                     const hasDocuments = Boolean(psychologist.documents?.length);
+                    const hasPatientBlock = psychologist.patientBlocks?.some((block) => block.blockedBy === 'PATIENT');
                     const canApprove = ['PENDING', 'REJECTED'].includes(psychologist.status) && hasDocuments;
                     const canReject = psychologist.status !== 'REJECTED';
                     const isUpdating = updatingId === psychologist.id;
@@ -289,6 +290,11 @@ export default function AdminPsychologists() {
                           <span className={statusToBadgeClass(psychologist.status)}>
                             {STATUS_LABELS[psychologist.status] || psychologist.status}
                           </span>
+                          {hasPatientBlock ? (
+                            <span className="badge badge-error" style={{ marginLeft: '0.5rem' }}>
+                              Bloqueado
+                            </span>
+                          ) : null}
                           {psychologist.rejectionReason ? (
                             <p className="admin-muted admin-rejection-note">
                               Motivo: {psychologist.rejectionReason}

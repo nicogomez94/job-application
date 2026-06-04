@@ -16,7 +16,11 @@ const toAssetUrl = (p) => {
 const STATUS_CONFIG = {
   PENDING: { label: 'Pendiente de respuesta', icon: Clock, color: 'orange' },
   ACCEPTED: { label: 'Solicitud aceptada', icon: CheckCircle, color: 'green' },
-  REJECTED: { label: 'No disponible', icon: XCircle, color: 'red' },
+  REJECTED: {
+    label: 'Estimada/o. En estos momentos estamos con agenda completa. Será un gusto asistirle en un próximo contacto.',
+    icon: XCircle,
+    color: 'red',
+  },
 };
 
 export default function PatientDashboard() {
@@ -242,7 +246,7 @@ export default function PatientDashboard() {
                           )}
                           {hasTerminationRequest && (
                             <p className="psico-request-message psico-request-message--termination">
-                              "El paciente desea finalizar la terapia por razones personales"
+                              "El paciente a decidido finalizar la terapia por razones personales"
                             </p>
                           )}
                           {terminationAccepted && (

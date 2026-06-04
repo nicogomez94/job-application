@@ -46,6 +46,7 @@ const initial = {
   // Step 3: professional
   universityDegree: '', graduationYear: '', universityName: '',
   licenseNumber: '', licenseProvince: '', healthMinistryReg: '',
+  virtualConsultingAuthorization: '',
   yearsExperience: '', remoteModality: 'Telepsicología / Telemedicina',
   bio: '', languages: [],
   // Step 4: specialties
@@ -167,7 +168,8 @@ export default function RegisterPsychologistAR() {
       else if (!isValidBirthDate(form.dateOfBirth)) errors.dateOfBirth = 'Debe ser una fecha válida y mayor de 21 años';
       if (!trimmed(form.dni)) errors.dni = 'Campo requerido';
       else if (!/^\d{7,8}$/.test(digitsOnly(form.dni))) errors.dni = 'Ingresá 7 u 8 números';
-      if (!isValidCuitCuil(form.cuitCuil)) errors.cuitCuil = 'CUIT/CUIL inválido';
+      if (!trimmed(form.cuitCuil)) errors.cuitCuil = 'Campo requerido';
+      else if (!isValidCuitCuil(form.cuitCuil)) errors.cuitCuil = 'CUIT/CUIL inválido';
       if (!trimmed(form.phone)) errors.phone = 'Campo requerido';
       else if (!isValidPhone(form.phone)) errors.phone = 'Ingresá un WhatsApp válido, solo números y prefijo';
       if (!isValidOptionalEmail(form.contactEmail)) errors.contactEmail = 'Email inválido';
@@ -191,6 +193,9 @@ export default function RegisterPsychologistAR() {
       else if (!TEXT_WITH_NUMBER_REGEX.test(trimmed(form.licenseNumber))) errors.licenseNumber = 'La matrícula debe incluir números';
       if (!trimmed(form.licenseProvince)) errors.licenseProvince = 'Campo requerido';
       if (trimmed(form.healthMinistryReg) && !TEXT_WITH_NUMBER_REGEX.test(trimmed(form.healthMinistryReg))) errors.healthMinistryReg = 'Registro inválido';
+      if (trimmed(form.virtualConsultingAuthorization) && !textLengthBetween(form.virtualConsultingAuthorization, 3, 120)) {
+        errors.virtualConsultingAuthorization = 'Autorización inválida';
+      }
       if (!trimmed(form.yearsExperience)) errors.yearsExperience = 'Campo requerido';
       else {
         const years = Number(form.yearsExperience);
@@ -284,6 +289,7 @@ export default function RegisterPsychologistAR() {
           licenseNumber: form.licenseNumber,
           licenseProvince: form.licenseProvince,
           healthMinistryReg: form.healthMinistryReg,
+          virtualConsultingAuthorization: form.virtualConsultingAuthorization,
           yearsExperience: form.yearsExperience,
           remoteModality: form.remoteModality,
           bio: form.bio,
@@ -365,7 +371,7 @@ export default function RegisterPsychologistAR() {
               </label>
               <label className={fieldClass('dateOfBirth')}>Fecha de nacimiento * <small>(mayor de 21 años con título)</small><input type="date" name="dateOfBirth" value={form.dateOfBirth} onChange={handleChange} />{fieldError('dateOfBirth')}</label>
               <label className={fieldClass('dni')}>DNI *<input type="text" name="dni" value={form.dni} onChange={handleChange} />{fieldError('dni')}</label>
-              <label className={fieldClass('cuitCuil')}>CUIT/CUIL<input type="text" name="cuitCuil" value={form.cuitCuil} onChange={handleChange} />{fieldError('cuitCuil')}</label>
+              <label className={fieldClass('cuitCuil')}>CUIT/CUIL *<input type="text" name="cuitCuil" value={form.cuitCuil} onChange={handleChange} />{fieldError('cuitCuil')}</label>
               <label className={fieldClass('phone')}>WhatsApp *<input type="text" name="phone" value={form.phone} onChange={handleChange} placeholder="+54 9 11 1234-5678" />{fieldError('phone')}</label>
               <label className={fieldClass('contactEmail')}>Email de contacto público<input type="email" name="contactEmail" value={form.contactEmail} onChange={handleChange} placeholder="El que verán los pacientes" />{fieldError('contactEmail')}</label>
               <label className={`psico-full-col ${fieldClass('addressStreet')}`}>Calle<input type="text" name="addressStreet" value={form.addressStreet} onChange={handleChange} />{fieldError('addressStreet')}</label>
@@ -408,6 +414,7 @@ export default function RegisterPsychologistAR() {
                 {fieldError('licenseProvince')}
               </label>
               <label className={fieldClass('healthMinistryReg')}>Nro. Ministerio de Salud <small>(opcional)</small><input type="text" name="healthMinistryReg" value={form.healthMinistryReg} onChange={handleChange} />{fieldError('healthMinistryReg')}</label>
+              <label className={fieldClass('virtualConsultingAuthorization')}>Habilitación Especial de Consultorio Virtual<input type="text" name="virtualConsultingAuthorization" value={form.virtualConsultingAuthorization} onChange={handleChange} />{fieldError('virtualConsultingAuthorization')}</label>
               <label className={fieldClass('yearsExperience')}>Años de experiencia * <small>(entre 0 y 50)</small><input type="number" name="yearsExperience" value={form.yearsExperience} onChange={handleChange} min="0" max="50" />{fieldError('yearsExperience')}</label>
               <label className={fieldClass('remoteModality')}>Modalidad remota *<input type="text" name="remoteModality" value={form.remoteModality} onChange={handleChange} />{fieldError('remoteModality')}</label>
               <label className={`psico-full-col ${fieldClass('bio')}`}>Breve descripción de experiencia y estudios *

@@ -28,6 +28,8 @@ const PLAN_LABELS = {
   TRIAL: 'Prueba 2 meses',
 };
 
+const TERMINATION_MESSAGE = 'El paciente a decidido finalizar la terapia por razones personales';
+
 const formatList = (items) => (Array.isArray(items) && items.length > 0 ? items.join(', ') : '-');
 
 const getAge = (dateOfBirth) => {
@@ -434,7 +436,7 @@ export default function PsychologistDashboard() {
                               )}
                               {hasTerminationRequest && (
                                 <p className="psico-request-message psico-request-message--termination">
-                                  "{req.message || 'El paciente desea finalizar la terapia por razones personales'}"
+                                  "{req.message || TERMINATION_MESSAGE}"
                                 </p>
                               )}
                               {terminationAccepted && (
