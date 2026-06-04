@@ -244,6 +244,32 @@
   color: #1e3a4a;
 }
 
+.psico-card-expand-btn {
+  margin-top: 0.45rem;
+  align-self: flex-start;
+  border: 1px solid #d4c9b5;
+  background: #fff7ef;
+  color: #7a3055;
+  border-radius: 999px;
+  padding: 0.28rem 0.72rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+}
+
+.psico-card-expand-btn:hover {
+  background: #fdeee9;
+  border-color: #cfaad0;
+  transform: translateY(-1px);
+}
+
+.psico-card-expanded {
+  margin-top: 0.55rem;
+  padding-top: 0.55rem;
+  border-top: 1px dashed #e3d8c7;
+}
+
 .psico-card-age,
 .psico-card-country {
   font-size: 0.82rem;
@@ -275,8 +301,8 @@
 .psico-tag {
   display: inline-flex;
   align-items: center;
-  padding: 0.18rem 0.5rem;
-  border-radius: 999px;
+  padding: 10px;
+  border-radius: 10px;
   font-size: 0.77rem;
   font-weight: 600;
   background: #e8f4fb;

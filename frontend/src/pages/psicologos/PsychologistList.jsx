@@ -194,6 +194,7 @@ export default function PsychologistList() {
 function PsychologistCard({ psychologist: p, highlighted = false, cardRef = null }) {
   const navigate = useNavigate();
   const { isAuthenticated, userType } = useAuthStore();
+  const [expanded, setExpanded] = useState(false);
   const name = p.displayName || `${p.firstName} ${p.lastName}`;
   const photo = toAssetUrl(p.profileImage);
   const initials = `${p.firstName?.[0] || ''}${p.lastName?.[0] || ''}`.toUpperCase();
@@ -214,6 +215,11 @@ function PsychologistCard({ psychologist: p, highlighted = false, cardRef = null
 
   const stopCardNavigation = (e) => {
     e.stopPropagation();
+  };
+
+  const toggleExpanded = (e) => {
+    stopCardNavigation(e);
+    setExpanded((prev) => !prev);
   };
 
   const handleHireClick = (e) => {
@@ -244,43 +250,55 @@ function PsychologistCard({ psychologist: p, highlighted = false, cardRef = null
       <div className="psico-card-info">
         <h3>{name}</h3>
         <div className="psico-card-visible-data">
-          {p.licenseNumber && (
-            <p className="psico-card-meta"><strong>Matrícula:</strong> {p.licenseNumber}</p>
-          )}
           {country && <p className="psico-card-meta"><strong>País:</strong> {country}</p>}
           {province && <p className="psico-card-meta"><strong>Provincia/Región:</strong> {province}</p>}
-          {p.age && <p className="psico-card-meta"><strong>Edad:</strong> {p.age} años</p>}
-          {p.gender && <p className="psico-card-meta"><strong>Género:</strong> {p.gender}</p>}
-          {p.languages?.length > 0 && (
-            <p className="psico-card-meta"><strong>Idiomas:</strong> {p.languages.join(', ')}</p>
-          )}
-          {p.yearsExperience != null && (
-            <p className="psico-card-meta"><strong>Experiencia:</strong> {p.yearsExperience} {p.yearsExperience === 1 ? 'año' : 'años'}</p>
-          )}
-          {p.remoteModality && (
-            <p className="psico-card-meta"><strong>Modalidad:</strong> {p.remoteModality}</p>
-          )}
-          {p.sessionCost && (
-            <p className="psico-card-meta"><strong>Costo final por sesión:</strong> {p.sessionCost}</p>
-          )}
-          {p.sessionDuration && (
-            <p className="psico-card-meta" style={{ whiteSpace: 'pre-wrap' }}>
-              <strong>Tiempo de sesión / promoción:</strong> {p.sessionDuration}
-            </p>
-          )}
-          {title && <p className="psico-card-meta"><strong>Título profesional:</strong> {title}</p>}
         </div>
-        {p.ageRanges?.length > 0 && (
-          <p className="psico-card-meta"><strong>Atiende:</strong> {p.ageRanges.join(', ')}</p>
-        )}
-        {(p.languages?.length > 0 || p.specialties?.length > 0) && (
-          <div className="psico-card-langs">
-            {p.languages?.slice(0, 3).map((l) => (
-              <span key={l} className="psico-tag">{l}</span>
-            ))}
-            {p.specialties?.slice(0, 2).map((s) => (
-              <span key={s} className="psico-tag psico-tag-specialty">{s}</span>
-            ))}
+        <button
+          type="button"
+          className="psico-card-expand-btn"
+          onClick={toggleExpanded}
+          aria-expanded={expanded}
+        >
+          {expanded ? 'Ocultar detalles' : 'Ver más detalles'}
+        </button>
+        {expanded && (
+          <div className="psico-card-expanded">
+            {p.licenseNumber && (
+              <p className="psico-card-meta"><strong>Matrícula:</strong> {p.licenseNumber}</p>
+            )}
+            {p.age && <p className="psico-card-meta"><strong>Edad:</strong> {p.age} años</p>}
+            {p.gender && <p className="psico-card-meta"><strong>Género:</strong> {p.gender}</p>}
+            {p.languages?.length > 0 && (
+              <p className="psico-card-meta"><strong>Idiomas:</strong> {p.languages.join(', ')}</p>
+            )}
+            {p.yearsExperience != null && (
+              <p className="psico-card-meta"><strong>Experiencia:</strong> {p.yearsExperience} {p.yearsExperience === 1 ? 'año' : 'años'}</p>
+            )}
+            {p.remoteModality && (
+              <p className="psico-card-meta"><strong>Modalidad:</strong> {p.remoteModality}</p>
+            )}
+            {p.sessionCost && (
+              <p className="psico-card-meta"><strong>Costo final por sesión:</strong> {p.sessionCost}</p>
+            )}
+            {p.sessionDuration && (
+              <p className="psico-card-meta" style={{ whiteSpace: 'pre-wrap' }}>
+                <strong>Tiempo de sesión / promoción:</strong> {p.sessionDuration}
+              </p>
+            )}
+            {title && <p className="psico-card-meta"><strong>Título profesional:</strong> {title}</p>}
+            {p.ageRanges?.length > 0 && (
+              <p className="psico-card-meta"><strong>Atiende:</strong> {p.ageRanges.join(', ')}</p>
+            )}
+            {(p.languages?.length > 0 || p.specialties?.length > 0) && (
+              <div className="psico-card-langs">
+                {p.languages?.slice(0, 3).map((l) => (
+                  <span key={l} className="psico-tag">{l}</span>
+                ))}
+                {p.specialties?.slice(0, 2).map((s) => (
+                  <span key={s} className="psico-tag psico-tag-specialty">{s}</span>
+                ))}
+              </div>
+            )}
           </div>
         )}
         <div className="psico-card-contact">

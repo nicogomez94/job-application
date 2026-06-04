@@ -345,84 +345,108 @@ export default function PsychologistProfile() {
               </section>
             )}
 
+            <section className="psico-profile-section">
+              <h2>Información pública</h2>
+              <div className="psico-profile-details-grid">
+                {p.country && (
+                  <div className="psico-profile-detail-card">
+                    <h3>País</h3>
+                    <p>{p.country}</p>
+                  </div>
+                )}
+
+                {(p.region || p.practiceProvince) && (
+                  <div className="psico-profile-detail-card">
+                    <h3>Provincia / Región</h3>
+                    <p>{p.region || p.practiceProvince}</p>
+                  </div>
+                )}
+
+                {p.licenseNumber && (
+                  <div className="psico-profile-detail-card">
+                    <h3>Matrícula profesional</h3>
+                    <p>{p.licenseNumber}</p>
+                  </div>
+                )}
+
+                {p.age && (
+                  <div className="psico-profile-detail-card">
+                    <h3>Edad</h3>
+                    <p>{p.age} años</p>
+                  </div>
+                )}
+
+                {p.gender && (
+                  <div className="psico-profile-detail-card">
+                    <h3>Género</h3>
+                    <p>{p.gender}</p>
+                  </div>
+                )}
+
+                {p.languages?.length > 0 && (
+                  <div className="psico-profile-detail-card">
+                    <h3><Languages size={14} /> Idiomas</h3>
+                    <div className="psico-tags">
+                      {p.languages.map((l) => <span key={l} className="psico-tag">{l}</span>)}
+                    </div>
+                  </div>
+                )}
+
+                {p.yearsExperience != null && (
+                  <div className="psico-profile-detail-card">
+                    <h3><Clock size={14} /> Experiencia</h3>
+                    <p>{p.yearsExperience} {p.yearsExperience === 1 ? 'año' : 'años'}</p>
+                  </div>
+                )}
+
+                {p.remoteModality && (
+                  <div className="psico-profile-detail-card">
+                    <h3>Modalidad</h3>
+                    <p>{p.remoteModality}</p>
+                  </div>
+                )}
+
+                {p.sessionCost && (
+                  <div className="psico-profile-detail-card">
+                    <h3>Costo final por sesión</h3>
+                    <p>{p.sessionCost}</p>
+                  </div>
+                )}
+
+                {p.sessionDuration && (
+                  <div className="psico-profile-detail-card">
+                    <h3>Tiempo de sesión / promoción</h3>
+                    <p style={{ whiteSpace: 'pre-wrap' }}>{p.sessionDuration}</p>
+                  </div>
+                )}
+
+                {(p.ageRanges?.length > 0) && (
+                  <div className="psico-profile-detail-card">
+                    <h3>Atiende</h3>
+                    <div className="psico-tags">
+                      {p.ageRanges.map((a) => <span key={a} className="psico-tag">{a}</span>)}
+                    </div>
+                  </div>
+                )}
+
+                {(p.universityDegree || p.universityName || p.degreeInstitution) && (
+                  <div className="psico-profile-detail-card">
+                    <h3>Formación</h3>
+                    {p.universityDegree && <p>{p.universityDegree}</p>}
+                    {(p.universityName || p.degreeInstitution) && (
+                      <p className="psico-secondary-text">{p.universityName || p.degreeInstitution}</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </section>
+
             {p.bio && (
               <section className="psico-profile-section">
                 <h2><BookOpen size={16} /> Sobre mí</h2>
                 <p className="psico-profile-bio">{p.bio}</p>
               </section>
             )}
-
-            <div className="psico-profile-details-grid">
-              {p.languages?.length > 0 && (
-                <div className="psico-profile-detail-card">
-                  <h3><Languages size={14} /> Idiomas</h3>
-                  <div className="psico-tags">
-                    {p.languages.map((l) => <span key={l} className="psico-tag">{l}</span>)}
-                  </div>
-                </div>
-              )}
-
-              {p.ageRanges?.length > 0 && (
-                <div className="psico-profile-detail-card">
-                  <h3>Rango etario de atención</h3>
-                  <div className="psico-tags">
-                    {p.ageRanges.map((a) => <span key={a} className="psico-tag">{a}</span>)}
-                  </div>
-                </div>
-              )}
-
-              {p.gender && (
-                <div className="psico-profile-detail-card">
-                  <h3>Género</h3>
-                  <p>{p.gender}</p>
-                </div>
-              )}
-
-              {p.yearsExperience != null && (
-                <div className="psico-profile-detail-card">
-                  <h3><Clock size={14} /> Experiencia</h3>
-                  <p>{p.yearsExperience} {p.yearsExperience === 1 ? 'año' : 'años'}</p>
-                </div>
-              )}
-
-              {p.licenseNumber && (
-                <div className="psico-profile-detail-card">
-                  <h3>Matrícula profesional</h3>
-                  <p>{p.licenseNumber}</p>
-                </div>
-              )}
-
-              {p.remoteModality && (
-                <div className="psico-profile-detail-card">
-                  <h3>Modalidad</h3>
-                  <p>{p.remoteModality}</p>
-                </div>
-              )}
-
-              {p.sessionCost && (
-                <div className="psico-profile-detail-card">
-                  <h3>Costo final por sesión</h3>
-                  <p>{p.sessionCost}</p>
-                </div>
-              )}
-
-              {p.sessionDuration && (
-                <div className="psico-profile-detail-card">
-                  <h3>Tiempo de sesión / promoción</h3>
-                  <p style={{ whiteSpace: 'pre-wrap' }}>{p.sessionDuration}</p>
-                </div>
-              )}
-
-              {(p.universityDegree || p.universityName || p.degreeInstitution) && (
-                <div className="psico-profile-detail-card">
-                  <h3>Formación</h3>
-                  {p.universityDegree && <p>{p.universityDegree}</p>}
-                  {(p.universityName || p.degreeInstitution) && (
-                    <p className="psico-secondary-text">{p.universityName || p.degreeInstitution}</p>
-                  )}
-                </div>
-              )}
-            </div>
 
             <div className="psico-profile-disclaimer">
               <strong>Aviso:</strong> La atención remota no es recomendada para crisis aguda con riesgo de vida o psicosis activa que requiera contención física inmediata, las cuales necesitan atención presencial de emergencia.
