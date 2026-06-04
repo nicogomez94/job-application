@@ -230,6 +230,13 @@
   min-width: 0;
 }
 
+.psico-card-meta {
+  font-size: 0.82rem;
+  color: #5f5a52;
+  line-height: 1.35;
+  margin: 0.15rem 0;
+}
+
 .psico-card-info h3 {
   font-size: 1rem;
   font-weight: 700;
@@ -929,6 +936,26 @@
   border-color: #2c5f7a;
 }
 
+.psico-form-grid label.psico-field-invalid input,
+.psico-form-grid label.psico-field-invalid select,
+.psico-form-grid label.psico-field-invalid textarea {
+  border-color: #b3261e;
+  background: #fff7f6;
+}
+
+.psico-form-grid .psico-field-invalid .psico-checkbox-group {
+  border: 1.5px solid #b3261e;
+  border-radius: 8px;
+  padding: 0.5rem;
+  background: #fff7f6;
+}
+
+.psico-field-error {
+  color: #b3261e;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
 .psico-full-col {
   grid-column: 1 / -1;
 }
@@ -1451,6 +1478,15 @@
   font-size: 0.82rem;
   color: #666;
   margin-bottom: 0.15rem;
+}
+
+.psico-dashboard-card--profile .psico-profile-visible-summary {
+  margin-top: 0.55rem;
+}
+
+.psico-dashboard-card--profile .psico-profile-visible-summary p {
+  margin-bottom: 0.2rem;
+  line-height: 1.35;
 }
 
 .psico-dashboard-sub p {

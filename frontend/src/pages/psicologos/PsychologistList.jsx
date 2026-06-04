@@ -242,8 +242,20 @@ function PsychologistCard({ psychologist: p, highlighted = false, cardRef = null
         <h3>{name}</h3>
         {p.age && <span className="psico-card-age">{p.age} años</span>}
         {p.country && <span className="psico-card-country">{p.country}</span>}
+        {p.licenseNumber && (
+          <p className="psico-card-meta"><strong>Matrícula:</strong> {p.licenseNumber}</p>
+        )}
+        {p.region || p.practiceProvince ? (
+          <p className="psico-card-meta">{[p.region, p.practiceProvince].filter(Boolean).join(' · ')}</p>
+        ) : null}
         {p.specialties?.length > 0 && (
           <p className="psico-card-specialty">{p.specialties[0]}</p>
+        )}
+        {p.ageRanges?.length > 0 && (
+          <p className="psico-card-meta"><strong>Atiende:</strong> {p.ageRanges.join(', ')}</p>
+        )}
+        {p.remoteModality && (
+          <p className="psico-card-meta"><strong>Modalidad:</strong> {p.remoteModality}</p>
         )}
         {p.languages?.length > 0 && (
           <div className="psico-card-langs">

@@ -378,6 +378,13 @@ export default function PsychologistProfile() {
                 </div>
               )}
 
+              {p.licenseNumber && (
+                <div className="psico-profile-detail-card">
+                  <h3>Matrícula profesional</h3>
+                  <p>{p.licenseNumber}</p>
+                </div>
+              )}
+
               {p.remoteModality && (
                 <div className="psico-profile-detail-card">
                   <h3>Modalidad</h3>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { Check, ExternalLink, X } from 'lucide-react';
+import { Check, ExternalLink, Trash2, X } from 'lucide-react';
 import { adminService } from '../../services';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
@@ -130,7 +130,7 @@ export default function AdminPsychologists() {
 
   const handleReject = async (psychologist) => {
     const reason = window.prompt(
-      `Motivo para no validar la cuenta de ${psychologist.firstName} ${psychologist.lastName} (opcional):`
+      `Motivo para no validar, invalidar o pausar la cuenta de ${psychologist.firstName} ${psychologist.lastName} (opcional):`
     );
     if (reason === null) return;
 
@@ -141,6 +141,24 @@ export default function AdminPsychologists() {
       await loadPsychologists(pagination.page, searchQuery, statusFilter, typeFilter);
     } catch (error) {
       toast.error(error.response?.data?.error || 'No se pudo rechazar la cuenta');
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const handleDelete = async (psychologist) => {
+    const confirmed = window.confirm(
+      `¿Borrar definitivamente la cuenta de ${psychologist.firstName} ${psychologist.lastName}? Esta acción no se puede deshacer.`
+    );
+    if (!confirmed) return;
+
+    setUpdatingId(psychologist.id);
+    try {
+      await adminService.deletePsychologist(psychologist.id);
+      toast.success('Cuenta de psicólogo borrada');
+      await loadPsychologists(pagination.page, searchQuery, statusFilter, typeFilter);
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'No se pudo borrar la cuenta');
     } finally {
       setUpdatingId(null);
     }
@@ -253,7 +271,7 @@ export default function AdminPsychologists() {
                   {psychologists.map((psychologist) => {
                     const hasDocuments = Boolean(psychologist.documents?.length);
                     const canApprove = ['PENDING', 'REJECTED'].includes(psychologist.status) && hasDocuments;
-                    const canReject = !['REJECTED', 'ACTIVE'].includes(psychologist.status);
+                    const canReject = psychologist.status !== 'REJECTED';
                     const isUpdating = updatingId === psychologist.id;
                     const displayName = psychologist.displayName
                       || `${psychologist.firstName} ${psychologist.lastName}`;
@@ -323,6 +341,15 @@ export default function AdminPsychologists() {
                             >
                               <X size={14} />
                               {isUpdating ? 'Actualizando...' : 'No validar'}
+                            </button>
+                            <button
+                              type="button"
+                              className="btn admin-danger-btn admin-icon-btn"
+                              disabled={isUpdating}
+                              onClick={() => handleDelete(psychologist)}
+                            >
+                              <Trash2 size={14} />
+                              {isUpdating ? 'Borrando...' : 'Borrar'}
                             </button>
                           </div>
                         </td>

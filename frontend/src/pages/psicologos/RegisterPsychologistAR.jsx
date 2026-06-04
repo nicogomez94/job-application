@@ -45,16 +45,61 @@ const initial = {
   universityDegree: '', graduationYear: '', universityName: '',
   licenseNumber: '', licenseProvince: '', healthMinistryReg: '',
   yearsExperience: '', remoteModality: 'Telepsicología / Telemedicina',
-  bio: '', displayName: '', languages: [],
+  bio: '', languages: [],
   // Step 4: specialties
   specialties: [], ageRanges: [],
 };
 
 const getInitialForm = () => (DEBUG_MODE ? { ...DEBUG_FORM_DATA.registerPsychologistAR } : { ...initial });
 
+const currentYear = new Date().getFullYear();
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const NAME_REGEX = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s'-]{2,}$/;
+const PHONE_CHARS_REGEX = /^\+?[\d\s().-]+$/;
+const TEXT_WITH_NUMBER_REGEX = /^(?=.*\d)[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s./-]{3,}$/;
+
+const digitsOnly = (value) => String(value || '').replace(/\D/g, '');
+const trimmed = (value) => String(value || '').trim();
+
+const isValidPhone = (value) => {
+  if (!trimmed(value)) return true;
+  const digits = digitsOnly(value);
+  return PHONE_CHARS_REGEX.test(trimmed(value)) && digits.length >= 8 && digits.length <= 15;
+};
+
+const isValidOptionalEmail = (value) => !trimmed(value) || EMAIL_REGEX.test(trimmed(value));
+
+const isValidCuitCuil = (value) => {
+  if (!trimmed(value)) return true;
+  const digits = digitsOnly(value);
+  if (digits.length !== 11) return false;
+
+  const factors = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2];
+  const sum = factors.reduce((total, factor, index) => total + factor * Number(digits[index]), 0);
+  const remainder = 11 - (sum % 11);
+  const verifier = remainder === 11 ? 0 : remainder === 10 ? 9 : remainder;
+  return verifier === Number(digits[10]);
+};
+
+const isValidBirthDate = (value) => {
+  if (!value) return false;
+  const dob = new Date(value);
+  if (Number.isNaN(dob.getTime()) || dob > new Date()) return false;
+  let age = new Date().getFullYear() - dob.getFullYear();
+  const monthDiff = new Date().getMonth() - dob.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && new Date().getDate() < dob.getDate())) age -= 1;
+  return age >= 21 && age <= 100;
+};
+
+const textLengthBetween = (value, min, max = Infinity) => {
+  const length = trimmed(value).length;
+  return length >= min && length <= max;
+};
+
 export default function RegisterPsychologistAR() {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState(getInitialForm);
+  const [fieldErrors, setFieldErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [acceptPrivacy, setAcceptPrivacy] = useState(false);
@@ -64,6 +109,12 @@ export default function RegisterPsychologistAR() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+    setFieldErrors((prev) => {
+      if (!prev[name]) return prev;
+      const next = { ...prev };
+      delete next[name];
+      return next;
+    });
   };
 
   const toggleArrayField = (field, value) => {
@@ -74,53 +125,91 @@ export default function RegisterPsychologistAR() {
         [field]: arr.includes(value) ? arr.filter((v) => v !== value) : [...arr, value],
       };
     });
+    setFieldErrors((prev) => {
+      if (!prev[field]) return prev;
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
   };
 
   const validateStep = () => {
+    const showErrors = (errors) => {
+      if (Object.keys(errors).length > 0) {
+        setFieldErrors(errors);
+        toast.error('Complete los campos requeridos');
+        return false;
+      }
+      setFieldErrors({});
+      return true;
+    };
+
     if (step === 0) {
-      if (!form.email || !form.password || !form.confirmPassword) {
-        toast.error('Completá todos los campos'); return false;
-      }
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(form.email.trim())) {
-        toast.error('El email no tiene un formato válido (ej: nombre@dominio.com)'); return false;
-      }
-      if (form.password !== form.confirmPassword) {
-        toast.error('Las contraseñas no coinciden'); return false;
-      }
-      if (form.password.length < 6) {
-        toast.error('La contraseña debe tener al menos 6 caracteres'); return false;
-      }
+      const errors = {};
+      if (!trimmed(form.email)) errors.email = 'Campo requerido';
+      else if (!EMAIL_REGEX.test(trimmed(form.email))) errors.email = 'Email inválido';
+      if (!form.password) errors.password = 'Campo requerido';
+      else if (form.password.length < 6) errors.password = 'Mínimo 6 caracteres';
+      if (!form.confirmPassword) errors.confirmPassword = 'Campo requerido';
+      else if (form.password !== form.confirmPassword) errors.confirmPassword = 'Las contraseñas no coinciden';
+      return showErrors(errors);
     }
     if (step === 1) {
-      if (!form.firstName || !form.lastName || !form.dni || !form.dateOfBirth) {
-        toast.error('Completá los campos obligatorios (nombre, apellido, DNI, fecha de nacimiento)'); return false;
-      }
-      // Age check: must be >= 21
-      const dob = new Date(form.dateOfBirth);
-      const age = new Date().getFullYear() - dob.getFullYear();
-      if (age < 21) {
-        toast.error('Debés ser mayor de 21 años con título universitario'); return false;
-      }
+      const errors = {};
+      if (!trimmed(form.firstName)) errors.firstName = 'Campo requerido';
+      else if (!NAME_REGEX.test(trimmed(form.firstName))) errors.firstName = 'Usá solo letras y al menos 2 caracteres';
+      if (!trimmed(form.lastName)) errors.lastName = 'Campo requerido';
+      else if (!NAME_REGEX.test(trimmed(form.lastName))) errors.lastName = 'Usá solo letras y al menos 2 caracteres';
+      if (!trimmed(form.dateOfBirth)) errors.dateOfBirth = 'Campo requerido';
+      else if (!isValidBirthDate(form.dateOfBirth)) errors.dateOfBirth = 'Debe ser una fecha válida y mayor de 21 años';
+      if (!trimmed(form.dni)) errors.dni = 'Campo requerido';
+      else if (!/^\d{7,8}$/.test(digitsOnly(form.dni))) errors.dni = 'Ingresá 7 u 8 números';
+      if (!isValidCuitCuil(form.cuitCuil)) errors.cuitCuil = 'CUIT/CUIL inválido';
+      if (!isValidPhone(form.phone)) errors.phone = 'Ingresá un WhatsApp válido, solo números y prefijo';
+      if (!isValidOptionalEmail(form.contactEmail)) errors.contactEmail = 'Email inválido';
+      if (trimmed(form.addressStreet) && !textLengthBetween(form.addressStreet, 2, 80)) errors.addressStreet = 'Ingresá una calle válida';
+      if (trimmed(form.addressNumber) && !/^[a-zA-Z0-9\s/-]{1,12}$/.test(trimmed(form.addressNumber))) errors.addressNumber = 'Número inválido';
+      if (trimmed(form.addressFloor) && !/^[a-zA-Z0-9\s/-]{1,12}$/.test(trimmed(form.addressFloor))) errors.addressFloor = 'Piso/depto inválido';
+      if (trimmed(form.addressCity) && !NAME_REGEX.test(trimmed(form.addressCity))) errors.addressCity = 'Localidad inválida';
+      if (trimmed(form.addressPostalCode) && !/^[a-zA-Z0-9\s-]{4,10}$/.test(trimmed(form.addressPostalCode))) errors.addressPostalCode = 'Código postal inválido';
+      return showErrors(errors);
     }
     if (step === 2) {
-      if (!form.universityDegree || !form.universityName || !form.licenseNumber || !form.licenseProvince) {
-        toast.error('Completá los campos profesionales obligatorios'); return false;
+      const errors = {};
+      if (!trimmed(form.universityDegree)) errors.universityDegree = 'Campo requerido';
+      if (trimmed(form.graduationYear)) {
+        const year = Number(form.graduationYear);
+        if (!Number.isInteger(year) || year < 1950 || year > currentYear) errors.graduationYear = `Ingresá un año entre 1950 y ${currentYear}`;
       }
+      if (!trimmed(form.universityName)) errors.universityName = 'Campo requerido';
+      else if (!textLengthBetween(form.universityName, 3, 120)) errors.universityName = 'Ingresá una universidad válida';
+      if (!trimmed(form.licenseNumber)) errors.licenseNumber = 'Campo requerido';
+      else if (!TEXT_WITH_NUMBER_REGEX.test(trimmed(form.licenseNumber))) errors.licenseNumber = 'La matrícula debe incluir números';
+      if (!trimmed(form.licenseProvince)) errors.licenseProvince = 'Campo requerido';
+      if (trimmed(form.healthMinistryReg) && !TEXT_WITH_NUMBER_REGEX.test(trimmed(form.healthMinistryReg))) errors.healthMinistryReg = 'Registro inválido';
+      if (trimmed(form.yearsExperience)) {
+        const years = Number(form.yearsExperience);
+        if (!Number.isInteger(years) || years < 0 || years > 80) errors.yearsExperience = 'Ingresá un número entre 0 y 80';
+      }
+      if (!trimmed(form.remoteModality)) errors.remoteModality = 'Campo requerido';
+      else if (!textLengthBetween(form.remoteModality, 3, 80)) errors.remoteModality = 'Modalidad inválida';
+      if (trimmed(form.bio) && !textLengthBetween(form.bio, 20, 1000)) errors.bio = 'Mínimo 20 caracteres';
+      if (form.languages.length === 0) errors.languages = 'Seleccioná al menos un idioma';
+      return showErrors(errors);
     }
     if (step === 3) {
-      if (form.specialties.length === 0) {
-        toast.error('Seleccioná al menos una especialidad'); return false;
-      }
-      if (!acceptTerms) {
-        toast.error('Debés aceptar los Términos y Condiciones'); return false;
-      }
-      if (!acceptPrivacy) {
-        toast.error('Debés aceptar la Política de Privacidad'); return false;
-      }
+      const errors = {};
+      if (form.specialties.length === 0) errors.specialties = 'Seleccioná al menos una especialidad';
+      if (form.ageRanges.length === 0) errors.ageRanges = 'Seleccioná al menos un rango etario';
+      if (!acceptTerms) errors.acceptTerms = 'Campo requerido';
+      if (!acceptPrivacy) errors.acceptPrivacy = 'Campo requerido';
+      return showErrors(errors);
     }
     return true;
   };
+
+  const fieldClass = (name) => (fieldErrors[name] ? 'psico-field-invalid' : '');
+  const fieldError = (name) => fieldErrors[name] ? <span className="psico-field-error">{fieldErrors[name]}</span> : null;
 
   const handleNext = () => {
     if (!validateStep()) return;
@@ -170,7 +259,6 @@ export default function RegisterPsychologistAR() {
       try {
         const { default: api } = await import('../../services/api');
         await api.put('/psychologists/me/profile', {
-          displayName: form.displayName,
           phone: form.phone,
           contactEmail: form.contactEmail || form.email,
           dateOfBirth: form.dateOfBirth,
@@ -242,39 +330,41 @@ export default function RegisterPsychologistAR() {
         <div className="psico-form-step">
           {step === 0 && (
             <div className="psico-form-grid">
-              <label>Email *
+              <label className={fieldClass('email')}>Email *
                 <input type="email" name="email" value={form.email} onChange={handleChange} placeholder="tu@email.com" />
+                {fieldError('email')}
               </label>
-              <label>Contraseña *
+              <label className={fieldClass('password')}>Contraseña *
                 <PasswordInput name="password" value={form.password} onChange={handleChange} placeholder="Mínimo 6 caracteres" />
+                {fieldError('password')}
               </label>
-              <label>Confirmar contraseña *
+              <label className={fieldClass('confirmPassword')}>Confirmar contraseña *
                 <PasswordInput name="confirmPassword" value={form.confirmPassword} onChange={handleChange} />
+                {fieldError('confirmPassword')}
               </label>
             </div>
           )}
 
           {step === 1 && (
             <div className="psico-form-grid">
-              <label>Nombre *<input type="text" name="firstName" value={form.firstName} onChange={handleChange} /></label>
-              <label>Apellido *<input type="text" name="lastName" value={form.lastName} onChange={handleChange} /></label>
-              <label>Nombre o apodo para mostrar<input type="text" name="displayName" value={form.displayName} onChange={handleChange} placeholder="Cómo querés aparecer en el listado" /></label>
-              <label>Fecha de nacimiento * <small>(mayor de 21 años con título)</small><input type="date" name="dateOfBirth" value={form.dateOfBirth} onChange={handleChange} /></label>
-              <label>DNI *<input type="text" name="dni" value={form.dni} onChange={handleChange} /></label>
-              <label>CUIT/CUIL<input type="text" name="cuitCuil" value={form.cuitCuil} onChange={handleChange} /></label>
-              <label>WhatsApp<input type="text" name="phone" value={form.phone} onChange={handleChange} placeholder="+54 9 11 1234-5678" /></label>
-              <label>Email de contacto público<input type="email" name="contactEmail" value={form.contactEmail} onChange={handleChange} placeholder="El que verán los pacientes" /></label>
-              <label className="psico-full-col">Calle<input type="text" name="addressStreet" value={form.addressStreet} onChange={handleChange} /></label>
-              <label>Número<input type="text" name="addressNumber" value={form.addressNumber} onChange={handleChange} /></label>
-              <label>Piso/Depto<input type="text" name="addressFloor" value={form.addressFloor} onChange={handleChange} /></label>
-              <label>Localidad<input type="text" name="addressCity" value={form.addressCity} onChange={handleChange} /></label>
+              <label className={fieldClass('firstName')}>Nombre *<input type="text" name="firstName" value={form.firstName} onChange={handleChange} />{fieldError('firstName')}</label>
+              <label className={fieldClass('lastName')}>Apellido *<input type="text" name="lastName" value={form.lastName} onChange={handleChange} />{fieldError('lastName')}</label>
+              <label className={fieldClass('dateOfBirth')}>Fecha de nacimiento * <small>(mayor de 21 años con título)</small><input type="date" name="dateOfBirth" value={form.dateOfBirth} onChange={handleChange} />{fieldError('dateOfBirth')}</label>
+              <label className={fieldClass('dni')}>DNI *<input type="text" name="dni" value={form.dni} onChange={handleChange} />{fieldError('dni')}</label>
+              <label className={fieldClass('cuitCuil')}>CUIT/CUIL<input type="text" name="cuitCuil" value={form.cuitCuil} onChange={handleChange} />{fieldError('cuitCuil')}</label>
+              <label className={fieldClass('phone')}>WhatsApp<input type="text" name="phone" value={form.phone} onChange={handleChange} placeholder="+54 9 11 1234-5678" />{fieldError('phone')}</label>
+              <label className={fieldClass('contactEmail')}>Email de contacto público<input type="email" name="contactEmail" value={form.contactEmail} onChange={handleChange} placeholder="El que verán los pacientes" />{fieldError('contactEmail')}</label>
+              <label className={`psico-full-col ${fieldClass('addressStreet')}`}>Calle<input type="text" name="addressStreet" value={form.addressStreet} onChange={handleChange} />{fieldError('addressStreet')}</label>
+              <label className={fieldClass('addressNumber')}>Número<input type="text" name="addressNumber" value={form.addressNumber} onChange={handleChange} />{fieldError('addressNumber')}</label>
+              <label className={fieldClass('addressFloor')}>Piso/Depto<input type="text" name="addressFloor" value={form.addressFloor} onChange={handleChange} />{fieldError('addressFloor')}</label>
+              <label className={fieldClass('addressCity')}>Localidad<input type="text" name="addressCity" value={form.addressCity} onChange={handleChange} />{fieldError('addressCity')}</label>
               <label>Provincia
                 <select name="addressProvince" value={form.addressProvince} onChange={handleChange}>
                   <option value="">Seleccionar</option>
                   {PROVINCES.map((p) => <option key={p} value={p}>{p}</option>)}
                 </select>
               </label>
-              <label>Código postal<input type="text" name="addressPostalCode" value={form.addressPostalCode} onChange={handleChange} /></label>
+              <label className={fieldClass('addressPostalCode')}>Código postal<input type="text" name="addressPostalCode" value={form.addressPostalCode} onChange={handleChange} />{fieldError('addressPostalCode')}</label>
               <label>Provincia donde ejerce
                 <select name="practiceProvince" value={form.practiceProvince} onChange={handleChange}>
                   <option value="">Seleccionar</option>
@@ -286,28 +376,31 @@ export default function RegisterPsychologistAR() {
 
           {step === 2 && (
             <div className="psico-form-grid">
-              <label>Título universitario *
+              <label className={fieldClass('universityDegree')}>Título universitario *
                 <select name="universityDegree" value={form.universityDegree} onChange={handleChange}>
                   <option value="">Seleccionar</option>
                   {DEGREES.map((d) => <option key={d} value={d}>{d}</option>)}
                 </select>
+                {fieldError('universityDegree')}
               </label>
-              <label>Año de graduación<input type="number" name="graduationYear" value={form.graduationYear} onChange={handleChange} min="1950" max={new Date().getFullYear()} /></label>
-              <label className="psico-full-col">Universidad *<input type="text" name="universityName" value={form.universityName} onChange={handleChange} placeholder="Nombre oficial de la institución" /></label>
-              <label>Número de matrícula *<input type="text" name="licenseNumber" value={form.licenseNumber} onChange={handleChange} placeholder="Ej: MP 12345" /></label>
-              <label>Provincia de emisión *
+              <label className={fieldClass('graduationYear')}>Año de graduación<input type="number" name="graduationYear" value={form.graduationYear} onChange={handleChange} min="1950" max={new Date().getFullYear()} />{fieldError('graduationYear')}</label>
+              <label className={`psico-full-col ${fieldClass('universityName')}`}>Universidad *<input type="text" name="universityName" value={form.universityName} onChange={handleChange} placeholder="Nombre oficial de la institución" />{fieldError('universityName')}</label>
+              <label className={fieldClass('licenseNumber')}>Número de matrícula *<input type="text" name="licenseNumber" value={form.licenseNumber} onChange={handleChange} placeholder="Ej: MP 12345" />{fieldError('licenseNumber')}</label>
+              <label className={fieldClass('licenseProvince')}>Provincia de emisión *
                 <select name="licenseProvince" value={form.licenseProvince} onChange={handleChange}>
                   <option value="">Seleccionar</option>
                   {PROVINCES.map((p) => <option key={p} value={p}>{p}</option>)}
                 </select>
+                {fieldError('licenseProvince')}
               </label>
-              <label>Nro. Ministerio de Salud <small>(opcional)</small><input type="text" name="healthMinistryReg" value={form.healthMinistryReg} onChange={handleChange} /></label>
-              <label>Años de experiencia<input type="number" name="yearsExperience" value={form.yearsExperience} onChange={handleChange} min="0" /></label>
-              <label>Modalidad remota<input type="text" name="remoteModality" value={form.remoteModality} onChange={handleChange} /></label>
-              <label className="psico-full-col">Descripción / Experiencia
+              <label className={fieldClass('healthMinistryReg')}>Nro. Ministerio de Salud <small>(opcional)</small><input type="text" name="healthMinistryReg" value={form.healthMinistryReg} onChange={handleChange} />{fieldError('healthMinistryReg')}</label>
+              <label className={fieldClass('yearsExperience')}>Años de experiencia<input type="number" name="yearsExperience" value={form.yearsExperience} onChange={handleChange} min="0" />{fieldError('yearsExperience')}</label>
+              <label className={fieldClass('remoteModality')}>Modalidad remota<input type="text" name="remoteModality" value={form.remoteModality} onChange={handleChange} />{fieldError('remoteModality')}</label>
+              <label className={`psico-full-col ${fieldClass('bio')}`}>Descripción / Experiencia
                 <textarea name="bio" value={form.bio} onChange={handleChange} rows={4} placeholder="Breve descripción de tu experiencia y estudios" />
+                {fieldError('bio')}
               </label>
-              <div className="psico-full-col">
+              <div className={`psico-full-col ${fieldClass('languages')}`}>
                 <label className="psico-checkbox-label-heading">Idiomas hablados</label>
                 <div className="psico-checkbox-group">
                   {LANGUAGES.map((l) => (
@@ -317,13 +410,14 @@ export default function RegisterPsychologistAR() {
                     </label>
                   ))}
                 </div>
+                {fieldError('languages')}
               </div>
             </div>
           )}
 
           {step === 3 && (
             <div className="psico-form-grid">
-              <div className="psico-full-col">
+              <div className={`psico-full-col ${fieldClass('specialties')}`}>
                 <label className="psico-checkbox-label-heading">Especialidades * <small>(puede marcar una o más)</small></label>
                 <div className="psico-checkbox-group psico-options-grid psico-specialty-options">
                   {SPECIALTIES.map((s) => (
@@ -333,8 +427,9 @@ export default function RegisterPsychologistAR() {
                     </label>
                   ))}
                 </div>
+                {fieldError('specialties')}
               </div>
-              <div className="psico-full-col">
+              <div className={`psico-full-col ${fieldClass('ageRanges')}`}>
                 <label className="psico-checkbox-label-heading">Rango etario de atención</label>
                 <div className="psico-checkbox-group psico-options-grid psico-age-options">
                   {['Adultos (mayor a 18 años)', 'Infanto-juvenil (hasta los 18 años)'].map((a) => (
@@ -344,6 +439,7 @@ export default function RegisterPsychologistAR() {
                     </label>
                   ))}
                 </div>
+                {fieldError('ageRanges')}
               </div>
               <div className="psico-full-col psico-legal-section">
                 <h3>Declaraciones obligatorias</h3>
@@ -356,18 +452,35 @@ export default function RegisterPsychologistAR() {
                   <input
                     type="checkbox"
                     checked={acceptTerms}
-                    onChange={(e) => setAcceptTerms(e.target.checked)}
+                    onChange={(e) => {
+                      setAcceptTerms(e.target.checked);
+                      setFieldErrors((prev) => {
+                        if (!prev.acceptTerms) return prev;
+                        const next = { ...prev };
+                        delete next.acceptTerms;
+                        return next;
+                      });
+                    }}
                   />
                   <span style={{ fontSize: '0.88rem' }}>
                     Acepto los{' '}
                     <a href="/psicologos/terminos-y-condiciones" target="_blank" rel="noopener noreferrer" style={{ color: '#7a3055', fontWeight: 600 }}>Términos y Condiciones</a>
                   </span>
                 </label>
+                {fieldError('acceptTerms')}
                 <label className="psico-checkbox-item" style={{ margin: '0.4rem 0' }}>
                   <input
                     type="checkbox"
                     checked={acceptPrivacy}
-                    onChange={(e) => setAcceptPrivacy(e.target.checked)}
+                    onChange={(e) => {
+                      setAcceptPrivacy(e.target.checked);
+                      setFieldErrors((prev) => {
+                        if (!prev.acceptPrivacy) return prev;
+                        const next = { ...prev };
+                        delete next.acceptPrivacy;
+                        return next;
+                      });
+                    }}
                   />
                   <span style={{ fontSize: '0.88rem' }}>
                     Acepto la{' '}
@@ -375,6 +488,7 @@ export default function RegisterPsychologistAR() {
                     (Ley 25.326)
                   </span>
                 </label>
+                {fieldError('acceptPrivacy')}
               </div>
             </div>
           )}

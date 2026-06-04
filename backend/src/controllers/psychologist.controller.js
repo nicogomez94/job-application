@@ -427,17 +427,16 @@ exports.adminReject = async (req, res) => {
     if (!psychologist) {
       return res.status(404).json({ error: 'Psicólogo no encontrado' });
     }
-    if (psychologist.status === 'ACTIVE') {
-      return res.status(400).json({ error: 'No se puede rechazar una cuenta activa desde la validación inicial' });
-    }
-
     const updated = await prisma.psychologist.update({
       where: { id },
       data: { status: 'REJECTED', rejectionReason: reason || null },
     });
 
-    // Send rejection email
+    // Send rejection/invalidation email
     const fullName = `${updated.firstName} ${updated.lastName}`;
+    const emailIntro = psychologist.status === 'ACTIVE'
+      ? 'Tu perfil de psicólogo en Professionals at Home fue pausado o invalidado por el equipo.'
+      : 'Lamentablemente tu solicitud de registro como psicólogo en Professionals at Home no pudo ser aprobada.';
     try {
       await fetch(CONTACT_FORM_ENDPOINT, {
         method: 'POST',
@@ -446,7 +445,7 @@ exports.adminReject = async (req, res) => {
           name: 'Professionals at Home',
           email: updated.email,
           to: updated.email,
-          message: `Hola ${fullName},\n\nLamentablemente tu solicitud de registro como psicólogo en Professionals at Home no pudo ser aprobada.${reason ? `\n\nMotivo: ${reason}` : ''}\n\nSi tenés dudas, podés comunicarte con nosotros respondiendo este correo.`,
+          message: `Hola ${fullName},\n\n${emailIntro}${reason ? `\n\nMotivo: ${reason}` : ''}\n\nSi tenés dudas, podés comunicarte con nosotros respondiendo este correo.`,
           site: SITE_URL,
           company: '',
         }),

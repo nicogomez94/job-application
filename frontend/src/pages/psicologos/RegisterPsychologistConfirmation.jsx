@@ -34,7 +34,7 @@ export default function RegisterPsychologistConfirmation() {
             <span>Activación de tu perfil</span>
           </div>
         </div>
-        <Link to="/" className="psico-btn-secondary">
+        <Link to="/psicologos" className="psico-btn-secondary">
           Volver al inicio
         </Link>
       </div>

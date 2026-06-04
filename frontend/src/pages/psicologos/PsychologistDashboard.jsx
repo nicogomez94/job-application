@@ -21,6 +21,15 @@ const STATUS_LABELS = {
   ACTIVE: { label: 'Activo - Visible para pacientes', icon: CheckCircle, color: 'green' },
 };
 
+const PLAN_LABELS = {
+  MONTHLY: 'Plan 3 meses',
+  QUARTERLY: 'Plan 7 meses',
+  ANNUAL: 'Plan 12 + 1',
+  TRIAL: 'Prueba 2 meses',
+};
+
+const formatList = (items) => (Array.isArray(items) && items.length > 0 ? items.join(', ') : '-');
+
 export default function PsychologistDashboard() {
   const { updateUser } = useAuthStore();
   const [profile, setProfile] = useState(null);
@@ -79,7 +88,7 @@ export default function PsychologistDashboard() {
   }
 
   const p = profile;
-  const name = p?.displayName || `${p?.firstName || ''} ${p?.lastName || ''}`.trim();
+  const name = `${p?.firstName || ''} ${p?.lastName || ''}`.trim();
   const photo = toAssetUrl(p?.profileImage);
   const initials = `${p?.firstName?.[0] || ''}${p?.lastName?.[0] || ''}`.toUpperCase();
   const statusInfo = STATUS_LABELS[p?.status] || STATUS_LABELS.PENDING;
@@ -237,6 +246,14 @@ export default function PsychologistDashboard() {
                 <h3>{name}</h3>
                 <p>{p?.email}</p>
                 {p?.country && <p>{p.country}</p>}
+                <div className="psico-profile-visible-summary">
+                  <p><strong>Matrícula:</strong> {p?.licenseNumber || '-'}</p>
+                  <p><strong>Idiomas:</strong> {formatList(p?.languages)}</p>
+                  <p><strong>Especialidades:</strong> {formatList(p?.specialties)}</p>
+                  <p><strong>Atiende a:</strong> {formatList(p?.ageRanges)}</p>
+                  {p?.remoteModality && <p><strong>Modalidad:</strong> {p.remoteModality}</p>}
+                  {p?.yearsExperience != null && <p><strong>Experiencia:</strong> {p.yearsExperience} {p.yearsExperience === 1 ? 'año' : 'años'}</p>}
+                </div>
                 {p?.specialties?.length > 0 && (
                   <div className="psico-tags psico-tags-sm">
                     {p.specialties.slice(0, 2).map((s) => (
@@ -260,7 +277,7 @@ export default function PsychologistDashboard() {
             </div>
             {subscription ? (
               <div className="psico-dashboard-sub">
-                <p><strong>Plan:</strong> {subscription.plan}</p>
+                <p><strong>Plan:</strong> {PLAN_LABELS[subscription.plan] || subscription.plan}</p>
                 <p><strong>Estado:</strong> {subscription.status}</p>
                 <p><strong>Válido hasta:</strong> {formatDate(subscription.endDate)}</p>
               </div>
@@ -283,9 +300,7 @@ export default function PsychologistDashboard() {
             <ul className="psico-quick-actions">
               <li><Link to="/psicologo/perfil">Editar perfil</Link></li>
               <li><Link to="/psicologo/documentos">Ver / subir documentos</Link></li>
-              {(p?.status === 'APPROVED' || p?.status === 'ACTIVE') && (
-                <li><Link to="/psicologo/plan">Gestionar suscripción</Link></li>
-              )}
+              {p?.status === 'APPROVED' && !subscription && <li><Link to="/psicologo/plan">Elegir plan</Link></li>}
               <li><Link to={patientListingUrl}>Ver cómo aparezco en el listado del paciente</Link></li>
             </ul>
           </div>

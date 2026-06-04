@@ -11,17 +11,17 @@ const AR_DOCUMENT_TYPES = [
   { key: 'TITLE', label: 'Título de psicólogo (frente y dorso)' },
   { key: 'LICENSE', label: 'Certificado de matrícula profesional vigente' },
   { key: 'CUIT', label: 'Constancia de CUIT/CUIL' },
-  { key: 'GOOD_CONDUCT', label: 'Certificado de buena conducta (si aplica en tu provincia)' },
-  { key: 'SPECIALTY_CERT', label: 'Certificado por especialidad declarada (uno por especialidad)' },
+  { key: 'GOOD_CONDUCT', label: 'Certificado de buena conducta (si aplica según país/lugar de terapia)' },
+  { key: 'SPECIALTY_CERT', label: 'Certificado por especialidad declarada (si aplica según país/lugar de terapia)' },
 ];
 
 const INTL_DOCUMENT_TYPES = [
   { key: 'ID', label: 'Documento de identidad / Pasaporte / Cédula (frente y dorso)' },
   { key: 'TITLE', label: 'Título profesional o diploma (frente y dorso)' },
-  { key: 'LICENSE', label: 'Certificado de licencia / colegiación vigente' },
+  { key: 'LICENSE', label: 'Certificado de matrícula, licencia o colegiación profesional vigente' },
   { key: 'TAX_ID', label: 'Comprobante de identificación fiscal (si aplica)' },
-  { key: 'CRIMINAL_RECORD', label: 'Certificado de antecedentes penales o de buena conducta' },
-  { key: 'SPECIALTY_CERT', label: 'Certificado por especialidad declarada' },
+  { key: 'CRIMINAL_RECORD', label: 'Certificado de antecedentes penales o de buena conducta (si aplica según país/lugar de terapia)' },
+  { key: 'SPECIALTY_CERT', label: 'Certificado por especialidad declarada (si aplica según país/lugar de terapia)' },
 ];
 
 const MAX_FILES = 10;
