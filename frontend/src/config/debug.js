@@ -1,6 +1,7 @@
 const envFlag = String(import.meta.env.VITE_DEBUG_MODE || '').toLowerCase();
+const isProductionBuild = import.meta.env.PROD;
 
-export const DEBUG_MODE = envFlag === 'true' || envFlag === '1';
+export const DEBUG_MODE = !isProductionBuild && (envFlag === 'true' || envFlag === '1');
 
 export const DEBUG_FORM_DATA = {
   loginByType: {
