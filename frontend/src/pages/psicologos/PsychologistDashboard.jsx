@@ -233,7 +233,8 @@ export default function PsychologistDashboard() {
           )}
         </div>
 
-        <div className="psico-dashboard-grid">
+        <div className="psico-dashboard-layout">
+          {/* ── Perfil — fila completa ── */}
           <div className="psico-dashboard-card psico-dashboard-card--profile">
             <div className="psico-dashboard-card-header">
               <User size={18} />
@@ -243,25 +244,41 @@ export default function PsychologistDashboard() {
               </Link>
             </div>
             <div className="psico-dashboard-profile">
-              <div className="psico-dashboard-photo psico-photo-upload-wrapper" onClick={() => !uploadingPhoto && photoInputRef.current?.click()} title="Cambiar foto de perfil">
-                {photo ? (
-                  <img src={photo} alt={name} onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
-                ) : null}
-                <div className="psico-card-initials" style={photo ? { display: 'none' } : {}}>{initials}</div>
-                <div className="psico-photo-upload-overlay">
-                  {uploadingPhoto ? <span className="psico-photo-uploading-dot" /> : <Camera size={14} />}
+              <div className="psico-dashboard-profile-left">
+                <div className="psico-dashboard-photo psico-photo-upload-wrapper" onClick={() => !uploadingPhoto && photoInputRef.current?.click()} title="Cambiar foto de perfil">
+                  {photo ? (
+                    <img src={photo} alt={name} onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
+                  ) : null}
+                  <div className="psico-card-initials" style={photo ? { display: 'none' } : {}}>{initials}</div>
+                  <div className="psico-photo-upload-overlay">
+                    {uploadingPhoto ? <span className="psico-photo-uploading-dot" /> : <Camera size={14} />}
+                  </div>
                 </div>
+                <input
+                  ref={photoInputRef}
+                  type="file"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={handlePhotoChange}
+                />
+                <div className="psico-dashboard-profile-identity">
+                  <h3>{name}</h3>
+                  <p>{p?.email}</p>
+                  {p?.specialties?.length > 0 && (
+                    <div className="psico-tags psico-tags-sm">
+                      {p.specialties.slice(0, 2).map((s) => (
+                        <span key={s} className="psico-tag">{s}</span>
+                      ))}
+                      {p.specialties.length > 2 && <span className="psico-tag">+{p.specialties.length - 2}</span>}
+                    </div>
+                  )}
+                </div>
+                <p className="psico-independent-notice psico-independent-notice--sm">
+                  Este profesional actúa de manera independiente.<br />
+                  La plataforma no interviene en sesiones, pagos ni resultados del servicio.
+                </p>
               </div>
-              <input
-                ref={photoInputRef}
-                type="file"
-                accept="image/*"
-                style={{ display: 'none' }}
-                onChange={handlePhotoChange}
-              />
-              <div>
-                <h3>{name}</h3>
-                <p>{p?.email}</p>
+              <div className="psico-dashboard-profile-fields">
                 <div className="psico-profile-visible-summary">
                   <p><strong>Matrícula:</strong> {p?.licenseNumber || '-'}</p>
                   <p><strong>País:</strong> {visibleCountry || '-'}</p>
@@ -277,55 +294,46 @@ export default function PsychologistDashboard() {
                   <p><strong>Atiende a:</strong> {formatList(p?.ageRanges)}</p>
                   <p><strong>Especialidades:</strong> {formatList(p?.specialties)}</p>
                 </div>
-                {p?.specialties?.length > 0 && (
-                  <div className="psico-tags psico-tags-sm">
-                    {p.specialties.slice(0, 2).map((s) => (
-                      <span key={s} className="psico-tag">{s}</span>
-                    ))}
-                    {p.specialties.length > 2 && <span className="psico-tag">+{p.specialties.length - 2}</span>}
-                  </div>
-                )}
               </div>
             </div>
-            <p className="psico-independent-notice psico-independent-notice--sm">
-              Este profesional actúa de manera independiente.<br />
-              La plataforma no interviene en sesiones, pagos ni resultados del servicio.
-            </p>
           </div>
 
-          <div className="psico-dashboard-card">
-            <div className="psico-dashboard-card-header">
-              <CreditCard size={18} />
-              <h2>Suscripción</h2>
+          {/* ── Suscripción + Acciones rápidas — fila secundaria ── */}
+          <div className="psico-dashboard-secondary-row">
+            <div className="psico-dashboard-card">
+              <div className="psico-dashboard-card-header">
+                <CreditCard size={18} />
+                <h2>Suscripción</h2>
+              </div>
+              {subscription ? (
+                <div className="psico-dashboard-sub">
+                  <p><strong>Plan:</strong> {PLAN_LABELS[subscription.plan] || subscription.plan}</p>
+                  <p><strong>Estado:</strong> {subscription.status}</p>
+                  <p><strong>Válido hasta:</strong> {formatDate(subscription.endDate)}</p>
+                </div>
+              ) : (
+                <div className="psico-dashboard-sub-empty">
+                  <p>Sin suscripción activa.</p>
+                  {p?.status === 'APPROVED' && (
+                    <Link to="/psicologo/plan" className="psico-btn-primary">
+                      Elegir plan
+                    </Link>
+                  )}
+                </div>
+              )}
             </div>
-            {subscription ? (
-              <div className="psico-dashboard-sub">
-                <p><strong>Plan:</strong> {PLAN_LABELS[subscription.plan] || subscription.plan}</p>
-                <p><strong>Estado:</strong> {subscription.status}</p>
-                <p><strong>Válido hasta:</strong> {formatDate(subscription.endDate)}</p>
-              </div>
-            ) : (
-              <div className="psico-dashboard-sub-empty">
-                <p>Sin suscripción activa.</p>
-                {p?.status === 'APPROVED' && (
-                  <Link to="/psicologo/plan" className="psico-btn-primary">
-                    Elegir plan
-                  </Link>
-                )}
-              </div>
-            )}
-          </div>
 
-          <div className="psico-dashboard-card">
-            <div className="psico-dashboard-card-header">
-              <h2>Acciones rápidas</h2>
+            <div className="psico-dashboard-card">
+              <div className="psico-dashboard-card-header">
+                <h2>Acciones rápidas</h2>
+              </div>
+              <ul className="psico-quick-actions">
+                <li><Link to="/psicologo/perfil">Editar perfil</Link></li>
+                <li><Link to="/psicologo/documentos">Ver / subir documentos</Link></li>
+                {p?.status === 'APPROVED' && !subscription && <li><Link to="/psicologo/plan">Elegir plan</Link></li>}
+                <li><Link to={patientListingUrl}>Ver cómo aparezco en el listado del paciente</Link></li>
+              </ul>
             </div>
-            <ul className="psico-quick-actions">
-              <li><Link to="/psicologo/perfil">Editar perfil</Link></li>
-              <li><Link to="/psicologo/documentos">Ver / subir documentos</Link></li>
-              {p?.status === 'APPROVED' && !subscription && <li><Link to="/psicologo/plan">Elegir plan</Link></li>}
-              <li><Link to={patientListingUrl}>Ver cómo aparezco en el listado del paciente</Link></li>
-            </ul>
           </div>
         </div>
 

@@ -3,6 +3,8 @@
 .home-container {
   min-height: 100vh;
   background: #fff;
+  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* Animaciones de Scroll Dramáticas */
@@ -173,7 +175,7 @@
 
 .home-hero-content {
   max-width: 1280px;
-margin: 0px auto 40px;
+  margin: 0px auto 40px;
   padding: 0 2rem;
   display: grid;
   grid-template-columns: 0.95fr 1.05fr;
@@ -183,6 +185,7 @@ margin: 0px auto 40px;
 
 .home-hero-left {
   padding-bottom: 2.5rem;
+  min-width: 0;
 }
 
 .home-hero-title {
@@ -325,6 +328,8 @@ margin: 0px auto 40px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .home-hero-brand {
@@ -339,6 +344,7 @@ margin: 0px auto 40px;
 .hero-image-container {
   position: relative;
   width: 100%;
+  max-width: 100%;
   min-height: 540px;
 }
 
@@ -347,6 +353,7 @@ margin: 0px auto 40px;
   overflow: hidden;
   border: 1px solid #ece2d6;
   background: #fff;
+  max-width: 100%;
 }
 
 .hero-image-main {
@@ -473,6 +480,11 @@ margin: 0px auto 40px;
 
   .home-hero-content {
     padding: 0 1rem;
+  }
+
+  .home-hero.animate-visible .home-hero-left,
+  .home-hero.animate-visible .home-hero-right {
+    animation-name: fadeInUp;
   }
 
   .home-hero-title {
