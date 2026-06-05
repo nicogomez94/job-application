@@ -2129,6 +2129,27 @@
   border-color: #fecaca;
 }
 
+.psico-status-unavailable {
+  align-items: flex-start;
+  max-width: min(100%, 320px);
+  padding: 0.35rem 0.5rem;
+  background: #f3f4f6;
+  color: #4b5563;
+  border-color: #d1d5db;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.35;
+  white-space: normal;
+  text-align: left;
+}
+
+.psico-status-unavailable svg {
+  flex: 0 0 auto;
+  margin-top: 0.08rem;
+  color: #6b7280;
+}
+
 /* ── Patient request list ────────────────────────────────────── */
 .patient-requests-list {
   list-style: none;

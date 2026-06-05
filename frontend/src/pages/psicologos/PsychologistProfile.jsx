@@ -282,7 +282,7 @@ export default function PsychologistProfile() {
               {/* REJECTED: allow retrying */}
               {requestRejected && !requestBlocked && (
                 <div className="psico-hire-section">
-                  <span className="psico-status-badge psico-status-red">
+                  <span className="psico-status-badge psico-status-red psico-status-unavailable">
                     <XCircle size={14} /> Estimada/o. En estos momentos estamos con agenda completa. Será un gusto asistirle en un próximo contacto.
                   </span>
                 </div>

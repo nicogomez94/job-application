@@ -255,17 +255,29 @@
   .psico-layout-nav-link,
   .psico-layout-nav-logout,
   .psico-layout-nav-btn {
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 0.55rem;
     width: 100%;
-    min-height: 2.45rem;
+    min-height: 2.35rem;
     margin-left: 0;
-    padding: 0.55rem 0.7rem;
-    font-size: 0.9rem;
-    border-radius: 8px;
+    padding: 0.5rem 0.65rem;
+    font-size: 0.88rem;
+    border-radius: 5px;
+    text-align: left;
+  }
+
+  .psico-layout-nav-link svg,
+  .psico-layout-nav-logout svg,
+  .psico-layout-nav-btn svg {
+    flex: 0 0 auto;
   }
 
   .psico-layout-nav-link {
     color: var(--psico-accent-900);
+  }
+
+  .psico-layout-nav-logout {
+    color: #c0392b;
   }
 
   .psico-layout-nav-link--mobile-back {

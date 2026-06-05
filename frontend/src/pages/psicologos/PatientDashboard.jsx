@@ -20,6 +20,7 @@ const STATUS_CONFIG = {
     label: 'Estimada/o. En estos momentos estamos con agenda completa. Será un gusto asistirle en un próximo contacto.',
     icon: XCircle,
     color: 'red',
+    className: 'psico-status-unavailable',
   },
 };
 
@@ -256,7 +257,7 @@ export default function PatientDashboard() {
                       </div>
 
                       <div className="patient-request-status">
-                        <span className={`psico-status-badge psico-status-${cfg.color}`}>
+                        <span className={`psico-status-badge psico-status-${cfg.color} ${cfg.className || ''}`}>
                           <StatusIcon size={13} /> {cfg.label}
                         </span>
                         {blockInfo && (
