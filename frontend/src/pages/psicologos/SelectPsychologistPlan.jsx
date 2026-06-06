@@ -13,6 +13,7 @@ const PLAN_META = {
 
 export default function SelectPsychologistPlan() {
   const [plans, setPlans] = useState([]);
+  const [currentSubscription, setCurrentSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activating, setActivating] = useState(null);
   const navigate = useNavigate();
@@ -22,11 +23,10 @@ export default function SelectPsychologistPlan() {
       try {
         const subscriptionRes = await psychologistService.getSubscription();
         if (subscriptionRes.data?.hasActiveSubscription) {
-          navigate('/psicologo/dashboard', { replace: true });
-          return;
+          setCurrentSubscription(subscriptionRes.data.subscription);
         }
       } catch {
-        // No active subscription; show plans.
+        // No active subscription; show plans anyway.
       }
 
       try {
@@ -39,7 +39,7 @@ export default function SelectPsychologistPlan() {
       }
     };
     init();
-  }, [navigate]);
+  }, []);
 
   const handleSelectPlan = async (plan) => {
     setActivating(plan.id);
@@ -81,13 +81,15 @@ export default function SelectPsychologistPlan() {
             const meta = PLAN_META[plan.id] || {};
             const Icon = meta.icon || Clock;
             const isActivating = activating === plan.id;
+            const isCurrentPlan = currentSubscription?.plan === plan.id;
 
             return (
               <div
                 key={plan.id}
-                className={`select-plan-card ${meta.highlight ? 'select-plan-card--highlight' : ''}`}
+                className={`select-plan-card ${meta.highlight ? 'select-plan-card--highlight' : ''} ${isCurrentPlan ? 'select-plan-card--current' : ''}`}
               >
                 {meta.badge && <div className="select-plan-badge">{meta.badge}</div>}
+                {isCurrentPlan && <div className="select-plan-current-badge">Plan actual</div>}
 
                 <div className="select-plan-card-header">
                   <div className={`select-plan-icon-wrap ${meta.highlight ? 'select-plan-icon-wrap--highlight' : ''}`}>
@@ -121,7 +123,7 @@ export default function SelectPsychologistPlan() {
                   onClick={() => handleSelectPlan(plan)}
                   disabled={activating !== null}
                 >
-                  {isActivating ? <span className="select-plan-btn-loading">Activando...</span> : 'Activar gratis'}
+                  {isActivating ? <span className="select-plan-btn-loading">Activando...</span> : 'Seleccionar plan'}
                 </button>
               </div>
             );

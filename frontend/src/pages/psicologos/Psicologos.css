@@ -1798,6 +1798,10 @@
   margin-bottom: 0.3rem;
 }
 
+.psico-dashboard-sub-action {
+  margin-top: 0.8rem;
+}
+
 .psico-dashboard-sub-empty {
   display: flex;
   flex-direction: column;

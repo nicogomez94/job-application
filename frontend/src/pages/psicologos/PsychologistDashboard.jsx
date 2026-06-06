@@ -338,6 +338,9 @@ export default function PsychologistDashboard() {
                   <p><strong>Plan:</strong> {PLAN_LABELS[subscription.plan] || subscription.plan}</p>
                   <p><strong>Estado:</strong> {subscription.status}</p>
                   <p><strong>Válido hasta:</strong> {formatDate(subscription.endDate)}</p>
+                  <Link to="/psicologo/plan" className="psico-btn-primary psico-dashboard-sub-action">
+                    Cambiar plan
+                  </Link>
                 </div>
               ) : (
                 <div className="psico-dashboard-sub-empty">
@@ -359,6 +362,7 @@ export default function PsychologistDashboard() {
                 <li><Link to="/psicologo/perfil">Editar perfil</Link></li>
                 <li><Link to="/psicologo/documentos">Ver / subir documentos</Link></li>
                 {p?.status === 'APPROVED' && !subscription && <li><Link to="/psicologo/plan">Elegir plan</Link></li>}
+                {subscription && <li><Link to="/psicologo/plan">Cambiar plan</Link></li>}
                 <li><Link to={patientListingUrl} onClick={handlePatientListingClick}>Ver cómo aparezco en el listado del paciente</Link></li>
               </ul>
             </div>
