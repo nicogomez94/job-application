@@ -1,12 +1,12 @@
 import api from './api';
 import { repairMojibakeDeep } from '../utils/textEncoding';
-import { DEBUG_MODE, DEBUG_FORM_DATA } from '../config/debug';
+import { DEBUG_API_MODE, DEBUG_FORM_DATA } from '../config/debug';
 
 const clone = (value) => JSON.parse(JSON.stringify(value));
 const debugResponse = (data) => Promise.resolve({ data: clone(data) });
 
 const getStoredUser = (userType) => {
-  if (!DEBUG_MODE || typeof window === 'undefined') return null;
+  if (!DEBUG_API_MODE || typeof window === 'undefined') return null;
   try {
     const storedUserType = localStorage.getItem('userType');
     if (storedUserType !== userType) return null;
@@ -18,7 +18,7 @@ const getStoredUser = (userType) => {
 };
 
 const saveStoredUser = (updater) => {
-  if (!DEBUG_MODE || typeof window === 'undefined') return null;
+  if (!DEBUG_API_MODE || typeof window === 'undefined') return null;
   try {
     const raw = localStorage.getItem('user');
     const current = raw ? JSON.parse(raw) : null;
@@ -511,7 +511,7 @@ export const adminService = {
 
 export const psychologistAuthService = {
   register: async (data) => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       const isIntl = data.registrationType === 'INTERNATIONAL';
       const source = isIntl ? DEBUG_FORM_DATA.registerPsychologistINTL : DEBUG_FORM_DATA.registerPsychologistAR;
       const psychologist = {
@@ -535,7 +535,7 @@ export const psychologistAuthService = {
     return { ...response, data: repairMojibakeDeep(response.data) };
   },
   login: async (data) => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       const storedProfile = getDebugProfile();
       const psychologist = {
         ...storedProfile,
@@ -553,7 +553,7 @@ export const psychologistAuthService = {
 
 export const patientAuthService = {
   register: async (data) => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       const patient = {
         ...clone(patientDebugProfile),
         id: patientDebugProfile.id,
@@ -573,7 +573,7 @@ export const patientAuthService = {
     return { ...response, data: repairMojibakeDeep(response.data) };
   },
   login: async (data) => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       const patient = {
         ...clone(patientDebugProfile),
         email: data.email || patientDebugProfile.email,
@@ -588,7 +588,7 @@ export const patientAuthService = {
     return { ...response, data: repairMojibakeDeep(response.data) };
   },
   uploadProfileImage: (file) => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       return debugResponse({ profileImage: file ? '/debug/patient-profile.png' : '' });
     }
     const formData = new FormData();
@@ -598,7 +598,7 @@ export const patientAuthService = {
     });
   },
   deleteAccount: () => {
-    if (DEBUG_MODE) return debugResponse({ ok: true });
+    if (DEBUG_API_MODE) return debugResponse({ ok: true });
     return api.delete('/psychologists/patients/me/account');
   },
 };
@@ -606,14 +606,14 @@ export const patientAuthService = {
 export const psychologistService = {
   // Public
   list: async (params) => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       return debugResponse(paginateDebug(filterDebugPsychologists(params), params));
     }
     const response = await api.get('/psychologists', { params });
     return { ...response, data: repairMojibakeDeep(response.data) };
   },
   getById: async (id) => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       const current = getDebugPublicPsychologists().find((p) => String(p.id) === String(id)) || getDebugProfile();
       return debugResponse(current);
     }
@@ -621,7 +621,7 @@ export const psychologistService = {
     return { ...response, data: repairMojibakeDeep(response.data) };
   },
   getPlans: async () => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       return debugResponse(debugPlans);
     }
     const response = await api.get('/psychologists/plans');
@@ -630,14 +630,14 @@ export const psychologistService = {
 
   // Authenticated psychologist
   getProfile: async () => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       return debugResponse(getDebugProfile());
     }
     const response = await api.get('/psychologists/me/profile');
     return { ...response, data: repairMojibakeDeep(response.data) };
   },
   updateProfile: async (data) => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       const current = getDebugProfile();
       const updated = {
         ...current,
@@ -653,7 +653,7 @@ export const psychologistService = {
     return { ...response, data: repairMojibakeDeep(response.data) };
   },
   uploadProfileImage: (file) => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       const nextProfile = setDebugProfile({ profileImage: file ? '/debug/psychologist-profile.png' : '' });
       return debugResponse({ profileImage: nextProfile.profileImage });
     }
@@ -664,11 +664,11 @@ export const psychologistService = {
     });
   },
   deleteAccount: () => {
-    if (DEBUG_MODE) return debugResponse({ ok: true });
+    if (DEBUG_API_MODE) return debugResponse({ ok: true });
     return api.delete('/psychologists/me/account');
   },
   uploadDocuments: (files, documentTypes, config = {}) => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       return debugResponse({
         uploaded: files.length,
         documentTypes,
@@ -684,14 +684,14 @@ export const psychologistService = {
     });
   },
   getSubscription: async () => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       return debugResponse(debugSubscriptionState);
     }
     const response = await api.get('/psychologists/me/subscription');
     return { ...response, data: repairMojibakeDeep(response.data) };
   },
   createSubscription: async (data) => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       const subscription = {
         id: `sub-debug-${Date.now()}`,
         plan: data.plan,
@@ -710,13 +710,13 @@ export const psychologistService = {
     return { ...response, data: repairMojibakeDeep(response.data) };
   },
   getIncomingRequests: () => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       return debugResponse(getDebugRequestContext('psychologist'));
     }
     return api.get('/psychologists/me/requests');
   },
   updateRequestStatus: (id, status) => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       const request = debugRelationships.find((item) => item.id === id);
       if (request) {
         request.status = status;
@@ -726,7 +726,7 @@ export const psychologistService = {
     return api.put(`/psychologists/requests/${id}/status`, { status });
   },
   blockRelationship: (id) => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       const request = debugRelationships.find((item) => item.id === id);
       if (request) {
         request.blockInfo = {
@@ -742,7 +742,7 @@ export const psychologistService = {
     return api.post(`/psychologists/requests/${id}/block`);
   },
   unblockRelationship: (id) => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       const request = debugRelationships.find((item) => item.id === id);
       if (request) {
         request.blockInfo = null;
@@ -752,7 +752,7 @@ export const psychologistService = {
     return api.delete(`/psychologists/requests/${id}/block`);
   },
   acceptTermination: (id) => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       const request = debugRelationships.find((item) => item.id === id);
       if (request) {
         request.terminationAcceptedAt = new Date().toISOString();
@@ -767,7 +767,7 @@ export const psychologistService = {
 
 export const psychologistRequestService = {
   send: (psychologistId, message) => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       const patient = getDebugPatient();
       const psychologist = getDebugPublicPsychologists().find((item) => String(item.id) === String(psychologistId))
         || getDebugProfile();
@@ -802,13 +802,13 @@ export const psychologistRequestService = {
     return api.post('/psychologists/requests', { psychologistId, message });
   },
   getMyRequests: () => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       return debugResponse(getDebugRequestContext('patient'));
     }
     return api.get('/psychologists/requests/mine');
   },
   cancel: (id) => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       const idx = debugRelationships.findIndex((item) => item.id === id);
       if (idx >= 0) {
         debugRelationships.splice(idx, 1);
@@ -818,7 +818,7 @@ export const psychologistRequestService = {
     return api.delete(`/psychologists/requests/${id}`);
   },
   blockRelationship: (id) => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       const request = debugRelationships.find((item) => item.id === id);
       if (request) {
         request.blockInfo = {
@@ -834,7 +834,7 @@ export const psychologistRequestService = {
     return api.post(`/psychologists/requests/${id}/block`);
   },
   unblockRelationship: (id) => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       const request = debugRelationships.find((item) => item.id === id);
       if (request) {
         request.blockInfo = null;
@@ -844,7 +844,7 @@ export const psychologistRequestService = {
     return api.delete(`/psychologists/requests/${id}/block`);
   },
   requestTermination: (id) => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       const request = debugRelationships.find((item) => item.id === id);
       if (request) {
         request.terminationRequestedAt = new Date().toISOString();
@@ -854,7 +854,7 @@ export const psychologistRequestService = {
     return api.post(`/psychologists/requests/${id}/termination`);
   },
   getContactInfo: (psychologistId) => {
-    if (DEBUG_MODE) {
+    if (DEBUG_API_MODE) {
       const psychologist = getDebugPublicPsychologists().find((item) => String(item.id) === String(psychologistId))
         || getDebugProfile();
       return debugResponse({
