@@ -1,7 +1,11 @@
 const { PrismaClient } = require('@prisma/client');
 
+const enablePrismaQueryLog = ['true', '1', 'yes'].includes(
+  String(process.env.PRISMA_QUERY_LOG || '').toLowerCase()
+);
+
 const prisma = new PrismaClient({
-  log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+  log: enablePrismaQueryLog ? ['query', 'error', 'warn'] : ['error'],
 });
 
 // Manejo de conexión

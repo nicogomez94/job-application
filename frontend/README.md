@@ -24,18 +24,22 @@ npm install
 
 ### 2. Configurar variables de entorno
 
-Crear archivo `.env` basado en `.env.example`:
+Crear archivo `.env.local` basado en `.env.example`:
 
 ```bash
-cp .env.example .env
+cp .env.example .env.local
 ```
 
-Editar `.env`:
+Editar `.env.local`:
 
 ```env
 VITE_API_URL=http://localhost:5000/api
 VITE_GOOGLE_CLIENT_ID=tu_google_client_id
+VITE_DEBUG_MODE=true
+VITE_DEBUG_API_MODE=true
 ```
+
+`VITE_DEBUG_MODE` precarga formularios de prueba y `VITE_DEBUG_API_MODE` activa respuestas mock para usar el frontend en local incluso si el backend no esta corriendo.
 
 ### 3. Iniciar servidor de desarrollo
 
