@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { User, FileText, CreditCard, CheckCircle, Clock, XCircle, Edit, Users, Check, X, Ban, Camera, Mail, MessageCircle, Unlock, ChevronDown } from 'lucide-react';
+import { User, FileText, CreditCard, CheckCircle, Clock, XCircle, Edit, Users, Check, X, Ban, Camera, Mail, MessageCircle, Unlock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { psychologistService } from '../../services';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
@@ -234,9 +234,6 @@ export default function PsychologistDashboard() {
           <div className="psico-rejection-thread">
             <div className="psico-unread-count">1 mensaje no leído</div>
             <div className="psico-rejection-bubble">
-              <button type="button" className="psico-rejection-bubble-menu" aria-label="Opciones del mensaje">
-                <ChevronDown size={18} />
-              </button>
               <p className="psico-rejection-bubble-text">{statusInfo.label}</p>
               <div className="psico-rejection-bubble-meta">
                 <span>{formatTime(p?.updatedAt) || ' '}</span>
