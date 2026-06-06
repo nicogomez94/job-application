@@ -55,12 +55,29 @@ exports.list = async (req, res) => {
     });
 
     const blockedPsychologistIds = new Set();
+    const currentPatientRequestByPsychologistId = new Map();
     if (req.user?.type === 'patient') {
       const blocks = await prisma.psychologistPatientBlock.findMany({
         where: { patientId: req.user.id },
         select: { psychologistId: true },
       });
       blocks.forEach((block) => blockedPsychologistIds.add(block.psychologistId));
+
+      const requests = await prisma.psychologistRequest.findMany({
+        where: { patientId: req.user.id },
+        select: {
+          id: true,
+          psychologistId: true,
+          status: true,
+          createdAt: true,
+          terminationRequestedAt: true,
+          terminationAcceptedAt: true,
+        },
+      });
+
+      requests.forEach(({ psychologistId, ...request }) => {
+        currentPatientRequestByPsychologistId.set(psychologistId, request);
+      });
     }
 
     const now = new Date();
@@ -79,7 +96,15 @@ exports.list = async (req, res) => {
           }
         }
 
-        return { ...p, age, dateOfBirth: undefined };
+        const currentPatientRequest = currentPatientRequestByPsychologistId.get(p.id) || null;
+
+        return {
+          ...p,
+          age,
+          dateOfBirth: undefined,
+          hasRequestedByCurrentPatient: Boolean(currentPatientRequest),
+          currentPatientRequest,
+        };
       });
 
     const searchTerm = normalizeSearchText(requestedSearch);

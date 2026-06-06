@@ -319,8 +319,31 @@ const paginateDebug = (items, params = {}) => {
   const page = Math.max(1, Number(params.page || 1));
   const limit = Math.max(1, Number(params.limit || 12));
   const start = (page - 1) * limit;
+  const isPatientViewer =
+    typeof window !== 'undefined' && localStorage.getItem('userType') === 'patient';
+  const requestByPsychologistId = isPatientViewer
+    ? new Map(getDebugRequestContext('patient').map((request) => [
+        String(request.psychologist?.id || request.psychologistId),
+        request,
+      ]))
+    : new Map();
   return {
-    psychologists: items.slice(start, start + limit).map((item) => clone(item)),
+    psychologists: items.slice(start, start + limit).map((item) => {
+      const request = requestByPsychologistId.get(String(item.id)) || null;
+      return {
+        ...clone(item),
+        hasRequestedByCurrentPatient: Boolean(request),
+        currentPatientRequest: request
+          ? {
+              id: request.id,
+              status: request.status,
+              createdAt: request.createdAt,
+              terminationRequestedAt: request.terminationRequestedAt,
+              terminationAcceptedAt: request.terminationAcceptedAt,
+            }
+          : null,
+      };
+    }),
     total: items.length,
     page,
     limit,

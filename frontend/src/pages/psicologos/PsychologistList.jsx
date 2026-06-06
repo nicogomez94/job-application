@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
-import { Globe, Search, UserPlus } from 'lucide-react';
+import { CheckCircle, Clock, Globe, Search, UserPlus, XCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { psychologistService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
@@ -23,6 +23,14 @@ const toAssetUrl = (p) => {
   if (p.startsWith('http://') || p.startsWith('https://')) return p;
   return `${BACKEND_BASE_URL}${p}`;
 };
+
+const REQUEST_STATUS_UI = {
+  PENDING: { label: 'Ya solicitada', icon: Clock, className: 'psico-status-orange' },
+  ACCEPTED: { label: 'Solicitud aceptada', icon: CheckCircle, className: 'psico-status-green' },
+  REJECTED: { label: 'Ya solicitada', icon: XCircle, className: 'psico-status-red' },
+};
+
+const getRequestStatusUi = (status) => REQUEST_STATUS_UI[status] || REQUEST_STATUS_UI.PENDING;
 
 export default function PsychologistList() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -201,6 +209,10 @@ function PsychologistCard({ psychologist: p, highlighted = false, cardRef = null
   const province = p.practiceProvince || p.region;
   const country = p.country || (p.registrationType === 'ARGENTINA' ? 'Argentina' : '');
   const title = p.universityDegree || p.degreeInstitution;
+  const existingRequest = p.currentPatientRequest || (p.hasRequestedByCurrentPatient ? { status: 'PENDING' } : null);
+  const hasExistingRequest = Boolean(existingRequest);
+  const requestStatusUi = hasExistingRequest ? getRequestStatusUi(existingRequest.status) : null;
+  const RequestIcon = requestStatusUi?.icon;
 
   const openProfile = () => {
     navigate(`/psicologos/${p.id}`);
@@ -234,7 +246,7 @@ function PsychologistCard({ psychologist: p, highlighted = false, cardRef = null
   return (
     <article
       ref={cardRef}
-      className={`psico-card psico-card-clickable${highlighted ? ' psico-card-highlighted' : ''}`}
+      className={`psico-card psico-card-clickable${highlighted ? ' psico-card-highlighted' : ''}${hasExistingRequest ? ' psico-card-requested' : ''}`}
       role="link"
       tabIndex={0}
       onClick={openProfile}
@@ -302,12 +314,18 @@ function PsychologistCard({ psychologist: p, highlighted = false, cardRef = null
           </div>
         )}
         <div className="psico-card-contact">
-          <button
-            className="psico-btn-hire"
-            onClick={handleHireClick}
-          >
-            <UserPlus size={14} /> Solicitar consulta
-          </button>
+          {hasExistingRequest ? (
+            <span className={`psico-requested-indicator ${requestStatusUi.className}`}>
+              {RequestIcon && <RequestIcon size={14} />} {requestStatusUi.label}
+            </span>
+          ) : (
+            <button
+              className="psico-btn-hire"
+              onClick={handleHireClick}
+            >
+              <UserPlus size={14} /> Solicitar consulta
+            </button>
+          )}
         </div>
       </div>
     </article>
