@@ -382,7 +382,7 @@ export default function RegisterPsychologistAR() {
               <label className={fieldClass('contactEmail')}>Email de contacto público<input type="email" name="contactEmail" value={form.contactEmail} onChange={handleChange} placeholder="El que verán los pacientes" />{fieldError('contactEmail')}</label>
               <label className={`psico-full-col ${fieldClass('addressStreet')}`}>Calle<input type="text" name="addressStreet" value={form.addressStreet} onChange={handleChange} />{fieldError('addressStreet')}</label>
               <label className={fieldClass('addressNumber')}>Número<input type="text" name="addressNumber" value={form.addressNumber} onChange={handleChange} />{fieldError('addressNumber')}</label>
-              <label className={fieldClass('addressFloor')}>Piso/Depto<input type="text" name="addressFloor" value={form.addressFloor} onChange={handleChange} />{fieldError('addressFloor')}</label>
+              <label className={fieldClass('addressFloor')}>Piso/departamento<input type="text" name="addressFloor" value={form.addressFloor} onChange={handleChange} placeholder="Según corresponda" />{fieldError('addressFloor')}</label>
               <label className={fieldClass('addressCity')}>Localidad<input type="text" name="addressCity" value={form.addressCity} onChange={handleChange} />{fieldError('addressCity')}</label>
               <label>Provincia
                 <select name="addressProvince" value={form.addressProvince} onChange={handleChange}>
@@ -420,7 +420,7 @@ export default function RegisterPsychologistAR() {
                 {fieldError('licenseProvince')}
               </label>
               <label className={fieldClass('healthMinistryReg')}>Nro. Ministerio de Salud <small>(opcional)</small><input type="text" name="healthMinistryReg" value={form.healthMinistryReg} onChange={handleChange} />{fieldError('healthMinistryReg')}</label>
-              <label className={fieldClass('virtualConsultingAuthorization')}>Habilitación Especial de Consultorio Virtual<input type="text" name="virtualConsultingAuthorization" value={form.virtualConsultingAuthorization} onChange={handleChange} />{fieldError('virtualConsultingAuthorization')}</label>
+              <label className={fieldClass('virtualConsultingAuthorization')}>Habilitación especial de consultorio virtual<input type="text" name="virtualConsultingAuthorization" value={form.virtualConsultingAuthorization} onChange={handleChange} placeholder="Si corresponde según provincia" />{fieldError('virtualConsultingAuthorization')}</label>
               <label className={fieldClass('sessionCost')}>Costo final por sesión *<input type="text" name="sessionCost" value={form.sessionCost} onChange={handleChange} placeholder="Ej: ARS 25.000 o USD 40" />{fieldError('sessionCost')}</label>
               <label className={`psico-full-col ${fieldClass('sessionDuration')}`}>Tiempo de sesión / promoción *
                 <textarea
