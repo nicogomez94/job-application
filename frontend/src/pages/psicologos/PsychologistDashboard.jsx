@@ -111,6 +111,7 @@ export default function PsychologistDashboard() {
   const statusInfo = STATUS_LABELS[p?.status] || STATUS_LABELS.PENDING;
   const StatusIcon = statusInfo.icon;
   const isRejected = p?.status === 'REJECTED';
+  const canViewPatientListing = ['APPROVED', 'ACTIVE'].includes(p?.status);
   const patientListingParams = new URLSearchParams();
   if (name) patientListingParams.set('search', name);
   if (p?.id) patientListingParams.set('highlight', p.id);
@@ -130,6 +131,12 @@ export default function PsychologistDashboard() {
           hour12: true,
         }).format(new Date(d))
       : '';
+
+  const handlePatientListingClick = (event) => {
+    if (canViewPatientListing) return;
+    event.preventDefault();
+    toast.error('Todavía no figuras en el listado, porque no fuiste aprobado.');
+  };
 
   const handlePhotoChange = async (e) => {
     const file = e.target.files?.[0];
@@ -232,7 +239,6 @@ export default function PsychologistDashboard() {
 
         {isRejected ? (
           <div className="psico-rejection-thread">
-            <div className="psico-unread-count">1 mensaje no leído</div>
             <div className="psico-rejection-bubble">
               <p className="psico-rejection-bubble-text">{statusInfo.label}</p>
               <div className="psico-rejection-bubble-meta">
@@ -353,7 +359,7 @@ export default function PsychologistDashboard() {
                 <li><Link to="/psicologo/perfil">Editar perfil</Link></li>
                 <li><Link to="/psicologo/documentos">Ver / subir documentos</Link></li>
                 {p?.status === 'APPROVED' && !subscription && <li><Link to="/psicologo/plan">Elegir plan</Link></li>}
-                <li><Link to={patientListingUrl}>Ver cómo aparezco en el listado del paciente</Link></li>
+                <li><Link to={patientListingUrl} onClick={handlePatientListingClick}>Ver cómo aparezco en el listado del paciente</Link></li>
               </ul>
             </div>
           </div>

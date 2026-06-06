@@ -1542,13 +1542,6 @@
   margin-bottom: 1.5rem;
 }
 
-.psico-unread-count {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #3f3f46;
-  margin-right: 0.25rem;
-}
-
 .psico-rejection-bubble {
   position: relative;
   width: min(100%, 940px);
