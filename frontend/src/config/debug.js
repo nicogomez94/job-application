@@ -2,6 +2,11 @@ const envFlag = String(import.meta.env.VITE_DEBUG_MODE || '').toLowerCase();
 
 export const DEBUG_MODE = envFlag === 'true' || envFlag === '1';
 
+const DEBUG_PSYCHOLOGIST_EMAIL = 'psicologa.debug@example.com';
+const DEBUG_PSYCHOLOGIST_PASSWORD = 'debug123';
+const DEBUG_PATIENT_EMAIL = 'paciente.debug@example.com';
+const DEBUG_PATIENT_PASSWORD = 'debug123';
+
 export const DEBUG_FORM_DATA = {
   loginByType: {
     user: {
@@ -17,12 +22,12 @@ export const DEBUG_FORM_DATA = {
       password: 'admin123',
     },
     psychologist: {
-      email: 'psicologa.debug@example.com',
-      password: 'debug123',
+      email: DEBUG_PSYCHOLOGIST_EMAIL,
+      password: DEBUG_PSYCHOLOGIST_PASSWORD,
     },
     patient: {
-      email: 'paciente.debug@example.com',
-      password: 'debug123',
+      email: DEBUG_PATIENT_EMAIL,
+      password: DEBUG_PATIENT_PASSWORD,
     },
   },
   registerUser: {
@@ -68,15 +73,15 @@ export const DEBUG_FORM_DATA = {
   registerPatient: {
     firstName: 'Carlos',
     lastName: 'Lopez',
-    email: 'paciente.debug@example.com',
-    password: 'debug123',
-    confirmPassword: 'debug123',
+    email: DEBUG_PATIENT_EMAIL,
+    password: DEBUG_PATIENT_PASSWORD,
+    confirmPassword: DEBUG_PATIENT_PASSWORD,
     gender: 'Hombre',
   },
   registerPsychologistAR: {
-    email: 'psicologa.ar.debug@example.com',
-    password: 'debug123',
-    confirmPassword: 'debug123',
+    email: DEBUG_PSYCHOLOGIST_EMAIL,
+    password: DEBUG_PSYCHOLOGIST_PASSWORD,
+    confirmPassword: DEBUG_PSYCHOLOGIST_PASSWORD,
     firstName: 'Lucia',
     lastName: 'Fernandez',
     gender: 'Mujer',
