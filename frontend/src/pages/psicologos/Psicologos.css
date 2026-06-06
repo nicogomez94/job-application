@@ -1534,10 +1534,84 @@
 .psico-status-blue { background: #e8f4fb; color: #1e4560; border: 1.5px solid #b8d9eb; }
 .psico-status-red { background: #fde8e2; color: #8b1a08; border: 1.5px solid #f5b8a8; }
 
+.psico-rejection-thread {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+  margin-bottom: 1.5rem;
+}
+
+.psico-unread-count {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #3f3f46;
+  margin-right: 0.25rem;
+}
+
+.psico-rejection-bubble {
+  position: relative;
+  width: min(100%, 940px);
+  padding: 0.95rem 3rem 0.95rem 1.05rem;
+  background: #ededee;
+  border: 1px solid #e0e0e2;
+  border-radius: 18px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  color: #151515;
+}
+
+.psico-rejection-bubble::after {
+  content: '';
+  position: absolute;
+  left: 0.55rem;
+  bottom: -8px;
+  width: 14px;
+  height: 14px;
+  background: #ededee;
+  border-left: 1px solid #e0e0e2;
+  border-bottom: 1px solid #e0e0e2;
+  transform: rotate(45deg);
+  border-bottom-left-radius: 4px;
+}
+
+.psico-rejection-bubble-menu {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  width: 1.7rem;
+  height: 1.7rem;
+  border: 1px solid #d2d2d7;
+  border-radius: 0.55rem;
+  background: linear-gradient(180deg, #ffffff 0%, #f4f4f5 100%);
+  color: #6b7280;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+  cursor: default;
+}
+
+.psico-rejection-bubble-text {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+}
+
+.psico-rejection-bubble-meta {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.35rem;
+  color: #6b7280;
+  font-size: 0.82rem;
+}
+
 .psico-rejection-reason {
   font-size: 0.85rem;
   font-weight: 400;
-  margin-left: auto;
+  margin: 0;
+  align-self: flex-end;
+  color: #6b7280;
 }
 
 .psico-dashboard-layout {

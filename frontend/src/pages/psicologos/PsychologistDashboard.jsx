@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { User, FileText, CreditCard, CheckCircle, Clock, XCircle, Edit, Users, Check, X, Ban, Camera, Mail, MessageCircle, Unlock } from 'lucide-react';
+import { User, FileText, CreditCard, CheckCircle, Clock, XCircle, Edit, Users, Check, X, Ban, Camera, Mail, MessageCircle, Unlock, ChevronDown } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { psychologistService } from '../../services';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
@@ -17,7 +17,7 @@ const STATUS_LABELS = {
   PENDING_DOCS: { label: 'Pendiente de documentación', icon: FileText, color: 'orange' },
   PENDING: { label: 'En revisión (~5 días hábiles)', icon: Clock, color: 'orange' },
   APPROVED: { label: 'Aprobado - Elegí tu plan para activarte', icon: CheckCircle, color: 'blue' },
-  REJECTED: { label: 'Rechazado', icon: XCircle, color: 'red' },
+  REJECTED: { label: 'Estamos considerando su registro. Disculpe las molestias.', icon: XCircle, color: 'red' },
   ACTIVE: { label: 'Activo - Visible para pacientes', icon: CheckCircle, color: 'green' },
 };
 
@@ -110,6 +110,7 @@ export default function PsychologistDashboard() {
   const initials = `${p?.firstName?.[0] || ''}${p?.lastName?.[0] || ''}`.toUpperCase();
   const statusInfo = STATUS_LABELS[p?.status] || STATUS_LABELS.PENDING;
   const StatusIcon = statusInfo.icon;
+  const isRejected = p?.status === 'REJECTED';
   const patientListingParams = new URLSearchParams();
   if (name) patientListingParams.set('search', name);
   if (p?.id) patientListingParams.set('highlight', p.id);
@@ -120,6 +121,15 @@ export default function PsychologistDashboard() {
 
   const formatDate = (d) =>
     d ? new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(d)) : '-';
+
+  const formatTime = (d) =>
+    d
+      ? new Intl.DateTimeFormat('es-AR', {
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true,
+        }).format(new Date(d))
+      : '';
 
   const handlePhotoChange = async (e) => {
     const file = e.target.files?.[0];
@@ -220,18 +230,33 @@ export default function PsychologistDashboard() {
       <div className="psico-dashboard-container">
         <h1>Mi panel de psicólogo</h1>
 
-        <div className={`psico-status-banner psico-status-${statusInfo.color}`}>
-          <StatusIcon size={20} />
-          <span>{statusInfo.label}</span>
-          {p?.status === 'APPROVED' && (
-            <Link to="/psicologo/plan" className="psico-btn-primary psico-btn-sm">
-              Elegir plan →
-            </Link>
-          )}
-          {p?.status === 'REJECTED' && p?.rejectionReason && (
-            <span className="psico-rejection-reason">Motivo: {p.rejectionReason}</span>
-          )}
-        </div>
+        {isRejected ? (
+          <div className="psico-rejection-thread">
+            <div className="psico-unread-count">1 mensaje no leído</div>
+            <div className="psico-rejection-bubble">
+              <button type="button" className="psico-rejection-bubble-menu" aria-label="Opciones del mensaje">
+                <ChevronDown size={18} />
+              </button>
+              <p className="psico-rejection-bubble-text">{statusInfo.label}</p>
+              <div className="psico-rejection-bubble-meta">
+                <span>{formatTime(p?.updatedAt) || ' '}</span>
+              </div>
+            </div>
+            {p?.rejectionReason && (
+              <p className="psico-rejection-reason">Motivo: {p.rejectionReason}</p>
+            )}
+          </div>
+        ) : (
+          <div className={`psico-status-banner psico-status-${statusInfo.color}`}>
+            <StatusIcon size={20} />
+            <span>{statusInfo.label}</span>
+            {p?.status === 'APPROVED' && (
+              <Link to="/psicologo/plan" className="psico-btn-primary psico-btn-sm">
+                Elegir plan →
+              </Link>
+            )}
+          </div>
+        )}
 
         <div className="psico-dashboard-layout">
           {/* ── Perfil — fila completa ── */}

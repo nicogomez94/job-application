@@ -441,7 +441,7 @@ exports.adminReject = async (req, res) => {
     const fullName = `${updated.firstName} ${updated.lastName}`;
     const emailIntro = psychologist.status === 'ACTIVE'
       ? 'Tu perfil de psicólogo en Professionals at Home fue pausado o invalidado por el equipo.'
-      : 'Lamentablemente tu solicitud de registro como psicólogo en Professionals at Home no pudo ser aprobada.';
+      : 'Estamos considerando tu registro. Disculpe las molestias.';
     try {
       await fetch(CONTACT_FORM_ENDPOINT, {
         method: 'POST',

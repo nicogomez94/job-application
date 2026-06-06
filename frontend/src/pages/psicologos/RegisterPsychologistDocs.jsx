@@ -104,7 +104,7 @@ export default function RegisterPsychologistDocs() {
   const handleSubmit = async () => {
     setSubmitAttempted(true);
     if (files.length === 0) {
-      const message = 'Para enviar la documentación, primero agregá al menos un archivo.';
+      const message = 'Envia los 4 primeros archivos obligatorios';
       setValidationMessage(message);
       toast.error(message);
       return;
@@ -201,7 +201,7 @@ export default function RegisterPsychologistDocs() {
 
         {(validationMessage || (submitAttempted && files.length === 0)) && (
           <p className="psico-docs-validation" role="alert">
-            {validationMessage || 'Agregá al menos un archivo antes de enviar la documentación.'}
+            {validationMessage || 'Envia los 4 primeros archivos obligatorios'}
           </p>
         )}
 
