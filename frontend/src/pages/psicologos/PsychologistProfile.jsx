@@ -217,30 +217,32 @@ export default function PsychologistProfile() {
 
               {/* ACCEPTED: show real contact buttons */}
               {requestAccepted && !requestBlocked && (
-                <>
-                  <span className="psico-status-badge psico-status-green" style={{ marginBottom: '0.5rem' }}>
+                <div className="psico-accepted-contact-card">
+                  <span className="psico-status-badge psico-status-green">
                     <CheckCircle size={14} /> Solicitud aceptada
                   </span>
-                  {whatsappUrl && (
-                    <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="psico-btn-whatsapp psico-btn-large">
-                      <MessageCircle size={18} /> Contactar por WhatsApp
-                    </a>
-                  )}
-                  {contactEmail && (
-                    <a href={`mailto:${contactEmail}`} className="psico-btn-email psico-btn-large">
-                      <Mail size={18} /> {contactEmail}
-                    </a>
-                  )}
-                  <button
-                    type="button"
-                    className="psico-btn-danger-sm"
-                    onClick={handleBlockRequest}
-                    disabled={blockingUser}
-                  >
-                    <Ban size={14} /> {blockingUser ? 'Bloqueando...' : 'Bloquear'}
-                  </button>
-                  {!terminationAccepted && (
-                    <div className="psico-therapy-end">
+                  <div className="psico-accepted-contact-actions">
+                    {whatsappUrl && (
+                      <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="psico-btn-whatsapp psico-btn-large">
+                        <MessageCircle size={18} /> <span>Contactar por WhatsApp</span>
+                      </a>
+                    )}
+                    {contactEmail && (
+                      <a href={`mailto:${contactEmail}`} className="psico-btn-email psico-btn-large">
+                        <Mail size={18} /> <span>{contactEmail}</span>
+                      </a>
+                    )}
+                  </div>
+                  <div className="psico-accepted-management-actions">
+                    <button
+                      type="button"
+                      className="psico-btn-danger-sm"
+                      onClick={handleBlockRequest}
+                      disabled={blockingUser}
+                    >
+                      <Ban size={14} /> {blockingUser ? 'Bloqueando...' : 'Bloquear'}
+                    </button>
+                    {!terminationAccepted && (
                       <button
                         type="button"
                         className="psico-btn-therapy-end"
@@ -249,8 +251,8 @@ export default function PsychologistProfile() {
                       >
                         {hasTerminationRequest ? 'Finalización solicitada' : 'El paciente finaliza la terapia'}
                       </button>
-                    </div>
-                  )}
+                    )}
+                  </div>
                   {hasTerminationRequest && (
                     <p className="psico-request-message psico-request-message--termination">
                       "El paciente a decidido finalizar la terapia por razones personales"
@@ -259,7 +261,7 @@ export default function PsychologistProfile() {
                   {terminationAccepted && (
                     <p className="psico-secondary-text">El profesional aceptó la finalización de la terapia.</p>
                   )}
-                </>
+                </div>
               )}
 
               {/* PENDING: show waiting status */}

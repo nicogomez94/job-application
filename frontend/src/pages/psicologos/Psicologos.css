@@ -397,6 +397,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
+  min-width: 0;
   padding: 0.35rem 0.75rem;
   background: #25d366;
   color: #fff;
@@ -415,6 +416,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
+  min-width: 0;
+  max-width: 100%;
   padding: 0.35rem 0.75rem;
   background: #f0f4f8;
   color: #2c5f7a;
@@ -428,6 +431,11 @@
 
 .psico-btn-email:hover {
   background: #ddeef7;
+}
+
+.psico-btn-whatsapp svg,
+.psico-btn-email svg {
+  flex: 0 0 auto;
 }
 
 .psico-btn-large {
@@ -645,6 +653,97 @@
   gap: 0.75rem;
   min-width: 0;
   max-width: 100%;
+}
+
+.psico-accepted-contact-card {
+  width: min(100%, 460px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 0.9rem;
+  background: #fffafd;
+  border: 1.5px solid #f0c7d9;
+  border-radius: 10px;
+  min-width: 0;
+}
+
+.psico-accepted-contact-card .psico-status-badge {
+  align-self: flex-start;
+}
+
+.psico-accepted-contact-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.psico-accepted-contact-card .psico-btn-large {
+  width: 100%;
+  min-height: 44px;
+  justify-content: center;
+  padding: 0.62rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  line-height: 1.25;
+}
+
+.psico-accepted-contact-card .psico-btn-whatsapp,
+.psico-accepted-contact-card .psico-btn-email {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.psico-accepted-contact-card .psico-btn-whatsapp span,
+.psico-accepted-contact-card .psico-btn-email span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.psico-accepted-contact-card .psico-btn-email {
+  justify-content: flex-start;
+  background: #fff5fa;
+  color: #8f3c64;
+  border-color: #efbad2;
+}
+
+.psico-accepted-management-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.psico-accepted-management-actions .psico-btn-danger-sm,
+.psico-accepted-management-actions .psico-btn-therapy-end {
+  min-height: 40px;
+  padding: 0.52rem 0.8rem;
+}
+
+.psico-accepted-management-actions .psico-btn-therapy-end {
+  flex: 1 1 230px;
+  min-width: 0;
+}
+
+@media (max-width: 600px) {
+  .psico-accepted-contact-card {
+    width: 100%;
+    padding: 0.85rem;
+  }
+
+  .psico-accepted-management-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .psico-accepted-management-actions .psico-btn-danger-sm,
+  .psico-accepted-management-actions .psico-btn-therapy-end {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 .psico-profile-body {
@@ -2268,7 +2367,15 @@
   flex-wrap: wrap;
   gap: 0.5rem;
   width: 100%;
+  min-width: 0;
   margin-top: 0.25rem;
+}
+
+.patient-request-contact .psico-btn-whatsapp,
+.patient-request-contact .psico-btn-email {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .psico-request-actions {
