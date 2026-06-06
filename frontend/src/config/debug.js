@@ -1,9 +1,6 @@
 const envFlag = String(import.meta.env.VITE_DEBUG_MODE || '').toLowerCase();
-const isProductionBuild = import.meta.env.PROD;
-const apiMockFlag = String(import.meta.env.VITE_DEBUG_API_MODE || '').toLowerCase();
 
 export const DEBUG_MODE = envFlag === 'true' || envFlag === '1';
-export const DEBUG_API_MODE = !isProductionBuild && (apiMockFlag === 'true' || apiMockFlag === '1');
 
 export const DEBUG_FORM_DATA = {
   loginByType: {

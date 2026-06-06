@@ -36,10 +36,9 @@ Editar `.env.local`:
 VITE_API_URL=http://localhost:5000/api
 VITE_GOOGLE_CLIENT_ID=tu_google_client_id
 VITE_DEBUG_MODE=true
-VITE_DEBUG_API_MODE=true
 ```
 
-`VITE_DEBUG_MODE` precarga formularios de prueba y `VITE_DEBUG_API_MODE` activa respuestas mock para usar el frontend en local incluso si el backend no esta corriendo.
+`VITE_DEBUG_MODE` solo precarga formularios de prueba. Todas las operaciones siguen usando la API real configurada en `VITE_API_URL`.
 
 ### 3. Iniciar servidor de desarrollo
 
