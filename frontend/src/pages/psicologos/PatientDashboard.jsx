@@ -13,11 +13,15 @@ const toAssetUrl = (p) => {
   return `${BACKEND_BASE_URL}${p}`;
 };
 
+const REJECTED_MESSAGE = 'Estimada/o. En estos momentos estamos con agenda completa. Será un gusto asistirle en un próximo contacto. Intente nuevamente después de 7 días.';
+
+const mailtoHref = (email) => `mailto:${String(email || '').trim()}`;
+
 const STATUS_CONFIG = {
   PENDING: { label: 'Pendiente de respuesta', icon: Clock, color: 'orange' },
   ACCEPTED: { label: 'Solicitud aceptada', icon: CheckCircle, color: 'green' },
   REJECTED: {
-    label: 'Estimada/o. En estos momentos estamos con agenda completa. Será un gusto asistirle en un próximo contacto.',
+    label: REJECTED_MESSAGE,
     icon: XCircle,
     color: 'red',
     className: 'psico-status-unavailable',
@@ -260,6 +264,11 @@ export default function PatientDashboard() {
                         <span className={`psico-status-badge psico-status-${cfg.color} ${cfg.className || ''}`}>
                           <StatusIcon size={13} /> {cfg.label}
                         </span>
+                        {req.status === 'REJECTED' && req.canReapply && !blockInfo && (
+                          <Link to={`/psicologos/${p?.id}`} className="psico-btn-primary psico-btn-sm">
+                            Volver a solicitar
+                          </Link>
+                        )}
                         {blockInfo && (
                           <>
                             <span className="psico-status-badge psico-status-red">
@@ -294,7 +303,7 @@ export default function PatientDashboard() {
                             </a>
                           )}
                           {p?.contactEmail && (
-                            <a href={`mailto:${p.contactEmail}`} className="psico-btn-email">
+                            <a href={mailtoHref(p.contactEmail)} className="psico-btn-email" target="_self">
                               <Mail size={14} /> {p.contactEmail}
                             </a>
                           )}

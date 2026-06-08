@@ -3,18 +3,24 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Mail, Lock, Brain } from 'lucide-react';
-import { psychologistAuthService } from '../../services';
+import { authService, psychologistAuthService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
 import { getDebugLoginData, DEBUG_MODE } from '../../config/debug';
 import PasswordInput from '../../components/PasswordInput';
 import '../psicologos/Psicologos.css';
 import './PsicoLogin.css';
+import './Login.css';
 
 export default function PsicoLogin() {
   const [loading, setLoading] = useState(false);
+  const [isRecoveryModalOpen, setIsRecoveryModalOpen] = useState(false);
+  const [recoveryEmail, setRecoveryEmail] = useState('');
+  const [recoveryLoading, setRecoveryLoading] = useState(false);
+  const [recoveryStatus, setRecoveryStatus] = useState('idle');
+  const [recoveryStatusMessage, setRecoveryStatusMessage] = useState('');
   const { setAuth } = useAuthStore();
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, formState: { errors }, getValues } = useForm({
     defaultValues: DEBUG_MODE ? getDebugLoginData('psychologist') : { email: '', password: '' },
   });
 
@@ -40,6 +46,42 @@ export default function PsicoLogin() {
       toast.error(error.response?.data?.error || 'Email o contraseña incorrectos');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const openRecoveryModal = () => {
+    setRecoveryEmail(getValues('email') || '');
+    setRecoveryStatus('idle');
+    setRecoveryStatusMessage('');
+    setIsRecoveryModalOpen(true);
+  };
+
+  const closeRecoveryModal = () => {
+    if (recoveryLoading) return;
+    setIsRecoveryModalOpen(false);
+  };
+
+  const submitRecovery = async (event) => {
+    event.preventDefault();
+    const trimmedEmail = recoveryEmail.trim();
+    if (!trimmedEmail) {
+      setRecoveryStatus('error');
+      setRecoveryStatusMessage('Ingresá tu email.');
+      return;
+    }
+
+    setRecoveryLoading(true);
+    setRecoveryStatus('loading');
+    setRecoveryStatusMessage('Enviando link de recuperación...');
+    try {
+      await authService.requestPasswordRecovery({ email: trimmedEmail, userType: 'psychologist' });
+      setRecoveryStatus('success');
+      setRecoveryStatusMessage('Si el email está registrado, recibirás un link para restablecer tu clave.');
+    } catch {
+      setRecoveryStatus('error');
+      setRecoveryStatusMessage('No se pudo procesar la recuperación de clave.');
+    } finally {
+      setRecoveryLoading(false);
     }
   };
 
@@ -96,6 +138,12 @@ export default function PsicoLogin() {
         </form>
 
         <div className="psico-login-links">
+          <button type="button" className="login-forgot-password-btn" onClick={openRecoveryModal}>
+            Recuperar clave
+          </button>
+        </div>
+
+        <div className="psico-login-links">
           <span>¿No tenés cuenta?</span>
           <Link to="/register/psicologo">Registrarme como psicólogo</Link>
         </div>
@@ -105,6 +153,41 @@ export default function PsicoLogin() {
         <Link to="/psicologos/buscar" className="psico-login-back">
           ← Volver al listado de psicólogos
         </Link>
+
+        {isRecoveryModalOpen && (
+          <div className="login-recovery-backdrop" onClick={closeRecoveryModal} role="presentation">
+            <div className="login-recovery-modal" onClick={(event) => event.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="psychologist-recovery-title">
+              <button type="button" className="login-recovery-close-btn" onClick={closeRecoveryModal} aria-label="Cerrar">
+                &times;
+              </button>
+              <h3 id="psychologist-recovery-title" className="login-recovery-title">Recuperar clave</h3>
+              <p className="login-recovery-description">Ingresá tu email y te enviaremos un link para restablecer tu clave.</p>
+              <form className="login-recovery-form" onSubmit={submitRecovery}>
+                <label className="login-label" htmlFor="psychologist-recovery-email">Email</label>
+                <input
+                  id="psychologist-recovery-email"
+                  type="email"
+                  value={recoveryEmail}
+                  onChange={(event) => setRecoveryEmail(event.target.value)}
+                  className="input"
+                  placeholder="tu@email.com"
+                  required
+                  disabled={recoveryStatus === 'success'}
+                />
+                {recoveryStatus !== 'idle' && (
+                  <p className={`login-recovery-status login-recovery-status-${recoveryStatus}`}>
+                    {recoveryStatusMessage}
+                  </p>
+                )}
+                {recoveryStatus !== 'success' && (
+                  <button type="submit" disabled={recoveryLoading} className="btn btn-primary login-recovery-submit-btn">
+                    {recoveryLoading ? 'Enviando...' : 'Enviar link de recuperación'}
+                  </button>
+                )}
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

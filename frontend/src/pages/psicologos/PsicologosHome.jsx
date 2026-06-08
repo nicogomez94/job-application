@@ -285,7 +285,7 @@ export default function PsicologosHome() {
           <h4 className="psico-home-important-title">IMPORTANTE</h4>
           <p>
             Esta sección de Psicología es completamente independiente a la sección inicial de
-            Professionals at Home, por lo tanto los registros, términos y condiciones, privacidad y
+            professional at home, por lo tanto los registros, términos y condiciones, privacidad y
             otros también son diferentes a los anteriores, ya que legalmente presentan otras normativas
             para los psicólogos profesionales. Para que el interesado en el servicio —cliente o
             paciente— pueda hacer cumplir su derecho a la atención que demandan las leyes bajo este

@@ -62,6 +62,8 @@ export default function Navbar() {
         return '/company/dashboard';
       case 'admin':
         return '/admin/dashboard';
+      case 'patient':
+        return '/psicologos/mi-cuenta';
       case 'psychologist':
         return '/psicologo/dashboard';
       default:
@@ -75,6 +77,8 @@ export default function Navbar() {
         return '/user/profile';
       case 'company':
         return '/company/profile';
+      case 'patient':
+        return '/psicologos/mi-cuenta';
       case 'psychologist':
         return '/psicologo/dashboard';
       default:
@@ -88,6 +92,8 @@ export default function Navbar() {
         return '/user/applications';
       case 'company':
         return '/company/jobs';
+      case 'patient':
+        return '/psicologos/buscar';
       case 'psychologist':
         return '/psicologos';
       default:
@@ -101,6 +107,8 @@ export default function Navbar() {
         return t('Mis Postulaciones');
       case 'company':
         return t('Mis Ofertas Laborales');
+      case 'patient':
+        return 'Buscar psicólogo';
       case 'psychologist':
         return t('Psicólogos en Línea');
       default:
@@ -114,6 +122,7 @@ export default function Navbar() {
   const isUserDropdownVisible = isUserDropdownOpen || isMenuOpen;
   const mobileQuickLink = isAuthenticated ? getMobileQuickLink() : '';
   const mobileQuickLabel = isAuthenticated ? getMobileQuickLabel() : '';
+  const showJobsNavigation = userType !== 'admin';
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -176,41 +185,45 @@ export default function Navbar() {
               {t('Inicio')}
             </Link> */}
 
-            <form className="navbar-search" onSubmit={handleSearchSubmit}>
-              <label
-                htmlFor="navbar-search-input"
-                style={{
-                  position: 'absolute',
-                  width: '1px',
-                  height: '1px',
-                  padding: 0,
-                  margin: '-1px',
-                  overflow: 'hidden',
-                  clip: 'rect(0, 0, 0, 0)',
-                  whiteSpace: 'nowrap',
-                  border: 0,
-                }}
-              >
-                Buscar
-              </label>
-              <Search className="navbar-search-icon" size={16} />
-              <input
-                id="navbar-search-input"
-                type="text"
-                className="navbar-search-input"
-                placeholder={t('Buscar')}
-                value={searchTerm}
-                onChange={(event) => setSearchTerm(event.target.value)}
-              />
-            </form>
+            {showJobsNavigation && (
+              <form className="navbar-search" onSubmit={handleSearchSubmit}>
+                <label
+                  htmlFor="navbar-search-input"
+                  style={{
+                    position: 'absolute',
+                    width: '1px',
+                    height: '1px',
+                    padding: 0,
+                    margin: '-1px',
+                    overflow: 'hidden',
+                    clip: 'rect(0, 0, 0, 0)',
+                    whiteSpace: 'nowrap',
+                    border: 0,
+                  }}
+                >
+                  Buscar
+                </label>
+                <Search className="navbar-search-icon" size={16} />
+                <input
+                  id="navbar-search-input"
+                  type="text"
+                  className="navbar-search-input"
+                  placeholder={t('Buscar')}
+                  value={searchTerm}
+                  onChange={(event) => setSearchTerm(event.target.value)}
+                />
+              </form>
+            )}
 
-            <Link
-              to="/jobs"
-              className={`navbar-link navbar-link-home ${location.pathname.startsWith('/jobs') ? 'navbar-link-active' : ''}`}
-              onClick={closeMenu}
-            >
-              {t('Ver Ofertas')}
-            </Link>
+            {showJobsNavigation && (
+              <Link
+                to="/jobs"
+                className={`navbar-link navbar-link-home ${location.pathname.startsWith('/jobs') ? 'navbar-link-active' : ''}`}
+                onClick={closeMenu}
+              >
+                {t('Ver Ofertas')}
+              </Link>
+            )}
             {!isAuthenticated ? (
               <div className="navbar-mobile-actions">
                 <Link to="/register/user" className="navbar-auth-link" onClick={closeMenu}>

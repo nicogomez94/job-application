@@ -181,7 +181,7 @@ export default function RegisterPsychologistINTL() {
     if (step === 3) {
       const errors = {};
       if (form.specialties.length === 0) errors.specialties = 'Seleccioná al menos una especialidad';
-      if (form.ageRanges.length === 0) errors.ageRanges = 'Seleccioná al menos un rango etario';
+      if (form.ageRanges.length === 0) errors.ageRanges = 'Seleccioná al menos una edad';
       if (!acceptTerms) errors.acceptTerms = 'Campo requerido';
       if (!acceptPrivacy) errors.acceptPrivacy = 'Campo requerido';
       return showErrors(errors);
@@ -412,7 +412,7 @@ export default function RegisterPsychologistINTL() {
                 {fieldError('specialties')}
               </div>
               <div className={`psico-full-col ${fieldClass('ageRanges')}`}>
-                <label className="psico-checkbox-label-heading">Rango etario de atención</label>
+                <label className="psico-checkbox-label-heading">Edad de atención</label>
                 <div className="psico-checkbox-group psico-options-grid psico-age-options">
                   {['Adultos (mayor a 18 años)', 'Infanto-juvenil (hasta los 18 años)'].map((a) => (
                     <label key={a} className="psico-checkbox-item psico-option-card">

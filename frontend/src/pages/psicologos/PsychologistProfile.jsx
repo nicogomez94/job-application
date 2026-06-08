@@ -13,6 +13,9 @@ const toAssetUrl = (p) => {
   return `${BACKEND_BASE_URL}${p}`;
 };
 
+const REJECTED_MESSAGE = 'Estimada/o. En estos momentos estamos con agenda completa. Será un gusto asistirle en un próximo contacto. Intente nuevamente después de 7 días.';
+const mailtoHref = (email) => `mailto:${String(email || '').trim()}`;
+
 export default function PsychologistProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -176,6 +179,7 @@ export default function PsychologistProfile() {
   const requestAccepted = myRequest?.status === 'ACCEPTED';
   const requestPending = myRequest?.status === 'PENDING';
   const requestRejected = myRequest?.status === 'REJECTED';
+  const canReapply = requestRejected && myRequest?.canReapply;
   const blockInfo = p.blockInfo || myRequest?.blockInfo;
   const requestBlocked = Boolean(p.isBlocked || blockInfo);
   const hasTerminationRequest = Boolean(myRequest?.terminationRequestedAt && !myRequest?.terminationAcceptedAt);
@@ -228,7 +232,7 @@ export default function PsychologistProfile() {
                       </a>
                     )}
                     {contactEmail && (
-                      <a href={`mailto:${contactEmail}`} className="psico-btn-email psico-btn-large">
+                      <a href={mailtoHref(contactEmail)} className="psico-btn-email psico-btn-large" target="_self">
                         <Mail size={18} /> <span>{contactEmail}</span>
                       </a>
                     )}
@@ -285,8 +289,30 @@ export default function PsychologistProfile() {
               {requestRejected && !requestBlocked && (
                 <div className="psico-hire-section">
                   <span className="psico-status-badge psico-status-red psico-status-unavailable">
-                    <XCircle size={14} /> Estimada/o. En estos momentos estamos con agenda completa. Será un gusto asistirle en un próximo contacto.
+                    <XCircle size={14} /> {REJECTED_MESSAGE}
                   </span>
+                  {canReapply && (
+                    <>
+                      <textarea
+                        className="psico-hire-message"
+                        placeholder="Mensaje opcional para el psicólogo (ej. motivo de consulta)..."
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        rows={3}
+                      />
+                      <button
+                        className="psico-btn-primary psico-btn-large"
+                        onClick={handleSendRequest}
+                        disabled={sendingRequest}
+                      >
+                        {sendingRequest ? (
+                          <><Loader size={16} /> Enviando...</>
+                        ) : (
+                          <><UserPlus size={18} /> Volver a solicitar consulta</>
+                        )}
+                      </button>
+                    </>
+                  )}
                 </div>
               )}
 
@@ -455,8 +481,8 @@ export default function PsychologistProfile() {
             </div>
 
             <div className="psico-independent-notice">
-              El profesional actúa de manera independiente.<br />
-              La plataforma no interviene en sesiones, pagos ni resultados del servicio.
+              <strong>El profesional actúa de manera independiente.<br />
+              La plataforma no interviene en sesiones, pagos ni resultados del servicio.</strong>
             </div>
           </div>
         )}

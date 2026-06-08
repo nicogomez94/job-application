@@ -12,7 +12,7 @@ const getBlockInfo = (block) => {
     blockedMe: !blockedByMe,
     createdAt: block.createdAt,
     message: blockedByMe
-      ? 'Bloqueaste a este usuario. Los datos de contacto ya no están disponibles.'
+      ? 'Bloqueaste a este profesional. Los datos de contacto ya no están disponibles.'
       : 'Este usuario te bloqueó. Ya no podés ver sus datos.',
   };
 };

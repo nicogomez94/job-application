@@ -302,8 +302,8 @@ export default function PsychologistDashboard() {
                   )}
                 </div>
                 <p className="psico-independent-notice psico-independent-notice--sm">
-                  Este profesional actúa de manera independiente.<br />
-                  La plataforma no interviene en sesiones, pagos ni resultados del servicio.
+                  <strong>El profesional actúa de manera independiente.<br />
+                  La plataforma no interviene en sesiones, pagos ni resultados del servicio.</strong>
                 </p>
               </div>
               <div className="psico-dashboard-profile-fields">
@@ -319,7 +319,7 @@ export default function PsychologistDashboard() {
                   <p><strong>Costo final por sesión:</strong> {p?.sessionCost || '-'}</p>
                   <p><strong>Tiempo de sesión / promoción:</strong> {p?.sessionDuration || '-'}</p>
                   <p><strong>Título profesional:</strong> {visibleTitle || '-'}</p>
-                  <p><strong>Atiende a:</strong> {formatList(p?.ageRanges)}</p>
+                  <p><strong>Edad:</strong> {formatList(p?.ageRanges)}</p>
                   <p><strong>Especialidades:</strong> {formatList(p?.specialties)}</p>
                 </div>
               </div>
@@ -373,7 +373,7 @@ export default function PsychologistDashboard() {
         <div className="psico-dashboard-card psico-dashboard-requests-card">
           <div className="psico-dashboard-card-header">
             <Users size={18} />
-            <h2>Solicitudes de consulta</h2>
+            <h2>Solicitudes/consulta de los pacientes</h2>
             {pendingRequests.length > 0 && (
               <span className="psico-badge-count">{pendingRequests.length} pendiente{pendingRequests.length !== 1 ? 's' : ''}</span>
             )}

@@ -11,6 +11,12 @@ const PLAN_META = {
   ANNUAL: { highlight: false, icon: Shield, subtitle: 'Para mayor continuidad' },
 };
 
+const PLAN_LEVELS = {
+  MONTHLY: 1,
+  QUARTERLY: 2,
+  ANNUAL: 3,
+};
+
 export default function SelectPsychologistPlan() {
   const [plans, setPlans] = useState([]);
   const [currentSubscription, setCurrentSubscription] = useState(null);
@@ -82,6 +88,9 @@ export default function SelectPsychologistPlan() {
             const Icon = meta.icon || Clock;
             const isActivating = activating === plan.id;
             const isCurrentPlan = currentSubscription?.plan === plan.id;
+            const isLowerOrSamePlan = currentSubscription
+              && PLAN_LEVELS[plan.id] <= PLAN_LEVELS[currentSubscription.plan];
+            const disabled = activating !== null || Boolean(isLowerOrSamePlan);
 
             return (
               <div
@@ -121,9 +130,15 @@ export default function SelectPsychologistPlan() {
                 <button
                   className={`select-plan-btn ${meta.highlight ? 'select-plan-btn--highlight' : ''}`}
                   onClick={() => handleSelectPlan(plan)}
-                  disabled={activating !== null}
+                  disabled={disabled}
                 >
-                  {isActivating ? <span className="select-plan-btn-loading">Activando...</span> : 'Seleccionar plan'}
+                  {isActivating
+                    ? <span className="select-plan-btn-loading">Activando...</span>
+                    : isCurrentPlan
+                      ? 'Plan actual'
+                      : isLowerOrSamePlan
+                        ? 'Solo plan superior'
+                        : 'Seleccionar plan'}
                 </button>
               </div>
             );

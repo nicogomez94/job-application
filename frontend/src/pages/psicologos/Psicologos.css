@@ -2544,7 +2544,8 @@
 }
 
 .psico-edit-profile input,
-.psico-edit-profile textarea {
+.psico-edit-profile textarea,
+.psico-edit-profile select {
   width: 100%;
   border: 1.5px solid #d4c9b5;
   border-radius: 8px;
@@ -2555,7 +2556,8 @@
 }
 
 .psico-edit-profile input:focus,
-.psico-edit-profile textarea:focus {
+.psico-edit-profile textarea:focus,
+.psico-edit-profile select:focus {
   outline: none;
   border-color: #2c5f7a;
   box-shadow: 0 0 0 3px rgba(44, 95, 122, 0.12);

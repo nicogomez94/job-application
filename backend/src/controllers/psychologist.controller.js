@@ -22,6 +22,12 @@ const addMonths = (date, months) => {
   return value;
 };
 
+const PLAN_LEVELS = {
+  MONTHLY: 1,
+  QUARTERLY: 2,
+  ANNUAL: 3,
+};
+
 // ─── GET PROFILE ─────────────────────────────────────────────────────────────
 exports.getProfile = async (req, res) => {
   try {
@@ -226,6 +232,21 @@ exports.getSubscription = async (req, res) => {
 exports.createSubscription = async (req, res) => {
   try {
     const { plan, currency, paymentId } = req.body;
+
+    const activeSubscription = await prisma.psychologistSubscription.findFirst({
+      where: {
+        psychologistId: req.user.id,
+        status: 'ACTIVE',
+        endDate: { gte: new Date() },
+      },
+      orderBy: { endDate: 'desc' },
+    });
+
+    if (activeSubscription && PLAN_LEVELS[plan] <= PLAN_LEVELS[activeSubscription.plan]) {
+      return res.status(400).json({
+        error: 'Solo podés cambiar a un plan superior al actual.',
+      });
+    }
 
     const startDate = new Date();
     let durationInMonths = 3;

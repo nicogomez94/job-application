@@ -17,8 +17,28 @@ const getBlockInfo = (block, viewerType) => {
     blockedMe,
     createdAt: block.createdAt,
     message: blockedByMe
-      ? 'Bloqueaste a este usuario. Los datos de contacto ya no están disponibles.'
+      ? 'Bloqueaste a este profesional. Los datos de contacto ya no están disponibles.'
       : 'Este usuario te bloqueó. Ya no podés ver sus datos.',
+  };
+};
+
+const REAPPLY_WAIT_DAYS = 7;
+
+const getReapplyAt = (request) => {
+  const baseDate = request?.updatedAt || request?.createdAt;
+  if (!baseDate) return null;
+  const value = new Date(baseDate);
+  value.setDate(value.getDate() + REAPPLY_WAIT_DAYS);
+  return value;
+};
+
+const addReapplyInfo = (request) => {
+  if (!request || request.status !== 'REJECTED') return request;
+  const canReapplyAt = getReapplyAt(request);
+  return {
+    ...request,
+    canReapplyAt,
+    canReapply: Boolean(canReapplyAt && canReapplyAt <= new Date()),
   };
 };
 
@@ -78,6 +98,44 @@ exports.sendRequest = async (req, res) => {
     });
 
     if (existing) {
+      if (existing.status === 'REJECTED') {
+        const canReapplyAt = getReapplyAt(existing);
+
+        if (canReapplyAt && canReapplyAt <= new Date()) {
+          const request = await prisma.psychologistRequest.update({
+            where: { id: existing.id },
+            data: {
+              message: message || null,
+              status: 'PENDING',
+              terminationRequestedAt: null,
+              terminationAcceptedAt: null,
+            },
+            include: {
+              psychologist: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  displayName: true,
+                  profileImage: true,
+                  specialties: true,
+                },
+              },
+            },
+          });
+
+          return res.status(201).json({
+            message: 'Solicitud enviada exitosamente',
+            request,
+          });
+        }
+
+        return res.status(400).json({
+          error: 'Podés volver a postularte al mismo profesional después de 7 días.',
+          canReapplyAt,
+        });
+      }
+
       return res.status(400).json({ error: 'Ya enviaste una solicitud a este psicólogo' });
     }
 
@@ -144,7 +202,8 @@ exports.getMyRequests = async (req, res) => {
     const blockByPsychologistId = new Map(blocks.map((block) => [block.psychologistId, block]));
 
     // Strip contact info from non-ACCEPTED requests and all data from blocked relationships.
-    const sanitized = requests.map((r) => {
+    const sanitized = requests.map((request) => {
+      const r = addReapplyInfo(request);
       const blockInfo = getBlockInfo(blockByPsychologistId.get(r.psychologistId), 'patient');
       if (blockInfo) {
         return {

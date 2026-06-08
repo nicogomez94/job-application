@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Upload, X, FileText } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { psychologistService } from '../../services';
+import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
 import { useAuthStore } from '../../context/authStore';
 import './Psicologos.css';
 
@@ -29,21 +30,45 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ALLOWED_EXTENSIONS = ['pdf', 'jpg', 'jpeg', 'png'];
 const ALLOWED_MIME_TYPES = ['application/pdf', 'image/jpeg', 'image/png'];
 
+const toAssetUrl = (p) => {
+  if (!p) return null;
+  if (p.startsWith('http://') || p.startsWith('https://')) return p;
+  return `${BACKEND_BASE_URL}${p}`;
+};
+
 export default function RegisterPsychologistDocs() {
   const { user } = useAuthStore();
   const navigate = useNavigate();
-  const isAR = user?.registrationType === 'ARGENTINA';
+  const [registrationType, setRegistrationType] = useState(user?.registrationType || '');
+  const isAR = registrationType === 'ARGENTINA';
   const docTypes = isAR ? AR_DOCUMENT_TYPES : INTL_DOCUMENT_TYPES;
   const requiredDocTypes = docTypes.slice(0, 4).map((docType) => docType.key);
 
   const [files, setFiles] = useState([]);
-  const [documentTypes, setDocumentTypes] = useState([]);
+  const [existingDocuments, setExistingDocuments] = useState([]);
+  const [loadingExisting, setLoadingExisting] = useState(true);
   const [loading, setLoading] = useState(false);
   const [submitAttempted, setSubmitAttempted] = useState(false);
   const [validationMessage, setValidationMessage] = useState('');
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const getFileExtension = (fileName) => fileName.split('.').pop()?.toLowerCase() || '';
+
+  useEffect(() => {
+    const loadExistingDocuments = async () => {
+      try {
+        const res = await psychologistService.getProfile();
+        setExistingDocuments(Array.isArray(res.data?.documents) ? res.data.documents : []);
+        setRegistrationType(res.data?.registrationType || user?.registrationType || '');
+      } catch (error) {
+        toast.error(error.response?.data?.error || 'No se pudieron cargar los documentos existentes');
+      } finally {
+        setLoadingExisting(false);
+      }
+    };
+
+    loadExistingDocuments();
+  }, [user?.registrationType]);
 
   const validateFiles = (selected, existingCount = files.length) => {
     if (existingCount + selected.length > MAX_FILES) {
@@ -67,7 +92,10 @@ export default function RegisterPsychologistDocs() {
   };
 
   const getMissingRequiredDocs = (selectedFiles) => {
-    const uploadedTypes = new Set(selectedFiles.map((file) => file.docType));
+    const uploadedTypes = new Set([
+      ...existingDocuments.map((document) => document.documentType),
+      ...selectedFiles.map((file) => file.docType),
+    ]);
     return requiredDocTypes.filter((docType) => !uploadedTypes.has(docType));
   };
 
@@ -78,7 +106,7 @@ export default function RegisterPsychologistDocs() {
       return;
     }
 
-    const error = validateFiles(selected);
+    const error = validateFiles(selected, existingDocuments.length + files.length);
     if (error) {
       setValidationMessage(error);
       toast.error(error);
@@ -88,7 +116,6 @@ export default function RegisterPsychologistDocs() {
 
     const newFiles = selected.map((f) => ({ file: f, docType, id: Math.random() }));
     setFiles((prev) => [...prev, ...newFiles]);
-    setDocumentTypes((prev) => [...prev, ...selected.map(() => docType)]);
     setSubmitAttempted(false);
     setValidationMessage('');
     e.target.value = '';
@@ -98,13 +125,19 @@ export default function RegisterPsychologistDocs() {
     const idx = files.findIndex((f) => f.id === id);
     if (idx === -1) return;
     setFiles((prev) => prev.filter((_, i) => i !== idx));
-    setDocumentTypes((prev) => prev.filter((_, i) => i !== idx));
   };
 
   const handleSubmit = async () => {
     setSubmitAttempted(true);
     if (files.length === 0) {
-      const message = 'Envia los 4 primeros archivos obligatorios';
+      const missingRequiredDocs = getMissingRequiredDocs([]);
+      if (missingRequiredDocs.length === 0) {
+        toast.success('La documentación obligatoria ya está cargada.');
+        navigate('/psicologo/dashboard');
+        return;
+      }
+
+      const message = 'Enviá los 4 primeros archivos obligatorios';
       setValidationMessage(message);
       toast.error(message);
       return;
@@ -171,6 +204,33 @@ export default function RegisterPsychologistDocs() {
           {requiredDocTypes.length > 0 ? ' Los primeros 4 documentos son obligatorios para continuar.' : ''}
         </p>
 
+        {loadingExisting ? (
+          <p className="psico-secondary-text">Cargando documentos existentes...</p>
+        ) : existingDocuments.length > 0 && (
+          <div className="psico-docs-uploaded">
+            <h3>Documentos cargados anteriormente ({existingDocuments.length})</h3>
+            <ul>
+              {existingDocuments.map((document) => {
+                const label = docTypes.find((d) => d.key === document.documentType)?.label || document.documentType;
+                return (
+                  <li key={document.id} className="psico-doc-file-row">
+                    <FileText size={14} />
+                    <a
+                      href={toAssetUrl(document.fileUrl)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="psico-doc-file-name"
+                    >
+                      {document.originalName || label}
+                    </a>
+                    <span className="psico-doc-file-type">{label}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
+
         <div className="psico-docs-types">
           {docTypes.map((dt, index) => {
             const isRequired = index < 4;
@@ -201,7 +261,7 @@ export default function RegisterPsychologistDocs() {
 
         {(validationMessage || (submitAttempted && files.length === 0)) && (
           <p className="psico-docs-validation" role="alert">
-            {validationMessage || 'Envia los 4 primeros archivos obligatorios'}
+            {validationMessage || 'Enviá los 4 primeros archivos obligatorios'}
           </p>
         )}
 

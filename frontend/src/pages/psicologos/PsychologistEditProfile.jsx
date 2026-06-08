@@ -18,13 +18,33 @@ const initialForm = {
   lastName: '',
   displayName: '',
   gender: '',
+  dateOfBirth: '',
   phone: '',
   contactEmail: '',
+  dni: '',
+  cuitCuil: '',
+  addressStreet: '',
+  addressNumber: '',
+  addressFloor: '',
+  addressCity: '',
+  addressProvince: '',
+  addressPostalCode: '',
   country: '',
   region: '',
   practiceProvince: '',
   universityDegree: '',
+  graduationYear: '',
+  universityName: '',
   degreeInstitution: '',
+  licenseNumber: '',
+  licenseProvince: '',
+  healthMinistryReg: '',
+  virtualConsultingAuthorization: '',
+  documentType: '',
+  documentNumber: '',
+  taxId: '',
+  licenseEntity: '',
+  licenseCountry: '',
   sessionCost: '',
   sessionDuration: '',
   specialties: '',
@@ -48,18 +68,39 @@ export default function PsychologistEditProfile() {
       try {
         const res = await psychologistService.getProfile();
         const p = res.data || {};
+        const isArgentina = p.registrationType === 'ARGENTINA';
         setForm({
           firstName: p.firstName || '',
           lastName: p.lastName || '',
           displayName: p.displayName || '',
           gender: p.gender || '',
+          dateOfBirth: p.dateOfBirth ? String(p.dateOfBirth).slice(0, 10) : '',
           phone: p.phone || '',
           contactEmail: p.contactEmail || '',
-          country: p.country || '',
-          region: p.region || '',
+          dni: p.dni || '',
+          cuitCuil: p.cuitCuil || '',
+          addressStreet: p.addressStreet || '',
+          addressNumber: p.addressNumber || '',
+          addressFloor: p.addressFloor || '',
+          addressCity: p.addressCity || '',
+          addressProvince: p.addressProvince || '',
+          addressPostalCode: p.addressPostalCode || '',
+          country: p.country || (isArgentina ? 'Argentina' : ''),
+          region: p.region || p.practiceProvince || p.licenseProvince || p.addressProvince || '',
           practiceProvince: p.practiceProvince || '',
           universityDegree: p.universityDegree || '',
+          graduationYear: p.graduationYear ?? '',
+          universityName: p.universityName || '',
           degreeInstitution: p.degreeInstitution || '',
+          licenseNumber: p.licenseNumber || '',
+          licenseProvince: p.licenseProvince || '',
+          healthMinistryReg: p.healthMinistryReg || '',
+          virtualConsultingAuthorization: p.virtualConsultingAuthorization || '',
+          documentType: p.documentType || '',
+          documentNumber: p.documentNumber || '',
+          taxId: p.taxId || '',
+          licenseEntity: p.licenseEntity || '',
+          licenseCountry: p.licenseCountry || '',
           sessionCost: p.sessionCost || '',
           sessionDuration: p.sessionDuration || '',
           specialties: listToText(p.specialties),
@@ -102,6 +143,7 @@ export default function PsychologistEditProfile() {
         sessionCost: form.sessionCost,
         sessionDuration: form.sessionDuration,
         yearsExperience: form.yearsExperience ? Number(form.yearsExperience) : undefined,
+        graduationYear: form.graduationYear ? Number(form.graduationYear) : undefined,
       };
       const res = await psychologistService.updateProfile(payload);
       updateUser(res.data?.psychologist || payload);
@@ -163,10 +205,6 @@ export default function PsychologistEditProfile() {
               <input name="lastName" value={form.lastName} onChange={handleChange} required />
             </label>
             <label>
-              Nombre visible
-              <input name="displayName" value={form.displayName} onChange={handleChange} />
-            </label>
-            <label>
               Género
               <select name="gender" value={form.gender} onChange={handleChange}>
                 <option value="">Seleccionar</option>
@@ -176,12 +214,36 @@ export default function PsychologistEditProfile() {
               </select>
             </label>
             <label>
+              Fecha de nacimiento
+              <input name="dateOfBirth" type="date" value={form.dateOfBirth} onChange={handleChange} />
+            </label>
+            <label>
               WhatsApp
               <input name="phone" value={form.phone} onChange={handleChange} />
             </label>
             <label>
               Email de contacto
               <input name="contactEmail" type="email" value={form.contactEmail} onChange={handleChange} />
+            </label>
+            <label>
+              DNI / documento
+              <input name="dni" value={form.dni} onChange={handleChange} />
+            </label>
+            <label>
+              CUIT / CUIL
+              <input name="cuitCuil" value={form.cuitCuil} onChange={handleChange} />
+            </label>
+            <label>
+              Tipo de documento
+              <input name="documentType" value={form.documentType} onChange={handleChange} />
+            </label>
+            <label>
+              Número de documento
+              <input name="documentNumber" value={form.documentNumber} onChange={handleChange} />
+            </label>
+            <label>
+              Identificación fiscal
+              <input name="taxId" value={form.taxId} onChange={handleChange} />
             </label>
             <label>
               País
@@ -196,12 +258,68 @@ export default function PsychologistEditProfile() {
               <input name="practiceProvince" value={form.practiceProvince} onChange={handleChange} />
             </label>
             <label>
+              Calle
+              <input name="addressStreet" value={form.addressStreet} onChange={handleChange} />
+            </label>
+            <label>
+              Número
+              <input name="addressNumber" value={form.addressNumber} onChange={handleChange} />
+            </label>
+            <label>
+              Piso / departamento
+              <input name="addressFloor" value={form.addressFloor} onChange={handleChange} />
+            </label>
+            <label>
+              Ciudad
+              <input name="addressCity" value={form.addressCity} onChange={handleChange} />
+            </label>
+            <label>
+              Provincia de domicilio
+              <input name="addressProvince" value={form.addressProvince} onChange={handleChange} />
+            </label>
+            <label>
+              Código postal
+              <input name="addressPostalCode" value={form.addressPostalCode} onChange={handleChange} />
+            </label>
+            <label>
               Título profesional
               <input name="universityDegree" value={form.universityDegree} onChange={handleChange} />
             </label>
             <label>
+              Año de graduación
+              <input name="graduationYear" type="number" min="1900" max="2100" value={form.graduationYear} onChange={handleChange} />
+            </label>
+            <label>
+              Universidad
+              <input name="universityName" value={form.universityName} onChange={handleChange} />
+            </label>
+            <label>
               Institución del título
               <input name="degreeInstitution" value={form.degreeInstitution} onChange={handleChange} />
+            </label>
+            <label>
+              Matrícula profesional
+              <input name="licenseNumber" value={form.licenseNumber} onChange={handleChange} />
+            </label>
+            <label>
+              Provincia de matrícula
+              <input name="licenseProvince" value={form.licenseProvince} onChange={handleChange} />
+            </label>
+            <label>
+              Entidad que expide la licencia
+              <input name="licenseEntity" value={form.licenseEntity} onChange={handleChange} />
+            </label>
+            <label>
+              País de licencia
+              <input name="licenseCountry" value={form.licenseCountry} onChange={handleChange} />
+            </label>
+            <label>
+              Registro Ministerio de Salud
+              <input name="healthMinistryReg" value={form.healthMinistryReg} onChange={handleChange} />
+            </label>
+            <label className="psico-edit-profile-wide">
+              Habilitación de consultorio virtual
+              <input name="virtualConsultingAuthorization" value={form.virtualConsultingAuthorization} onChange={handleChange} />
             </label>
             <label>
               Costo final por sesión
@@ -224,7 +342,7 @@ Promoción: 2 sesiones al costo de una"
               <input name="specialties" value={form.specialties} onChange={handleChange} placeholder="Separadas por coma" />
             </label>
             <label>
-              Rangos etarios
+              Edad
               <input name="ageRanges" value={form.ageRanges} onChange={handleChange} placeholder="Separados por coma" />
             </label>
             <label>
