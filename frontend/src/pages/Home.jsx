@@ -197,6 +197,9 @@ export default function Home() {
         </div>
 
         <div className="home-search-container">
+          <div className="home-search-section-banner">
+            {t('Seccion de publicacion y busqueda de trabajo')}
+          </div>
           <div className="home-search-bar">
             <div className="home-search-field">
               <BriefcaseIcon size={20} className="search-icon" />

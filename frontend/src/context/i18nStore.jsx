@@ -349,6 +349,7 @@ const ES_TO_EN = {
   'Haciendo menos': 'Doing less',
   'Cada mes, más de 3 millones de personas buscan trabajo en línea, realizando más de 140.000 postulaciones':
     'Every month, more than 3 million people search for jobs online, making more than 140,000 applications.',
+  'Seccion de publicacion y busqueda de trabajo': 'Job posting and search section',
   'Categoría': 'Category',
   'Buscar Trabajo': 'Search Jobs',
   'Simplifica tu búsqueda de trabajo buscando por categorías': 'Simplify your job search by browsing categories',
