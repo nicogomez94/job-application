@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Upload, X, FileText } from 'lucide-react';
+import { FileText, RefreshCw, Trash2, Upload, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { psychologistService } from '../../services';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
@@ -46,13 +46,16 @@ export default function RegisterPsychologistDocs() {
 
   const [files, setFiles] = useState([]);
   const [existingDocuments, setExistingDocuments] = useState([]);
+  const [psychologistStatus, setPsychologistStatus] = useState(user?.status || '');
   const [loadingExisting, setLoadingExisting] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [documentActionId, setDocumentActionId] = useState('');
   const [submitAttempted, setSubmitAttempted] = useState(false);
   const [validationMessage, setValidationMessage] = useState('');
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const getFileExtension = (fileName) => fileName.split('.').pop()?.toLowerCase() || '';
+  const isReviewedStatus = ['APPROVED', 'ACTIVE'].includes(psychologistStatus);
 
   useEffect(() => {
     const loadExistingDocuments = async () => {
@@ -60,6 +63,7 @@ export default function RegisterPsychologistDocs() {
         const res = await psychologistService.getProfile();
         setExistingDocuments(Array.isArray(res.data?.documents) ? res.data.documents : []);
         setRegistrationType(res.data?.registrationType || user?.registrationType || '');
+        setPsychologistStatus(res.data?.status || user?.status || '');
       } catch (error) {
         toast.error(error.response?.data?.error || 'No se pudieron cargar los documentos existentes');
       } finally {
@@ -72,7 +76,7 @@ export default function RegisterPsychologistDocs() {
 
   const validateFiles = (selected, existingCount = files.length) => {
     if (existingCount + selected.length > MAX_FILES) {
-      return `Podés subir hasta ${MAX_FILES} archivos en total. Ya tenés ${existingCount} seleccionado(s).`;
+      return `Podés subir hasta ${MAX_FILES} archivos en total. Ya tenés ${existingCount} cargado(s) o seleccionado(s).`;
     }
 
     const invalidType = selected.find((file) => {
@@ -92,6 +96,8 @@ export default function RegisterPsychologistDocs() {
   };
 
   const getMissingRequiredDocs = (selectedFiles) => {
+    if (isReviewedStatus) return [];
+
     const uploadedTypes = new Set([
       ...existingDocuments.map((document) => document.documentType),
       ...selectedFiles.map((file) => file.docType),
@@ -121,10 +127,69 @@ export default function RegisterPsychologistDocs() {
     e.target.value = '';
   };
 
-  const removeFile = (id) => {
+  const handleRemoveSelectedFile = (id) => {
     const idx = files.findIndex((f) => f.id === id);
     if (idx === -1) return;
     setFiles((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const handleReplaceDocument = async (document, e) => {
+    const selected = Array.from(e.target.files || []);
+    const file = selected[0];
+    e.target.value = '';
+
+    if (!file) return;
+
+    const error = validateFiles([file], 0);
+    if (error) {
+      setValidationMessage(error);
+      toast.error(error);
+      return;
+    }
+
+    const actionId = `replace-${document.id}`;
+    setDocumentActionId(actionId);
+    setValidationMessage('');
+
+    try {
+      const res = await psychologistService.replaceDocument(document.id, file, document.documentType);
+      const updatedDocument = res.data?.document;
+      if (updatedDocument) {
+        setExistingDocuments((prev) =>
+          prev.map((item) => (item.id === document.id ? updatedDocument : item))
+        );
+      }
+      if (res.data?.status) setPsychologistStatus(res.data.status);
+      toast.success(isReviewedStatus ? 'Documento reemplazado.' : 'Documento reemplazado. Queda pendiente de verificación.');
+    } catch (err) {
+      const msg = err?.response?.data?.error || 'Error al reemplazar documento';
+      setValidationMessage(msg);
+      toast.error(msg);
+    } finally {
+      setDocumentActionId('');
+    }
+  };
+
+  const handleDeleteDocument = async (document) => {
+    const confirmed = window.confirm('¿Querés borrar este documento?');
+    if (!confirmed) return;
+
+    const actionId = `delete-${document.id}`;
+    setDocumentActionId(actionId);
+    setValidationMessage('');
+
+    try {
+      const res = await psychologistService.deleteDocument(document.id);
+      setExistingDocuments((prev) => prev.filter((item) => item.id !== document.id));
+      if (res.data?.status) setPsychologistStatus(res.data.status);
+      toast.success('Documento eliminado.');
+    } catch (err) {
+      const msg = err?.response?.data?.error || 'Error al eliminar documento';
+      setValidationMessage(msg);
+      toast.error(msg);
+    } finally {
+      setDocumentActionId('');
+    }
   };
 
   const handleSubmit = async () => {
@@ -165,7 +230,7 @@ export default function RegisterPsychologistDocs() {
     setUploadProgress(0);
     setValidationMessage('');
     try {
-      await psychologistService.uploadDocuments(
+      const res = await psychologistService.uploadDocuments(
         files.map((f) => f.file),
         files.map((f) => f.docType),
         {
@@ -175,6 +240,15 @@ export default function RegisterPsychologistDocs() {
           },
         }
       );
+      const status = res.data?.status || psychologistStatus;
+      if (status) setPsychologistStatus(status);
+
+      if (['APPROVED', 'ACTIVE'].includes(status)) {
+        toast.success('Documentos actualizados.');
+        navigate('/psicologo/dashboard');
+        return;
+      }
+
       navigate('/register/psicologo/confirmacion');
     } catch (err) {
       const msg = err?.code === 'ECONNABORTED'
@@ -200,8 +274,10 @@ export default function RegisterPsychologistDocs() {
         <h1>Carga de documentos</h1>
         <p className="psico-docs-subtitle">
           Subí los documentos que acrediten tu identidad y habilitación profesional.
-          El equipo los revisará en aproximadamente 5 días hábiles.
-          {requiredDocTypes.length > 0 ? ' Los primeros 4 documentos son obligatorios para continuar.' : ''}
+          {isReviewedStatus
+            ? ' Tu cuenta ya fue aprobada: podés actualizar estos archivos sin nueva aprobación.'
+            : ' El equipo los revisará en aproximadamente 5 días hábiles.'}
+          {!isReviewedStatus && requiredDocTypes.length > 0 ? ' Los primeros 4 documentos son obligatorios para continuar.' : ''}
         </p>
 
         {loadingExisting ? (
@@ -224,6 +300,30 @@ export default function RegisterPsychologistDocs() {
                       {document.originalName || label}
                     </a>
                     <span className="psico-doc-file-type">{label}</span>
+                    <div className="psico-doc-actions">
+                      <label
+                        className={`psico-doc-action-btn${documentActionId ? ' is-disabled' : ''}`}
+                        title="Reemplazar documento"
+                      >
+                        <RefreshCw size={14} /> Reemplazar
+                        <input
+                          type="file"
+                          accept=".pdf,.jpg,.jpeg,.png"
+                          onChange={(e) => handleReplaceDocument(document, e)}
+                          disabled={loading || Boolean(documentActionId)}
+                          style={{ display: 'none' }}
+                        />
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteDocument(document)}
+                        className="psico-doc-action-btn psico-doc-action-btn--danger"
+                        disabled={loading || Boolean(documentActionId)}
+                        title="Borrar documento"
+                      >
+                        <Trash2 size={14} /> Borrar
+                      </button>
+                    </div>
                   </li>
                 );
               })}
@@ -277,7 +377,7 @@ export default function RegisterPsychologistDocs() {
                     <span className="psico-doc-file-name">{f.file.name}</span>
                     <span className="psico-doc-file-size">{formatBytes(f.file.size)}</span>
                     <span className="psico-doc-file-type">{label}</span>
-                    <button type="button" onClick={() => removeFile(f.id)} className="psico-doc-remove">
+                    <button type="button" onClick={() => handleRemoveSelectedFile(f.id)} className="psico-doc-remove">
                       <X size={14} />
                     </button>
                   </li>
@@ -302,7 +402,9 @@ export default function RegisterPsychologistDocs() {
             onClick={handleSubmit}
             disabled={loading}
           >
-            {loading ? `Subiendo${uploadProgress ? ` ${uploadProgress}%` : '...'}` : 'Enviar documentos'}
+            {loading
+              ? `Subiendo${uploadProgress ? ` ${uploadProgress}%` : '...'}`
+              : isReviewedStatus ? 'Guardar documentos' : 'Enviar documentos'}
           </button>
         </div>
       </div>

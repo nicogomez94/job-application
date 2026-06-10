@@ -234,6 +234,17 @@ export const psychologistService = {
       ...config,
     });
   },
+  replaceDocument: (documentId, file, documentType, config = {}) => {
+    const formData = new FormData();
+    formData.append('psychologistDoc', file);
+    if (documentType) formData.append('documentType', documentType);
+    return api.put(`/psychologists/me/documents/${documentId}`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 120000,
+      ...config,
+    });
+  },
+  deleteDocument: (documentId) => api.delete(`/psychologists/me/documents/${documentId}`),
   getSubscription: async () => {
     const response = await api.get('/psychologists/me/subscription');
     return { ...response, data: repairMojibakeDeep(response.data) };

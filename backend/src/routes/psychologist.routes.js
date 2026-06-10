@@ -94,6 +94,19 @@ router.post(
   psychologistController.uploadDocuments
 );
 
+router.put(
+  '/me/documents/:id',
+  authenticatePsychologist,
+  upload.single('psychologistDoc'),
+  psychologistController.replaceDocument
+);
+
+router.delete(
+  '/me/documents/:id',
+  authenticatePsychologist,
+  psychologistController.deleteDocument
+);
+
 router.get('/me/subscription', authenticatePsychologist, psychologistController.getSubscription);
 
 router.post(

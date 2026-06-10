@@ -28,6 +28,33 @@ const PLAN_LEVELS = {
   ANNUAL: 3,
 };
 
+const DOCUMENT_REVIEWED_STATUSES = new Set(['APPROVED', 'ACTIVE']);
+
+const markDocumentsSubmittedIfNeeded = async (psychologistId) => {
+  const current = await prisma.psychologist.findUnique({
+    where: { id: psychologistId },
+    select: { status: true },
+  });
+
+  if (current?.status === 'PENDING_DOCS' || current?.status === 'REJECTED') {
+    await prisma.psychologist.update({
+      where: { id: psychologistId },
+      data: { status: 'PENDING', rejectionReason: null },
+    });
+    return 'PENDING';
+  }
+
+  return current?.status;
+};
+
+const getDocumentUploadMessage = (status) => {
+  if (DOCUMENT_REVIEWED_STATUSES.has(status)) {
+    return 'Documentos actualizados exitosamente.';
+  }
+
+  return 'Documentos subidos. Tu solicitud está pendiente de verificación.';
+};
+
 // ─── GET PROFILE ─────────────────────────────────────────────────────────────
 exports.getProfile = async (req, res) => {
   try {
@@ -180,25 +207,108 @@ exports.uploadDocuments = async (req, res) => {
       )
     );
 
-    // Move status to PENDING once docs are uploaded
-    const current = await prisma.psychologist.findUnique({
-      where: { id: req.user.id },
-      select: { status: true },
-    });
-    if (current?.status === 'PENDING_DOCS') {
-      await prisma.psychologist.update({
-        where: { id: req.user.id },
-        data: { status: 'PENDING' },
-      });
-    }
+    const status = await markDocumentsSubmittedIfNeeded(req.user.id);
 
     res.status(201).json({
-      message: 'Documentos subidos. Tu solicitud está pendiente de verificación.',
+      message: getDocumentUploadMessage(status),
       documents: created,
+      status,
     });
   } catch (error) {
     console.error('Error en uploadDocuments psychologist:', error);
     res.status(500).json({ error: 'Error al subir documentos' });
+  }
+};
+
+// ─── REPLACE DOCUMENT ───────────────────────────────────────────────────────
+exports.replaceDocument = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No se ha subido ningún archivo' });
+    }
+
+    const { id } = req.params;
+    const currentDocument = await prisma.psychologistDocument.findFirst({
+      where: { id, psychologistId: req.user.id },
+    });
+
+    if (!currentDocument) {
+      removeFile(`/uploads/psychologist-docs/${req.file.filename}`);
+      return res.status(404).json({ error: 'Documento no encontrado' });
+    }
+
+    const documentType = typeof req.body.documentType === 'string' && req.body.documentType.trim()
+      ? req.body.documentType.trim()
+      : currentDocument.documentType;
+
+    const updatedDocument = await prisma.psychologistDocument.update({
+      where: { id: currentDocument.id },
+      data: {
+        documentType,
+        fileUrl: `/uploads/psychologist-docs/${req.file.filename}`,
+        originalName: req.file.originalname,
+      },
+    });
+
+    removeFile(currentDocument.fileUrl);
+
+    const status = await markDocumentsSubmittedIfNeeded(req.user.id);
+
+    res.json({
+      message: getDocumentUploadMessage(status),
+      document: updatedDocument,
+      status,
+    });
+  } catch (error) {
+    console.error('Error en replaceDocument psychologist:', error);
+    res.status(500).json({ error: 'Error al reemplazar documento' });
+  }
+};
+
+// ─── DELETE DOCUMENT ────────────────────────────────────────────────────────
+exports.deleteDocument = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const document = await prisma.psychologistDocument.findFirst({
+      where: { id, psychologistId: req.user.id },
+    });
+
+    if (!document) {
+      return res.status(404).json({ error: 'Documento no encontrado' });
+    }
+
+    await prisma.psychologistDocument.delete({
+      where: { id: document.id },
+    });
+
+    removeFile(document.fileUrl);
+
+    const remainingDocuments = await prisma.psychologistDocument.count({
+      where: { psychologistId: req.user.id },
+    });
+    const current = await prisma.psychologist.findUnique({
+      where: { id: req.user.id },
+      select: { status: true },
+    });
+
+    let status = current?.status;
+    if (remainingDocuments === 0 && (status === 'PENDING' || status === 'REJECTED')) {
+      const updated = await prisma.psychologist.update({
+        where: { id: req.user.id },
+        data: { status: 'PENDING_DOCS' },
+        select: { status: true },
+      });
+      status = updated.status;
+    }
+
+    res.json({
+      message: 'Documento eliminado exitosamente.',
+      deletedDocumentId: document.id,
+      status,
+    });
+  } catch (error) {
+    console.error('Error en deleteDocument psychologist:', error);
+    res.status(500).json({ error: 'Error al eliminar documento' });
   }
 };
 

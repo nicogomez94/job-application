@@ -1422,6 +1422,53 @@
   overflow-wrap: anywhere;
 }
 
+.psico-doc-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: 0 0 auto;
+  max-width: 100%;
+}
+
+.psico-doc-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.28rem;
+  padding: 0.28rem 0.55rem;
+  background: #edf6fb;
+  color: #2c5f7a;
+  border: 1px solid #b8d9eb;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.2;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.psico-doc-action-btn:hover {
+  background: #ddeef7;
+}
+
+.psico-doc-action-btn:disabled,
+.psico-doc-action-btn.is-disabled {
+  opacity: 0.58;
+  cursor: not-allowed;
+}
+
+.psico-doc-action-btn--danger {
+  background: #fff7f4;
+  color: #b3261e;
+  border-color: #f3c5ba;
+}
+
+.psico-doc-action-btn--danger:hover {
+  background: #fde8e2;
+  border-color: #efb5a8;
+}
+
 .psico-doc-remove {
   background: none;
   border: none;
@@ -1491,6 +1538,18 @@
 
   .psico-doc-file-type {
     grid-column: 2 / -1;
+  }
+
+  .psico-doc-actions {
+    grid-column: 2 / -1;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .psico-doc-action-btn {
+    flex: 1 1 7rem;
+    min-height: 2.25rem;
+    white-space: normal;
   }
 
   .psico-doc-remove {
@@ -1602,12 +1661,16 @@
   min-height: 70vh;
   background: #fafaf7;
   padding: 2rem 1rem;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .psico-dashboard-container {
   max-width: 980px;
   margin: 0 auto;
   min-width: 0;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .psico-dashboard-container h1 {
@@ -1693,6 +1756,8 @@
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .psico-dashboard-secondary-row {
@@ -1700,6 +1765,8 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 1.25rem;
   align-items: start;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .psico-dashboard-card {
@@ -1708,6 +1775,8 @@
   border-radius: 12px;
   padding: 1.25rem;
   min-width: 0;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .psico-dashboard-card--profile {
@@ -1743,6 +1812,7 @@
   margin-bottom: 1rem;
   color: #1e3a4a;
   min-width: 0;
+  max-width: 100%;
 }
 
 .psico-dashboard-card-header h2 {
@@ -1984,14 +2054,20 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .psico-quick-actions li a {
+  display: inline-block;
+  max-width: 100%;
   font-size: 0.9rem;
   color: #2c5f7a;
   text-decoration: none;
   font-weight: 600;
   transition: text-decoration 0.12s;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .psico-quick-actions li a:hover { text-decoration: underline; }
@@ -2208,7 +2284,9 @@
 .psico-btn-accept {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.3rem;
+  max-width: 100%;
   padding: 0.35rem 0.75rem;
   background: #22c55e;
   color: #fff;
@@ -2233,7 +2311,9 @@
 .psico-btn-danger-sm {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.3rem;
+  max-width: 100%;
   padding: 0.35rem 0.75rem;
   background: transparent;
   color: #b91c1c;
@@ -2253,7 +2333,9 @@
 .psico-btn-unblock-sm {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.3rem;
+  max-width: 100%;
   padding: 0.35rem 0.75rem;
   background: transparent;
   color: #2c5f7a;
@@ -2275,11 +2357,20 @@
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
+  max-width: 100%;
   padding: 0.28rem 0.65rem;
   border-radius: 999px;
   font-size: 0.78rem;
   font-weight: 600;
   border: 1px solid transparent;
+  white-space: normal;
+}
+
+.psico-status-badge svg,
+.psico-btn-accept svg,
+.psico-btn-danger-sm svg,
+.psico-btn-unblock-sm svg {
+  flex: 0 0 auto;
 }
 
 .psico-status-green {
@@ -2329,6 +2420,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .patient-request-item {
@@ -2340,6 +2433,9 @@
   border: 1px solid #e2eaf0;
   border-radius: 10px;
   flex-wrap: wrap;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .patient-request-item-blocked {
@@ -2352,7 +2448,25 @@
   align-items: flex-start;
   gap: 0.75rem;
   flex: 1;
-  min-width: 200px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.patient-request-psy > div:not(.psico-card-photo) {
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.patient-request-psy strong,
+.patient-request-psy p,
+.patient-request-psy a,
+.patient-request-status,
+.psico-request-actions {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .patient-request-status {
@@ -2360,6 +2474,7 @@
   flex-direction: column;
   align-items: flex-end;
   gap: 0.25rem;
+  max-width: 100%;
 }
 
 .patient-request-contact {
@@ -2380,9 +2495,11 @@
 
 .psico-request-actions {
   display: flex;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
   gap: 0.5rem;
   align-items: center;
-  flex-shrink: 0;
+  max-width: 100%;
 }
 
 .psico-request-message {
@@ -2390,6 +2507,8 @@
   color: #4b6e85;
   font-size: 0.82rem;
   margin: 0.2rem 0 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .psico-request-message--termination {
@@ -2402,6 +2521,8 @@
   color: #991b1b;
   font-size: 0.85rem;
   margin: 0.25rem 0 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .psico-blocked-panel {
@@ -2413,6 +2534,8 @@
 
 .psico-requests-group {
   margin-bottom: 1.25rem;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .psico-requests-group-title {
@@ -2431,6 +2554,33 @@
   min-width: 42px;
   border-radius: 50%;
   overflow: hidden;
+}
+
+@media (max-width: 760px) {
+  .patient-request-item {
+    gap: 0.75rem;
+    padding: 0.85rem;
+  }
+
+  .patient-request-psy {
+    flex-basis: 100%;
+    min-width: 0;
+  }
+
+  .patient-request-status,
+  .psico-request-actions {
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  .psico-request-actions {
+    justify-content: flex-start;
+  }
+
+  .psico-request-actions > *,
+  .patient-request-status > * {
+    min-width: 0;
+  }
 }
 
 /* ── Hire section on profile page ───────────────────────────── */
