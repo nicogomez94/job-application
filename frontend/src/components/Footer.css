@@ -95,6 +95,10 @@
   color: white;
 }
 
+.footer-contact-email a {
+  overflow-wrap: anywhere;
+}
+
 .footer-social {
   display: flex;
   gap: 1rem;

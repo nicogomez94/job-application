@@ -1,15 +1,9 @@
 import { Link } from 'react-router-dom';
-import { Github, Twitter, Linkedin } from 'lucide-react';
 import { useI18n } from '../context/i18nStore';
 import './Footer.css';
 
 export default function Footer() {
   const { language, setLanguage, t } = useI18n();
-
-  const handleSocialClick = (event) => {
-    event.preventDefault();
-    alert(t('Pr\u00f3ximamente'));
-  };
 
   return (
     <footer className="footer">
@@ -50,10 +44,8 @@ export default function Footer() {
           <div className="footer-section">
             <h3>{t('Contacto')}</h3>
             <ul className="footer-list">
-              <li className="footer-social">
-                <a href="#" onClick={handleSocialClick}><Twitter className="footer-social-icon" /></a>
-                <a href="#" onClick={handleSocialClick}><Linkedin className="footer-social-icon" /></a>
-                <a href="#" onClick={handleSocialClick}><Github className="footer-social-icon" /></a>
+              <li className="footer-contact-email">
+                <a href="mailto:info@professionalsathome.com">info@professionalsathome.com</a>
               </li>
             </ul>
           </div>
