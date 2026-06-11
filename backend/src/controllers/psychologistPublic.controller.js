@@ -17,6 +17,26 @@ const getBlockInfo = (block) => {
   };
 };
 
+const REAPPLY_WAIT_DAYS = 7;
+
+const getReapplyAt = (request) => {
+  const baseDate = request?.updatedAt || request?.createdAt;
+  if (!baseDate) return null;
+  const value = new Date(baseDate);
+  value.setDate(value.getDate() + REAPPLY_WAIT_DAYS);
+  return value;
+};
+
+const addReapplyInfo = (request) => {
+  if (!request || request.status !== 'REJECTED') return request;
+  const canReapplyAt = getReapplyAt(request);
+  return {
+    ...request,
+    canReapplyAt,
+    canReapply: Boolean(canReapplyAt && canReapplyAt <= new Date()),
+  };
+};
+
 // PUBLIC LISTING
 // GET /api/psychologists?search=ana&language=Español&country=Argentina&page=1&limit=20
 exports.list = async (req, res) => {
@@ -72,11 +92,12 @@ exports.list = async (req, res) => {
           createdAt: true,
           terminationRequestedAt: true,
           terminationAcceptedAt: true,
+          updatedAt: true,
         },
       });
 
       requests.forEach(({ psychologistId, ...request }) => {
-        currentPatientRequestByPsychologistId.set(psychologistId, request);
+        currentPatientRequestByPsychologistId.set(psychologistId, addReapplyInfo(request));
       });
     }
 

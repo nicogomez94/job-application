@@ -140,7 +140,7 @@ export default function RegisterPsychologistINTL() {
       else if (!isValidOptionalBirthDate(form.dateOfBirth)) errors.dateOfBirth = 'Debe ser una fecha válida y mayor de 21 años';
       if (!trimmed(form.documentNumber)) errors.documentNumber = 'Campo requerido';
       else if (!/^[a-zA-Z0-9\s.-]{5,20}$/.test(trimmed(form.documentNumber))) errors.documentNumber = 'Documento inválido';
-      if (trimmed(form.taxId) && !/^[a-zA-Z0-9\s.-]{5,25}$/.test(trimmed(form.taxId))) errors.taxId = 'Identificación fiscal inválida';
+      if (trimmed(form.taxId) && !/^[a-zA-Z0-9\s.-]{5,25}$/.test(trimmed(form.taxId))) errors.taxId = 'Identificación fiscal como Monotributista inválida';
       if (!trimmed(form.country)) errors.country = 'Campo requerido';
       else if (!NAME_REGEX.test(trimmed(form.country))) errors.country = 'País inválido';
       if (trimmed(form.region) && !textLengthBetween(form.region, 2, 80)) errors.region = 'Región inválida';
@@ -340,7 +340,7 @@ export default function RegisterPsychologistINTL() {
                 </select>
               </label>
               <label className={fieldClass('documentNumber')}>Número de documento *<input type="text" name="documentNumber" value={form.documentNumber} onChange={handleChange} />{fieldError('documentNumber')}</label>
-              <label className={fieldClass('taxId')}>Identificación fiscal (si aplica)<input type="text" name="taxId" value={form.taxId} onChange={handleChange} />{fieldError('taxId')}</label>
+              <label className={fieldClass('taxId')}>Identificación fiscal como Monotributista (si aplica)<input type="text" name="taxId" value={form.taxId} onChange={handleChange} />{fieldError('taxId')}</label>
               <label className={fieldClass('country')}>País *<input type="text" name="country" value={form.country} onChange={handleChange} />{fieldError('country')}</label>
               <label className={fieldClass('region')}>Estado / Provincia / Región<input type="text" name="region" value={form.region} onChange={handleChange} />{fieldError('region')}</label>
               <label className={fieldClass('phone')}>WhatsApp *<input type="text" name="phone" value={form.phone} onChange={handleChange} placeholder="+1 555 000 0000" />{fieldError('phone')}</label>

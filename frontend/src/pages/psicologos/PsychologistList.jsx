@@ -210,7 +210,8 @@ function PsychologistCard({ psychologist: p, highlighted = false, cardRef = null
   const country = p.country || (p.registrationType === 'ARGENTINA' ? 'Argentina' : '');
   const title = p.universityDegree || p.degreeInstitution;
   const existingRequest = p.currentPatientRequest || (p.hasRequestedByCurrentPatient ? { status: 'PENDING' } : null);
-  const hasExistingRequest = Boolean(existingRequest);
+  const canReapply = existingRequest?.status === 'REJECTED' && existingRequest?.canReapply;
+  const hasExistingRequest = Boolean(existingRequest) && !canReapply;
   const requestStatusUi = hasExistingRequest ? getRequestStatusUi(existingRequest.status) : null;
   const RequestIcon = requestStatusUi?.icon;
 

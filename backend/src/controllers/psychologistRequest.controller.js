@@ -61,7 +61,7 @@ const keepPatientIdentityOnly = (patient) => {
   };
 };
 
-const TERMINATION_MESSAGE = 'El paciente a decidido finalizar la terapia por razones personales';
+const TERMINATION_MESSAGE = 'El usuario ha decidido finalizar la terapia por razones personales';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PATIENT ENDPOINTS

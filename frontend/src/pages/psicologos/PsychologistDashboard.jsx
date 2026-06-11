@@ -28,7 +28,7 @@ const PLAN_LABELS = {
   TRIAL: 'Prueba 2 meses',
 };
 
-const TERMINATION_MESSAGE = 'El paciente a decidido finalizar la terapia por razones personales';
+const TERMINATION_MESSAGE = 'El usuario ha decidido finalizar la terapia por razones personales';
 
 const formatList = (items) => (Array.isArray(items) && items.length > 0 ? items.join(', ') : '-');
 

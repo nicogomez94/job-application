@@ -147,6 +147,9 @@ export default function RegisterPsychologistDocs() {
       return;
     }
 
+    const confirmed = window.confirm('¿Está seguro que desea reemplazar el documento seleccionado?');
+    if (!confirmed) return;
+
     const actionId = `replace-${document.id}`;
     setDocumentActionId(actionId);
     setValidationMessage('');

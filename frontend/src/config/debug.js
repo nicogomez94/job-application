@@ -103,7 +103,7 @@ export const DEBUG_FORM_DATA = {
     licenseNumber: 'MP 45821',
     licenseProvince: 'Ciudad de Buenos Aires',
     healthMinistryReg: 'MSAL-AR-8821',
-    virtualConsultingAuthorization: 'Habilitación especial de consultorio virtual',
+    virtualConsultingAuthorization: 'Licencia Sanitaria Federal',
     sessionCost: 'ARS 25.000',
     sessionDuration: '50 minutos',
     yearsExperience: '9',

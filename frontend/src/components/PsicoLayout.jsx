@@ -5,6 +5,9 @@ import { LogOut, LayoutDashboard, ChevronDown, ClipboardList, Menu, X } from 'lu
 import { scrollToTopInstant } from '../utils/scrollToTop';
 import './PsicoLayout.css';
 
+const CONTACT_EMAIL = 'info@professionalsathome.com';
+const CONTACT_EMAIL_URL = `https://mail.google.com/mail/?view=cm&fs=1&to=${CONTACT_EMAIL}`;
+
 export default function PsicoLayout() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -202,7 +205,8 @@ export default function PsicoLayout() {
           <span className="psico-layout-footer-back-placeholder" />
           <span className="psico-layout-footer-legal">
             Las consultas son pactadas directamente entre el paciente y el profesional.
-            La plataforma no interviene ni garantiza los servicios.
+            La plataforma no interviene ni garantiza los servicios.{' '}
+            <a href={CONTACT_EMAIL_URL} target="_blank" rel="noreferrer">{CONTACT_EMAIL}</a>
           </span>
         </div>
       </footer>

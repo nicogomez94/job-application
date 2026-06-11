@@ -14,6 +14,7 @@ const toAssetUrl = (p) => {
 };
 
 const REJECTED_MESSAGE = 'Estimada/o. En estos momentos estamos con agenda completa. Será un gusto asistirle en un próximo contacto. Intente nuevamente después de 7 días.';
+const TERMINATION_MESSAGE = 'El usuario ha decidido finalizar la terapia por razones personales';
 const mailtoHref = (email) => `mailto:${String(email || '').trim()}`;
 
 export default function PsychologistProfile() {
@@ -253,13 +254,13 @@ export default function PsychologistProfile() {
                         onClick={handleRequestTherapyEnd}
                         disabled={endingTherapy || hasTerminationRequest}
                       >
-                        {hasTerminationRequest ? 'Finalización solicitada' : 'El paciente finaliza la terapia'}
+                        {hasTerminationRequest ? 'Finalización solicitada' : 'El usuario finaliza la terapia'}
                       </button>
                     )}
                   </div>
                   {hasTerminationRequest && (
                     <p className="psico-request-message psico-request-message--termination">
-                      "El paciente a decidido finalizar la terapia por razones personales"
+                      "{TERMINATION_MESSAGE}"
                     </p>
                   )}
                   {terminationAccepted && (
@@ -288,9 +289,11 @@ export default function PsychologistProfile() {
               {/* REJECTED: allow retrying */}
               {requestRejected && !requestBlocked && (
                 <div className="psico-hire-section">
-                  <span className="psico-status-badge psico-status-red psico-status-unavailable">
-                    <XCircle size={14} /> {REJECTED_MESSAGE}
-                  </span>
+                  {!canReapply && (
+                    <span className="psico-status-badge psico-status-red psico-status-unavailable">
+                      <XCircle size={14} /> {REJECTED_MESSAGE}
+                    </span>
+                  )}
                   {canReapply && (
                     <>
                       <textarea
@@ -392,7 +395,7 @@ export default function PsychologistProfile() {
 
                 {p.licenseNumber && (
                   <div className="psico-profile-detail-card">
-                    <h3>Matrícula profesional</h3>
+                    <h3>Matrícula Nacional/Profesional Número</h3>
                     <p>{p.licenseNumber}</p>
                   </div>
                 )}

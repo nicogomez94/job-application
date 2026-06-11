@@ -2,6 +2,9 @@ import { Link } from 'react-router-dom';
 import { useI18n } from '../context/i18nStore';
 import './Footer.css';
 
+const CONTACT_EMAIL = 'info@professionalsathome.com';
+const CONTACT_EMAIL_URL = `https://mail.google.com/mail/?view=cm&fs=1&to=${CONTACT_EMAIL}`;
+
 export default function Footer() {
   const { language, setLanguage, t } = useI18n();
 
@@ -45,7 +48,7 @@ export default function Footer() {
             <h3>{t('Contacto')}</h3>
             <ul className="footer-list">
               <li className="footer-contact-email">
-                <a href="mailto:info@professionalsathome.com">info@professionalsathome.com</a>
+                <a href={CONTACT_EMAIL_URL} target="_blank" rel="noreferrer">{CONTACT_EMAIL}</a>
               </li>
             </ul>
           </div>

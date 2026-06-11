@@ -31,6 +31,7 @@ const initialForm = {
   addressPostalCode: '',
   country: '',
   region: '',
+  registrationType: '',
   practiceProvince: '',
   universityDegree: '',
   graduationYear: '',
@@ -87,6 +88,7 @@ export default function PsychologistEditProfile() {
           addressPostalCode: p.addressPostalCode || '',
           country: p.country || (isArgentina ? 'Argentina' : ''),
           region: p.region || p.practiceProvince || p.licenseProvince || p.addressProvince || '',
+          registrationType: p.registrationType || '',
           practiceProvince: p.practiceProvince || '',
           universityDegree: p.universityDegree || '',
           graduationYear: p.graduationYear ?? '',
@@ -124,6 +126,7 @@ export default function PsychologistEditProfile() {
     () => form.displayName || `${form.firstName} ${form.lastName}`.trim(),
     [form.displayName, form.firstName, form.lastName],
   );
+  const isArgentina = form.registrationType === 'ARGENTINA';
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -230,21 +233,25 @@ export default function PsychologistEditProfile() {
               <input name="dni" value={form.dni} onChange={handleChange} />
             </label>
             <label>
-              CUIT / CUIL
+              Identificación fiscal como Monotributista
               <input name="cuitCuil" value={form.cuitCuil} onChange={handleChange} />
             </label>
-            <label>
-              Tipo de documento
-              <input name="documentType" value={form.documentType} onChange={handleChange} />
-            </label>
-            <label>
-              Número de documento
-              <input name="documentNumber" value={form.documentNumber} onChange={handleChange} />
-            </label>
-            <label>
-              Identificación fiscal
-              <input name="taxId" value={form.taxId} onChange={handleChange} />
-            </label>
+            {!isArgentina && (
+              <>
+                <label>
+                  Tipo de documento
+                  <input name="documentType" value={form.documentType} onChange={handleChange} />
+                </label>
+                <label>
+                  Número de documento
+                  <input name="documentNumber" value={form.documentNumber} onChange={handleChange} />
+                </label>
+                <label>
+                  Identificación fiscal como Monotributista
+                  <input name="taxId" value={form.taxId} onChange={handleChange} />
+                </label>
+              </>
+            )}
             <label>
               País
               <input name="country" value={form.country} onChange={handleChange} />
@@ -294,16 +301,16 @@ export default function PsychologistEditProfile() {
               <input name="universityName" value={form.universityName} onChange={handleChange} />
             </label>
             <label>
-              Institución del título
+              Institución emisora del título
               <input name="degreeInstitution" value={form.degreeInstitution} onChange={handleChange} />
             </label>
             <label>
-              Matrícula profesional
+              Matrícula Nacional/Profesional Número
               <input name="licenseNumber" value={form.licenseNumber} onChange={handleChange} />
             </label>
             <label>
-              Provincia de matrícula
-              <input name="licenseProvince" value={form.licenseProvince} onChange={handleChange} />
+              Matrícula Provincial Numero
+              <input name="licenseProvince" value={form.licenseProvince} onChange={handleChange} placeholder="Provincia/Número" />
             </label>
             <label>
               Entidad que expide la licencia
@@ -318,7 +325,7 @@ export default function PsychologistEditProfile() {
               <input name="healthMinistryReg" value={form.healthMinistryReg} onChange={handleChange} />
             </label>
             <label className="psico-edit-profile-wide">
-              Habilitación de consultorio virtual
+              Licencia Sanitaria Federal
               <input name="virtualConsultingAuthorization" value={form.virtualConsultingAuthorization} onChange={handleChange} />
             </label>
             <label>
