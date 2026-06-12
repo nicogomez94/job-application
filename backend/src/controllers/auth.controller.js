@@ -13,6 +13,7 @@ const {
   getEmailAlreadyRegisteredMessage,
   handlePrismaError,
 } = require('../utils/accountEmail');
+const { validateAndNormalizePhoneNumber } = require('../utils/phone');
 const addMonths = (date, months) => {
   const value = new Date(date);
   value.setMonth(value.getMonth() + months);
@@ -37,6 +38,11 @@ exports.registerUser = async (req, res) => {
       return res.status(400).json({ error: 'El formato del email es inválido.' });
     }
 
+    const normalizedPhone = validateAndNormalizePhoneNumber(phone);
+    if (!normalizedPhone.isValid) {
+      return res.status(400).json({ error: normalizedPhone.error });
+    }
+
     const normalizedEmail = normalizeEmail(email);
 
     // Verificar si el email ya existe en cualquiera de las cuentas del sitio
@@ -55,7 +61,7 @@ exports.registerUser = async (req, res) => {
         password: hashedPassword,
         firstName,
         lastName,
-        phone,
+        phone: normalizedPhone.value,
       },
       select: {
         id: true,

@@ -4,6 +4,8 @@ import { ArrowLeft, Save } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { psychologistService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
+import PhoneNumberInput from '../../components/PhoneNumberInput';
+import { getPhoneValidationMessage, normalizePhoneNumber } from '../../utils/phoneNumber';
 import './Psicologos.css';
 
 const listToText = (value) => (Array.isArray(value) ? value.join(', ') : '');
@@ -63,6 +65,7 @@ export default function PsychologistEditProfile() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [deletingAccount, setDeletingAccount] = useState(false);
+  const [phoneError, setPhoneError] = useState('');
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -128,18 +131,33 @@ export default function PsychologistEditProfile() {
   );
   const isArgentina = form.registrationType === 'ARGENTINA';
 
+  const updateField = (name, value) => {
+    setForm((prev) => ({ ...prev, [name]: value }));
+    if (name === 'phone') setPhoneError('');
+  };
+
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    updateField(name, value);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    const nextPhoneError = getPhoneValidationMessage(form.phone);
+    if (nextPhoneError) {
+      setPhoneError(nextPhoneError);
+      toast.error(nextPhoneError);
+      return;
+    }
+
+    setPhoneError('');
     setSaving(true);
 
     try {
       const payload = {
         ...form,
+        phone: normalizePhoneNumber(form.phone) || null,
         specialties: textToList(form.specialties),
         ageRanges: textToList(form.ageRanges),
         languages: textToList(form.languages),
@@ -220,10 +238,13 @@ export default function PsychologistEditProfile() {
               Fecha de nacimiento
               <input name="dateOfBirth" type="date" value={form.dateOfBirth} onChange={handleChange} />
             </label>
-            <label>
-              WhatsApp
-              <input name="phone" value={form.phone} onChange={handleChange} />
-            </label>
+            <PhoneNumberInput
+              id="psychologist-profile-phone"
+              label="WhatsApp"
+              value={form.phone}
+              onChange={(phone) => updateField('phone', phone)}
+              error={phoneError}
+            />
             <label>
               Email de contacto
               <input name="contactEmail" type="email" value={form.contactEmail} onChange={handleChange} />

@@ -5,6 +5,8 @@ import { psychologistAuthService, psychologistService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
 import { DEBUG_FORM_DATA, DEBUG_MODE } from '../../config/debug';
 import PasswordInput from '../../components/PasswordInput';
+import PhoneNumberInput from '../../components/PhoneNumberInput';
+import { getPhoneValidationMessage, normalizePhoneNumber } from '../../utils/phoneNumber';
 import './Psicologos.css';
 
 const SPECIALTIES = [
@@ -59,17 +61,9 @@ const getInitialForm = () => (DEBUG_MODE ? { ...DEBUG_FORM_DATA.registerPsycholo
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const NAME_REGEX = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s'-]{2,}$/;
-const PHONE_CHARS_REGEX = /^\+?[\d\s().-]+$/;
 const TEXT_WITH_NUMBER_REGEX = /^(?=.*\d)[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s./-]{3,}$/;
 
-const digitsOnly = (value) => String(value || '').replace(/\D/g, '');
 const trimmed = (value) => String(value || '').trim();
-
-const isValidPhone = (value) => {
-  if (!trimmed(value)) return true;
-  const digits = digitsOnly(value);
-  return PHONE_CHARS_REGEX.test(trimmed(value)) && digits.length >= 8 && digits.length <= 15;
-};
 
 const isValidOptionalEmail = (value) => !trimmed(value) || EMAIL_REGEX.test(trimmed(value));
 
@@ -100,8 +94,7 @@ export default function RegisterPsychologistINTL() {
   const { setAuth } = useAuthStore();
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const updateField = (name, value) => {
     setForm((prev) => ({ ...prev, [name]: value }));
     setFieldErrors((prev) => {
       if (!prev[name]) return prev;
@@ -109,6 +102,11 @@ export default function RegisterPsychologistINTL() {
       delete next[name];
       return next;
     });
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    updateField(name, value);
   };
 
   const toggleArrayField = (field, value) => {
@@ -163,8 +161,8 @@ export default function RegisterPsychologistINTL() {
       if (!trimmed(form.country)) errors.country = 'Campo requerido';
       else if (!NAME_REGEX.test(trimmed(form.country))) errors.country = 'País inválido';
       if (trimmed(form.region) && !textLengthBetween(form.region, 2, 80)) errors.region = 'Región inválida';
-      if (!trimmed(form.phone)) errors.phone = 'Campo requerido';
-      else if (!isValidPhone(form.phone)) errors.phone = 'Ingresá un WhatsApp válido, solo números y prefijo';
+      const phoneError = getPhoneValidationMessage(form.phone, { required: true });
+      if (phoneError) errors.phone = phoneError;
       if (!isValidOptionalEmail(form.contactEmail)) errors.contactEmail = 'Email inválido';
       if (trimmed(form.addressStreet) && !textLengthBetween(form.addressStreet, 2, 80)) errors.addressStreet = 'Ingresá una calle válida';
       if (trimmed(form.addressNumber) && !/^[a-zA-Z0-9\s/-]{1,12}$/.test(trimmed(form.addressNumber))) errors.addressNumber = 'Número inválido';
@@ -274,7 +272,7 @@ export default function RegisterPsychologistINTL() {
       // Paso 2: Guardar perfil
       try {
         await psychologistService.updateProfile({
-          phone: form.phone,
+          phone: normalizePhoneNumber(form.phone),
           contactEmail: form.contactEmail || form.email,
           gender: form.gender,
           dateOfBirth: form.dateOfBirth || undefined,
@@ -390,7 +388,15 @@ export default function RegisterPsychologistINTL() {
               <label className={fieldClass('taxId')}>Identificación fiscal como Monotributista (si aplica)<input type="text" name="taxId" value={form.taxId} onChange={handleChange} />{fieldError('taxId')}</label>
               <label className={fieldClass('country')}>País *<input type="text" name="country" value={form.country} onChange={handleChange} />{fieldError('country')}</label>
               <label className={fieldClass('region')}>Estado / Provincia / Región<input type="text" name="region" value={form.region} onChange={handleChange} />{fieldError('region')}</label>
-              <label className={fieldClass('phone')}>WhatsApp *<input type="text" name="phone" value={form.phone} onChange={handleChange} placeholder="+1 555 000 0000" />{fieldError('phone')}</label>
+              <PhoneNumberInput
+                id="register-psychologist-intl-phone"
+                label="WhatsApp"
+                required
+                value={form.phone}
+                onChange={(phone) => updateField('phone', phone)}
+                error={fieldErrors.phone}
+                className={fieldClass('phone')}
+              />
               <label className={fieldClass('contactEmail')}>Email de contacto público<input type="email" name="contactEmail" value={form.contactEmail} onChange={handleChange} />{fieldError('contactEmail')}</label>
               <label className={`psico-full-col ${fieldClass('addressStreet')}`}>Calle<input type="text" name="addressStreet" value={form.addressStreet} onChange={handleChange} />{fieldError('addressStreet')}</label>
               <label className={fieldClass('addressNumber')}>Número<input type="text" name="addressNumber" value={form.addressNumber} onChange={handleChange} />{fieldError('addressNumber')}</label>

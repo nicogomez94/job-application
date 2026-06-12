@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const prisma = require('../config/database');
+const { validateAndNormalizePhoneNumber } = require('../utils/phone');
 
 const MAX_OTHER_FILES = 4;
 
@@ -115,12 +116,17 @@ exports.updateProfile = async (req, res) => {
       portfolioUrl,
     } = req.body;
 
+    const normalizedPhone = validateAndNormalizePhoneNumber(phone);
+    if (!normalizedPhone.isValid) {
+      return res.status(400).json({ error: normalizedPhone.error });
+    }
+
     const updatedUser = await prisma.user.update({
       where: { id: req.user.id },
       data: {
         firstName,
         lastName,
-        phone,
+        phone: normalizedPhone.value,
         title,
         bio,
         experience,

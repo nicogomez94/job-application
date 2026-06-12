@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Mail, Lock, User, Users, Phone } from 'lucide-react';
 import { patientAuthService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
 import PasswordInput from '../../components/PasswordInput';
+import PhoneNumberInput from '../../components/PhoneNumberInput';
+import { getPhoneValidationMessage, normalizePhoneNumber } from '../../utils/phoneNumber';
 import './Psicologos.css';
 import '../auth/PsicoLogin.css';
 
@@ -15,11 +17,12 @@ export default function RegisterPatient() {
   const navigate = useNavigate();
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
     watch,
   } = useForm({
-    defaultValues: {},
+    defaultValues: { phone: '' },
   });
 
   const onSubmit = async (data) => {
@@ -29,7 +32,7 @@ export default function RegisterPatient() {
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
-        phone: data.phone,
+        phone: normalizePhoneNumber(data.phone) || undefined,
         password: data.password,
         gender: data.gender,
         acceptTerms: data.acceptTerms,
@@ -109,15 +112,22 @@ export default function RegisterPatient() {
           </div>
 
           <div className="psico-login-field">
-            <label htmlFor="phone">
-              <Phone size={14} /> WhatsApp
-            </label>
-            <input
-              id="phone"
-              type="tel"
-              placeholder="+54 9 ..."
-              autoComplete="tel"
-              {...register('phone')}
+            <Controller
+              name="phone"
+              control={control}
+              rules={{
+                validate: (value) => getPhoneValidationMessage(value) || true,
+              }}
+              render={({ field }) => (
+                <PhoneNumberInput
+                  id="phone"
+                  label={<><Phone size={14} /> WhatsApp</>}
+                  value={field.value || ''}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  error={errors.phone?.message}
+                />
+              )}
             />
           </div>
 

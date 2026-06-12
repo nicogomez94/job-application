@@ -7,6 +7,8 @@ import { useI18n } from '../../context/i18nStore';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
 import RatingSummary from '../../components/RatingSummary';
+import PhoneNumberInput from '../../components/PhoneNumberInput';
+import { getPhoneValidationMessage, normalizePhoneNumber } from '../../utils/phoneNumber';
 import './Profile.css';
 
 const initialForm = {
@@ -74,6 +76,7 @@ export default function UserProfile() {
   const [uploadingOtherFiles, setUploadingOtherFiles] = useState(false);
   const [deletingOtherIndex, setDeletingOtherIndex] = useState(null);
   const [deletingAccount, setDeletingAccount] = useState(false);
+  const [phoneError, setPhoneError] = useState('');
   const { updateUser, logout } = useAuthStore();
   const { language } = useI18n();
   const navigate = useNavigate();
@@ -138,19 +141,32 @@ export default function UserProfile() {
     return () => URL.revokeObjectURL(objectUrl);
   }, [selectedImageFile]);
 
+  const updateField = (name, value) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === 'phone') setPhoneError('');
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    updateField(name, value);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const nextPhoneError = getPhoneValidationMessage(formData.phone);
+    if (nextPhoneError) {
+      setPhoneError(nextPhoneError);
+      toast.error(nextPhoneError);
+      return;
+    }
+
+    setPhoneError('');
     setSaving(true);
     try {
       const payload = {
         firstName: formData.firstName.trim(),
         lastName: formData.lastName.trim(),
-        phone: formData.phone.trim() || null,
+        phone: normalizePhoneNumber(formData.phone) || null,
         title: formData.title.trim() || null,
         location: formData.location.trim() || null,
         bio: formData.bio.trim() || null,
@@ -504,10 +520,13 @@ export default function UserProfile() {
 
         <div className="user-profile-two-columns user-profile-two-columns-spaced">
           <div>
-            <label htmlFor="user-phone" className="user-profile-field-label">
-              Whatsapp
-            </label>
-            <input id="user-phone" className="input" name="phone" placeholder="Teléfono" value={formData.phone} onChange={handleChange} />
+            <PhoneNumberInput
+              id="user-phone"
+              label="Whatsapp"
+              value={formData.phone}
+              onChange={(phone) => updateField('phone', phone)}
+              error={phoneError}
+            />
           </div>
           <div>
             <label htmlFor="user-location" className="user-profile-field-label">

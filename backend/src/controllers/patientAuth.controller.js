@@ -10,6 +10,7 @@ const {
   handlePrismaError,
 } = require('../utils/accountEmail');
 const { buildConsentMetadata } = require('../utils/legalAcceptance');
+const { validateAndNormalizePhoneNumber } = require('../utils/phone');
 
 const removeFile = (assetPath) => {
   if (!assetPath || typeof assetPath !== 'string') return;
@@ -38,6 +39,11 @@ exports.register = async (req, res) => {
       return res.status(400).json({ error: 'Debés aceptar los Términos y Condiciones, la Política de Privacidad y el Acuerdo de Aceptación.' });
     }
 
+    const normalizedPhone = validateAndNormalizePhoneNumber(phone);
+    if (!normalizedPhone.isValid) {
+      return res.status(400).json({ error: normalizedPhone.error });
+    }
+
     const normalizedEmail = normalizeEmail(email);
 
     const existingAccount = await findAccountByEmail(prisma, normalizedEmail);
@@ -57,7 +63,7 @@ exports.register = async (req, res) => {
         consentMetadata: buildConsentMetadata({ role: 'patient', req }),
         firstName,
         lastName,
-        phone,
+        phone: normalizedPhone.value,
       },
       select: {
         id: true,

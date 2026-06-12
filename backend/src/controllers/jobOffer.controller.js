@@ -1,4 +1,5 @@
 const prisma = require('../config/database');
+const { validateAndNormalizePhoneNumber } = require('../utils/phone');
 
 const FREELANCE_ALLOWED_STATUSES = ['PENDING', 'ACCEPTED', 'REJECTED'];
 const isValidRating = (rating) => Number.isInteger(rating) && rating >= 1 && rating <= 5;
@@ -26,6 +27,11 @@ exports.createJobOffer = async (req, res) => {
       expiresAt,
     } = req.body;
 
+    const normalizedWhatsappNumber = validateAndNormalizePhoneNumber(whatsappNumber);
+    if (!normalizedWhatsappNumber.isValid) {
+      return res.status(400).json({ error: normalizedWhatsappNumber.error });
+    }
+
     const jobOffer = await prisma.jobOffer.create({
       data: {
         title,
@@ -39,7 +45,7 @@ exports.createJobOffer = async (req, res) => {
         workType,
         workMode,
         experienceLevel,
-        whatsappNumber,
+        whatsappNumber: normalizedWhatsappNumber.value,
         contactEmail,
         languages,
         postingLanguage: postingLanguage ? String(postingLanguage).trim().toLowerCase() : 'es',
@@ -184,6 +190,11 @@ exports.updateJobOffer = async (req, res) => {
       expiresAt,
     } = req.body;
 
+    const normalizedWhatsappNumber = validateAndNormalizePhoneNumber(whatsappNumber);
+    if (!normalizedWhatsappNumber.isValid) {
+      return res.status(400).json({ error: normalizedWhatsappNumber.error });
+    }
+
     // Verificar que la oferta pertenece a esta empresa
     const existingOffer = await prisma.jobOffer.findFirst({
       where: { id, companyId: req.user.id },
@@ -207,7 +218,7 @@ exports.updateJobOffer = async (req, res) => {
         workType,
         workMode,
         experienceLevel,
-        whatsappNumber,
+        whatsappNumber: normalizedWhatsappNumber.value,
         contactEmail,
         languages,
         postingLanguage: postingLanguage ? String(postingLanguage).trim().toLowerCase() : undefined,

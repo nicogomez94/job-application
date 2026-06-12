@@ -6,6 +6,8 @@ import { useAuthStore } from '../../context/authStore';
 import { useI18n } from '../../context/i18nStore';
 import { DEBUG_FORM_DATA, DEBUG_MODE } from '../../config/debug';
 import PasswordInput from '../../components/PasswordInput';
+import PhoneNumberInput from '../../components/PhoneNumberInput';
+import { getPhoneValidationMessage, normalizePhoneNumber } from '../../utils/phoneNumber';
 import './Register.css';
 
 const MAX_OTHER_FILES = 4;
@@ -108,6 +110,7 @@ export default function RegisterUser() {
   const [formData, setFormData] = useState(getInitialForm);
   const [loading, setLoading] = useState(false);
   const [acceptedLegal, setAcceptedLegal] = useState(false);
+  const [phoneError, setPhoneError] = useState('');
   const { language } = useI18n();
   const { setAuth, logout } = useAuthStore();
   const navigate = useNavigate();
@@ -115,9 +118,14 @@ export default function RegisterUser() {
 
   const getFileKey = (file) => `${file.name}-${file.size}-${file.lastModified}`;
 
+  const updateField = (name, value) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === 'phone') setPhoneError('');
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    updateField(name, value);
   };
 
   const handleCvFileChange = (e) => {
@@ -210,6 +218,14 @@ export default function RegisterUser() {
       return;
     }
 
+    const nextPhoneError = getPhoneValidationMessage(formData.phone);
+    if (nextPhoneError) {
+      setPhoneError(nextPhoneError);
+      toast.error(nextPhoneError);
+      return;
+    }
+
+    setPhoneError('');
     setLoading(true);
     try {
       const payload = {
@@ -217,7 +233,7 @@ export default function RegisterUser() {
         lastName: formData.lastName.trim(),
         email: formData.email.trim(),
         password: formData.password,
-        phone: formData.phone.trim() || undefined,
+        phone: normalizePhoneNumber(formData.phone) || undefined,
       };
 
       const response = await authService.registerUser(payload);
@@ -421,16 +437,12 @@ export default function RegisterUser() {
           </div>
 
           <div style={{ marginTop: '1rem' }}>
-            <label htmlFor="register-user-phone" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
-              Teléfono
-            </label>
-            <input
+            <PhoneNumberInput
               id="register-user-phone"
-              className="input"
-              name="phone"
-              placeholder="Teléfono (opcional)"
+              label="Teléfono"
               value={formData.phone}
-              onChange={handleChange}
+              onChange={(phone) => updateField('phone', phone)}
+              error={phoneError}
             />
           </div>
 

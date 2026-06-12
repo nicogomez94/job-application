@@ -3,8 +3,10 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { categoryService, jobOfferService } from '../../services';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
+import PhoneNumberInput from '../../components/PhoneNumberInput';
 import { JOB_POSTING_LANGUAGE_OPTIONS } from '../../constants/jobOfferLanguages';
 import { useI18n } from '../../context/i18nStore';
+import { getPhoneValidationMessage, normalizePhoneNumber } from '../../utils/phoneNumber';
 import './JobForm.css';
 
 const parseTextToArray = (text) =>
@@ -32,6 +34,7 @@ export default function EditJob() {
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [whatsappError, setWhatsappError] = useState('');
 
   useEffect(() => {
     const loadData = async () => {
@@ -87,14 +90,26 @@ export default function EditJob() {
 
   const canSubmit = useMemo(() => Boolean(formData?.title && formData?.description && formData?.location && formData?.categoryId), [formData]);
 
+  const updateField = (name, value) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === 'whatsappNumber') setWhatsappError('');
+  };
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+    updateField(name, type === 'checkbox' ? checked : value);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData) return;
+    const nextWhatsappError = getPhoneValidationMessage(formData.whatsappNumber);
+    if (nextWhatsappError) {
+      setWhatsappError(nextWhatsappError);
+      toast.error(nextWhatsappError);
+      return;
+    }
+
     const parsedExpiresAt = formData.expiresAt ? new Date(formData.expiresAt) : null;
     if (parsedExpiresAt && Number.isNaN(parsedExpiresAt.getTime())) {
       toast.error('La fecha de vencimiento es inválida');
@@ -118,7 +133,7 @@ export default function EditJob() {
         workType: formData.workType,
         workMode: formData.workMode,
         experienceLevel: formData.experienceLevel,
-        whatsappNumber: formData.whatsappNumber.trim() || null,
+        whatsappNumber: normalizePhoneNumber(formData.whatsappNumber) || null,
         contactEmail: formData.contactEmail.trim() || null,
         expiresAt: parsedExpiresAt ? parsedExpiresAt.toISOString() : null,
         isActive: formData.isActive,
@@ -286,10 +301,13 @@ export default function EditJob() {
 
           <div className="job-form-grid-three">
             <div>
-              <label htmlFor="edit-job-whatsapp" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
-                WhatsApp de contacto
-              </label>
-              <input id="edit-job-whatsapp" className="input" name="whatsappNumber" value={formData.whatsappNumber} onChange={handleChange} />
+              <PhoneNumberInput
+                id="edit-job-whatsapp"
+                label="WhatsApp de contacto"
+                value={formData.whatsappNumber}
+                onChange={(phone) => updateField('whatsappNumber', phone)}
+                error={whatsappError}
+              />
             </div>
             <div>
               <label htmlFor="edit-job-contact-email" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>

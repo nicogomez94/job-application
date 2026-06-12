@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const prisma = require('../config/database');
 const { handlePrismaError } = require('../utils/accountEmail');
+const { validateAndNormalizePhoneNumber } = require('../utils/phone');
 
 const SITE_URL = process.env.FRONTEND_URL || 'https://professionalsathome.com';
 const CONTACT_FORM_ENDPOINT =
@@ -100,10 +101,15 @@ exports.updateProfile = async (req, res) => {
       specialties, ageRanges, yearsExperience, languages, remoteModality,
     } = req.body;
 
+    const normalizedPhone = validateAndNormalizePhoneNumber(phone);
+    if (!normalizedPhone.isValid) {
+      return res.status(400).json({ error: normalizedPhone.error });
+    }
+
     const updated = await prisma.psychologist.update({
       where: { id: req.user.id },
       data: {
-        firstName, lastName, displayName, gender, phone, contactEmail, bio,
+        firstName, lastName, displayName, gender, phone: normalizedPhone.value, contactEmail, bio,
         dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : undefined,
         dni, cuitCuil, addressStreet, addressNumber, addressFloor, addressCity,
         addressProvince, addressPostalCode, practiceProvince,

@@ -4,8 +4,10 @@ import toast from 'react-hot-toast';
 import { categoryService, companyService, jobOfferService } from '../../services';
 import { DEBUG_FORM_DATA, DEBUG_MODE } from '../../config/debug';
 import BackToDashboardButton from '../../components/BackToDashboardButton';
+import PhoneNumberInput from '../../components/PhoneNumberInput';
 import { JOB_POSTING_LANGUAGE_OPTIONS } from '../../constants/jobOfferLanguages';
 import { useI18n } from '../../context/i18nStore';
+import { getPhoneValidationMessage, normalizePhoneNumber } from '../../utils/phoneNumber';
 import './JobForm.css';
 
 const getInitialForm = () =>
@@ -50,6 +52,7 @@ export default function CreateJob() {
   const [isBlocked, setIsBlocked] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [whatsappError, setWhatsappError] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -76,13 +79,25 @@ export default function CreateJob() {
     loadInitialData();
   }, []);
 
+  const updateField = (name, value) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === 'whatsappNumber') setWhatsappError('');
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    updateField(name, value);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const nextWhatsappError = getPhoneValidationMessage(formData.whatsappNumber);
+    if (nextWhatsappError) {
+      setWhatsappError(nextWhatsappError);
+      toast.error(nextWhatsappError);
+      return;
+    }
+
     const parsedExpiresAt = formData.expiresAt ? new Date(formData.expiresAt) : null;
     if (parsedExpiresAt && Number.isNaN(parsedExpiresAt.getTime())) {
       toast.error('La fecha de vencimiento es inválida');
@@ -106,7 +121,7 @@ export default function CreateJob() {
         workType: formData.workType,
         workMode: formData.workMode,
         experienceLevel: formData.experienceLevel,
-        whatsappNumber: formData.whatsappNumber.trim() || null,
+        whatsappNumber: normalizePhoneNumber(formData.whatsappNumber) || null,
         contactEmail: formData.contactEmail.trim() || null,
         expiresAt: parsedExpiresAt ? parsedExpiresAt.toISOString() : null,
       };
@@ -326,10 +341,13 @@ export default function CreateJob() {
 
           <div className="job-form-grid-three">
             <div>
-              <label htmlFor="create-job-whatsapp" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>
-                WhatsApp de contacto
-              </label>
-              <input id="create-job-whatsapp" className="input" name="whatsappNumber" placeholder="WhatsApp de contacto" value={formData.whatsappNumber} onChange={handleChange} />
+              <PhoneNumberInput
+                id="create-job-whatsapp"
+                label="WhatsApp de contacto"
+                value={formData.whatsappNumber}
+                onChange={(phone) => updateField('whatsappNumber', phone)}
+                error={whatsappError}
+              />
             </div>
             <div>
               <label htmlFor="create-job-contact-email" style={{ display: 'block', color: '#5e4d38', marginBottom: '0.35rem', fontWeight: 600 }}>

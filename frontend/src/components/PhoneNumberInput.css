@@ -1,0 +1,66 @@
+.phone-number-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.phone-number-field .phone-number-label {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 0.35rem;
+}
+
+.register-form .phone-number-label,
+.job-form-page .phone-number-label,
+.user-profile-page .phone-number-label {
+  color: #5e4d38;
+  font-weight: 600;
+}
+
+.phone-number-control {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.52fr) minmax(0, 1fr);
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.phone-number-control select,
+.phone-number-control input {
+  min-width: 0;
+  width: 100%;
+  border: 1.5px solid #d4c9b5;
+  border-radius: 8px;
+  box-sizing: border-box;
+  background: #fff;
+  color: #222;
+  font: inherit;
+  padding: 0.6rem 0.75rem;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.phone-number-control select:focus,
+.phone-number-control input:focus {
+  outline: none;
+  border-color: #2c5f7a;
+  box-shadow: 0 0 0 3px rgba(44, 95, 122, 0.12);
+}
+
+.phone-number-field-invalid .phone-number-control select,
+.phone-number-field-invalid .phone-number-control input {
+  border-color: #b3261e !important;
+  background: #fff7f6 !important;
+}
+
+.phone-number-error {
+  color: #b3261e;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+@media (max-width: 480px) {
+  .phone-number-control {
+    grid-template-columns: 1fr;
+  }
+}
