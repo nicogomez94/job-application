@@ -2103,8 +2103,61 @@
   color: #666;
 }
 
+.psico-edit-profile-btn {
+  margin: 0.35rem auto 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.psico-patient-profile-editor {
+  margin-bottom: 1.25rem;
+}
+
+.psico-patient-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.psico-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem 1rem;
+}
+
+.psico-form-grid-full {
+  grid-column: 1 / -1;
+}
+
+.psico-form-select {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1.5px solid #d4c9b5;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #fff;
+  color: #1f2933;
+}
+
+.psico-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.psico-form-actions .psico-btn-primary,
+.psico-form-actions .psico-btn-secondary {
+  align-items: center;
+  justify-content: center;
+}
+
 @media (max-width: 700px) {
   .psico-dashboard-secondary-row {
+    grid-template-columns: 1fr;
+  }
+
+  .psico-form-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -2120,6 +2173,11 @@
 
   .psico-dashboard-card {
     padding: 1rem;
+  }
+
+  .psico-form-actions .psico-btn-primary,
+  .psico-form-actions .psico-btn-secondary {
+    width: 100%;
   }
 
   .psico-dashboard-profile {

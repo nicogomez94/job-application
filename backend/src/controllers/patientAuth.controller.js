@@ -12,6 +12,24 @@ const {
 const { buildConsentMetadata } = require('../utils/legalAcceptance');
 const { validateAndNormalizePhoneNumber } = require('../utils/phone');
 
+const PATIENT_SELECT = {
+  id: true,
+  email: true,
+  acceptTerms: true,
+  acceptPrivacy: true,
+  acceptAgreement: true,
+  consentMetadata: true,
+  firstName: true,
+  lastName: true,
+  gender: true,
+  phone: true,
+  profileImage: true,
+  createdAt: true,
+  updatedAt: true,
+};
+
+const VALID_GENDERS = new Set(['Hombre', 'Mujer', 'Otro']);
+
 const removeFile = (assetPath) => {
   if (!assetPath || typeof assetPath !== 'string') return;
   const normalized = assetPath.replace(/^\/+/, '');
@@ -23,7 +41,7 @@ const removeFile = (assetPath) => {
 
 exports.register = async (req, res) => {
   try {
-    const { email, password, firstName, lastName, phone, acceptTerms, acceptPrivacy, acceptAgreement } = req.body;
+    const { email, password, firstName, lastName, gender, phone, acceptTerms, acceptPrivacy, acceptAgreement } = req.body;
 
     if (!email || !password || !firstName || !lastName) {
       return res.status(400).json({ error: 'Faltan campos obligatorios: email, contraseña, nombre y apellido son requeridos.' });
@@ -37,6 +55,9 @@ exports.register = async (req, res) => {
     }
     if (!acceptTerms || !acceptPrivacy || !acceptAgreement) {
       return res.status(400).json({ error: 'Debés aceptar los Términos y Condiciones, la Política de Privacidad y el Acuerdo de Aceptación.' });
+    }
+    if (gender && !VALID_GENDERS.has(gender)) {
+      return res.status(400).json({ error: 'El género seleccionado es inválido.' });
     }
 
     const normalizedPhone = validateAndNormalizePhoneNumber(phone);
@@ -63,20 +84,10 @@ exports.register = async (req, res) => {
         consentMetadata: buildConsentMetadata({ role: 'patient', req }),
         firstName,
         lastName,
+        gender: gender || null,
         phone: normalizedPhone.value,
       },
-      select: {
-        id: true,
-        email: true,
-        acceptTerms: true,
-        acceptPrivacy: true,
-        acceptAgreement: true,
-        consentMetadata: true,
-        firstName: true,
-        lastName: true,
-        phone: true,
-        createdAt: true,
-      },
+      select: PATIENT_SELECT,
     });
 
     const token = generateToken({ id: patient.id, type: 'patient' });
@@ -91,6 +102,81 @@ exports.register = async (req, res) => {
     const userMessage = error?.code?.startsWith('P')
       ? handlePrismaError(error, 'registro')
       : 'Error al registrar paciente. Intentá nuevamente en unos minutos.';
+    res.status(500).json({ error: userMessage });
+  }
+};
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const { email, firstName, lastName, gender, phone, currentPassword, newPassword } = req.body;
+
+    if (!email || !firstName || !lastName) {
+      return res.status(400).json({ error: 'Email, nombre y apellido son obligatorios.' });
+    }
+
+    const normalizedEmail = normalizeEmail(email);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(normalizedEmail)) {
+      return res.status(400).json({ error: 'El formato del email es inválido.' });
+    }
+
+    if (gender && !VALID_GENDERS.has(gender)) {
+      return res.status(400).json({ error: 'El género seleccionado es inválido.' });
+    }
+
+    const normalizedPhone = validateAndNormalizePhoneNumber(phone);
+    if (!normalizedPhone.isValid) {
+      return res.status(400).json({ error: normalizedPhone.error });
+    }
+
+    const existingAccount = await findAccountByEmail(prisma, normalizedEmail, {
+      excludeType: 'patient',
+      excludeId: req.user.id,
+    });
+    if (existingAccount) {
+      return res.status(400).json({ error: getEmailAlreadyRegisteredMessage(existingAccount) });
+    }
+
+    const data = {
+      email: normalizedEmail,
+      firstName,
+      lastName,
+      gender: gender || null,
+      phone: normalizedPhone.value,
+    };
+
+    if (newPassword) {
+      if (newPassword.length < 6) {
+        return res.status(400).json({ error: 'La contraseña nueva debe tener al menos 6 caracteres.' });
+      }
+      if (!currentPassword) {
+        return res.status(400).json({ error: 'Ingresá tu contraseña actual para cambiarla.' });
+      }
+
+      const currentPatient = await prisma.patient.findUnique({
+        where: { id: req.user.id },
+        select: { password: true },
+      });
+      const passwordMatch = await bcrypt.compare(currentPassword, currentPatient?.password || '');
+      if (!passwordMatch) {
+        return res.status(400).json({ error: 'La contraseña actual es incorrecta.' });
+      }
+
+      data.password = await bcrypt.hash(newPassword, 10);
+    }
+
+    const patient = await prisma.patient.update({
+      where: { id: req.user.id },
+      data,
+      select: PATIENT_SELECT,
+    });
+
+    res.json({ message: 'Datos actualizados exitosamente', patient });
+  } catch (error) {
+    console.error('Error en updateProfile patient:', error);
+    const userMessage = error?.code?.startsWith('P')
+      ? handlePrismaError(error, 'actualización del perfil')
+      : 'Error al actualizar datos. Intentá nuevamente en unos minutos.';
     res.status(500).json({ error: userMessage });
   }
 };

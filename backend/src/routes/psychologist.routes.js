@@ -53,6 +53,7 @@ router.post(
     body('password').isLength({ min: 6 }).withMessage('La contraseña debe tener al menos 6 caracteres'),
     body('firstName').notEmpty().withMessage('El nombre es obligatorio'),
     body('lastName').notEmpty().withMessage('El apellido es obligatorio'),
+    body('gender').optional().isIn(['Hombre', 'Mujer', 'Otro']).withMessage('Género inválido'),
     validate,
   ],
   patientAuthController.register
@@ -144,6 +145,21 @@ router.get('/requests/mine', authenticatePatient, psychologistRequestController.
 
 // Cancel a PENDING request
 router.delete('/requests/:id', authenticatePatient, psychologistRequestController.cancelRequest);
+
+router.put(
+  '/patients/me/profile',
+  authenticatePatient,
+  [
+    body('email').isEmail().normalizeEmail().withMessage('Email inválido'),
+    body('firstName').notEmpty().withMessage('El nombre es obligatorio'),
+    body('lastName').notEmpty().withMessage('El apellido es obligatorio'),
+    body('gender').optional({ nullable: true, checkFalsy: true }).isIn(['Hombre', 'Mujer', 'Otro']).withMessage('Género inválido'),
+    body('currentPassword').optional({ nullable: true, checkFalsy: true }).isString(),
+    body('newPassword').optional({ nullable: true, checkFalsy: true }).isLength({ min: 6 }).withMessage('La contraseña nueva debe tener al menos 6 caracteres'),
+    validate,
+  ],
+  patientAuthController.updateProfile
+);
 
 // Patient uploads their own profile image
 router.post(

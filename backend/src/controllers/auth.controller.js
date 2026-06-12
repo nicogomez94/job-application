@@ -474,6 +474,7 @@ exports.getProfile = async (req, res) => {
           email: true,
           firstName: true,
           lastName: true,
+          gender: true,
           phone: true,
           profileImage: true,
           createdAt: true,

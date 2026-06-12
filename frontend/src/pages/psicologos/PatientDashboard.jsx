@@ -1,10 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { CheckCircle, Clock, XCircle, MessageCircle, Mail, Trash2, Ban, Camera, Unlock } from 'lucide-react';
+import { Controller, useForm } from 'react-hook-form';
+import { CheckCircle, Clock, XCircle, MessageCircle, Mail, Trash2, Ban, Camera, Unlock, Edit3, Save, X, User, Users, Phone, Lock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { psychologistRequestService, patientAuthService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
+import PhoneNumberInput from '../../components/PhoneNumberInput';
+import PasswordInput from '../../components/PasswordInput';
+import { getPhoneValidationMessage, normalizePhoneNumber } from '../../utils/phoneNumber';
 import './Psicologos.css';
 
 const toAssetUrl = (p) => {
@@ -29,6 +33,17 @@ const STATUS_CONFIG = {
   },
 };
 
+const getPatientFormDefaults = (patient) => ({
+  firstName: patient?.firstName || '',
+  lastName: patient?.lastName || '',
+  gender: patient?.gender || '',
+  phone: patient?.phone || '',
+  email: patient?.email || '',
+  currentPassword: '',
+  newPassword: '',
+  confirmPassword: '',
+});
+
 export default function PatientDashboard() {
   const navigate = useNavigate();
   const { user, updateUser, logout } = useAuthStore();
@@ -39,7 +54,19 @@ export default function PatientDashboard() {
   const [endingTherapy, setEndingTherapy] = useState(null);
   const [deletingAccount, setDeletingAccount] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [savingProfile, setSavingProfile] = useState(false);
   const photoInputRef = useRef(null);
+  const {
+    register,
+    control,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm({
+    defaultValues: getPatientFormDefaults(user),
+  });
 
   const load = async () => {
     try {
@@ -56,6 +83,20 @@ export default function PatientDashboard() {
     load();
   }, []);
 
+  useEffect(() => {
+    reset(getPatientFormDefaults(user));
+  }, [reset, user]);
+
+  const openProfileEditor = () => {
+    reset(getPatientFormDefaults(user));
+    setEditingProfile(true);
+  };
+
+  const closeProfileEditor = () => {
+    reset(getPatientFormDefaults(user));
+    setEditingProfile(false);
+  };
+
   const handlePhotoChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -70,6 +111,35 @@ export default function PatientDashboard() {
     } finally {
       setUploadingPhoto(false);
       if (photoInputRef.current) photoInputRef.current.value = '';
+    }
+  };
+
+  const handleProfileSubmit = async (data) => {
+    setSavingProfile(true);
+    try {
+      const payload = {
+        firstName: data.firstName.trim(),
+        lastName: data.lastName.trim(),
+        gender: data.gender || null,
+        phone: normalizePhoneNumber(data.phone) || null,
+        email: data.email.trim(),
+      };
+
+      if (data.newPassword) {
+        payload.currentPassword = data.currentPassword;
+        payload.newPassword = data.newPassword;
+      }
+
+      const res = await patientAuthService.updateProfile(payload);
+      const updatedPatient = res.data?.patient || payload;
+      updateUser(updatedPatient);
+      reset(getPatientFormDefaults(updatedPatient));
+      setEditingProfile(false);
+      toast.success('Datos actualizados');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'No se pudieron actualizar tus datos');
+    } finally {
+      setSavingProfile(false);
     }
   };
 
@@ -198,7 +268,176 @@ export default function PatientDashboard() {
           />
           <h1>Mi cuenta</h1>
           {name && <p className="psico-login-subtitle">Hola, {name}</p>}
+          <button
+            type="button"
+            className="psico-btn-secondary psico-edit-profile-btn"
+            onClick={openProfileEditor}
+          >
+            <Edit3 size={16} /> Editar datos
+          </button>
         </div>
+
+        {editingProfile && (
+          <div className="psico-dashboard-card psico-patient-profile-editor">
+            <div className="psico-dashboard-card-header">
+              <h2>Editar datos</h2>
+              <button
+                type="button"
+                className="psico-icon-btn"
+                onClick={closeProfileEditor}
+                title="Cerrar edición"
+                aria-label="Cerrar edición"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit(handleProfileSubmit)} noValidate className="psico-patient-edit-form">
+              <div className="psico-form-grid">
+                <div className="psico-login-field">
+                  <label htmlFor="patient-edit-firstName">
+                    <User size={14} /> Nombre
+                  </label>
+                  <input
+                    id="patient-edit-firstName"
+                    type="text"
+                    autoComplete="given-name"
+                    {...register('firstName', { required: 'El nombre es obligatorio' })}
+                  />
+                  {errors.firstName && <span className="psico-login-error">{errors.firstName.message}</span>}
+                </div>
+
+                <div className="psico-login-field">
+                  <label htmlFor="patient-edit-lastName">
+                    <User size={14} /> Apellido
+                  </label>
+                  <input
+                    id="patient-edit-lastName"
+                    type="text"
+                    autoComplete="family-name"
+                    {...register('lastName', { required: 'El apellido es obligatorio' })}
+                  />
+                  {errors.lastName && <span className="psico-login-error">{errors.lastName.message}</span>}
+                </div>
+
+                <div className="psico-login-field">
+                  <label htmlFor="patient-edit-gender">
+                    <Users size={14} /> Género
+                  </label>
+                  <select
+                    id="patient-edit-gender"
+                    className="psico-form-select"
+                    {...register('gender')}
+                  >
+                    <option value="">Seleccioná una opción</option>
+                    <option value="Hombre">Hombre</option>
+                    <option value="Mujer">Mujer</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </div>
+
+                <div className="psico-login-field">
+                  <Controller
+                    name="phone"
+                    control={control}
+                    rules={{
+                      validate: (value) => getPhoneValidationMessage(value) || true,
+                    }}
+                    render={({ field }) => (
+                      <PhoneNumberInput
+                        id="patient-edit-phone"
+                        label={<><Phone size={14} /> WhatsApp</>}
+                        value={field.value || ''}
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
+                        error={errors.phone?.message}
+                      />
+                    )}
+                  />
+                </div>
+
+                <div className="psico-login-field psico-form-grid-full">
+                  <label htmlFor="patient-edit-email">
+                    <Mail size={14} /> Email
+                  </label>
+                  <input
+                    id="patient-edit-email"
+                    type="email"
+                    autoComplete="email"
+                    {...register('email', {
+                      required: 'El email es obligatorio',
+                      pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Email inválido' },
+                    })}
+                  />
+                  {errors.email && <span className="psico-login-error">{errors.email.message}</span>}
+                </div>
+
+                <div className="psico-login-field">
+                  <label htmlFor="patient-edit-current-password">
+                    <Lock size={14} /> Contraseña actual
+                  </label>
+                  <PasswordInput
+                    id="patient-edit-current-password"
+                    placeholder="Solo si cambiás la clave"
+                    autoComplete="current-password"
+                    {...register('currentPassword', {
+                      validate: (value) => !watch('newPassword') || Boolean(value) || 'Ingresá tu contraseña actual',
+                    })}
+                  />
+                  {errors.currentPassword && <span className="psico-login-error">{errors.currentPassword.message}</span>}
+                </div>
+
+                <div className="psico-login-field">
+                  <label htmlFor="patient-edit-new-password">
+                    <Lock size={14} /> Nueva contraseña
+                  </label>
+                  <PasswordInput
+                    id="patient-edit-new-password"
+                    placeholder="Mínimo 6 caracteres"
+                    autoComplete="new-password"
+                    {...register('newPassword', {
+                      minLength: { value: 6, message: 'Mínimo 6 caracteres' },
+                    })}
+                  />
+                  {errors.newPassword && <span className="psico-login-error">{errors.newPassword.message}</span>}
+                </div>
+
+                <div className="psico-login-field psico-form-grid-full">
+                  <label htmlFor="patient-edit-confirm-password">
+                    <Lock size={14} /> Confirmar nueva contraseña
+                  </label>
+                  <PasswordInput
+                    id="patient-edit-confirm-password"
+                    placeholder="Repetí la nueva contraseña"
+                    autoComplete="new-password"
+                    {...register('confirmPassword', {
+                      validate: (value) => !watch('newPassword') || value === watch('newPassword') || 'Las contraseñas no coinciden',
+                    })}
+                  />
+                  {errors.confirmPassword && <span className="psico-login-error">{errors.confirmPassword.message}</span>}
+                </div>
+              </div>
+
+              <div className="psico-form-actions">
+                <button
+                  type="button"
+                  className="psico-btn-secondary"
+                  onClick={closeProfileEditor}
+                  disabled={savingProfile}
+                >
+                  <X size={16} /> Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="psico-btn-primary"
+                  disabled={savingProfile}
+                >
+                  <Save size={16} /> {savingProfile ? 'Guardando...' : 'Guardar cambios'}
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
 
         <div className="psico-dashboard-grid" style={{ gridTemplateColumns: '1fr' }}>
           <div className="psico-dashboard-card">

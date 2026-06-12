@@ -182,6 +182,10 @@ export const patientAuthService = {
     const response = await api.post('/psychologists/patients/auth/login', data);
     return { ...response, data: repairMojibakeDeep(response.data) };
   },
+  updateProfile: async (data) => {
+    const response = await api.put('/psychologists/patients/me/profile', data);
+    return { ...response, data: repairMojibakeDeep(response.data) };
+  },
   uploadProfileImage: (file) => {
     const formData = new FormData();
     formData.append('patientProfile', file);
