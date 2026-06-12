@@ -32,6 +32,9 @@ export default function RegisterPatient() {
         phone: data.phone,
         password: data.password,
         gender: data.gender,
+        acceptTerms: data.acceptTerms,
+        acceptPrivacy: data.acceptPrivacy,
+        acceptAgreement: data.acceptAgreement,
       });
       const { patient, token } = res.data;
       setAuth(patient, 'patient', token);
@@ -191,6 +194,22 @@ export default function RegisterPatient() {
               </span>
             </label>
             {errors.acceptPrivacy && <span className="psico-login-error">{errors.acceptPrivacy.message}</span>}
+          </div>
+
+          <div className="psico-login-field psico-login-legal-field">
+            <label className="psico-login-legal-check">
+              <input
+                type="checkbox"
+                {...register('acceptAgreement', { required: 'Debés aceptar el Acuerdo de Aceptación del Usuario / Paciente' })}
+              />
+              <span>
+                Acepto el{' '}
+                <a href="/psicologos/acuerdo-aceptacion-paciente" target="_blank" rel="noopener noreferrer">
+                  Acuerdo de Aceptación del Usuario / Paciente
+                </a>
+              </span>
+            </label>
+            {errors.acceptAgreement && <span className="psico-login-error">{errors.acceptAgreement.message}</span>}
           </div>
 
           <button

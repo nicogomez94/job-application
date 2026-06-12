@@ -297,6 +297,7 @@ export default function PsicologosHome() {
           <div className="psico-home-important-links">
             <Link to="/psicologos/terminos-y-condiciones">Términos y condiciones</Link>
             <Link to="/psicologos/politicas-de-privacidad">Privacidad</Link>
+            <Link to="/psicologos/acuerdo-aceptacion-paciente">Acuerdo de aceptación</Link>
             {/* <Link to="/psicologos/contacto">Contacto</Link> */}
             {/* <Link to="/psicologo/plan">Planes de Pago</Link> */}
           </div>

@@ -66,6 +66,7 @@ import RegisterPatient from './pages/psicologos/RegisterPatient';
 import LoginPatient from './pages/psicologos/LoginPatient';
 import PatientDashboard from './pages/psicologos/PatientDashboard';
 import PsicoLogin from './pages/auth/PsicoLogin';
+import AcceptanceAgreementPatient from './pages/psicologos/AcceptanceAgreementPatient';
 
 function ProtectedRoute({ children, allowedTypes }) {
   const { isAuthenticated, userType } = useAuthStore();
@@ -270,6 +271,7 @@ function App() {
         <Route path="psicologos" element={<PsicologosHome />} />
         <Route path="psicologos/terminos-y-condiciones" element={<PsicoTerminos />} />
         <Route path="psicologos/politicas-de-privacidad" element={<PsicoPrivacidad />} />
+        <Route path="psicologos/acuerdo-aceptacion-paciente" element={<AcceptanceAgreementPatient />} />
         <Route path="psicologos/buscar" element={<PsychologistList />} />
         <Route path="psicologos/login" element={<PsicoLogin />} />
         <Route path="psicologos/login-paciente" element={<LoginPatient />} />
