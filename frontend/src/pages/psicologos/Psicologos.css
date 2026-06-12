@@ -1067,6 +1067,7 @@
   overflow: hidden;
   border-radius: 10px;
   border: 1.5px solid #e8ddc9;
+  scroll-margin-top: 5.5rem;
 }
 
 .psico-step {

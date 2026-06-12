@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { psychologistAuthService, psychologistService } from '../../services';
@@ -118,6 +118,7 @@ const textLengthBetween = (value, min, max = Infinity) => {
 };
 
 export default function RegisterPsychologistAR() {
+  const formTopRef = useRef(null);
   const [step, setStep] = useState(0);
   const [form, setForm] = useState(getInitialForm);
   const [fieldErrors, setFieldErrors] = useState({});
@@ -246,13 +247,25 @@ export default function RegisterPsychologistAR() {
   const fieldClass = (name) => (fieldErrors[name] ? 'psico-field-invalid' : '');
   const fieldError = (name) => fieldErrors[name] ? <span className="psico-field-error">{fieldErrors[name]}</span> : null;
 
+  const scrollToFormTop = () => {
+    window.requestAnimationFrame(() => {
+      formTopRef.current?.scrollIntoView({ block: 'start', behavior: 'auto' });
+    });
+  };
+
   const handleNext = () => {
     if (!validateStep()) return;
     if (step < STEPS.length - 1) {
       setStep((s) => s + 1);
+      scrollToFormTop();
     } else {
       handleSubmit();
     }
+  };
+
+  const handleBack = () => {
+    setStep((s) => s - 1);
+    scrollToFormTop();
   };
 
   const handleSubmit = async () => {
@@ -371,7 +384,7 @@ export default function RegisterPsychologistAR() {
         </div>
 
         {/* Stepper */}
-        <div className="psico-stepper">
+        <div ref={formTopRef} className="psico-stepper">
           {STEPS.map((s, i) => (
             <div key={s} className={`psico-step ${i === step ? 'active' : i < step ? 'done' : ''}`}>
               <div className="psico-step-dot">{i + 1}</div>
@@ -587,7 +600,7 @@ export default function RegisterPsychologistAR() {
 
         <div className="psico-form-actions">
           {step > 0 && (
-            <button type="button" className="psico-btn-secondary" onClick={() => setStep((s) => s - 1)} disabled={loading}>
+            <button type="button" className="psico-btn-secondary" onClick={handleBack} disabled={loading}>
               Atrás
             </button>
           )}
