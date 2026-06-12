@@ -218,6 +218,16 @@
   font-style: italic;
 }
 
+.psico-layout-footer-legal a {
+  color: #d1d5db;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.psico-layout-footer-legal a:hover {
+  color: #f3f4f6;
+}
+
 @media (max-width: 680px) {
   .psico-layout-header-inner {
     align-items: center;
