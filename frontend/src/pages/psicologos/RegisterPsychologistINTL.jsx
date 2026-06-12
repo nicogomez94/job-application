@@ -376,7 +376,7 @@ export default function RegisterPsychologistINTL() {
                 {fieldError('gender')}
               </label>
               <label className={fieldClass('dateOfBirth')}>Fecha de nacimiento *<input type="date" name="dateOfBirth" value={form.dateOfBirth} onChange={handleChange} />{fieldError('dateOfBirth')}</label>
-              <label>Tipo de documento
+              <label>Tipo de documento *
                 <select name="documentType" value={form.documentType} onChange={handleChange}>
                   <option value="Pasaporte">Pasaporte</option>
                   <option value="DNI">DNI</option>
@@ -385,9 +385,9 @@ export default function RegisterPsychologistINTL() {
                 </select>
               </label>
               <label className={fieldClass('documentNumber')}>Número de documento *<input type="text" name="documentNumber" value={form.documentNumber} onChange={handleChange} />{fieldError('documentNumber')}</label>
-              <label className={fieldClass('taxId')}>Identificación fiscal como Monotributista (si aplica)<input type="text" name="taxId" value={form.taxId} onChange={handleChange} />{fieldError('taxId')}</label>
+              <label className={fieldClass('taxId')}>Identificación fiscal como Monotributista (si aplica) *<input type="text" name="taxId" value={form.taxId} onChange={handleChange} />{fieldError('taxId')}</label>
               <label className={fieldClass('country')}>País *<input type="text" name="country" value={form.country} onChange={handleChange} />{fieldError('country')}</label>
-              <label className={fieldClass('region')}>Estado / Provincia / Región<input type="text" name="region" value={form.region} onChange={handleChange} />{fieldError('region')}</label>
+              <label className={fieldClass('region')}>Estado / Provincia / Región *<input type="text" name="region" value={form.region} onChange={handleChange} />{fieldError('region')}</label>
               <PhoneNumberInput
                 id="register-psychologist-intl-phone"
                 label="WhatsApp"
@@ -397,11 +397,11 @@ export default function RegisterPsychologistINTL() {
                 error={fieldErrors.phone}
                 className={fieldClass('phone')}
               />
-              <label className={fieldClass('contactEmail')}>Email de contacto público<input type="email" name="contactEmail" value={form.contactEmail} onChange={handleChange} />{fieldError('contactEmail')}</label>
-              <label className={`psico-full-col ${fieldClass('addressStreet')}`}>Calle<input type="text" name="addressStreet" value={form.addressStreet} onChange={handleChange} />{fieldError('addressStreet')}</label>
-              <label className={fieldClass('addressNumber')}>Número<input type="text" name="addressNumber" value={form.addressNumber} onChange={handleChange} />{fieldError('addressNumber')}</label>
-              <label className={fieldClass('addressCity')}>Ciudad<input type="text" name="addressCity" value={form.addressCity} onChange={handleChange} />{fieldError('addressCity')}</label>
-              <label className={fieldClass('addressPostalCode')}>Código postal<input type="text" name="addressPostalCode" value={form.addressPostalCode} onChange={handleChange} />{fieldError('addressPostalCode')}</label>
+              <label className={fieldClass('contactEmail')}>Email de contacto público *<input type="email" name="contactEmail" value={form.contactEmail} onChange={handleChange} />{fieldError('contactEmail')}</label>
+              <label className={`psico-full-col ${fieldClass('addressStreet')}`}>Calle *<input type="text" name="addressStreet" value={form.addressStreet} onChange={handleChange} />{fieldError('addressStreet')}</label>
+              <label className={fieldClass('addressNumber')}>Número *<input type="text" name="addressNumber" value={form.addressNumber} onChange={handleChange} />{fieldError('addressNumber')}</label>
+              <label className={fieldClass('addressCity')}>Ciudad *<input type="text" name="addressCity" value={form.addressCity} onChange={handleChange} />{fieldError('addressCity')}</label>
+              <label className={fieldClass('addressPostalCode')}>Código postal *<input type="text" name="addressPostalCode" value={form.addressPostalCode} onChange={handleChange} />{fieldError('addressPostalCode')}</label>
             </div>
           )}
 
@@ -415,8 +415,8 @@ export default function RegisterPsychologistINTL() {
                 {fieldError('universityDegree')}
               </label>
               <label className={fieldClass('licenseNumber')}>Número de licencia / colegiación / matrícula *<input type="text" name="licenseNumber" value={form.licenseNumber} onChange={handleChange} />{fieldError('licenseNumber')}</label>
-              <label className={fieldClass('licenseEntity')}>Entidad que expide la licencia<input type="text" name="licenseEntity" value={form.licenseEntity} onChange={handleChange} />{fieldError('licenseEntity')}</label>
-              <label className={fieldClass('licenseCountry')}>País de emisión de la licencia<input type="text" name="licenseCountry" value={form.licenseCountry} onChange={handleChange} />{fieldError('licenseCountry')}</label>
+              <label className={fieldClass('licenseEntity')}>Entidad que expide la licencia *<input type="text" name="licenseEntity" value={form.licenseEntity} onChange={handleChange} />{fieldError('licenseEntity')}</label>
+              <label className={fieldClass('licenseCountry')}>País de emisión de la licencia *<input type="text" name="licenseCountry" value={form.licenseCountry} onChange={handleChange} />{fieldError('licenseCountry')}</label>
               <label className={`psico-full-col ${fieldClass('degreeInstitution')}`}>Institución que otorgó el título *<input type="text" name="degreeInstitution" value={form.degreeInstitution} onChange={handleChange} />{fieldError('degreeInstitution')}</label>
               <label className={fieldClass('sessionCost')}>Costo final por sesión *<input type="text" name="sessionCost" value={form.sessionCost} onChange={handleChange} placeholder="Ej: USD 40 o EUR 35" />{fieldError('sessionCost')}</label>
               <label className={`psico-full-col ${fieldClass('sessionDuration')}`}>Tiempo de sesión / promoción *
@@ -436,7 +436,7 @@ export default function RegisterPsychologistINTL() {
                 {fieldError('bio')}
               </label>
               <div className={`psico-full-col ${fieldClass('languages')}`}>
-                <label className="psico-checkbox-label-heading">Idiomas hablados</label>
+                <label className="psico-checkbox-label-heading">Idiomas hablados *</label>
                 <div className="psico-checkbox-group">
                   {LANGUAGES.map((l) => (
                     <label key={l} className="psico-checkbox-item">
@@ -465,7 +465,7 @@ export default function RegisterPsychologistINTL() {
                 {fieldError('specialties')}
               </div>
               <div className={`psico-full-col ${fieldClass('ageRanges')}`}>
-                <label className="psico-checkbox-label-heading">Edad de atención</label>
+                <label className="psico-checkbox-label-heading">Edad de atención *</label>
                 <div className="psico-checkbox-group psico-options-grid psico-age-options">
                   {['Adultos (mayor a 18 años)', 'Infanto-juvenil (hasta los 18 años)'].map((a) => (
                     <label key={a} className="psico-checkbox-item psico-option-card">

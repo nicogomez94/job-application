@@ -975,12 +975,15 @@
   min-height: 70vh;
   padding: 2.5rem 1rem;
   background: #fafaf7;
+  overflow-x: hidden;
 }
 
 .psico-register-container {
   max-width: 800px;
   margin: 0 auto;
   min-width: 0;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .psico-register-container h1 {
@@ -1358,6 +1361,9 @@
   border: 1.5px solid #e8ddc9;
   border-radius: 10px;
   padding: 0.9rem 1.1rem;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .psico-doc-type-label {
@@ -1368,6 +1374,7 @@
   font-size: 0.88rem;
   color: #333;
   min-width: 0;
+  width: 100%;
 }
 
 .psico-doc-type-label svg {
@@ -1409,6 +1416,29 @@
 }
 
 .psico-doc-upload-btn:hover { background: #ddeef7; }
+
+.psico-doc-upload-btn.is-complete {
+  background: #e8f5ee;
+  color: #1a5c36;
+  border-color: #a8dbb7;
+}
+
+.psico-doc-upload-btn.is-complete:hover {
+  background: #d6efdf;
+}
+
+@media (max-width: 900px) {
+  .psico-doc-type-row {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+  }
+
+  .psico-doc-upload-btn {
+    width: 100%;
+    min-height: 2.5rem;
+    white-space: normal;
+  }
+}
 
 .psico-docs-validation {
   margin: -0.6rem 0 1.5rem;

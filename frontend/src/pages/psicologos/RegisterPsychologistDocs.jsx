@@ -337,6 +337,9 @@ export default function RegisterPsychologistDocs() {
         <div className="psico-docs-types">
           {docTypes.map((dt, index) => {
             const isRequired = index < 4;
+            const hasDocumentForType =
+              existingDocuments.some((document) => document.documentType === dt.key)
+              || files.some((selectedFile) => selectedFile.docType === dt.key);
             return (
               <div key={dt.key} className="psico-doc-type-row">
                 <div className="psico-doc-type-label">
@@ -347,8 +350,8 @@ export default function RegisterPsychologistDocs() {
                   </span>
                   <small>{isRequired ? 'Obligatorio' : 'Opcional'} · PDF, JPG o PNG · máx. 5 MB</small>
                 </div>
-                <label className="psico-doc-upload-btn">
-                  <Upload size={14} /> Agregar archivo
+                <label className={`psico-doc-upload-btn${hasDocumentForType ? ' is-complete' : ''}`}>
+                  <Upload size={14} /> {hasDocumentForType ? 'Archivo agregado' : 'Agregar archivo'}
                   <input
                     type="file"
                     accept=".pdf,.jpg,.jpeg,.png"

@@ -432,19 +432,19 @@ export default function RegisterPsychologistAR() {
                 error={fieldErrors.phone}
                 className={fieldClass('phone')}
               />
-              <label className={fieldClass('contactEmail')}>Email de contacto público<input type="email" name="contactEmail" value={form.contactEmail} onChange={handleChange} placeholder="El que verán los pacientes" />{fieldError('contactEmail')}</label>
-              <label className={`psico-full-col ${fieldClass('addressStreet')}`}>Calle<input type="text" name="addressStreet" value={form.addressStreet} onChange={handleChange} />{fieldError('addressStreet')}</label>
-              <label className={fieldClass('addressNumber')}>Número<input type="text" name="addressNumber" value={form.addressNumber} onChange={handleChange} />{fieldError('addressNumber')}</label>
+              <label className={fieldClass('contactEmail')}>Email de contacto público *<input type="email" name="contactEmail" value={form.contactEmail} onChange={handleChange} placeholder="El que verán los pacientes" />{fieldError('contactEmail')}</label>
+              <label className={`psico-full-col ${fieldClass('addressStreet')}`}>Calle *<input type="text" name="addressStreet" value={form.addressStreet} onChange={handleChange} />{fieldError('addressStreet')}</label>
+              <label className={fieldClass('addressNumber')}>Número *<input type="text" name="addressNumber" value={form.addressNumber} onChange={handleChange} />{fieldError('addressNumber')}</label>
               <label className={fieldClass('addressFloor')}>Piso/departamento<input type="text" name="addressFloor" value={form.addressFloor} onChange={handleChange} placeholder="Según corresponda" />{fieldError('addressFloor')}</label>
-              <label className={fieldClass('addressCity')}>Localidad<input type="text" name="addressCity" value={form.addressCity} onChange={handleChange} />{fieldError('addressCity')}</label>
-              <label>Provincia
+              <label className={fieldClass('addressCity')}>Localidad *<input type="text" name="addressCity" value={form.addressCity} onChange={handleChange} />{fieldError('addressCity')}</label>
+              <label>Provincia *
                 <select name="addressProvince" value={form.addressProvince} onChange={handleChange}>
                   <option value="">Seleccionar</option>
                   {PROVINCES.map((p) => <option key={p} value={p}>{p}</option>)}
                 </select>
               </label>
-              <label className={fieldClass('addressPostalCode')}>Código postal<input type="text" name="addressPostalCode" value={form.addressPostalCode} onChange={handleChange} />{fieldError('addressPostalCode')}</label>
-              <label>Provincia donde ejerce
+              <label className={fieldClass('addressPostalCode')}>Código postal *<input type="text" name="addressPostalCode" value={form.addressPostalCode} onChange={handleChange} />{fieldError('addressPostalCode')}</label>
+              <label>Provincia donde ejerce *
                 <select name="practiceProvince" value={form.practiceProvince} onChange={handleChange}>
                   <option value="">Seleccionar</option>
                   {PROVINCES.map((p) => <option key={p} value={p}>{p}</option>)}
@@ -462,15 +462,15 @@ export default function RegisterPsychologistAR() {
                 </select>
                 {fieldError('universityDegree')}
               </label>
-              <label className={fieldClass('graduationYear')}>Año de graduación<input type="number" name="graduationYear" value={form.graduationYear} onChange={handleChange} min="1950" max={new Date().getFullYear()} />{fieldError('graduationYear')}</label>
+              <label className={fieldClass('graduationYear')}>Año de graduación *<input type="number" name="graduationYear" value={form.graduationYear} onChange={handleChange} min="1950" max={new Date().getFullYear()} />{fieldError('graduationYear')}</label>
               <label className={`psico-full-col ${fieldClass('universityName')}`}>Universidad *<input type="text" name="universityName" value={form.universityName} onChange={handleChange} placeholder="Nombre oficial de la institución" />{fieldError('universityName')}</label>
               <label className={fieldClass('licenseNumber')}>Matrícula Nacional/Profesional Número *<input type="text" name="licenseNumber" value={form.licenseNumber} onChange={handleChange} placeholder="Ej: MP 12345" />{fieldError('licenseNumber')}</label>
               <label className={fieldClass('licenseProvince')}>Matrícula Provincial Numero *
                 <input type="text" name="licenseProvince" value={form.licenseProvince} onChange={handleChange} placeholder="Provincia/Número" />
                 {fieldError('licenseProvince')}
               </label>
-              <label className={fieldClass('healthMinistryReg')}>Nro. Ministerio de Salud<input type="text" name="healthMinistryReg" value={form.healthMinistryReg} onChange={handleChange} />{fieldError('healthMinistryReg')}</label>
-              <label className={fieldClass('virtualConsultingAuthorization')}>Licencia Sanitaria Federal<input type="text" name="virtualConsultingAuthorization" value={form.virtualConsultingAuthorization} onChange={handleChange} placeholder="Si corresponde" />{fieldError('virtualConsultingAuthorization')}</label>
+              <label className={fieldClass('healthMinistryReg')}>Nro. Ministerio de Salud *<input type="text" name="healthMinistryReg" value={form.healthMinistryReg} onChange={handleChange} />{fieldError('healthMinistryReg')}</label>
+              <label className={fieldClass('virtualConsultingAuthorization')}>Licencia Sanitaria Federal *<input type="text" name="virtualConsultingAuthorization" value={form.virtualConsultingAuthorization} onChange={handleChange} placeholder="Si corresponde" />{fieldError('virtualConsultingAuthorization')}</label>
               <label className={fieldClass('sessionCost')}>Costo final por sesión *<input type="text" name="sessionCost" value={form.sessionCost} onChange={handleChange} placeholder="Ej: ARS 25.000 o USD 40" />{fieldError('sessionCost')}</label>
               <label className={`psico-full-col ${fieldClass('sessionDuration')}`}>Tiempo de sesión / promoción *
                 <textarea
@@ -489,7 +489,7 @@ export default function RegisterPsychologistAR() {
                 {fieldError('bio')}
               </label>
               <div className={`psico-full-col ${fieldClass('languages')}`}>
-                <label className="psico-checkbox-label-heading">Idiomas hablados</label>
+                <label className="psico-checkbox-label-heading">Idiomas hablados *</label>
                 <div className="psico-checkbox-group">
                   {LANGUAGES.map((l) => (
                     <label key={l} className="psico-checkbox-item">
@@ -518,7 +518,7 @@ export default function RegisterPsychologistAR() {
                 {fieldError('specialties')}
               </div>
               <div className={`psico-full-col ${fieldClass('ageRanges')}`}>
-                <label className="psico-checkbox-label-heading">Edad de atención</label>
+                <label className="psico-checkbox-label-heading">Edad de atención *</label>
                 <div className="psico-checkbox-group psico-options-grid psico-age-options">
                   {['Adultos (mayor a 18 años)', 'Infanto-juvenil (hasta los 18 años)'].map((a) => (
                     <label key={a} className="psico-checkbox-item psico-option-card">
