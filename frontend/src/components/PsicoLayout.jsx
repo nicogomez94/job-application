@@ -1,6 +1,7 @@
 import { useLayoutEffect, useState, useRef, useEffect } from 'react';
 import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../context/authStore';
+import { useI18n } from '../context/i18nStore';
 import { LogOut, LayoutDashboard, ChevronDown, ClipboardList, Menu, X } from 'lucide-react';
 import { scrollToTopInstant } from '../utils/scrollToTop';
 import './PsicoLayout.css';
@@ -12,8 +13,10 @@ export default function PsicoLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { isAuthenticated, userType, user, logout } = useAuthStore();
+  const { t, language, setLanguage } = useI18n();
   const isPsychologist = isAuthenticated && userType === 'psychologist';
   const isPatient = isAuthenticated && userType === 'patient';
+  const isEn = language === 'en';
 
   const [loginOpen, setLoginOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -36,11 +39,18 @@ export default function PsicoLayout() {
     setMobileNavOpen(false);
   }, [location.pathname, location.search]);
 
-  const accountRole = isPsychologist ? 'profesional' : isPatient ? 'usuario' : 'cuenta';
+  const accountRole = isPsychologist
+    ? (isEn ? 'professional' : 'profesional')
+    : isPatient
+      ? (isEn ? 'user' : 'usuario')
+      : (isEn ? 'account' : 'cuenta');
 
   const handleLogout = () => {
     const accountName = displayName || accountRole;
-    if (!window.confirm(`¿Quiere salir de ${accountName} (${accountRole})?`)) return;
+    const confirmMessage = isEn
+      ? `Do you want to log out of ${accountName} (${accountRole})?`
+      : `¿Quiere salir de ${accountName} (${accountRole})?`;
+    if (!window.confirm(confirmMessage)) return;
     closeMobileNav();
     logout();
     navigate('/psicologos');
@@ -60,7 +70,7 @@ export default function PsicoLayout() {
         <div className="psico-layout-header-inner">
           {/* Far left: back to main site */}
           <Link to="/" className="psico-layout-nav-link psico-layout-nav-link--back">
-            Sitio principal
+            {t('Sitio principal')}
           </Link>
 
           {/* Brand */}
@@ -82,7 +92,7 @@ export default function PsicoLayout() {
             type="button"
             className="psico-layout-menu-toggle"
             onClick={() => setMobileNavOpen((open) => !open)}
-            aria-label={mobileNavOpen ? 'Cerrar menú' : 'Abrir menú'}
+            aria-label={mobileNavOpen ? t('Cerrar menú') : t('Abrir menú')}
             aria-expanded={mobileNavOpen}
             aria-controls="psico-layout-nav"
           >
@@ -98,7 +108,7 @@ export default function PsicoLayout() {
               className="psico-layout-nav-link psico-layout-nav-link--mobile-back"
               onClick={closeMobileNav}
             >
-              Sitio principal
+              {t('Sitio principal')}
             </Link>
 
             {!isAuthenticated && (
@@ -107,7 +117,7 @@ export default function PsicoLayout() {
                 className={`psico-layout-nav-link ${location.pathname === '/psicologos/registro-paciente' ? 'active' : ''}`}
                 onClick={closeMobileNav}
               >
-                Registro usuario
+                {t('Registro usuario')}
               </Link>
             )}
 
@@ -116,11 +126,11 @@ export default function PsicoLayout() {
               <>
                 <Link to="/psicologos/mi-cuenta" className="psico-layout-nav-link" onClick={closeMobileNav}>
                   <ClipboardList size={15} />
-                  Mis solicitudes
+                  {t('Mis solicitudes')}
                 </Link>
                 <button type="button" className="psico-layout-nav-logout" onClick={handleLogout}>
                   <LogOut size={15} />
-                  Salir
+                  {t('Salir')}
                 </button>
               </>
             )}
@@ -130,11 +140,11 @@ export default function PsicoLayout() {
               <>
                 <Link to="/psicologo/dashboard" className="psico-layout-nav-link" onClick={closeMobileNav}>
                   <LayoutDashboard size={15} />
-                  Mi panel
+                  {t('Mi panel')}
                 </Link>
                 <button type="button" className="psico-layout-nav-logout" onClick={handleLogout}>
                   <LogOut size={15} />
-                  Salir
+                  {t('Salir')}
                 </button>
               </>
             )}
@@ -143,7 +153,7 @@ export default function PsicoLayout() {
             {!isPsychologist && !isPatient && (
               <>
                 <Link to="/register/psicologo" className="psico-layout-nav-link" onClick={closeMobileNav}>
-                  Registro Psicólogos
+                  {t('Registro Psicólogos')}
                 </Link>
 
                 {/* Login dropdown */}
@@ -155,7 +165,7 @@ export default function PsicoLayout() {
                     aria-haspopup="true"
                     aria-expanded={loginOpen}
                   >
-                    Ingresar <ChevronDown size={14} style={{ marginLeft: '0.15rem', transform: loginOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }} />
+                    {t('Ingresar')} <ChevronDown size={14} style={{ marginLeft: '0.15rem', transform: loginOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }} />
                   </button>
                   {loginOpen && (
                     <div className="psico-login-dropdown-menu" role="menu">
@@ -168,8 +178,8 @@ export default function PsicoLayout() {
                           closeMobileNav();
                         }}
                       >
-                        <span className="psico-login-dropdown-label">Soy paciente</span>
-                        <span className="psico-login-dropdown-sub">Busco un psicólogo</span>
+                        <span className="psico-login-dropdown-label">{t('Soy paciente')}</span>
+                        <span className="psico-login-dropdown-sub">{t('Busco un psicólogo')}</span>
                       </Link>
                       <div className="psico-login-dropdown-divider" />
                       <Link
@@ -181,14 +191,35 @@ export default function PsicoLayout() {
                           closeMobileNav();
                         }}
                       >
-                        <span className="psico-login-dropdown-label">Soy psicólogo</span>
-                        <span className="psico-login-dropdown-sub">Acceder a mi panel</span>
+                        <span className="psico-login-dropdown-label">{t('Soy psicólogo')}</span>
+                        <span className="psico-login-dropdown-sub">{t('Acceder a mi panel')}</span>
                       </Link>
                     </div>
                   )}
                 </div>
               </>
             )}
+
+            <div className="navbar-language-toggle psico-layout-language-toggle" role="group" aria-label="Language selector">
+              <button
+                type="button"
+                className={`navbar-language-btn ${language === 'es' ? 'navbar-language-btn-active' : ''}`}
+                onClick={() => setLanguage('es')}
+                aria-label="Español"
+                title="Español"
+              >
+                <img src="/flags/es.svg" alt="" className="navbar-language-flag" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                className={`navbar-language-btn ${language === 'en' ? 'navbar-language-btn-active' : ''}`}
+                onClick={() => setLanguage('en')}
+                aria-label="English"
+                title="English"
+              >
+                <img src="/flags/us.svg" alt="" className="navbar-language-flag" aria-hidden="true" />
+              </button>
+            </div>
           </nav>
         </div>
       </header>
