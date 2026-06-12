@@ -52,6 +52,7 @@ import AdminPsychologists from './pages/admin/Psychologists';
 import PsicologosHome from './pages/psicologos/PsicologosHome';
 import PsicoTerminos from './pages/psicologos/PsicoTerminos';
 import PsicoPrivacidad from './pages/psicologos/PsicoPrivacidad';
+import AcceptanceAgreementPsychologist from './pages/psicologos/AcceptanceAgreementPsychologist';
 import PsychologistList from './pages/psicologos/PsychologistList';
 import PsychologistProfile from './pages/psicologos/PsychologistProfile';
 import RegisterPsychologistType from './pages/psicologos/RegisterPsychologistType';
@@ -272,6 +273,7 @@ function App() {
         <Route path="psicologos/terminos-y-condiciones" element={<PsicoTerminos />} />
         <Route path="psicologos/politicas-de-privacidad" element={<PsicoPrivacidad />} />
         <Route path="psicologos/acuerdo-aceptacion-paciente" element={<AcceptanceAgreementPatient />} />
+        <Route path="psicologos/acuerdo-aceptacion-psicologo" element={<AcceptanceAgreementPsychologist />} />
         <Route path="psicologos/buscar" element={<PsychologistList />} />
         <Route path="psicologos/login" element={<PsicoLogin />} />
         <Route path="psicologos/login-paciente" element={<LoginPatient />} />

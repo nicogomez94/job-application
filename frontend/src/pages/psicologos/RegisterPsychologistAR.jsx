@@ -107,6 +107,7 @@ export default function RegisterPsychologistAR() {
   const [loading, setLoading] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [acceptPrivacy, setAcceptPrivacy] = useState(false);
+  const [acceptAgreement, setAcceptAgreement] = useState(false);
   const { setAuth } = useAuthStore();
   const navigate = useNavigate();
 
@@ -219,6 +220,7 @@ export default function RegisterPsychologistAR() {
       if (form.ageRanges.length === 0) errors.ageRanges = 'Seleccioná al menos una edad';
       if (!acceptTerms) errors.acceptTerms = 'Campo requerido';
       if (!acceptPrivacy) errors.acceptPrivacy = 'Campo requerido';
+      if (!acceptAgreement) errors.acceptAgreement = 'Campo requerido';
       return showErrors(errors);
     }
     return true;
@@ -249,6 +251,9 @@ export default function RegisterPsychologistAR() {
           firstName: form.firstName,
           lastName: form.lastName,
           registrationType: 'ARGENTINA',
+          acceptTerms,
+          acceptPrivacy,
+          acceptAgreement,
         });
         regData = regRes.data;
       } catch (regErr) {
@@ -524,6 +529,28 @@ export default function RegisterPsychologistAR() {
                   </span>
                 </label>
                 {fieldError('acceptPrivacy')}
+                <label className="psico-checkbox-item" style={{ margin: '0.4rem 0' }}>
+                  <input
+                    type="checkbox"
+                    checked={acceptAgreement}
+                    onChange={(e) => {
+                      setAcceptAgreement(e.target.checked);
+                      setFieldErrors((prev) => {
+                        if (!prev.acceptAgreement) return prev;
+                        const next = { ...prev };
+                        delete next.acceptAgreement;
+                        return next;
+                      });
+                    }}
+                  />
+                  <span style={{ fontSize: '0.88rem' }}>
+                    Acepto el{' '}
+                    <a href="/psicologos/acuerdo-aceptacion-psicologo" target="_blank" rel="noopener noreferrer" style={{ color: '#7a3055', fontWeight: 600 }}>
+                      Acuerdo de Aceptación del Profesional Psicólogo
+                    </a>
+                  </span>
+                </label>
+                {fieldError('acceptAgreement')}
               </div>
             </div>
           )}
