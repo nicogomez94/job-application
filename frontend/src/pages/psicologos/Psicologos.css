@@ -1044,8 +1044,8 @@
 }
 
 .psico-step.done {
-  background: #e8f4fb;
-  color: #1e4560;
+  background: #eeeeee;
+  color: #686868;
 }
 
 .psico-step-dot {
@@ -1063,7 +1063,7 @@
 }
 
 .psico-step.active .psico-step-dot { background: rgba(255,255,255,0.3); }
-.psico-step.done .psico-step-dot { background: #2c5f7a; color: #fff; border-color: #2c5f7a; }
+.psico-step.done .psico-step-dot { background: #d9d9d9; color: #686868; border-color: #9b9b9b; }
 
 /* ── Form grid ───────────────────────────────────────────────── */
 .psico-form-step {
@@ -1511,22 +1511,23 @@
     min-width: 0;
     flex-direction: column;
     justify-content: center;
-    gap: 0.25rem;
-    padding: 0.55rem 0.25rem;
+    gap: 0.18rem;
+    padding: 0.5rem 0.18rem;
     text-align: center;
-    font-size: 0.68rem;
-    line-height: 1.1;
+    font-size: 0.56rem;
+    line-height: 1.05;
   }
 
   .psico-step-dot {
-    width: 20px;
-    height: 20px;
-    font-size: 0.68rem;
+    width: 18px;
+    height: 18px;
+    font-size: 0.58rem;
   }
 
   .psico-step span {
     max-width: 100%;
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .psico-form-step {
@@ -1633,13 +1634,13 @@
 @media (max-width: 520px) {
   .psico-step {
     padding-inline: 0.15rem;
-    font-size: 0.56rem;
+    font-size: 0.48rem;
   }
 
   .psico-step-dot {
-    width: 18px;
-    height: 18px;
-    font-size: 0.62rem;
+    width: 16px;
+    height: 16px;
+    font-size: 0.52rem;
   }
 }
 
@@ -2310,13 +2311,14 @@
 }
 
 .psico-step.done {
-  background: var(--psico-accent-100);
-  color: var(--psico-accent-700);
+  background: #eeeeee;
+  color: #686868;
 }
 
 .psico-step.done .psico-step-dot {
-  background: var(--psico-accent-600);
-  border-color: var(--psico-accent-600);
+  background: #d9d9d9;
+  color: #686868;
+  border-color: #9b9b9b;
 }
 
 .psico-checkbox-item input[type="checkbox"] {

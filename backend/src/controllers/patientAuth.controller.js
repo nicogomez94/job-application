@@ -9,6 +9,7 @@ const {
   getEmailAlreadyRegisteredMessage,
   handlePrismaError,
 } = require('../utils/accountEmail');
+const { buildConsentMetadata } = require('../utils/legalAcceptance');
 
 const removeFile = (assetPath) => {
   if (!assetPath || typeof assetPath !== 'string') return;
@@ -21,7 +22,7 @@ const removeFile = (assetPath) => {
 
 exports.register = async (req, res) => {
   try {
-    const { email, password, firstName, lastName, phone } = req.body;
+    const { email, password, firstName, lastName, phone, acceptTerms, acceptPrivacy, acceptAgreement } = req.body;
 
     if (!email || !password || !firstName || !lastName) {
       return res.status(400).json({ error: 'Faltan campos obligatorios: email, contraseña, nombre y apellido son requeridos.' });
@@ -32,6 +33,9 @@ exports.register = async (req, res) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.trim())) {
       return res.status(400).json({ error: 'El formato del email es inválido.' });
+    }
+    if (!acceptTerms || !acceptPrivacy || !acceptAgreement) {
+      return res.status(400).json({ error: 'Debés aceptar los Términos y Condiciones, la Política de Privacidad y el Acuerdo de Aceptación.' });
     }
 
     const normalizedEmail = normalizeEmail(email);
@@ -47,6 +51,10 @@ exports.register = async (req, res) => {
       data: {
         email: normalizedEmail,
         password: hashedPassword,
+        acceptTerms: true,
+        acceptPrivacy: true,
+        acceptAgreement: true,
+        consentMetadata: buildConsentMetadata({ role: 'patient', req }),
         firstName,
         lastName,
         phone,
@@ -54,6 +62,10 @@ exports.register = async (req, res) => {
       select: {
         id: true,
         email: true,
+        acceptTerms: true,
+        acceptPrivacy: true,
+        acceptAgreement: true,
+        consentMetadata: true,
         firstName: true,
         lastName: true,
         phone: true,

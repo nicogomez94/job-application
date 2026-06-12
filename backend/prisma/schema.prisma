@@ -287,6 +287,10 @@ model Psychologist {
 
   // Status in verification / activation flow
   status              PsychologistStatus  @default(PENDING_DOCS)
+  acceptTerms         Boolean             @default(false)
+  acceptPrivacy       Boolean             @default(false)
+  acceptAgreement     Boolean             @default(false)
+  consentMetadata     Json?
 
   // ── Personal data (both types) ──────────────────────────────────────────
   firstName           String
@@ -362,6 +366,10 @@ model Patient {
   id                  String                @id @default(uuid())
   email               String                @unique
   password            String
+  acceptTerms         Boolean               @default(false)
+  acceptPrivacy       Boolean               @default(false)
+  acceptAgreement     Boolean               @default(false)
+  consentMetadata     Json?
   firstName           String
   lastName            String
   phone               String?

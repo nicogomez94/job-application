@@ -7,11 +7,21 @@ const {
   getEmailAlreadyRegisteredMessage,
   handlePrismaError,
 } = require('../utils/accountEmail');
+const { buildConsentMetadata } = require('../utils/legalAcceptance');
 
 // ─── REGISTER ───────────────────────────────────────────────────────────────
 exports.register = async (req, res) => {
   try {
-    const { email, password, firstName, lastName, registrationType } = req.body;
+    const {
+      email,
+      password,
+      firstName,
+      lastName,
+      registrationType,
+      acceptTerms,
+      acceptPrivacy,
+      acceptAgreement,
+    } = req.body;
 
     // Validate required fields
     if (!email || !password || !firstName || !lastName) {
@@ -23,6 +33,9 @@ exports.register = async (req, res) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.trim())) {
       return res.status(400).json({ error: 'El formato del email es inválido.' });
+    }
+    if (!acceptTerms || !acceptPrivacy || !acceptAgreement) {
+      return res.status(400).json({ error: 'Debés aceptar los Términos y Condiciones, la Política de Privacidad y el Acuerdo de Aceptación.' });
     }
 
     const normalizedEmail = normalizeEmail(email);
@@ -41,10 +54,18 @@ exports.register = async (req, res) => {
         lastName,
         registrationType, // 'ARGENTINA' | 'INTERNATIONAL'
         status: 'PENDING_DOCS',
+        acceptTerms: true,
+        acceptPrivacy: true,
+        acceptAgreement: true,
+        consentMetadata: buildConsentMetadata({ role: 'psychologist', req }),
       },
       select: {
         id: true,
         email: true,
+        acceptTerms: true,
+        acceptPrivacy: true,
+        acceptAgreement: true,
+        consentMetadata: true,
         firstName: true,
         lastName: true,
         registrationType: true,
