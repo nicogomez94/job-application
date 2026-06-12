@@ -39,6 +39,17 @@
   margin-bottom: 1.5rem;
 }
 
+.psico-patient-register-notice {
+  background: #fff8e1;
+  border: 1.5px solid #f5d08a;
+  border-radius: 8px;
+  color: #7c5700;
+  font-size: 0.82rem;
+  line-height: 1.38;
+  margin: -0.35rem 0 1.25rem;
+  padding: 0.8rem 0.9rem;
+}
+
 .psico-login-field {
   display: flex;
   flex-direction: column;

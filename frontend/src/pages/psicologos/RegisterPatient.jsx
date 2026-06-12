@@ -58,6 +58,10 @@ export default function RegisterPatient() {
           Registrate para contactar psicólogos en línea
         </p>
 
+        <div className="psico-patient-register-notice">
+          <strong>Aviso importante:</strong> Las situaciones que requieran contención física inmediata necesitan atención presencial de emergencia. El costo de la o las sesiones será tratado directamente con el profesional de su elección. ¡SIN EXCEPCIÓN!
+        </div>
+
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <div className="psico-login-field">
             <label htmlFor="firstName">

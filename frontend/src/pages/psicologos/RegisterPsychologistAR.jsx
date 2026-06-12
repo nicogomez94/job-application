@@ -34,6 +34,21 @@ const DEGREES = ['Psicólogo', 'Lic. en Psicología'];
 
 const STEPS = ['Cuenta', 'Personal', 'Profesional', 'Especialidades'];
 
+const VISIBLE_PATIENT_FIELDS = [
+  'País y provincia donde ejerce',
+  'Matrícula nacional/profesional',
+  'Edad y género',
+  'Idiomas hablados',
+  'Años de experiencia',
+  'Modalidad remota',
+  'Costo final por sesión',
+  'Tiempo de sesión / promoción',
+  'Edad de atención',
+  'Título, universidad y formación',
+  'Especialidades',
+  'Breve descripción de experiencia y estudios',
+];
+
 const initial = {
   // Step 1: account
   email: '', password: '', confirmPassword: '',
@@ -338,7 +353,16 @@ export default function RegisterPsychologistAR() {
 
         {/* Disclaimer */}
         <div className="psico-intl-disclaimer">
-          <strong>Aviso importante:</strong> La atención remota no es recomendada para crisis aguda con riesgo de vida o psicosis activa que requiera contención física inmediata, las cuales necesitan atención presencial de emergencia. El costo de la o las sesiones serán tratadas directamente con el profesional de su elección. ¡SIN EXCEPCIÓN!
+          <strong>Aviso importante:</strong> La atención remota no es recomendada para crisis aguda con riesgo de vida o psicosis activa.
+        </div>
+
+        <div className="psico-visible-patients-box">
+          <h2>Visible para pacientes</h2>
+          <ul>
+            {VISIBLE_PATIENT_FIELDS.map((field) => (
+              <li key={field}>{field}</li>
+            ))}
+          </ul>
         </div>
 
         {/* Stepper */}
