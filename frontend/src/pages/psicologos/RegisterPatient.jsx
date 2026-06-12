@@ -59,7 +59,7 @@ export default function RegisterPatient() {
         </p>
 
         <div className="psico-patient-register-notice">
-          <strong>Aviso importante:</strong> Las situaciones que requieran contención física inmediata necesitan atención presencial de emergencia. El costo de la o las sesiones será tratado directamente con el profesional de su elección. ¡SIN EXCEPCIÓN!
+          <strong>Aviso importante:</strong>La consulta en línea no es recomenda para situaciones que requieran contención física inmediata. En ese caso se necesita atención presencial de emergencia. El costo de la o las sesiones será tratado directamente con el profesional de su elección. ¡SIN EXCEPCIÓN!
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate>

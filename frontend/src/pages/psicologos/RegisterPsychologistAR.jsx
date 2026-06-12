@@ -35,6 +35,8 @@ const DEGREES = ['Psicólogo', 'Lic. en Psicología'];
 const STEPS = ['Cuenta', 'Personal', 'Profesional', 'Especialidades'];
 
 const VISIBLE_PATIENT_FIELDS = [
+  'Nombre',
+  'Apellido',
   'País y provincia donde ejerce',
   'Matrícula nacional/profesional',
   'Edad y género',
@@ -363,6 +365,9 @@ export default function RegisterPsychologistAR() {
               <li key={field}>{field}</li>
             ))}
           </ul>
+          <p className="psico-visible-patients-note">
+            El email y el WhatsApp lo verá el paciente una vez que el profesional apruebe la solicitud de consulta enviada por el usuario/paciente.
+          </p>
         </div>
 
         {/* Stepper */}
