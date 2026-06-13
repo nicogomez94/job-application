@@ -265,6 +265,7 @@ enum PsychologistStatus {
   APPROVED       // Approved, must now pick a subscription plan
   REJECTED       // Rejected by admin
   ACTIVE         // Has active subscription, visible in public listing
+  SUSPENDED      // Temporarily hidden by the professional
 }
 
 enum RegistrationType {

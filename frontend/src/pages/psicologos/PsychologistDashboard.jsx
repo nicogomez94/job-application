@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { User, FileText, CreditCard, CheckCircle, Clock, XCircle, Edit, Users, Check, X, Ban, Camera, Mail, MessageCircle, Unlock } from 'lucide-react';
+import { User, FileText, CreditCard, CheckCircle, Clock, XCircle, Edit, Users, Check, X, Ban, Camera, Mail, MessageCircle, Unlock, Eye, PauseCircle, PlayCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { psychologistService } from '../../services';
 import { BACKEND_BASE_URL } from '../../services/apiBaseUrl';
@@ -19,6 +19,7 @@ const STATUS_LABELS = {
   APPROVED: { label: 'Aprobado - Elegí tu plan para activarte', icon: CheckCircle, color: 'blue' },
   REJECTED: { label: 'Estamos considerando su registro. Disculpe las molestias.', icon: XCircle, color: 'red' },
   ACTIVE: { label: 'Activo - Visible para pacientes', icon: CheckCircle, color: 'green' },
+  SUSPENDED: { label: 'Consultas suspendidas momentáneamente', icon: PauseCircle, color: 'orange' },
 };
 
 const PLAN_LABELS = {
@@ -29,6 +30,7 @@ const PLAN_LABELS = {
 };
 
 const TERMINATION_MESSAGE = 'El usuario ha decidido finalizar la terapia por razones personales';
+const ACCEPT_CONTACT_NOTICE = 'Al aceptar esta consulta el paciente verá su WhatsApp e email de contacto';
 
 const formatList = (items) => (Array.isArray(items) && items.length > 0 ? items.join(', ') : '-');
 
@@ -52,6 +54,8 @@ export default function PsychologistDashboard() {
   const [requestsLoading, setRequestsLoading] = useState(false);
   const [updatingRequest, setUpdatingRequest] = useState(null);
   const [blockingRequest, setBlockingRequest] = useState(null);
+  const [updatingAvailability, setUpdatingAvailability] = useState(false);
+  const [expandedPatientRequest, setExpandedPatientRequest] = useState(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const photoInputRef = useRef(null);
 
@@ -111,7 +115,7 @@ export default function PsychologistDashboard() {
   const statusInfo = STATUS_LABELS[p?.status] || STATUS_LABELS.PENDING;
   const StatusIcon = statusInfo.icon;
   const isRejected = p?.status === 'REJECTED';
-  const canViewPatientListing = ['APPROVED', 'ACTIVE'].includes(p?.status);
+  const canViewPatientListing = ['APPROVED', 'ACTIVE', 'SUSPENDED'].includes(p?.status);
   const patientListingParams = new URLSearchParams();
   if (name) patientListingParams.set('search', name);
   if (p?.id) patientListingParams.set('highlight', p.id);
@@ -157,6 +161,7 @@ export default function PsychologistDashboard() {
   };
 
   const handleRequestStatus = async (requestId, status) => {
+    if (status === 'ACCEPTED' && !window.confirm(ACCEPT_CONTACT_NOTICE)) return;
     setUpdatingRequest(requestId);
     try {
       const res = await psychologistService.updateRequestStatus(requestId, status);
@@ -168,6 +173,31 @@ export default function PsychologistDashboard() {
       toast.error(error.response?.data?.error || 'Error al actualizar la solicitud');
     } finally {
       setUpdatingRequest(null);
+    }
+  };
+
+  const handleAvailabilityChange = async (isAvailable) => {
+    const message = isAvailable
+      ? '¿Reactivar el servicio de consultas y volver a aparecer en el listado de pacientes?'
+      : '¿Suspender momentáneamente el servicio de consultas? Los pacientes verán que no estás disponible.';
+    if (!window.confirm(message)) return;
+
+    setUpdatingAvailability(true);
+    try {
+      const res = await psychologistService.updateAvailability(isAvailable);
+      const updated = res.data?.psychologist;
+      if (updated) {
+        setProfile(updated);
+        updateUser(updated);
+      } else {
+        setProfile((prev) => ({ ...prev, status: isAvailable ? 'ACTIVE' : 'SUSPENDED' }));
+        updateUser({ status: isAvailable ? 'ACTIVE' : 'SUSPENDED' });
+      }
+      toast.success(isAvailable ? 'Servicio de consultas reactivado' : 'Servicio de consultas suspendido');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'No se pudo actualizar la disponibilidad');
+    } finally {
+      setUpdatingAvailability(false);
     }
   };
 
@@ -364,6 +394,30 @@ export default function PsychologistDashboard() {
                 {p?.status === 'APPROVED' && !subscription && <li><Link to="/psicologo/plan">Elegir plan</Link></li>}
                 {subscription && <li><Link to="/psicologo/plan">Cambiar plan</Link></li>}
                 <li><Link to={patientListingUrl} onClick={handlePatientListingClick}>Ver cómo aparezco en el listado del paciente</Link></li>
+                {p?.status === 'ACTIVE' && (
+                  <li>
+                    <button
+                      type="button"
+                      className="psico-link-button"
+                      onClick={() => handleAvailabilityChange(false)}
+                      disabled={updatingAvailability}
+                    >
+                      <PauseCircle size={14} /> {updatingAvailability ? 'Suspendiendo...' : 'Suspender'}
+                    </button>
+                  </li>
+                )}
+                {p?.status === 'SUSPENDED' && (
+                  <li>
+                    <button
+                      type="button"
+                      className="psico-link-button"
+                      onClick={() => handleAvailabilityChange(true)}
+                      disabled={updatingAvailability}
+                    >
+                      <PlayCircle size={14} /> {updatingAvailability ? 'Reactivando...' : 'Reactivar consultas'}
+                    </button>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -373,7 +427,7 @@ export default function PsychologistDashboard() {
         <div className="psico-dashboard-card psico-dashboard-requests-card">
           <div className="psico-dashboard-card-header">
             <Users size={18} />
-            <h2>Solicitudes/consulta de los pacientes</h2>
+            <h2>Historial de solicitudes de pacientes</h2>
             {pendingRequests.length > 0 && (
               <span className="psico-badge-count">{pendingRequests.length} pendiente{pendingRequests.length !== 1 ? 's' : ''}</span>
             )}
@@ -392,12 +446,18 @@ export default function PsychologistDashboard() {
                     {pendingRequests.map((req) => {
                       const patient = req.patient;
                       const patientName = `${patient?.firstName || ''} ${patient?.lastName || ''}`.trim();
+                      const patientPhoto = patient?.profileImage ? toAssetUrl(patient.profileImage) : null;
                       const blockInfo = req.blockInfo;
+                      const isPatientProfileOpen = expandedPatientRequest === req.id;
+                      const patientWhatsappUrl = patient?.phone ? `https://wa.me/${patient.phone.replace(/\D/g, '')}` : null;
                       return (
                         <li key={req.id} className={`patient-request-item ${blockInfo ? 'patient-request-item-blocked' : ''}`}>
                           <div className="patient-request-psy">
                             <div className="psico-card-photo psico-card-photo-sm">
-                              <div className="psico-card-initials">
+                              {patientPhoto ? (
+                                <img src={patientPhoto} alt={patientName} onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
+                              ) : null}
+                              <div className="psico-card-initials" style={patientPhoto ? { display: 'none' } : {}}>
                                 {`${patient?.firstName?.[0] || ''}${patient?.lastName?.[0] || ''}`.toUpperCase()}
                               </div>
                             </div>
@@ -413,6 +473,30 @@ export default function PsychologistDashboard() {
                               <span className="psico-secondary-text psico-date-text">
                                 {formatDate(req.createdAt)}
                               </span>
+                              {!blockInfo && (
+                                <>
+                                  <button
+                                    type="button"
+                                    className="psico-link-button psico-link-button-inline"
+                                    onClick={() => setExpandedPatientRequest((current) => (current === req.id ? null : req.id))}
+                                  >
+                                    <Eye size={14} /> {isPatientProfileOpen ? 'Ocultar perfil del paciente' : 'Ver perfil del paciente'}
+                                  </button>
+                                  {isPatientProfileOpen && (
+                                    <div className="psico-patient-profile-preview">
+                                      <p><strong>Email:</strong> {patient?.email || '-'}</p>
+                                      <p><strong>WhatsApp:</strong> {patient?.phone || '-'}</p>
+                                      <p><strong>Género:</strong> {patient?.gender || '-'}</p>
+                                      <p><strong>Paciente desde:</strong> {formatDate(patient?.createdAt)}</p>
+                                      {patientWhatsappUrl && (
+                                        <a href={patientWhatsappUrl} target="_blank" rel="noopener noreferrer" className="psico-btn-whatsapp">
+                                          <MessageCircle size={14} /> WhatsApp
+                                        </a>
+                                      )}
+                                    </div>
+                                  )}
+                                </>
+                              )}
                             </div>
                           </div>
                           <div className="psico-request-actions">
@@ -421,7 +505,7 @@ export default function PsychologistDashboard() {
                               onClick={() => handleRequestStatus(req.id, 'ACCEPTED')}
                               disabled={updatingRequest === req.id}
                             >
-                              <Check size={14} /> Aceptar
+                              <Check size={14} /> {ACCEPT_CONTACT_NOTICE}
                             </button>
                             <button
                               className="psico-btn-danger-sm"

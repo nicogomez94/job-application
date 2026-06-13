@@ -79,6 +79,16 @@ router.get('/me/profile', authenticatePsychologist, psychologistController.getPr
 
 router.put('/me/profile', authenticatePsychologist, psychologistController.updateProfile);
 
+router.put(
+  '/me/availability',
+  authenticatePsychologist,
+  [
+    body('isAvailable').isBoolean().withMessage('Estado de disponibilidad inválido'),
+    validate,
+  ],
+  psychologistController.updateAvailability
+);
+
 router.delete('/me/account', authenticatePsychologist, psychologistController.deleteAccount);
 
 router.post(

@@ -17,8 +17,12 @@ const getBlockInfo = (block, viewerType) => {
     blockedMe,
     createdAt: block.createdAt,
     message: blockedByMe
-      ? 'Bloqueaste a este profesional. Los datos de contacto ya no están disponibles.'
-      : 'Este usuario te bloqueó. Ya no podés ver sus datos.',
+      ? viewerType === 'psychologist'
+        ? 'Bloqueaste a este paciente. Los datos de contacto ya no están disponibles.'
+        : 'Bloqueaste a este profesional. Los datos de contacto ya no están disponibles.'
+      : viewerType === 'patient'
+        ? 'Por el momento el profesional no está disponible'
+        : 'Este paciente te bloqueó. Ya no podés ver sus datos.',
   };
 };
 
@@ -62,6 +66,7 @@ const keepPatientIdentityOnly = (patient) => {
 };
 
 const TERMINATION_MESSAGE = 'El usuario ha decidido finalizar la terapia por razones personales';
+const PROFESSIONAL_SUSPENDED_MESSAGE = 'El profesional suspende momentáneamente el servicio de consultas';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PATIENT ENDPOINTS
@@ -183,6 +188,7 @@ exports.getMyRequests = async (req, res) => {
             firstName: true,
             lastName: true,
             displayName: true,
+            status: true,
             profileImage: true,
             specialties: true,
             languages: true,
@@ -201,7 +207,7 @@ exports.getMyRequests = async (req, res) => {
     });
     const blockByPsychologistId = new Map(blocks.map((block) => [block.psychologistId, block]));
 
-    // Strip contact info from non-ACCEPTED requests and all data from blocked relationships.
+    // Strip contact info from non-ACCEPTED or temporarily suspended relationships.
     const sanitized = requests.map((request) => {
       const r = addReapplyInfo(request);
       const blockInfo = getBlockInfo(blockByPsychologistId.get(r.psychologistId), 'patient');
@@ -214,11 +220,16 @@ exports.getMyRequests = async (req, res) => {
         };
       }
 
-      if (r.status !== 'ACCEPTED') {
+      if (r.status !== 'ACCEPTED' || r.psychologist?.status === 'SUSPENDED') {
         const { phone, contactEmail, ...psychologistWithoutContact } = r.psychologist;
-        return { ...r, psychologist: psychologistWithoutContact };
+        return {
+          ...r,
+          psychologist: psychologistWithoutContact,
+          professionalUnavailable: r.psychologist?.status === 'SUSPENDED',
+          professionalUnavailableMessage: r.psychologist?.status === 'SUSPENDED' ? PROFESSIONAL_SUSPENDED_MESSAGE : null,
+        };
       }
-      return { ...r, blockInfo: null };
+      return { ...r, blockInfo: null, professionalUnavailable: false, professionalUnavailableMessage: null };
     });
 
     res.json(sanitized);
@@ -291,12 +302,23 @@ exports.getContactInfo = async (req, res) => {
       });
     }
 
-    const psychologist = await prisma.psychologist.findFirst({
-      where: { id, status: 'ACTIVE' },
-      select: { phone: true, contactEmail: true },
+    const psychologist = await prisma.psychologist.findUnique({
+      where: { id },
+      select: { status: true, phone: true, contactEmail: true },
     });
 
     if (!psychologist) {
+      return res.status(404).json({ error: 'Psicólogo no encontrado' });
+    }
+
+    if (psychologist.status === 'SUSPENDED') {
+      return res.status(403).json({
+        error: PROFESSIONAL_SUSPENDED_MESSAGE,
+        professionalUnavailable: true,
+      });
+    }
+
+    if (psychologist.status !== 'ACTIVE') {
       return res.status(404).json({ error: 'Psicólogo no encontrado' });
     }
 
@@ -325,7 +347,9 @@ exports.getIncomingRequests = async (req, res) => {
             lastName: true,
             email: true,
             phone: true,
+            gender: true,
             profileImage: true,
+            createdAt: true,
           },
         },
       },
@@ -641,7 +665,7 @@ exports.updateRequestStatus = async (req, res) => {
       data: { status },
       include: {
         patient: {
-          select: { id: true, firstName: true, lastName: true, email: true, phone: true },
+          select: { id: true, firstName: true, lastName: true, email: true, phone: true, gender: true, profileImage: true, createdAt: true },
         },
       },
     });

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
-import { CheckCircle, Clock, Globe, Search, UserPlus, XCircle } from 'lucide-react';
+import { CheckCircle, Clock, Globe, Search, UserPlus, XCircle, PauseCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { psychologistService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
@@ -29,6 +29,8 @@ const REQUEST_STATUS_UI = {
   ACCEPTED: { label: 'Solicitud aceptada', icon: CheckCircle, className: 'psico-status-green' },
   REJECTED: { label: 'Ya solicitada', icon: XCircle, className: 'psico-status-red' },
 };
+
+const PROFESSIONAL_SUSPENDED_MESSAGE = 'El profesional suspende momentáneamente el servicio de consultas';
 
 const getRequestStatusUi = (status) => REQUEST_STATUS_UI[status] || REQUEST_STATUS_UI.PENDING;
 
@@ -210,6 +212,7 @@ function PsychologistCard({ psychologist: p, highlighted = false, cardRef = null
   const country = p.country || (p.registrationType === 'ARGENTINA' ? 'Argentina' : '');
   const title = p.universityDegree || p.degreeInstitution;
   const existingRequest = p.currentPatientRequest || (p.hasRequestedByCurrentPatient ? { status: 'PENDING' } : null);
+  const professionalUnavailable = Boolean(p.professionalUnavailable || p.status === 'SUSPENDED');
   const canReapply = existingRequest?.status === 'REJECTED' && existingRequest?.canReapply;
   const hasExistingRequest = Boolean(existingRequest) && !canReapply;
   const requestStatusUi = hasExistingRequest ? getRequestStatusUi(existingRequest.status) : null;
@@ -315,7 +318,11 @@ function PsychologistCard({ psychologist: p, highlighted = false, cardRef = null
           </div>
         )}
         <div className="psico-card-contact">
-          {hasExistingRequest ? (
+          {professionalUnavailable ? (
+            <span className="psico-requested-indicator psico-status-orange psico-status-unavailable">
+              <PauseCircle size={14} /> {p.professionalUnavailableMessage || PROFESSIONAL_SUSPENDED_MESSAGE}
+            </span>
+          ) : hasExistingRequest ? (
             <span className={`psico-requested-indicator ${requestStatusUi.className}`}>
               {RequestIcon && <RequestIcon size={14} />} {requestStatusUi.label}
             </span>

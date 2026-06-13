@@ -220,6 +220,10 @@ export const psychologistService = {
     const response = await api.put('/psychologists/me/profile', data);
     return { ...response, data: repairMojibakeDeep(response.data) };
   },
+  updateAvailability: async (isAvailable) => {
+    const response = await api.put('/psychologists/me/availability', { isAvailable });
+    return { ...response, data: repairMojibakeDeep(response.data) };
+  },
   uploadProfileImage: (file) => {
     const formData = new FormData();
     formData.append('psychologistProfile', file);

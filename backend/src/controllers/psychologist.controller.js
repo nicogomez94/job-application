@@ -29,7 +29,7 @@ const PLAN_LEVELS = {
   ANNUAL: 3,
 };
 
-const DOCUMENT_REVIEWED_STATUSES = new Set(['APPROVED', 'ACTIVE']);
+const DOCUMENT_REVIEWED_STATUSES = new Set(['APPROVED', 'ACTIVE', 'SUSPENDED']);
 
 const markDocumentsSubmittedIfNeeded = async (psychologistId) => {
   const current = await prisma.psychologist.findUnique({
@@ -408,6 +408,46 @@ exports.createSubscription = async (req, res) => {
   } catch (error) {
     console.error('Error en createSubscription psychologist:', error);
     res.status(500).json({ error: 'Error al crear suscripción' });
+  }
+};
+
+// ─── UPDATE AVAILABILITY ─────────────────────────────────────────────────────
+exports.updateAvailability = async (req, res) => {
+  try {
+    const { isAvailable } = req.body;
+
+    if (typeof isAvailable !== 'boolean') {
+      return res.status(400).json({ error: 'El estado de disponibilidad es requerido' });
+    }
+
+    const current = await prisma.psychologist.findUnique({
+      where: { id: req.user.id },
+      select: { status: true },
+    });
+
+    if (!current) {
+      return res.status(404).json({ error: 'Psicólogo no encontrado' });
+    }
+
+    if (!['ACTIVE', 'SUSPENDED'].includes(current.status)) {
+      return res.status(400).json({
+        error: 'Solo podés suspender o reactivar un perfil activo.',
+      });
+    }
+
+    const updated = await prisma.psychologist.update({
+      where: { id: req.user.id },
+      data: { status: isAvailable ? 'ACTIVE' : 'SUSPENDED' },
+    });
+
+    const { password, ...safe } = updated;
+    res.json({
+      message: isAvailable ? 'Servicio de consultas reactivado' : 'Servicio de consultas suspendido',
+      psychologist: safe,
+    });
+  } catch (error) {
+    console.error('Error en updateAvailability psychologist:', error);
+    res.status(500).json({ error: 'Error al actualizar disponibilidad' });
   }
 };
 

@@ -1,0 +1,1 @@
+ALTER TYPE "PsychologistStatus" ADD VALUE IF NOT EXISTS 'SUSPENDED';

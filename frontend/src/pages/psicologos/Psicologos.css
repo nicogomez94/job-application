@@ -1975,7 +1975,9 @@
   flex: 1;
   margin: 0;
   min-width: 0;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: manual;
 }
 
 .psico-dashboard-profile {
@@ -2205,6 +2207,23 @@
     padding: 1rem;
   }
 
+  .psico-dashboard-card-header h2 {
+    line-height: 1.35;
+  }
+
+  .psico-dashboard-requests-card .psico-dashboard-card-header {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .psico-dashboard-requests-card .psico-dashboard-card-header h2 {
+    flex: 1 0 calc(100% - 28px);
+  }
+
+  .psico-dashboard-requests-card .psico-badge-count {
+    margin-left: 26px;
+  }
+
   .psico-form-actions .psico-btn-primary,
   .psico-form-actions .psico-btn-secondary {
     width: 100%;
@@ -2270,19 +2289,45 @@
   max-width: 100%;
 }
 
-.psico-quick-actions li a {
+.psico-quick-actions li a,
+.psico-link-button {
   display: inline-block;
   max-width: 100%;
   font-size: 0.9rem;
   color: #2c5f7a;
+  background: transparent;
+  border: 0;
+  padding: 0;
   text-decoration: none;
   font-weight: 600;
   transition: text-decoration 0.12s;
   overflow-wrap: anywhere;
   word-break: break-word;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
 }
 
-.psico-quick-actions li a:hover { text-decoration: underline; }
+.psico-link-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.psico-link-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.psico-link-button-inline {
+  margin-top: 0.4rem;
+  font-size: 0.82rem;
+}
+
+.psico-quick-actions li a:hover,
+.psico-link-button:hover:not(:disabled) {
+  text-decoration: underline;
+}
 
 /* ── Home section ────────────────────────────────────────────── */
 .psico-home-section {
@@ -2390,7 +2435,8 @@
 .psico-register-back a,
 .psico-legal-section a,
 .psico-doc-file-type,
-.psico-quick-actions li a {
+.psico-quick-actions li a,
+.psico-link-button {
   color: var(--psico-accent-700);
 }
 
@@ -2509,6 +2555,9 @@
   font-weight: 600;
   cursor: pointer;
   transition: background 0.15s;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: center;
 }
 
 .psico-btn-accept:hover:not(:disabled) {
@@ -2736,6 +2785,37 @@
   margin: 0.25rem 0 0;
   max-width: 100%;
   overflow-wrap: anywhere;
+}
+
+.psico-unavailable-text {
+  color: #b45309;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin: 0.25rem 0 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.psico-patient-profile-preview {
+  display: grid;
+  gap: 0.25rem;
+  margin-top: 0.55rem;
+  padding: 0.75rem;
+  background: #ffffff;
+  border: 1px solid #d9e6ee;
+  border-radius: 8px;
+  max-width: 420px;
+}
+
+.psico-patient-profile-preview p {
+  margin: 0;
+  font-size: 0.84rem;
+  color: #33556a;
+}
+
+.psico-patient-profile-preview .psico-btn-whatsapp {
+  width: fit-content;
+  margin-top: 0.25rem;
 }
 
 .psico-blocked-panel {

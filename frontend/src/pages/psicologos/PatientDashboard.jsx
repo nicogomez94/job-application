@@ -19,6 +19,7 @@ const toAssetUrl = (p) => {
 
 const REJECTED_MESSAGE = 'Estimada/o. En estos momentos estamos con agenda completa. Será un gusto asistirle en un próximo contacto. Intente nuevamente después de 7 días.';
 const TERMINATION_MESSAGE = 'El usuario ha decidido finalizar la terapia por razones personales';
+const PROFESSIONAL_SUSPENDED_MESSAGE = 'El profesional suspende momentáneamente el servicio de consultas';
 
 const mailtoHref = (email) => `mailto:${String(email || '').trim()}`;
 
@@ -465,6 +466,7 @@ export default function PatientDashboard() {
                   const photo = p?.profileImage ? toAssetUrl(p.profileImage) : null;
                   const initials = `${p?.firstName?.[0] || ''}${p?.lastName?.[0] || ''}`.toUpperCase();
                   const blockInfo = req.blockInfo;
+                  const professionalUnavailable = Boolean(req.professionalUnavailable || p?.status === 'SUSPENDED');
                   const hasTerminationRequest = Boolean(req.terminationRequestedAt && !req.terminationAcceptedAt);
                   const terminationAccepted = Boolean(req.terminationAcceptedAt);
 
@@ -484,6 +486,8 @@ export default function PatientDashboard() {
                           )}
                           {blockInfo ? (
                             <p className="psico-blocked-text">{blockInfo.message}</p>
+                          ) : professionalUnavailable ? (
+                            <p className="psico-unavailable-text">{req.professionalUnavailableMessage || PROFESSIONAL_SUSPENDED_MESSAGE}</p>
                           ) : (
                             <Link to={`/psicologos/${p?.id}`} className="psico-link-subtle">
                               Ver perfil →
@@ -527,12 +531,17 @@ export default function PatientDashboard() {
                             )}
                           </>
                         )}
+                        {professionalUnavailable && !blockInfo && (
+                          <span className="psico-status-badge psico-status-orange">
+                            <Clock size={13} /> No disponible
+                          </span>
+                        )}
                         <span className="psico-secondary-text psico-date-text">
                           {new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(req.createdAt))}
                         </span>
                       </div>
 
-                      {req.status === 'ACCEPTED' && !blockInfo && (
+                      {req.status === 'ACCEPTED' && !blockInfo && !professionalUnavailable && (
                         <div className="patient-request-contact">
                           {p?.phone && (
                             <a
@@ -552,7 +561,7 @@ export default function PatientDashboard() {
                         </div>
                       )}
 
-                      {req.status === 'ACCEPTED' && !blockInfo && (
+                      {req.status === 'ACCEPTED' && !blockInfo && !professionalUnavailable && (
                         <button
                           className="psico-btn-danger-sm"
                           onClick={() => handleBlock(req)}
@@ -564,7 +573,7 @@ export default function PatientDashboard() {
                         </button>
                       )}
 
-                      {req.status === 'ACCEPTED' && !blockInfo && !terminationAccepted && (
+                      {req.status === 'ACCEPTED' && !blockInfo && !professionalUnavailable && !terminationAccepted && (
                         <div className="psico-therapy-end">
                           <button
                             className="psico-btn-therapy-end"

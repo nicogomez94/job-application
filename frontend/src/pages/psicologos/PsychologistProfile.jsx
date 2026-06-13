@@ -15,6 +15,7 @@ const toAssetUrl = (p) => {
 
 const REJECTED_MESSAGE = 'Estimada/o. En estos momentos estamos con agenda completa. Será un gusto asistirle en un próximo contacto. Intente nuevamente después de 7 días.';
 const TERMINATION_MESSAGE = 'El usuario ha decidido finalizar la terapia por razones personales';
+const PROFESSIONAL_SUSPENDED_MESSAGE = 'El profesional suspende momentáneamente el servicio de consultas';
 const mailtoHref = (email) => `mailto:${String(email || '').trim()}`;
 
 export default function PsychologistProfile() {
@@ -183,6 +184,7 @@ export default function PsychologistProfile() {
   const canReapply = requestRejected && myRequest?.canReapply;
   const blockInfo = p.blockInfo || myRequest?.blockInfo;
   const requestBlocked = Boolean(p.isBlocked || blockInfo);
+  const professionalUnavailable = Boolean(p.professionalUnavailable || myRequest?.professionalUnavailable || p.status === 'SUSPENDED');
   const hasTerminationRequest = Boolean(myRequest?.terminationRequestedAt && !myRequest?.terminationAcceptedAt);
   const terminationAccepted = Boolean(myRequest?.terminationAcceptedAt);
 
@@ -220,8 +222,16 @@ export default function PsychologistProfile() {
                 </div>
               )}
 
+              {professionalUnavailable && !requestBlocked && (
+                <div className="psico-hire-section">
+                  <span className="psico-status-badge psico-status-orange psico-status-unavailable">
+                    <Clock size={14} /> {p.professionalUnavailableMessage || myRequest?.professionalUnavailableMessage || PROFESSIONAL_SUSPENDED_MESSAGE}
+                  </span>
+                </div>
+              )}
+
               {/* ACCEPTED: show real contact buttons */}
-              {requestAccepted && !requestBlocked && (
+              {requestAccepted && !requestBlocked && !professionalUnavailable && (
                 <div className="psico-accepted-contact-card">
                   <span className="psico-status-badge psico-status-green">
                     <CheckCircle size={14} /> Solicitud aceptada
@@ -270,7 +280,7 @@ export default function PsychologistProfile() {
               )}
 
               {/* PENDING: show waiting status */}
-              {requestPending && !requestBlocked && (
+              {requestPending && !requestBlocked && !professionalUnavailable && (
                 <div className="psico-hire-section">
                   <span className="psico-status-badge psico-status-orange">
                     <Clock size={14} /> Solicitud enviada — esperando respuesta
@@ -287,7 +297,7 @@ export default function PsychologistProfile() {
               )}
 
               {/* REJECTED: allow retrying */}
-              {requestRejected && !requestBlocked && (
+              {requestRejected && !requestBlocked && !professionalUnavailable && (
                 <div className="psico-hire-section">
                   {!canReapply && (
                     <span className="psico-status-badge psico-status-red psico-status-unavailable">
@@ -320,7 +330,7 @@ export default function PsychologistProfile() {
               )}
 
               {/* No request yet */}
-              {!myRequest && !requestLoading && !requestBlocked && (
+              {!myRequest && !requestLoading && !requestBlocked && !professionalUnavailable && (
                 <div className="psico-hire-section">
                   {isPatient ? (
                     <>

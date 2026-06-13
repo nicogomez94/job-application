@@ -16,6 +16,7 @@ const STATUS_OPTIONS = [
   { value: 'APPROVED', label: 'Aprobado, falta plan' },
   { value: 'REJECTED', label: 'No validado' },
   { value: 'ACTIVE', label: 'Activo' },
+  { value: 'SUSPENDED', label: 'Suspendido' },
 ];
 
 const STATUS_LABELS = {
@@ -24,6 +25,7 @@ const STATUS_LABELS = {
   APPROVED: 'Aprobado, falta plan',
   REJECTED: 'No validado',
   ACTIVE: 'Activo',
+  SUSPENDED: 'Suspendido',
 };
 
 const statusToBadgeClass = (status) => {
@@ -34,6 +36,7 @@ const statusToBadgeClass = (status) => {
     case 'REJECTED':
       return 'badge badge-error';
     case 'PENDING':
+    case 'SUSPENDED':
       return 'badge badge-warning';
     default:
       return 'badge badge-info';

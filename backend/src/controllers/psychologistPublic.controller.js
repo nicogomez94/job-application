@@ -13,7 +13,7 @@ const getBlockInfo = (block) => {
     createdAt: block.createdAt,
     message: blockedByMe
       ? 'Bloqueaste a este profesional. Los datos de contacto ya no están disponibles.'
-      : 'Este usuario te bloqueó. Ya no podés ver sus datos.',
+      : 'Por el momento el profesional no está disponible',
   };
 };
 
@@ -47,12 +47,13 @@ exports.list = async (req, res) => {
     const requestedCountry = repairMojibake(country);
 
     const psychologists = await prisma.psychologist.findMany({
-      where: { status: 'ACTIVE' },
+      where: { status: { in: ['ACTIVE', 'SUSPENDED'] } },
       select: {
         id: true,
         displayName: true,
         firstName: true,
         lastName: true,
+        status: true,
         gender: true,
         dateOfBirth: true,
         profileImage: true,
@@ -123,6 +124,10 @@ exports.list = async (req, res) => {
           ...p,
           age,
           dateOfBirth: undefined,
+          professionalUnavailable: p.status === 'SUSPENDED',
+          professionalUnavailableMessage: p.status === 'SUSPENDED'
+            ? 'El profesional suspende momentáneamente el servicio de consultas'
+            : null,
           hasRequestedByCurrentPatient: Boolean(currentPatientRequest),
           currentPatientRequest,
         };
@@ -183,7 +188,7 @@ exports.getById = async (req, res) => {
     const { id } = req.params;
 
     const psychologist = await prisma.psychologist.findFirst({
-      where: { id, status: 'ACTIVE' },
+      where: { id, status: { in: ['ACTIVE', 'SUSPENDED'] } },
       select: {
         id: true,
         displayName: true,
@@ -208,6 +213,7 @@ exports.getById = async (req, res) => {
         region: true,
         sessionCost: true,
         sessionDuration: true,
+        status: true,
       },
     });
 
@@ -238,6 +244,20 @@ exports.getById = async (req, res) => {
     }
 
     const normalized = repairMojibakeDeep(psychologist);
+
+    if (normalized.status === 'SUSPENDED') {
+      return res.json({
+        id: normalized.id,
+        displayName: normalized.displayName,
+        firstName: normalized.firstName,
+        lastName: normalized.lastName,
+        profileImage: normalized.profileImage,
+        status: normalized.status,
+        professionalUnavailable: true,
+        professionalUnavailableMessage: 'El profesional suspende momentáneamente el servicio de consultas',
+      });
+    }
+
     const now = new Date();
     let age = null;
 
