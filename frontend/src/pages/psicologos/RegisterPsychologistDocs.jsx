@@ -37,7 +37,7 @@ const toAssetUrl = (p) => {
 };
 
 export default function RegisterPsychologistDocs() {
-  const { user } = useAuthStore();
+  const { user, updateUser } = useAuthStore();
   const navigate = useNavigate();
   const [registrationType, setRegistrationType] = useState(user?.registrationType || '');
   const isAR = registrationType === 'ARGENTINA';
@@ -55,7 +55,7 @@ export default function RegisterPsychologistDocs() {
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const getFileExtension = (fileName) => fileName.split('.').pop()?.toLowerCase() || '';
-  const isReviewedStatus = ['APPROVED', 'ACTIVE'].includes(psychologistStatus);
+  const isReviewedStatus = ['APPROVED', 'ACTIVE', 'SUSPENDED'].includes(psychologistStatus);
 
   useEffect(() => {
     const loadExistingDocuments = async () => {
@@ -162,8 +162,11 @@ export default function RegisterPsychologistDocs() {
           prev.map((item) => (item.id === document.id ? updatedDocument : item))
         );
       }
-      if (res.data?.status) setPsychologistStatus(res.data.status);
-      toast.success(isReviewedStatus ? 'Documento reemplazado.' : 'Documento reemplazado. Queda pendiente de verificación.');
+      if (res.data?.status) {
+        setPsychologistStatus(res.data.status);
+        updateUser({ status: res.data.status });
+      }
+      toast.success('Documento reemplazado. Queda pendiente de verificación.');
     } catch (err) {
       const msg = err?.response?.data?.error || 'Error al reemplazar documento';
       setValidationMessage(msg);
@@ -184,7 +187,10 @@ export default function RegisterPsychologistDocs() {
     try {
       const res = await psychologistService.deleteDocument(document.id);
       setExistingDocuments((prev) => prev.filter((item) => item.id !== document.id));
-      if (res.data?.status) setPsychologistStatus(res.data.status);
+      if (res.data?.status) {
+        setPsychologistStatus(res.data.status);
+        updateUser({ status: res.data.status });
+      }
       toast.success('Documento eliminado.');
     } catch (err) {
       const msg = err?.response?.data?.error || 'Error al eliminar documento';
@@ -244,7 +250,10 @@ export default function RegisterPsychologistDocs() {
         }
       );
       const status = res.data?.status || psychologistStatus;
-      if (status) setPsychologistStatus(status);
+      if (status) {
+        setPsychologistStatus(status);
+        updateUser({ status });
+      }
 
       if (['APPROVED', 'ACTIVE'].includes(status)) {
         toast.success('Documentos actualizados.');
@@ -278,7 +287,7 @@ export default function RegisterPsychologistDocs() {
         <p className="psico-docs-subtitle">
           Subí los documentos que acrediten tu identidad y habilitación profesional.
           {isReviewedStatus
-            ? ' Tu cuenta ya fue aprobada: podés actualizar estos archivos sin nueva aprobación.'
+            ? ' Si actualizás estos archivos, tu cuenta volverá a quedar en revisión hasta que el admin la apruebe.'
             : ' El equipo los revisará en aproximadamente 5 días hábiles.'}
           {!isReviewedStatus && requiredDocTypes.length > 0 ? ' Los primeros 4 documentos son obligatorios para continuar.' : ''}
         </p>

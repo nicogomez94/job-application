@@ -29,15 +29,13 @@ const PLAN_LEVELS = {
   ANNUAL: 3,
 };
 
-const DOCUMENT_REVIEWED_STATUSES = new Set(['APPROVED', 'ACTIVE', 'SUSPENDED']);
-
 const markDocumentsSubmittedIfNeeded = async (psychologistId) => {
   const current = await prisma.psychologist.findUnique({
     where: { id: psychologistId },
     select: { status: true },
   });
 
-  if (current?.status === 'PENDING_DOCS' || current?.status === 'REJECTED') {
+  if (['PENDING_DOCS', 'REJECTED', 'APPROVED', 'ACTIVE', 'SUSPENDED'].includes(current?.status)) {
     await prisma.psychologist.update({
       where: { id: psychologistId },
       data: { status: 'PENDING', rejectionReason: null },
@@ -49,11 +47,9 @@ const markDocumentsSubmittedIfNeeded = async (psychologistId) => {
 };
 
 const getDocumentUploadMessage = (status) => {
-  if (DOCUMENT_REVIEWED_STATUSES.has(status)) {
-    return 'Documentos actualizados exitosamente.';
-  }
-
-  return 'Documentos subidos. Tu solicitud está pendiente de verificación.';
+  return status === 'PENDING'
+    ? 'Documentos subidos. Tu solicitud está pendiente de verificación.'
+    : 'Documentos actualizados exitosamente.';
 };
 
 // ─── GET PROFILE ─────────────────────────────────────────────────────────────
@@ -298,10 +294,17 @@ exports.deleteDocument = async (req, res) => {
     });
 
     let status = current?.status;
-    if (remainingDocuments === 0 && (status === 'PENDING' || status === 'REJECTED')) {
+    if (remainingDocuments === 0) {
       const updated = await prisma.psychologist.update({
         where: { id: req.user.id },
-        data: { status: 'PENDING_DOCS' },
+        data: { status: 'PENDING_DOCS', rejectionReason: null },
+        select: { status: true },
+      });
+      status = updated.status;
+    } else if (['REJECTED', 'APPROVED', 'ACTIVE', 'SUSPENDED'].includes(status)) {
+      const updated = await prisma.psychologist.update({
+        where: { id: req.user.id },
+        data: { status: 'PENDING', rejectionReason: null },
         select: { status: true },
       });
       status = updated.status;
@@ -348,6 +351,21 @@ exports.getSubscription = async (req, res) => {
 exports.createSubscription = async (req, res) => {
   try {
     const { plan, currency, paymentId } = req.body;
+
+    const currentPsychologist = await prisma.psychologist.findUnique({
+      where: { id: req.user.id },
+      select: { status: true },
+    });
+
+    if (!currentPsychologist) {
+      return res.status(404).json({ error: 'Psicólogo no encontrado' });
+    }
+
+    if (!['APPROVED', 'ACTIVE', 'SUSPENDED'].includes(currentPsychologist.status)) {
+      return res.status(403).json({
+        error: 'Tu documentación debe estar aprobada por el admin antes de activar un plan.',
+      });
+    }
 
     const activeSubscription = await prisma.psychologistSubscription.findFirst({
       where: {
@@ -566,9 +584,22 @@ exports.adminApprove = async (req, res) => {
       return res.status(400).json({ error: 'No se puede aprobar una cuenta sin documentación cargada' });
     }
 
+    const activeSubscription = await prisma.psychologistSubscription.findFirst({
+      where: {
+        psychologistId: id,
+        status: 'ACTIVE',
+        endDate: { gte: new Date() },
+      },
+      select: { id: true },
+    });
+
     const updated = await prisma.psychologist.update({
       where: { id },
-      data: { status: 'APPROVED', approvedAt: new Date(), rejectionReason: null },
+      data: {
+        status: activeSubscription ? 'ACTIVE' : 'APPROVED',
+        approvedAt: new Date(),
+        rejectionReason: null,
+      },
     });
 
     // Send approval email
