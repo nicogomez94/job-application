@@ -154,7 +154,7 @@ export default function Home() {
       subtitle: 'Pagás 12 meses y usás 13',
       price: 'USD 120',
       period: '/ 13 meses',
-      feature: 'Incluye 1 mes sin costo',
+      feature: 'Incluye 1 mes adicional',
     },
   ];
 
@@ -396,7 +396,7 @@ export default function Home() {
             <p className="home-stats-eyebrow">{t('Empresas')}</p>
             <h2>{t('Planes y precios en versión resumida')}</h2>
             <p>
-              {t('*Incluye 2 meses gratis en la inscripción inicial')}
+              {t('*Planes recurrentes por período completo, con cobro seguro por Mercado Pago.')}
               <br />
               {t('*Beneficios por calidad de servicios y referidos en planes pagos.')}
             </p>

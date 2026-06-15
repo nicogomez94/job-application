@@ -7,11 +7,6 @@ const {
   findAccountByEmail,
   getEmailAlreadyRegisteredMessage,
 } = require('../utils/accountEmail');
-const addMonths = (date, months) => {
-  const value = new Date(date);
-  value.setMonth(value.getMonth() + months);
-  return value;
-};
 const getGoogleEmail = (profile) => normalizeEmail(profile?.emails?.[0]?.value);
 const getUniqueConstraintFields = (error) =>
   Array.isArray(error?.meta?.target)
@@ -225,32 +220,13 @@ passport.use(
               return done(null, false, { message: getEmailAlreadyRegisteredMessage(existingOtherAccount) });
             }
 
-            company = await prisma.$transaction(async (tx) => {
-              const createdCompany = await tx.company.create({
-                data: {
-                  googleId: profile.id,
-                  email: googleEmail,
-                  companyName: profile.displayName || googleEmail.split('@')[0],
-                  companyLogo: googlePhoto,
-                },
-              });
-
-              const startDate = new Date();
-              await tx.subscription.create({
-                data: {
-                  companyId: createdCompany.id,
-                  plan: 'TRIAL',
-                  status: 'ACTIVE',
-                  startDate,
-                  endDate: addMonths(startDate, 2),
-                  amount: 0,
-                  currency: 'USD',
-                  paymentStatus: 'free',
-                  paymentMethod: 'free',
-                },
-              });
-
-              return createdCompany;
+            company = await prisma.company.create({
+              data: {
+                googleId: profile.id,
+                email: googleEmail,
+                companyName: profile.displayName || googleEmail.split('@')[0],
+                companyLogo: googlePhoto,
+              },
             });
           }
         }

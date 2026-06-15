@@ -121,17 +121,18 @@ router.delete(
 router.get('/me/subscription', authenticatePsychologist, psychologistController.getSubscription);
 
 router.post(
-  '/me/subscription',
+  '/me/subscription/checkout',
   authenticatePsychologist,
   [
     body('plan').isIn(['MONTHLY', 'QUARTERLY', 'ANNUAL']).withMessage('Plan inválido'),
-    body('amount').isDecimal().withMessage('El monto debe ser un número'),
-    body('paymentMethod').optional().isIn(['free', 'mercadopago', 'manual']),
-    body('paymentStatus').optional().isIn(['free', 'approved', 'pending', 'rejected']),
     validate,
   ],
-  psychologistController.createSubscription
+  psychologistController.createCheckout
 );
+
+router.post('/me/subscription', authenticatePsychologist, psychologistController.createSubscription);
+
+router.put('/me/subscription/:id/cancel', authenticatePsychologist, psychologistController.cancelSubscription);
 
 // Psychologist views incoming hiring requests
 router.get('/me/requests', authenticatePsychologist, psychologistRequestController.getIncomingRequests);

@@ -14,11 +14,6 @@ const {
   handlePrismaError,
 } = require('../utils/accountEmail');
 const { validateAndNormalizePhoneNumber } = require('../utils/phone');
-const addMonths = (date, months) => {
-  const value = new Date(date);
-  value.setMonth(value.getMonth() + months);
-  return value;
-};
 
 // ==================== USUARIOS ====================
 
@@ -151,55 +146,36 @@ exports.registerCompany = async (req, res) => {
     // Hash de contraseña
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const company = await prisma.$transaction(async (tx) => {
-      const newCompany = await tx.company.create({
-        data: {
-          email: normalizedEmail,
-          password: hashedPassword,
-          companyName,
-          description,
-          website,
-          location,
-          industry,
-          size,
-        },
-        select: {
-          id: true,
-          email: true,
-          companyName: true,
-          description: true,
-          website: true,
-          location: true,
-          industry: true,
-          size: true,
-          isActive: true,
-          createdAt: true,
-        },
-      });
-
-      const startDate = new Date();
-      await tx.subscription.create({
-        data: {
-          companyId: newCompany.id,
-          plan: 'TRIAL',
-          status: 'ACTIVE',
-          startDate,
-          endDate: addMonths(startDate, 2),
-          amount: 0,
-          currency: 'USD',
-          paymentStatus: 'free',
-          paymentMethod: 'free',
-        },
-      });
-
-      return newCompany;
+    const company = await prisma.company.create({
+      data: {
+        email: normalizedEmail,
+        password: hashedPassword,
+        companyName,
+        description,
+        website,
+        location,
+        industry,
+        size,
+      },
+      select: {
+        id: true,
+        email: true,
+        companyName: true,
+        description: true,
+        website: true,
+        location: true,
+        industry: true,
+        size: true,
+        isActive: true,
+        createdAt: true,
+      },
     });
 
     // Generar token
     const token = generateToken({ id: company.id, type: 'company' });
 
     res.status(201).json({
-      message: 'Empresa registrada exitosamente. Se activó el plan gratuito de 2 meses.',
+      message: 'Empresa registrada exitosamente. Elegí un plan para activar la cuenta.',
       company,
       token,
     });
@@ -221,14 +197,6 @@ exports.loginCompany = async (req, res) => {
     });
     if (!company || !company.password) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
-    }
-
-    // Verificar si está bloqueada
-    if (company.isBlocked) {
-      return res.status(403).json({ 
-        error: 'Cuenta bloqueada',
-        message: 'Tu suscripción ha vencido. Renueva tu plan para continuar.'
-      });
     }
 
     // Verificar contraseña

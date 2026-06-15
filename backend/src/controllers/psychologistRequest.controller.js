@@ -322,6 +322,19 @@ exports.getContactInfo = async (req, res) => {
       return res.status(404).json({ error: 'Psicólogo no encontrado' });
     }
 
+    const activeSubscription = await prisma.psychologistSubscription.findFirst({
+      where: {
+        psychologistId: id,
+        status: 'ACTIVE',
+        endDate: { gte: new Date() },
+      },
+      select: { id: true },
+    });
+
+    if (!activeSubscription) {
+      return res.status(404).json({ error: 'Psicólogo no encontrado' });
+    }
+
     res.json({ phone: psychologist.phone, contactEmail: psychologist.contactEmail });
   } catch (error) {
     console.error('Error en getContactInfo:', error);

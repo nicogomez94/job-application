@@ -90,7 +90,7 @@ const PLANS = [
     features: [
       'Perfil visible para pacientes',
       'Ideal para validar el servicio',
-      'Bonificado para psicólogos',
+      'Renovación automática cada 3 meses',
     ],
     highlight: false,
   },
@@ -104,7 +104,7 @@ const PLANS = [
     features: [
       'Mayor continuidad de publicaciones',
       'Mejor costo por mes',
-      'Bonificado para psicólogos',
+      'Renovación automática cada 7 meses',
     ],
     highlight: true,
     badge: 'Recomendado',
@@ -117,9 +117,9 @@ const PLANS = [
     currency: 'USD',
     duration: '13 meses',
     features: [
-      '1 mes adicional sin costo incluido',
+      '1 mes adicional incluido',
       'Cobertura anual extendida',
-      'Bonificado para psicólogos',
+      'Renovación automática cada 13 meses',
     ],
     highlight: false,
   },
@@ -225,7 +225,7 @@ export default function PsicologosHome() {
         <div className="psico-home-plans-inner">
           <h2 className="psico-home-plans-title">Planes para Psicólogos</h2>
           <p className="psico-home-plans-sub">
-            Elegí el plan que mejor se adapte a tu práctica profesional. Hoy están gratis.
+            Elegí el plan que mejor se adapte a tu práctica profesional.
           </p>
 
           <div className="psico-home-plans-grid">
@@ -240,7 +240,6 @@ export default function PsicologosHome() {
                 <h3 className="psico-home-plan-name">{plan.name}</h3>
                 <p className="psico-home-plan-subtitle">{plan.subtitle}</p>
                 <div className="psico-home-plan-price">
-                  <span className="psico-home-plan-free">Gratis</span>
                   <span className="psico-home-plan-regular">
                     USD {plan.price} / {plan.duration}
                   </span>
@@ -273,8 +272,7 @@ export default function PsicologosHome() {
           </div>
 
           <p className="psico-home-plans-note">
-            <strong>Promoción vigente:</strong> el precio regular figura como referencia, pero el acceso
-            a los planes para psicólogos está bonificado.
+            Los planes se cobran de forma recurrente por el período completo indicado.
           </p>
         </div>
       </section>

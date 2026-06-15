@@ -13,16 +13,12 @@ router.post('/webhook/mercadopago', subscriptionController.mercadoPagoWebhook);
 router.use(authenticateCompany);
 
 // Gestión de suscripciones
-router.post('/', [
-  body('plan').isIn(['TRIAL', 'MONTHLY', 'QUARTERLY', 'ANNUAL']).withMessage('Plan inválido'),
-  body('amount').isDecimal().withMessage('El monto debe ser un número'),
-  body('paymentId').optional().isString(),
-  // paymentMethod: 'free' = período gratuito | 'mercadopago' = pago real
-  body('paymentMethod').optional().isIn(['free', 'mercadopago', 'manual']).withMessage('Método de pago inválido'),
-  // paymentStatus: 'free' = gratuito | 'approved' = aprobado por MP
-  body('paymentStatus').optional().isIn(['free', 'approved', 'pending', 'rejected']).withMessage('Estado de pago inválido'),
+router.post('/checkout', [
+  body('plan').isIn(['MONTHLY', 'QUARTERLY', 'ANNUAL']).withMessage('Plan inválido'),
   validate,
-], subscriptionController.createSubscription);
+], subscriptionController.createCheckout);
+
+router.post('/', subscriptionController.createSubscription);
 
 router.get('/active', subscriptionController.getActiveSubscription);
 router.get('/history', subscriptionController.getCompanySubscriptions);

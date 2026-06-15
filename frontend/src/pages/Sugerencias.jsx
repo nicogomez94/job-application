@@ -13,15 +13,15 @@ const CONTENT = {
     section1Items: [
       {
         label: 'Inscripción Inicial:',
-        text: 'Dos (2) meses gratis en su primera inscripción en la plataforma.',
+        text: 'La cuenta de empresa se activa al contratar un plan vigente desde la plataforma.',
       },
       {
         label: 'Reconocimiento a la Calidad:',
-        text: 'El empleador con la mejor calificación otorgada por los profesionales, al finalizar su período de inscripción paga, será beneficiado con 6 meses adicionales sin costo.',
+        text: 'El empleador con la mejor calificación otorgada por los profesionales, al finalizar su período de inscripción paga, podrá acceder a beneficios comerciales en renovaciones.',
       },
       {
         label: 'Programa de Referidos:',
-        text: 'Por cada empresa que anexe a la plataforma y que concrete una inscripción paga, el empleador referente obtendrá 2 meses gratis.',
+        text: 'Por cada empresa que anexe a la plataforma y que concrete una inscripción paga, el empleador referente podrá acceder a beneficios comerciales en renovaciones.',
       },
     ],
     section2Title: '2. Acuerdos Comerciales y de Pago',
@@ -44,7 +44,7 @@ const CONTENT = {
       },
       {
         label: 'Análisis Preliminar:',
-        text: 'El profesional podrá elaborar un resumen ejecutivo o una propuesta de implementación. La naturaleza (gratuita o paga) y la profundidad de este análisis inicial deberán ser acordadas previamente entre ambas partes.',
+        text: 'El profesional podrá elaborar un resumen ejecutivo o una propuesta de implementación. La naturaleza y profundidad de este análisis inicial deberán ser acordadas previamente entre ambas partes.',
       },
       {
         label: 'Decisión de Continuidad:',
@@ -99,15 +99,15 @@ const CONTENT = {
     section1Items: [
       {
         label: 'Initial Registration:',
-        text: 'Two (2) free months on your first registration on the platform.',
+        text: 'The company account is activated after choosing an active platform plan.',
       },
       {
         label: 'Quality Recognition:',
-        text: 'The employer with the best rating given by professionals, at the end of their paid registration period, will receive 6 additional months at no cost.',
+        text: 'The employer with the best rating given by professionals, at the end of their paid registration period, may access commercial benefits on renewals.',
       },
       {
         label: 'Referral Program:',
-        text: 'For each company that joins the platform and completes a paid registration, the referring employer will receive 2 free months.',
+        text: 'For each company that joins the platform and completes a paid registration, the referring employer may access commercial benefits on renewals.',
       },
     ],
     section2Title: '2. Commercial and Payment Agreements',
@@ -130,7 +130,7 @@ const CONTENT = {
       },
       {
         label: 'Preliminary Analysis:',
-        text: 'The professional may prepare an executive summary or implementation proposal. The nature (free or paid) and depth of this initial analysis must be agreed in advance by both parties.',
+        text: 'The professional may prepare an executive summary or implementation proposal. The nature and depth of this initial analysis must be agreed in advance by both parties.',
       },
       {
         label: 'Continuity Decision:',

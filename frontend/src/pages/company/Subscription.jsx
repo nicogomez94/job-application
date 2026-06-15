@@ -8,6 +8,10 @@ const formatDate = (date) =>
 
 const formatAmount = (amount, currency = 'ARS') =>
   new Intl.NumberFormat('es-AR', { style: 'currency', currency }).format(Number(amount || 0));
+const formatBilling = (billing) => {
+  if (!billing?.amount) return 'Monto ARS pendiente de configuración';
+  return `${formatAmount(billing.amount, billing.currency || 'ARS')} cada ${billing.frequency} meses`;
+};
 const PLAN_LABELS = {
   TRIAL: 'Prueba 2 meses',
   MONTHLY: 'Plan 3 meses',
@@ -46,21 +50,25 @@ export default function CompanySubscription() {
   }, []);
 
   const handleActivatePlan = async (plan) => {
+    if (!plan.billing?.configured) {
+      toast.error('Este plan todavía no tiene monto ARS configurado para Mercado Pago.');
+      return;
+    }
+
     setProcessingPlanId(plan.id);
     try {
-      await subscriptionService.create({
-        plan: plan.id,
-        amount: String(plan.price),
-        currency: plan.currency || 'ARS',
-        paymentStatus: 'approved',
-        paymentMethod: 'manual',
-      });
-      toast.success('Suscripción activada');
-      await loadData();
+      const { data } = await subscriptionService.createCheckout({ plan: plan.id });
+      const checkoutUrl = data?.checkoutUrl || data?.init_point;
+      if (!checkoutUrl) {
+        throw new Error('Mercado Pago no devolvió URL de checkout');
+      }
+      window.location.assign(checkoutUrl);
     } catch (error) {
-      toast.error(error.response?.data?.error || 'No se pudo activar el plan');
-    } finally {
+      toast.error(error.response?.data?.error || error.message || 'No se pudo iniciar el pago');
       setProcessingPlanId(null);
+      return;
+    } finally {
+      if (!document.hidden) setProcessingPlanId(null);
     }
   };
 
@@ -82,7 +90,7 @@ export default function CompanySubscription() {
   };
 
   const currentPlanLabel = PLAN_LABELS[status?.subscription?.plan] || status?.subscription?.plan || '-';
-  const isTrialActive = status?.hasActiveSubscription && status?.subscription?.plan === 'TRIAL';
+  const pendingSubscription = status?.pendingSubscription;
 
   if (loading) {
     return (
@@ -96,27 +104,23 @@ export default function CompanySubscription() {
     <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '2rem 1rem' }}>
       <BackToDashboardButton to="/company/dashboard" />
       <h1 style={{ marginBottom: '1rem' }}>Suscripciones</h1>
-      {isTrialActive && (
+      {pendingSubscription && (
         <div
           style={{
             marginBottom: '1rem',
-            border: '2px solid #dcb16e',
-            background: '#fff8ec',
+            border: '2px solid #bfdbfe',
+            background: '#eff6ff',
             borderRadius: '0.9rem',
             padding: '1rem 1.1rem',
           }}
         >
-          <p style={{ margin: 0, fontSize: '1.45rem', fontWeight: 800, color: '#4e3518' }}>
-            POR TIEMPO LIMITADO
+          <p style={{ margin: 0, fontSize: '1.15rem', fontWeight: 800, color: '#1e3a8a' }}>
+            Pago pendiente de confirmación
           </p>
-          <p style={{ margin: '0.45rem 0 0', color: '#5f4d35', lineHeight: 1.55 }}>
-            Tu empresa se registró con un plan gratuito de 2 meses hasta el{' '}
-            <strong>{formatDate(status.subscription?.endDate)}</strong>. Luego deberás cambiar a un
-            plan pago de la lista para continuar sin interrupciones.
+          <p style={{ margin: '0.45rem 0 0', color: '#1f3b67', lineHeight: 1.55 }}>
+            Iniciaste el pago del <strong>{PLAN_LABELS[pendingSubscription.plan] || pendingSubscription.plan}</strong>.
+            La suscripción se activará automáticamente cuando Mercado Pago confirme el cobro.
           </p>
-          <a href="#planes-pago" className="btn btn-primary" style={{ marginTop: '0.8rem' }}>
-            Elegir plan pago
-          </a>
         </div>
       )}
 
@@ -137,6 +141,8 @@ export default function CompanySubscription() {
               {cancellingId === status.subscription?.id ? 'Cancelando...' : 'Cancelar suscripción'}
             </button>
           </>
+        ) : pendingSubscription ? (
+          <p style={{ color: '#1d4ed8' }}>Tenés una suscripción pendiente de confirmación.</p>
         ) : (
           <p style={{ color: '#b91c1c' }}>No tenés suscripción activa.</p>
         )}
@@ -148,10 +154,18 @@ export default function CompanySubscription() {
           {plans.map((plan) => (
             <div key={plan.id} style={{ border: '1px solid #e7dcc6', borderRadius: '0.7rem', padding: '1rem' }}>
               <h3 style={{ marginBottom: '0.4rem' }}>{plan.name}</h3>
-              <p style={{ color: '#5e4d38', marginBottom: '0.4rem' }}>{formatAmount(plan.price, plan.currency)}</p>
-              <p style={{ color: '#7e705c', fontSize: '0.9rem', marginBottom: '0.8rem' }}>{plan.duration}</p>
-              <button className="btn btn-primary" onClick={() => handleActivatePlan(plan)} disabled={processingPlanId === plan.id}>
-                {processingPlanId === plan.id ? 'Procesando...' : 'Activar plan'}
+              <p style={{ color: '#5e4d38', marginBottom: '0.4rem' }}>
+                Referencia: {formatAmount(plan.price, plan.currency)} / {plan.duration}
+              </p>
+              <p style={{ color: '#7e705c', fontSize: '0.9rem', marginBottom: '0.8rem' }}>
+                Mercado Pago: {formatBilling(plan.billing)}
+              </p>
+              <button
+                className="btn btn-primary"
+                onClick={() => handleActivatePlan(plan)}
+                disabled={processingPlanId === plan.id || Boolean(pendingSubscription)}
+              >
+                {processingPlanId === plan.id ? 'Redirigiendo...' : pendingSubscription ? 'Pago pendiente' : 'Pagar con Mercado Pago'}
               </button>
             </div>
           ))}

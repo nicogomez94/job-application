@@ -1,83 +1,43 @@
 const prisma = require('../config/database');
-const addMonths = (date, months) => {
-  const value = new Date(date);
-  value.setMonth(value.getMonth() + months);
-  return value;
+const {
+  cancelSubscription: cancelMercadoPagoSubscription,
+  createCompanyCheckout,
+  handleAuthorizedPaymentWebhook,
+  handlePreapprovalWebhook,
+} = require('../services/mercadoPagoSubscription.service');
+const { getPlans } = require('../services/subscriptionPlans.service');
+const {
+  getWebhookDataId,
+  verifyWebhookSignature,
+} = require('../services/mercadoPago.service');
+
+// Crear suscripción directa: reemplazada por checkout/webhook de Mercado Pago.
+exports.createSubscription = async (req, res) => {
+  return res.status(410).json({
+    error: 'La activación directa de planes fue reemplazada por Mercado Pago.',
+    message: 'Usá el checkout para iniciar el pago recurrente del plan.',
+  });
 };
 
-// Crear suscripción (pago exitoso)
-exports.createSubscription = async (req, res) => {
+// Crear checkout recurrente de Mercado Pago para empresas
+exports.createCheckout = async (req, res) => {
   try {
-    const {
-      plan,
-      amount,
-      currency,
-      paymentId,
-      paymentStatus,
-      paymentMethod,
-    } = req.body;
-
-    // Determinar fecha de fin según el plan
-    const startDate = new Date();
-    let durationInMonths = 3;
-    switch (plan) {
-      case 'TRIAL':
-        durationInMonths = 2;
-        break;
-      case 'MONTHLY':
-        durationInMonths = 3;
-        break;
-      case 'QUARTERLY':
-        durationInMonths = 7;
-        break;
-      case 'ANNUAL':
-        durationInMonths = 13;
-        break;
-      default:
-        durationInMonths = 3;
-    }
-    const endDate = addMonths(startDate, durationInMonths);
-
-    // Desactivar suscripciones anteriores
-    await prisma.subscription.updateMany({
-      where: {
-        companyId: req.user.id,
-        status: 'ACTIVE',
-      },
-      data: {
-        status: 'EXPIRED',
-      },
-    });
-
-    // Crear nueva suscripción
-    const subscription = await prisma.subscription.create({
-      data: {
-        companyId: req.user.id,
-        plan,
-        status: 'ACTIVE',
-        startDate,
-        endDate,
-        amount,
-        currency: currency || 'ARS',
-        paymentId,
-        paymentStatus,
-        paymentMethod,
-      },
-    });
-
-    // Desbloquear empresa
-    await prisma.company.update({
-      where: { id: req.user.id },
-      data: { isBlocked: false },
+    const { plan } = req.body;
+    const result = await createCompanyCheckout({
+      company: req.user,
+      planId: plan,
     });
 
     res.status(201).json({
-      message: 'Suscripción activada exitosamente',
-      subscription,
+      message: 'Checkout de Mercado Pago creado',
+      ...result,
     });
   } catch (error) {
-    console.error('Error en createSubscription:', error);
-    res.status(500).json({ error: 'Error al crear suscripción' });
+    console.error('Error en createCheckout subscription:', error);
+    res.status(error.statusCode || 500).json({
+      error: error.message || 'Error al crear checkout de Mercado Pago',
+      details: process.env.NODE_ENV === 'development' ? error.mercadoPagoResponse : undefined,
+    });
   }
 };
 
@@ -148,11 +108,9 @@ exports.cancelSubscription = async (req, res) => {
       return res.status(404).json({ error: 'Suscripción no encontrada' });
     }
 
-    const updatedSubscription = await prisma.subscription.update({
-      where: { id },
-      data: {
-        status: 'CANCELLED',
-      },
+    const updatedSubscription = await cancelMercadoPagoSubscription({
+      accountType: 'company',
+      subscription,
     });
 
     res.json({
@@ -168,90 +126,46 @@ exports.cancelSubscription = async (req, res) => {
 // Webhook de Mercado Pago (para procesar pagos)
 exports.mercadoPagoWebhook = async (req, res) => {
   try {
-    const { type, data } = req.body;
+    const signature = verifyWebhookSignature({
+      headers: req.headers,
+      query: req.query,
+      body: req.body,
+    });
 
-    // Procesar notificación de pago
-    if (type === 'payment') {
-      const paymentId = data.id;
-
-      // Aquí deberías consultar la API de Mercado Pago para obtener
-      // los detalles completos del pago
-      // const payment = await mercadopago.payment.get(paymentId);
-
-      // Actualizar suscripción según el estado del pago
-      // Por ahora, esto es un ejemplo básico
-
-      // Buscar suscripción por paymentId
-      const subscription = await prisma.subscription.findUnique({
-        where: { paymentId: paymentId.toString() },
-      });
-
-      if (subscription) {
-        // Actualizar estado según el pago
-        // await prisma.subscription.update(...)
-      }
+    if (!signature.ok) {
+      return res.status(401).json({ error: 'Firma de Mercado Pago inválida' });
     }
 
-    res.status(200).json({ message: 'Webhook procesado' });
+    const topic = req.body?.type || req.query?.type || req.query?.topic;
+    const dataId = getWebhookDataId(req.query, req.body);
+
+    if (!dataId) {
+      return res.status(200).json({ message: 'Webhook sin data.id procesable' });
+    }
+
+    let result = null;
+    if (topic === 'subscription_preapproval') {
+      result = await handlePreapprovalWebhook(dataId);
+    } else if (topic === 'subscription_authorized_payment') {
+      result = await handleAuthorizedPaymentWebhook(dataId);
+    } else {
+      return res.status(200).json({
+        message: 'Webhook ignorado',
+        topic,
+      });
+    }
+
+    res.status(200).json({ message: 'Webhook procesado', result });
   } catch (error) {
     console.error('Error en mercadoPagoWebhook:', error);
-    res.status(500).json({ error: 'Error al procesar webhook' });
+    res.status(error.statusCode || 500).json({ error: 'Error al procesar webhook' });
   }
 };
 
 // Obtener planes disponibles
 exports.getPlans = async (req, res) => {
   try {
-    // isFreeMode: cuando es true, el frontend activa el plan sin pago.
-    // Cuando se integre Mercado Pago, cambiar isFreeMode a false en cada plan
-    // y conectar el flujo de checkout en SelectPlan.jsx.
-    const isFreeMode = true;
-
-    const plans = [
-      {
-        id: 'MONTHLY',
-        name: 'Plan 3 meses',
-        price: 50,
-        currency: 'USD',
-        duration: '3 meses',
-        isFreeMode,
-        features: [
-          'Solo por tiempo limitado',
-          'Renovación paga al finalizar',
-          'Acceso a gestión de postulantes',
-        ],
-      },
-      {
-        id: 'QUARTERLY',
-        name: 'Plan 7 meses',
-        price: 80,
-        currency: 'USD',
-        duration: '7 meses',
-        discount: 'Recomendado',
-        isFreeMode,
-        features: [
-          'Solo por tiempo limitado',
-          'Renovación paga al finalizar',
-          'Cobertura extendida para contrataciones',
-        ],
-      },
-      {
-        id: 'ANNUAL',
-        name: 'Plan 12 + 1',
-        price: 120,
-        currency: 'USD',
-        duration: '13 meses',
-        discount: '1 mes gratis incluido',
-        isFreeMode,
-        features: [
-          'Pagás 12 meses y usás 13',
-          'Renovación paga al finalizar',
-          'Mayor continuidad anual',
-        ],
-      },
-    ];
-
-    res.json({ plans });
+    res.json({ plans: getPlans('company') });
   } catch (error) {
     console.error('Error en getPlans:', error);
     res.status(500).json({ error: 'Error al obtener planes' });

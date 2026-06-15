@@ -230,10 +230,24 @@ model Subscription {
   paymentId       String?             @unique  // ID del pago en Mercado Pago
   paymentStatus   String?             // status del pago
   paymentMethod   String?
+
+  // Integración recurrente con Mercado Pago
+  durationMonths                  Int?
+  billingAmount                   Decimal?            @db.Decimal(10, 2)
+  billingCurrency                 String?             @default("ARS")
+  billingFrequency                Int?
+  billingFrequencyType            String?             @default("months")
+  mercadoPagoPreapprovalId        String?             @unique
+  mercadoPagoExternalReference    String?             @unique
+  mercadoPagoStatus               String?
+  mercadoPagoInitPoint            String?             @db.Text
+  nextPaymentDate                 DateTime?
+  lastWebhookAt                   DateTime?
   
   // Relaciones
   company         Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
   companyId       String
+  recurringPayments MercadoPagoRecurringPayment[]
   
   createdAt       DateTime            @default(now())
   updatedAt       DateTime            @updatedAt
@@ -417,8 +431,21 @@ model PsychologistSubscription {
   paymentStatus   String?
   paymentMethod   String?
 
+  durationMonths                  Int?
+  billingAmount                   Decimal?            @db.Decimal(10, 2)
+  billingCurrency                 String?             @default("ARS")
+  billingFrequency                Int?
+  billingFrequencyType            String?             @default("months")
+  mercadoPagoPreapprovalId        String?             @unique
+  mercadoPagoExternalReference    String?             @unique
+  mercadoPagoStatus               String?
+  mercadoPagoInitPoint            String?             @db.Text
+  nextPaymentDate                 DateTime?
+  lastWebhookAt                   DateTime?
+
   psychologist    Psychologist        @relation(fields: [psychologistId], references: [id], onDelete: Cascade)
   psychologistId  String
+  recurringPayments MercadoPagoRecurringPayment[]
 
   createdAt       DateTime            @default(now())
   updatedAt       DateTime            @updatedAt
@@ -426,6 +453,35 @@ model PsychologistSubscription {
   @@index([psychologistId])
   @@index([status])
   @@map("psychologist_subscriptions")
+}
+
+model MercadoPagoRecurringPayment {
+  id                                String                    @id @default(uuid())
+  mercadoPagoAuthorizedPaymentId     String                    @unique
+  mercadoPagoPaymentId               String?
+  mercadoPagoPreapprovalId           String?
+  accountType                        String
+  status                             String?
+  statusDetail                       String?
+  amount                             Decimal?                  @db.Decimal(10, 2)
+  currency                           String?
+  debitDate                          DateTime?
+  rawPayload                         Json?
+
+  subscription                       Subscription?             @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  subscriptionId                     String?
+
+  psychologistSubscription           PsychologistSubscription? @relation(fields: [psychologistSubscriptionId], references: [id], onDelete: Cascade)
+  psychologistSubscriptionId         String?
+
+  createdAt                          DateTime                  @default(now())
+  updatedAt                          DateTime                  @updatedAt
+
+  @@index([subscriptionId])
+  @@index([psychologistSubscriptionId])
+  @@index([mercadoPagoPreapprovalId])
+  @@index([status])
+  @@map("mercado_pago_recurring_payments")
 }
 
 // ─── PSYCHOLOGIST REQUESTS (hiring requests by common users) ────────────────

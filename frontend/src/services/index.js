@@ -106,6 +106,7 @@ export const applicationService = {
 
 export const subscriptionService = {
   getPlans: () => api.get('/subscriptions/plans'),
+  createCheckout: (data) => api.post('/subscriptions/checkout', data),
   create: (data) => api.post('/subscriptions', data),
   getActive: () => api.get('/subscriptions/active'),
   getHistory: () => api.get('/subscriptions/history'),
@@ -261,6 +262,11 @@ export const psychologistService = {
     const response = await api.post('/psychologists/me/subscription', data);
     return { ...response, data: repairMojibakeDeep(response.data) };
   },
+  createSubscriptionCheckout: async (data) => {
+    const response = await api.post('/psychologists/me/subscription/checkout', data);
+    return { ...response, data: repairMojibakeDeep(response.data) };
+  },
+  cancelSubscription: (id) => api.put(`/psychologists/me/subscription/${id}/cancel`),
   getIncomingRequests: () => api.get('/psychologists/me/requests'),
   updateRequestStatus: (id, status) => api.put(`/psychologists/requests/${id}/status`, { status }),
   blockRelationship: (id) => api.post(`/psychologists/requests/${id}/block`),

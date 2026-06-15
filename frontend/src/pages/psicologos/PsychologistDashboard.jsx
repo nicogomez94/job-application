@@ -49,12 +49,14 @@ export default function PsychologistDashboard() {
   const { updateUser } = useAuthStore();
   const [profile, setProfile] = useState(null);
   const [subscription, setSubscription] = useState(null);
+  const [pendingSubscription, setPendingSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
   const [incomingRequests, setIncomingRequests] = useState([]);
   const [requestsLoading, setRequestsLoading] = useState(false);
   const [updatingRequest, setUpdatingRequest] = useState(null);
   const [blockingRequest, setBlockingRequest] = useState(null);
   const [updatingAvailability, setUpdatingAvailability] = useState(false);
+  const [cancellingSubscription, setCancellingSubscription] = useState(false);
   const [expandedPatientRequest, setExpandedPatientRequest] = useState(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const photoInputRef = useRef(null);
@@ -73,6 +75,7 @@ export default function PsychologistDashboard() {
         }
         if (subRes.status === 'fulfilled') {
           setSubscription(subRes.value.data?.hasActiveSubscription ? subRes.value.data.subscription : null);
+          setPendingSubscription(subRes.value.data?.hasPendingSubscription ? subRes.value.data.pendingSubscription : null);
         }
         if (profileRes.status === 'rejected') {
           toast.error('No se pudo cargar el perfil del psicólogo');
@@ -115,7 +118,7 @@ export default function PsychologistDashboard() {
   const statusInfo = STATUS_LABELS[p?.status] || STATUS_LABELS.PENDING;
   const StatusIcon = statusInfo.icon;
   const isRejected = p?.status === 'REJECTED';
-  const canViewPatientListing = ['APPROVED', 'ACTIVE', 'SUSPENDED'].includes(p?.status);
+  const canViewPatientListing = p?.status === 'ACTIVE' && Boolean(subscription);
   const patientListingParams = new URLSearchParams();
   if (name) patientListingParams.set('search', name);
   if (p?.id) patientListingParams.set('highlight', p.id);
@@ -139,7 +142,15 @@ export default function PsychologistDashboard() {
   const handlePatientListingClick = (event) => {
     if (canViewPatientListing) return;
     event.preventDefault();
-    toast.error('Todavía no figuras en el listado, porque no fuiste aprobado.');
+    if (p?.status === 'SUSPENDED') {
+      toast.error('Tu perfil está suspendido y no aparece en el listado.');
+      return;
+    }
+    if (!subscription) {
+      toast.error('Todavía no figurás en el listado porque no tenés una suscripción activa.');
+      return;
+    }
+    toast.error('Todavía no figurás en el listado porque tu cuenta no está activa.');
   };
 
   const handlePhotoChange = async (e) => {
@@ -198,6 +209,24 @@ export default function PsychologistDashboard() {
       toast.error(error.response?.data?.error || 'No se pudo actualizar la disponibilidad');
     } finally {
       setUpdatingAvailability(false);
+    }
+  };
+
+  const handleCancelSubscription = async () => {
+    if (!subscription?.id) return;
+    if (!window.confirm('¿Cancelar la suscripción activa? Tu perfil dejará de aparecer en el listado.')) return;
+
+    setCancellingSubscription(true);
+    try {
+      await psychologistService.cancelSubscription(subscription.id);
+      setSubscription(null);
+      setProfile((prev) => ({ ...prev, status: 'APPROVED' }));
+      updateUser({ status: 'APPROVED' });
+      toast.success('Suscripción cancelada');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'No se pudo cancelar la suscripción');
+    } finally {
+      setCancellingSubscription(false);
     }
   };
 
@@ -371,6 +400,19 @@ export default function PsychologistDashboard() {
                   <Link to="/psicologo/plan" className="psico-btn-primary psico-dashboard-sub-action">
                     Cambiar plan
                   </Link>
+                  <button
+                    type="button"
+                    className="psico-btn-secondary psico-dashboard-sub-action"
+                    onClick={handleCancelSubscription}
+                    disabled={cancellingSubscription}
+                  >
+                    {cancellingSubscription ? 'Cancelando...' : 'Cancelar suscripción'}
+                  </button>
+                </div>
+              ) : pendingSubscription ? (
+                <div className="psico-dashboard-sub-empty">
+                  <p><strong>Pago pendiente:</strong> {PLAN_LABELS[pendingSubscription.plan] || pendingSubscription.plan}</p>
+                  <p>Tu perfil se activará cuando Mercado Pago confirme la suscripción.</p>
                 </div>
               ) : (
                 <div className="psico-dashboard-sub-empty">

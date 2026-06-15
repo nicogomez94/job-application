@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Check, Star, Shield, Clock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { subscriptionService } from '../../services';
-import { useI18n } from '../../context/i18nStore';
 import './SelectPlan.css';
 
 const PLAN_META = {
@@ -26,14 +25,28 @@ const PLAN_META = {
 };
 
 export default function SelectPlan() {
-  const { language, t } = useI18n();
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activating, setActivating] = useState(null);
   const navigate = useNavigate();
-  const containsGratis = (text = '') => /gratis/i.test(String(text));
+  const [searchParams] = useSearchParams();
+  const checkoutStatus = searchParams.get('checkout');
+
+  const formatBilling = (billing) => {
+    if (!billing?.amount) return 'Monto en ARS pendiente de configuración';
+    const amount = new Intl.NumberFormat('es-AR', {
+      style: 'currency',
+      currency: billing.currency || 'ARS',
+      maximumFractionDigits: 0,
+    }).format(Number(billing.amount));
+    return `${amount} cada ${billing.frequency} meses`;
+  };
 
   useEffect(() => {
+    if (checkoutStatus === 'pending') {
+      toast.success('Pago iniciado. Tu plan se activará cuando Mercado Pago confirme la suscripción.');
+    }
+
     const init = async () => {
       try {
         // Si ya tiene suscripción activa, ir directo al dashboard
@@ -55,46 +68,28 @@ export default function SelectPlan() {
     };
 
     init();
-  }, [navigate]);
+  }, [navigate, checkoutStatus]);
 
   const handleSelectPlan = async (plan) => {
+    if (!plan.billing?.configured) {
+      toast.error('Este plan todavía no tiene monto ARS configurado para Mercado Pago.');
+      return;
+    }
+
     setActivating(plan.id);
     try {
-      // ─── MERCADO PAGO INTEGRATION POINT ──────────────────────────────────
-      // Cuando isFreeMode sea false, reemplazar el bloque de abajo por:
-      //
-      //   const { data } = await mercadoPagoService.createPreference({
-      //     plan: plan.id,
-      //     amount: plan.price,
-      //     currency: plan.currency,
-      //     backUrls: {
-      //       success: `${window.location.origin}/company/dashboard`,
-      //       failure: `${window.location.origin}/register/company/plan`,
-      //     },
-      //   });
-      //   window.location.href = data.init_point; // Redirigir a Mercado Pago
-      //   return;
-      //
-      // ─────────────────────────────────────────────────────────────────────
-
-      await subscriptionService.create({
-        plan: plan.id,
-        amount: '0',
-        currency: plan.currency || 'ARS',
-        paymentStatus: 'free',
-        paymentMethod: 'free',
-      });
-
-      const planName = t(plan.name);
-      const successMessage = language === 'en'
-        ? `${planName} plan activated successfully!`
-        : `¡Plan ${plan.name} activado exitosamente!`;
-      toast.success(successMessage);
-      navigate('/company/dashboard', { replace: true });
+      const { data } = await subscriptionService.createCheckout({ plan: plan.id });
+      const checkoutUrl = data?.checkoutUrl || data?.init_point;
+      if (!checkoutUrl) {
+        throw new Error('Mercado Pago no devolvió URL de checkout');
+      }
+      window.location.assign(checkoutUrl);
     } catch (error) {
-      toast.error(error.response?.data?.error || 'No se pudo activar el plan');
-    } finally {
+      toast.error(error.response?.data?.error || error.message || 'No se pudo iniciar el pago');
       setActivating(null);
+      return;
+    } finally {
+      if (!document.hidden) setActivating(null);
     }
   };
 
@@ -113,10 +108,6 @@ export default function SelectPlan() {
         {/* Header */}
         <div className="select-plan-header">
           <h1 className="select-plan-title">Seleccione el plan que mejor se adapte a su empresa</h1>
-          {/* <p className="select-plan-subtitle">
-            Seleccioná el plan que mejor se adapte a tu empresa. Por ahora, todos los planes son
-            gratuitos y no requieren tarjeta de crédito.
-          </p> */}
         </div>
 
         {/* Plan cards */}
@@ -145,15 +136,18 @@ export default function SelectPlan() {
 
                 <div className="select-plan-price-section">
                   <div className="select-plan-original-price">
-                    Valor regular: ${plan.price?.toLocaleString('es-AR')} {plan.currency}/{plan.duration}
+                    Valor de referencia: ${plan.price?.toLocaleString('es-AR')} {plan.currency}/{plan.duration}
                   </div>
-                  {plan.discount && !containsGratis(plan.discount) && (
+                  <div className="select-plan-billing-price">
+                    Mercado Pago: {formatBilling(plan.billing)}
+                  </div>
+                  {plan.discount && (
                     <div className="select-plan-discount">{plan.discount}</div>
                   )}
                 </div>
 
                 <ul className="select-plan-features">
-                  {plan.features?.filter((feature) => !containsGratis(feature)).map((feature, i) => (
+                  {plan.features?.map((feature, i) => (
                     <li key={i} className="select-plan-feature">
                       <Check size={16} className="select-plan-check" />
                       <span>{feature}</span>
@@ -167,9 +161,9 @@ export default function SelectPlan() {
                   disabled={activating !== null}
                 >
                   {isActivating ? (
-                    <span className="select-plan-btn-loading">Activando...</span>
+                    <span className="select-plan-btn-loading">Redirigiendo...</span>
                   ) : (
-                    'Seleccionar plan'
+                    'Pagar con Mercado Pago'
                   )}
                 </button>
               </div>
@@ -180,12 +174,10 @@ export default function SelectPlan() {
         {/* Footer note */}
         <div className="select-plan-footer">
           <p>
-            No se requiere tarjeta de crédito durante el período de lanzamiento. Podés cambiar de
-            plan en cualquier momento desde tu panel de empresa.
+            El plan se activa automáticamente cuando Mercado Pago confirma la suscripción.
           </p>
           <p className="select-plan-footer-mp">
-            {/* Mercado Pago se integrará próximamente para gestionar los pagos */}
-            Próximamente: pagos seguros con <strong>Mercado Pago</strong>.
+            Pagos seguros y recurrentes con <strong>Mercado Pago</strong>.
           </p>
         </div>
       </div>

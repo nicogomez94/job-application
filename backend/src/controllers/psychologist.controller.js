@@ -1,6 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 const prisma = require('../config/database');
+const {
+  cancelSubscription: cancelMercadoPagoSubscription,
+  createPsychologistCheckout,
+} = require('../services/mercadoPagoSubscription.service');
+const { getPlans: getPsychologistPlans } = require('../services/subscriptionPlans.service');
 const { handlePrismaError } = require('../utils/accountEmail');
 const { validateAndNormalizePhoneNumber } = require('../utils/phone');
 
@@ -15,18 +20,6 @@ const removeFile = (assetPath) => {
   if (fs.existsSync(absolutePath)) {
     try { fs.unlinkSync(absolutePath); } catch (_) {}
   }
-};
-
-const addMonths = (date, months) => {
-  const value = new Date(date);
-  value.setMonth(value.getMonth() + months);
-  return value;
-};
-
-const PLAN_LEVELS = {
-  MONTHLY: 1,
-  QUARTERLY: 2,
-  ANNUAL: 3,
 };
 
 const markDocumentsSubmittedIfNeeded = async (psychologistId) => {
@@ -334,13 +327,28 @@ exports.getSubscription = async (req, res) => {
     });
 
     if (!subscription) {
+      const pendingSubscription = await prisma.psychologistSubscription.findFirst({
+        where: {
+          psychologistId: req.user.id,
+          status: 'PENDING',
+        },
+        orderBy: { createdAt: 'desc' },
+      });
+
       return res.json({
         hasActiveSubscription: false,
         subscription: null,
+        hasPendingSubscription: Boolean(pendingSubscription),
+        pendingSubscription,
       });
     }
 
-    res.json({ subscription, hasActiveSubscription: true });
+    res.json({
+      subscription,
+      hasActiveSubscription: true,
+      hasPendingSubscription: false,
+      pendingSubscription: null,
+    });
   } catch (error) {
     console.error('Error en getSubscription psychologist:', error);
     res.status(500).json({ error: 'Error al obtener suscripción' });
@@ -349,83 +357,61 @@ exports.getSubscription = async (req, res) => {
 
 // ─── CREATE SUBSCRIPTION ──────────────────────────────────────────────────────
 exports.createSubscription = async (req, res) => {
+  return res.status(410).json({
+    error: 'La activación directa de planes fue reemplazada por Mercado Pago.',
+    message: 'Usá el checkout para iniciar el pago recurrente del plan.',
+  });
+};
+
+// ─── CREATE MERCADO PAGO CHECKOUT ────────────────────────────────────────────
+exports.createCheckout = async (req, res) => {
   try {
-    const { plan, currency, paymentId } = req.body;
-
-    const currentPsychologist = await prisma.psychologist.findUnique({
-      where: { id: req.user.id },
-      select: { status: true },
-    });
-
-    if (!currentPsychologist) {
-      return res.status(404).json({ error: 'Psicólogo no encontrado' });
-    }
-
-    if (!['APPROVED', 'ACTIVE', 'SUSPENDED'].includes(currentPsychologist.status)) {
-      return res.status(403).json({
-        error: 'Tu documentación debe estar aprobada por el admin antes de activar un plan.',
-      });
-    }
-
-    const activeSubscription = await prisma.psychologistSubscription.findFirst({
-      where: {
-        psychologistId: req.user.id,
-        status: 'ACTIVE',
-        endDate: { gte: new Date() },
-      },
-      orderBy: { endDate: 'desc' },
-    });
-
-    if (activeSubscription && PLAN_LEVELS[plan] <= PLAN_LEVELS[activeSubscription.plan]) {
-      return res.status(400).json({
-        error: 'Solo podés cambiar a un plan superior al actual.',
-      });
-    }
-
-    const startDate = new Date();
-    let durationInMonths = 3;
-    switch (plan) {
-      case 'MONTHLY':   durationInMonths = 3;  break;
-      case 'QUARTERLY': durationInMonths = 7;  break;
-      case 'ANNUAL':    durationInMonths = 13; break;
-      default:          durationInMonths = 3;
-    }
-    const endDate = addMonths(startDate, durationInMonths);
-
-    // Expire previous active subscriptions
-    await prisma.psychologistSubscription.updateMany({
-      where: { psychologistId: req.user.id, status: 'ACTIVE' },
-      data: { status: 'EXPIRED' },
-    });
-
-    const subscription = await prisma.psychologistSubscription.create({
-      data: {
-        psychologistId: req.user.id,
-        plan,
-        status: 'ACTIVE',
-        startDate,
-        endDate,
-        amount: '0',
-        currency: currency || 'USD',
-        paymentId,
-        paymentStatus: 'free',
-        paymentMethod: 'free',
-      },
-    });
-
-    // Activate the psychologist profile
-    await prisma.psychologist.update({
-      where: { id: req.user.id },
-      data: { status: 'ACTIVE' },
+    const { plan } = req.body;
+    const result = await createPsychologistCheckout({
+      psychologist: req.user,
+      planId: plan,
     });
 
     res.status(201).json({
-      message: 'Suscripción activada exitosamente',
-      subscription,
+      message: 'Checkout de Mercado Pago creado',
+      ...result,
     });
   } catch (error) {
-    console.error('Error en createSubscription psychologist:', error);
-    res.status(500).json({ error: 'Error al crear suscripción' });
+    console.error('Error en createCheckout psychologist:', error);
+    res.status(error.statusCode || 500).json({
+      error: error.message || 'Error al crear checkout de Mercado Pago',
+      details: process.env.NODE_ENV === 'development' ? error.mercadoPagoResponse : undefined,
+    });
+  }
+};
+
+// ─── CANCEL SUBSCRIPTION ─────────────────────────────────────────────────────
+exports.cancelSubscription = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const subscription = await prisma.psychologistSubscription.findFirst({
+      where: {
+        id,
+        psychologistId: req.user.id,
+      },
+    });
+
+    if (!subscription) {
+      return res.status(404).json({ error: 'Suscripción no encontrada' });
+    }
+
+    const updatedSubscription = await cancelMercadoPagoSubscription({
+      accountType: 'psychologist',
+      subscription,
+    });
+
+    res.json({
+      message: 'Suscripción cancelada exitosamente',
+      subscription: updatedSubscription,
+    });
+  } catch (error) {
+    console.error('Error en cancelSubscription psychologist:', error);
+    res.status(error.statusCode || 500).json({ error: 'Error al cancelar suscripción' });
   }
 };
 
@@ -471,40 +457,8 @@ exports.updateAvailability = async (req, res) => {
 
 // ─── GET PLANS ────────────────────────────────────────────────────────────────
 exports.getPlans = async (req, res) => {
-  const isFreeMode = true;
-
   res.json({
-    plans: [
-      {
-        id: 'MONTHLY',
-        name: 'Plan 3 meses',
-        price: 50,
-        currency: 'USD',
-        duration: '3 meses',
-        isFreeMode,
-        features: ['Solo por tiempo limitado', 'Plan bonificado', 'Perfil visible para pacientes'],
-      },
-      {
-        id: 'QUARTERLY',
-        name: 'Plan 7 meses',
-        price: 80,
-        currency: 'USD',
-        duration: '7 meses',
-        discount: 'Recomendado',
-        isFreeMode,
-        features: ['Solo por tiempo limitado', 'Plan bonificado', 'Cobertura extendida'],
-      },
-      {
-        id: 'ANNUAL',
-        name: 'Plan 12 + 1',
-        price: 120,
-        currency: 'USD',
-        duration: '13 meses',
-        discount: '1 mes gratis incluido',
-        isFreeMode,
-        features: ['Precio regular de referencia', 'Plan bonificado', 'Mayor continuidad anual'],
-      },
-    ],
+    plans: getPsychologistPlans('psychologist'),
   });
 };
 

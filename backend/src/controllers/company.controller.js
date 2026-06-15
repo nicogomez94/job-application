@@ -153,12 +153,23 @@ exports.checkSubscription = async (req, res) => {
         endDate: 'desc',
       },
     });
+    const pendingSubscription = await prisma.subscription.findFirst({
+      where: {
+        companyId: req.user.id,
+        status: 'PENDING',
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
 
     const isBlocked = req.user.isBlocked || !activeSubscription;
 
     res.json({
       hasActiveSubscription: !!activeSubscription,
       subscription: activeSubscription,
+      hasPendingSubscription: Boolean(pendingSubscription),
+      pendingSubscription,
       isBlocked,
     });
   } catch (error) {

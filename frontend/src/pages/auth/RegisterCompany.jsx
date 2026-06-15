@@ -106,8 +106,8 @@ export default function RegisterCompany() {
         }
       }
 
-      toast.success('Empresa registrada. Se activó tu plan gratuito por 2 meses.');
-      navigate('/company/dashboard');
+      toast.success('Empresa registrada. Elegí un plan para activar la cuenta.');
+      navigate('/register/company/plan');
     } catch (error) {
       toast.error(error.response?.data?.error || 'No se pudo registrar la empresa');
     } finally {

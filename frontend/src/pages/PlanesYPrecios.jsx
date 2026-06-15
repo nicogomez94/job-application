@@ -42,7 +42,7 @@ const FALLBACK_PLANS = [
     currency: 'USD',
     duration: '13 meses',
     features: [
-      '1 mes adicional sin costo incluido',
+      '1 mes adicional incluido',
       'Cobertura anual extendida',
       'Renovación paga al finalizar',
     ],
@@ -68,14 +68,14 @@ const PLAN_TEXT_TO_EN = {
   'Condiciones comerciales': 'Commercial terms',
   'Condiciones comerciales solo por tiempo limitado.':
     'Commercial terms for a limited time only.',
-  'Inscripción inicial: 2 meses gratis en tu primera vez en la plataforma.':
-    'Initial registration: 2 free months on your first time on the platform.',
+  'Inscripción inicial: elegí un plan para activar la cuenta de empresa.':
+    'Initial registration: choose a plan to activate the company account.',
   'Periodo de renovación: todas las renovaciones son pagas en cualquiera de sus formas.':
     'Renewal period: all renewals are paid under any modality.',
-  'Reconocimiento a la calidad: el empleador mejor calificado al finalizar su período pago recibe 2 meses sin costo.':
-    'Quality recognition: the highest-rated employer receives 2 months at no cost after its paid period.',
-  'Programa de referidos: por cada nueva empresa que se inscriba con plan pago, obtenés 2 meses gratis.':
-    'Referral program: for each new company that signs up with a paid plan, you get 2 free months.',
+  'Reconocimiento a la calidad: el empleador mejor calificado podrá acceder a beneficios comerciales al renovar.':
+    'Quality recognition: the highest-rated employer may access commercial benefits when renewing.',
+  'Programa de referidos: los beneficios por referidos se aplican sobre renovaciones o nuevos períodos pagos.':
+    'Referral program: referral benefits apply to renewals or new paid periods.',
   'Plan 3 meses': '3-Month Plan',
   'Plan 7 meses': '7-Month Plan',
   'Plan 12 + 1': '12 + 1 Plan',
@@ -93,7 +93,7 @@ const PLAN_TEXT_TO_EN = {
   'Renovación paga al finalizar': 'Paid renewal at the end',
   'Mayor continuidad de publicaciones': 'Greater posting continuity',
   'Mejor costo por mes': 'Better monthly cost',
-  '1 mes adicional sin costo incluido': '1 additional month included at no extra cost',
+  '1 mes adicional incluido': '1 additional month included',
   'Cobertura anual extendida': 'Extended yearly coverage',
   'Cobertura extendida para contrataciones': 'Extended hiring coverage',
   'Mayor continuidad anual': 'Greater annual continuity',
@@ -175,10 +175,10 @@ export default function PlanesYPrecios() {
           <h2>{normalizePlanText('Condiciones comerciales', language, t)}</h2>
           <p>{normalizePlanText('Condiciones comerciales solo por tiempo limitado.', language, t)}</p>
           <ul>
-            <li>{normalizePlanText('Inscripción inicial: 2 meses gratis en tu primera vez en la plataforma.', language, t)}</li>
+            <li>{normalizePlanText('Inscripción inicial: elegí un plan para activar la cuenta de empresa.', language, t)}</li>
             <li>{normalizePlanText('Periodo de renovación: todas las renovaciones son pagas en cualquiera de sus formas.', language, t)}</li>
-            <li>{normalizePlanText('Reconocimiento a la calidad: el empleador mejor calificado al finalizar su período pago recibe 2 meses sin costo.', language, t)}</li>
-            <li>{normalizePlanText('Programa de referidos: por cada nueva empresa que se inscriba con plan pago, obtenés 2 meses gratis.', language, t)}</li>
+            <li>{normalizePlanText('Reconocimiento a la calidad: el empleador mejor calificado podrá acceder a beneficios comerciales al renovar.', language, t)}</li>
+            <li>{normalizePlanText('Programa de referidos: los beneficios por referidos se aplican sobre renovaciones o nuevos períodos pagos.', language, t)}</li>
           </ul>
         </section>
 
