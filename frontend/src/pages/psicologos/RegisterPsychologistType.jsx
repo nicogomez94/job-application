@@ -19,7 +19,7 @@ export default function RegisterPsychologistType() {
             <h2>Psicólogo en Argentina</h2>
             <p>Para profesionales con matrícula emitida en Argentina.</p>
             <ul>
-              <li>DNI / CUIT / CUIL</li>
+              <li>DNI / CUIT</li>
               <li>Matrícula provincial</li>
               <li>Título universitario</li>
             </ul>

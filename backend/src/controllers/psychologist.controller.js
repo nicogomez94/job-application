@@ -12,6 +12,18 @@ const { validateAndNormalizePhoneNumber } = require('../utils/phone');
 const SITE_URL = process.env.FRONTEND_URL || 'https://professionalsathome.com';
 const CONTACT_FORM_ENDPOINT =
   process.env.CONTACT_FORM_URL || 'https://contact-form-service-e8aa.onrender.com/api/contact';
+const REVIEWED_STATUSES = ['REJECTED', 'APPROVED', 'ACTIVE', 'SUSPENDED'];
+const DOCS_MODIFIED_REVIEW_MESSAGE = 'Cuenta con modificación de documentación a revisar.';
+const REQUIRED_DOCUMENT_TYPES_BY_REGISTRATION = {
+  ARGENTINA: ['DNI', 'TITLE', 'LICENSE', 'CUIT'],
+  INTERNATIONAL: ['ID', 'TITLE', 'LICENSE', 'TAX_ID'],
+};
+
+const trimmed = (value) => String(value || '').trim();
+const isBlank = (value) => trimmed(value).length === 0;
+
+const getRequiredDocumentTypes = (registrationType) =>
+  REQUIRED_DOCUMENT_TYPES_BY_REGISTRATION[registrationType] || REQUIRED_DOCUMENT_TYPES_BY_REGISTRATION.INTERNATIONAL;
 
 const removeFile = (assetPath) => {
   if (!assetPath || typeof assetPath !== 'string') return;
@@ -22,16 +34,17 @@ const removeFile = (assetPath) => {
   }
 };
 
-const markDocumentsSubmittedIfNeeded = async (psychologistId) => {
+const markDocumentsSubmittedIfNeeded = async (psychologistId, { reviewMessage = null } = {}) => {
   const current = await prisma.psychologist.findUnique({
     where: { id: psychologistId },
     select: { status: true },
   });
 
-  if (['PENDING_DOCS', 'REJECTED', 'APPROVED', 'ACTIVE', 'SUSPENDED'].includes(current?.status)) {
+  if (['PENDING_DOCS', ...REVIEWED_STATUSES].includes(current?.status)) {
+    const shouldKeepReviewMessage = reviewMessage && REVIEWED_STATUSES.includes(current?.status);
     await prisma.psychologist.update({
       where: { id: psychologistId },
-      data: { status: 'PENDING', rejectionReason: null },
+      data: { status: 'PENDING', rejectionReason: shouldKeepReviewMessage ? reviewMessage : null },
     });
     return 'PENDING';
   }
@@ -90,9 +103,27 @@ exports.updateProfile = async (req, res) => {
       specialties, ageRanges, yearsExperience, languages, remoteModality,
     } = req.body;
 
+    const current = await prisma.psychologist.findUnique({
+      where: { id: req.user.id },
+      select: { registrationType: true },
+    });
+
+    if (!current) {
+      return res.status(404).json({ error: 'Psicólogo no encontrado' });
+    }
+
     const normalizedPhone = validateAndNormalizePhoneNumber(phone);
     if (!normalizedPhone.isValid) {
       return res.status(400).json({ error: normalizedPhone.error });
+    }
+
+    if (current.registrationType === 'ARGENTINA') {
+      if (isBlank(gender)) return res.status(400).json({ error: 'El género es obligatorio.' });
+      if (isBlank(cuitCuil)) return res.status(400).json({ error: 'El CUIT es obligatorio.' });
+      if (isBlank(graduationYear)) return res.status(400).json({ error: 'El año de graduación es obligatorio.' });
+      if (isBlank(licenseProvince)) return res.status(400).json({ error: 'La matrícula provincial número es obligatoria.' });
+      if (isBlank(healthMinistryReg)) return res.status(400).json({ error: 'El Nro. Ministerio de Salud es obligatorio.' });
+      if (isBlank(virtualConsultingAuthorization)) return res.status(400).json({ error: 'La Licencia Sanitaria Federal es obligatoria.' });
     }
 
     const updated = await prisma.psychologist.update({
@@ -202,7 +233,9 @@ exports.uploadDocuments = async (req, res) => {
       )
     );
 
-    const status = await markDocumentsSubmittedIfNeeded(req.user.id);
+    const status = await markDocumentsSubmittedIfNeeded(req.user.id, {
+      reviewMessage: DOCS_MODIFIED_REVIEW_MESSAGE,
+    });
 
     res.status(201).json({
       message: getDocumentUploadMessage(status),
@@ -247,7 +280,9 @@ exports.replaceDocument = async (req, res) => {
 
     removeFile(currentDocument.fileUrl);
 
-    const status = await markDocumentsSubmittedIfNeeded(req.user.id);
+    const status = await markDocumentsSubmittedIfNeeded(req.user.id, {
+      reviewMessage: DOCS_MODIFIED_REVIEW_MESSAGE,
+    });
 
     res.json({
       message: getDocumentUploadMessage(status),
@@ -278,26 +313,32 @@ exports.deleteDocument = async (req, res) => {
 
     removeFile(document.fileUrl);
 
-    const remainingDocuments = await prisma.psychologistDocument.count({
+    const remainingDocuments = await prisma.psychologistDocument.findMany({
       where: { psychologistId: req.user.id },
+      select: { documentType: true },
     });
     const current = await prisma.psychologist.findUnique({
       where: { id: req.user.id },
-      select: { status: true },
+      select: { status: true, registrationType: true },
     });
 
     let status = current?.status;
-    if (remainingDocuments === 0) {
+    const requiredDocumentTypes = getRequiredDocumentTypes(current?.registrationType);
+    const remainingDocumentTypes = new Set(remainingDocuments.map((item) => item.documentType));
+    const missingRequiredDocuments = requiredDocumentTypes.some((documentType) => !remainingDocumentTypes.has(documentType));
+    const deletedRequiredDocument = requiredDocumentTypes.includes(document.documentType);
+
+    if (remainingDocuments.length === 0) {
       const updated = await prisma.psychologist.update({
         where: { id: req.user.id },
         data: { status: 'PENDING_DOCS', rejectionReason: null },
         select: { status: true },
       });
       status = updated.status;
-    } else if (['REJECTED', 'APPROVED', 'ACTIVE', 'SUSPENDED'].includes(status)) {
+    } else if (REVIEWED_STATUSES.includes(status) && (deletedRequiredDocument || missingRequiredDocuments)) {
       const updated = await prisma.psychologist.update({
         where: { id: req.user.id },
-        data: { status: 'PENDING', rejectionReason: null },
+        data: { status: 'PENDING', rejectionReason: DOCS_MODIFIED_REVIEW_MESSAGE },
         select: { status: true },
       });
       status = updated.status;

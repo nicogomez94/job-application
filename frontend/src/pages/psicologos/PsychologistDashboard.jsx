@@ -15,7 +15,7 @@ const toAssetUrl = (p) => {
 
 const STATUS_LABELS = {
   PENDING_DOCS: { label: 'Pendiente de documentación', icon: FileText, color: 'orange' },
-  PENDING: { label: 'En revisión (~5 días hábiles)', icon: Clock, color: 'orange' },
+  PENDING: { label: 'En espera de aprobación', icon: Clock, color: 'orange' },
   APPROVED: { label: 'Aprobado - Elegí tu plan para activarte', icon: CheckCircle, color: 'blue' },
   REJECTED: { label: 'Estamos considerando su registro. Disculpe las molestias.', icon: XCircle, color: 'red' },
   ACTIVE: { label: 'Activo - Visible para pacientes', icon: CheckCircle, color: 'green' },
@@ -440,11 +440,11 @@ export default function PsychologistDashboard() {
                   <li>
                     <button
                       type="button"
-                      className="psico-link-button"
+                      className="psico-link-button psico-suspend-service-button"
                       onClick={() => handleAvailabilityChange(false)}
                       disabled={updatingAvailability}
                     >
-                      <PauseCircle size={14} /> {updatingAvailability ? 'Suspendiendo...' : 'Suspender'}
+                      <PauseCircle size={14} /> {updatingAvailability ? 'Suspendiendo...' : 'Suspender Servicio'}
                     </button>
                   </li>
                 )}
@@ -526,7 +526,14 @@ export default function PsychologistDashboard() {
                                   </button>
                                   {isPatientProfileOpen && (
                                     <div className="psico-patient-profile-preview">
-                                      <p><strong>Email:</strong> {patient?.email || '-'}</p>
+                                      <p>
+                                        <strong>Email:</strong>{' '}
+                                        {patient?.email ? (
+                                          <a href={`mailto:${patient.email}`} className="psico-link-subtle">
+                                            {patient.email}
+                                          </a>
+                                        ) : '-'}
+                                      </p>
                                       <p><strong>WhatsApp:</strong> {patient?.phone || '-'}</p>
                                       <p><strong>Género:</strong> {patient?.gender || '-'}</p>
                                       <p><strong>Paciente desde:</strong> {formatDate(patient?.createdAt)}</p>

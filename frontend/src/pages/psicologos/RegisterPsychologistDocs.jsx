@@ -11,7 +11,7 @@ const AR_DOCUMENT_TYPES = [
   { key: 'DNI', label: 'Foto/escaneo del DNI (frente y dorso)' },
   { key: 'TITLE', label: 'Título de psicólogo (frente y dorso)' },
   { key: 'LICENSE', label: 'Certificado de matrícula profesional vigente' },
-  { key: 'CUIT', label: 'Constancia de CUIT/CUIL' },
+  { key: 'CUIT', label: 'Constancia de CUIT' },
   { key: 'GOOD_CONDUCT', label: 'Certificado de buena conducta (si aplica según país/lugar de terapia)' },
   { key: 'SPECIALTY_CERT', label: 'Certificado por especialidad declarada (si aplica según país/lugar de terapia)' },
 ];

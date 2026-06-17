@@ -187,7 +187,7 @@ export default function RegisterPsychologistAR() {
       if (!trimmed(form.dni)) errors.dni = 'Campo requerido';
       else if (!/^\d{7,8}$/.test(digitsOnly(form.dni))) errors.dni = 'Ingresá 7 u 8 números';
       if (!trimmed(form.cuitCuil)) errors.cuitCuil = 'Campo requerido';
-      else if (!isValidCuitCuil(form.cuitCuil)) errors.cuitCuil = 'CUIT/CUIL inválido';
+      else if (!isValidCuitCuil(form.cuitCuil)) errors.cuitCuil = 'CUIT inválido';
       const phoneError = getPhoneValidationMessage(form.phone, { required: true });
       if (phoneError) errors.phone = phoneError;
       if (!isValidOptionalEmail(form.contactEmail)) errors.contactEmail = 'Email inválido';
@@ -201,7 +201,8 @@ export default function RegisterPsychologistAR() {
     if (step === 2) {
       const errors = {};
       if (!trimmed(form.universityDegree)) errors.universityDegree = 'Campo requerido';
-      if (trimmed(form.graduationYear)) {
+      if (!trimmed(form.graduationYear)) errors.graduationYear = 'Campo requerido';
+      else {
         const year = Number(form.graduationYear);
         if (!Number.isInteger(year) || year < 1950 || year > currentYear) errors.graduationYear = `Ingresá un año entre 1950 y ${currentYear}`;
       }
@@ -210,8 +211,10 @@ export default function RegisterPsychologistAR() {
       if (!trimmed(form.licenseNumber)) errors.licenseNumber = 'Campo requerido';
       else if (!TEXT_WITH_NUMBER_REGEX.test(trimmed(form.licenseNumber))) errors.licenseNumber = 'La matrícula debe incluir números';
       if (!trimmed(form.licenseProvince)) errors.licenseProvince = 'Campo requerido';
-      if (trimmed(form.healthMinistryReg) && !TEXT_WITH_NUMBER_REGEX.test(trimmed(form.healthMinistryReg))) errors.healthMinistryReg = 'Registro inválido';
-      if (trimmed(form.virtualConsultingAuthorization) && !textLengthBetween(form.virtualConsultingAuthorization, 3, 120)) {
+      if (!trimmed(form.healthMinistryReg)) errors.healthMinistryReg = 'Campo requerido';
+      else if (!TEXT_WITH_NUMBER_REGEX.test(trimmed(form.healthMinistryReg))) errors.healthMinistryReg = 'Registro inválido';
+      if (!trimmed(form.virtualConsultingAuthorization)) errors.virtualConsultingAuthorization = 'Campo requerido';
+      else if (!textLengthBetween(form.virtualConsultingAuthorization, 3, 120)) {
         errors.virtualConsultingAuthorization = 'Autorización inválida';
       }
       if (!trimmed(form.sessionCost)) errors.sessionCost = 'Campo requerido';
@@ -422,7 +425,7 @@ export default function RegisterPsychologistAR() {
               </label>
               <label className={fieldClass('dateOfBirth')}>Fecha de nacimiento * <small>(mayor de 21 años con título)</small><input type="date" name="dateOfBirth" value={form.dateOfBirth} onChange={handleChange} />{fieldError('dateOfBirth')}</label>
               <label className={fieldClass('dni')}>DNI *<input type="text" name="dni" value={form.dni} onChange={handleChange} />{fieldError('dni')}</label>
-              <label className={fieldClass('cuitCuil')}>Identificación fiscal como Monotributista *<input type="text" name="cuitCuil" value={form.cuitCuil} onChange={handleChange} placeholder="CUIT/CUIL" />{fieldError('cuitCuil')}</label>
+              <label className={fieldClass('cuitCuil')}>Identificación fiscal como Monotributista *<input type="text" name="cuitCuil" value={form.cuitCuil} onChange={handleChange} placeholder="CUIT" />{fieldError('cuitCuil')}</label>
               <PhoneNumberInput
                 id="register-psychologist-ar-phone"
                 label="WhatsApp"
@@ -470,7 +473,7 @@ export default function RegisterPsychologistAR() {
                 {fieldError('licenseProvince')}
               </label>
               <label className={fieldClass('healthMinistryReg')}>Nro. Ministerio de Salud *<input type="text" name="healthMinistryReg" value={form.healthMinistryReg} onChange={handleChange} />{fieldError('healthMinistryReg')}</label>
-              <label className={fieldClass('virtualConsultingAuthorization')}>Licencia Sanitaria Federal *<input type="text" name="virtualConsultingAuthorization" value={form.virtualConsultingAuthorization} onChange={handleChange} placeholder="Si corresponde" />{fieldError('virtualConsultingAuthorization')}</label>
+              <label className={fieldClass('virtualConsultingAuthorization')}>Licencia Sanitaria Federal *<input type="text" name="virtualConsultingAuthorization" value={form.virtualConsultingAuthorization} onChange={handleChange} />{fieldError('virtualConsultingAuthorization')}</label>
               <label className={fieldClass('sessionCost')}>Costo final por sesión *<input type="text" name="sessionCost" value={form.sessionCost} onChange={handleChange} placeholder="Ej: ARS 25.000 o USD 40" />{fieldError('sessionCost')}</label>
               <label className={`psico-full-col ${fieldClass('sessionDuration')}`}>Tiempo de sesión / promoción *
                 <textarea

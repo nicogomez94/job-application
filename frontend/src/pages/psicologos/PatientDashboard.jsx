@@ -20,6 +20,7 @@ const toAssetUrl = (p) => {
 const REJECTED_MESSAGE = 'Estimada/o. En estos momentos estamos con agenda completa. Será un gusto asistirle en un próximo contacto. Intente nuevamente después de 7 días.';
 const TERMINATION_MESSAGE = 'El usuario ha decidido finalizar la terapia por razones personales';
 const PROFESSIONAL_SUSPENDED_MESSAGE = 'El profesional suspende momentáneamente el servicio de consultas';
+const PROFESSIONAL_PENDING_MESSAGE = 'El profesional está en espera de aprobación';
 
 const mailtoHref = (email) => `mailto:${String(email || '').trim()}`;
 
@@ -136,7 +137,7 @@ export default function PatientDashboard() {
       updateUser(updatedPatient);
       reset(getPatientFormDefaults(updatedPatient));
       setEditingProfile(false);
-      toast.success('Datos actualizados');
+      toast.success('Datos del perfil actualizados correctamente');
     } catch (error) {
       toast.error(error.response?.data?.error || 'No se pudieron actualizar tus datos');
     } finally {
@@ -466,7 +467,7 @@ export default function PatientDashboard() {
                   const photo = p?.profileImage ? toAssetUrl(p.profileImage) : null;
                   const initials = `${p?.firstName?.[0] || ''}${p?.lastName?.[0] || ''}`.toUpperCase();
                   const blockInfo = req.blockInfo;
-                  const professionalUnavailable = Boolean(req.professionalUnavailable || p?.status === 'SUSPENDED');
+                  const professionalUnavailable = Boolean(req.professionalUnavailable || (p?.status && p.status !== 'ACTIVE'));
                   const hasTerminationRequest = Boolean(req.terminationRequestedAt && !req.terminationAcceptedAt);
                   const terminationAccepted = Boolean(req.terminationAcceptedAt);
 
@@ -487,7 +488,9 @@ export default function PatientDashboard() {
                           {blockInfo ? (
                             <p className="psico-blocked-text">{blockInfo.message}</p>
                           ) : professionalUnavailable ? (
-                            <p className="psico-unavailable-text">{req.professionalUnavailableMessage || PROFESSIONAL_SUSPENDED_MESSAGE}</p>
+                            <p className="psico-unavailable-text">
+                              {req.professionalUnavailableMessage || (p?.status === 'SUSPENDED' ? PROFESSIONAL_SUSPENDED_MESSAGE : PROFESSIONAL_PENDING_MESSAGE)}
+                            </p>
                           ) : (
                             <Link to={`/psicologos/${p?.id}`} className="psico-link-subtle">
                               Ver perfil →

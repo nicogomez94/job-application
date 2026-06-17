@@ -342,7 +342,7 @@ export default function PsychologistEditProfile() {
               <input name="licenseCountry" value={form.licenseCountry} onChange={handleChange} />
             </label>
             <label>
-              Registro Ministerio de Salud
+              Nro. Ministerio de Salud
               <input name="healthMinistryReg" value={form.healthMinistryReg} onChange={handleChange} />
             </label>
             <label className="psico-edit-profile-wide">

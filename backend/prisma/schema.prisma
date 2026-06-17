@@ -334,7 +334,7 @@ model Psychologist {
   universityName      String?
   licenseNumber       String?             // Nro matrícula
   licenseProvince     String?
-  healthMinistryReg   String?             // Registro Ministerio de Salud (optional)
+  healthMinistryReg   String?             // Registro Ministerio de Salud
   virtualConsultingAuthorization String?   // Habilitación especial de consultorio virtual
   sessionCost         String?             // Costo por sesión
   sessionDuration     String?             // Duración de la sesión

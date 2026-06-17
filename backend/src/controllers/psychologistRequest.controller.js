@@ -67,6 +67,7 @@ const keepPatientIdentityOnly = (patient) => {
 
 const TERMINATION_MESSAGE = 'El usuario ha decidido finalizar la terapia por razones personales';
 const PROFESSIONAL_SUSPENDED_MESSAGE = 'El profesional suspende momentáneamente el servicio de consultas';
+const PROFESSIONAL_PENDING_MESSAGE = 'El profesional está en espera de aprobación';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PATIENT ENDPOINTS
@@ -220,13 +221,18 @@ exports.getMyRequests = async (req, res) => {
         };
       }
 
-      if (r.status !== 'ACCEPTED' || r.psychologist?.status === 'SUSPENDED') {
+      if (r.status !== 'ACCEPTED' || r.psychologist?.status !== 'ACTIVE') {
         const { phone, contactEmail, ...psychologistWithoutContact } = r.psychologist;
+        const professionalUnavailable = r.psychologist?.status && r.psychologist.status !== 'ACTIVE';
         return {
           ...r,
           psychologist: psychologistWithoutContact,
-          professionalUnavailable: r.psychologist?.status === 'SUSPENDED',
-          professionalUnavailableMessage: r.psychologist?.status === 'SUSPENDED' ? PROFESSIONAL_SUSPENDED_MESSAGE : null,
+          professionalUnavailable,
+          professionalUnavailableMessage: professionalUnavailable
+            ? r.psychologist?.status === 'SUSPENDED'
+              ? PROFESSIONAL_SUSPENDED_MESSAGE
+              : PROFESSIONAL_PENDING_MESSAGE
+            : null,
         };
       }
       return { ...r, blockInfo: null, professionalUnavailable: false, professionalUnavailableMessage: null };

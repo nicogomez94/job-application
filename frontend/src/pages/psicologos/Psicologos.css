@@ -2329,6 +2329,21 @@
   text-decoration: underline;
 }
 
+.psico-suspend-service-button {
+  padding: 0.45rem 0.8rem;
+  border: 1px solid #f59e0b;
+  border-radius: 6px;
+  background: #fff7ed;
+  color: #9a3412;
+  box-shadow: inset 0 -2px 0 rgba(245, 158, 11, 0.18);
+}
+
+.psico-suspend-service-button:hover:not(:disabled) {
+  background: #fed7aa;
+  color: #7c2d12;
+  text-decoration: none;
+}
+
 /* ── Home section ────────────────────────────────────────────── */
 .psico-home-section {
   background: linear-gradient(135deg, #f0f8ff 0%, #e8f4fb 100%);
