@@ -151,6 +151,11 @@ export default function PsychologistEditProfile() {
       return;
     }
 
+    const confirmed = window.confirm(
+      'Antes de cambiar la información del perfil profesional, verificá que los datos nuevos sean correctos. Al guardar se reemplazará la información anterior. ¿Querés continuar?'
+    );
+    if (!confirmed) return;
+
     setPhoneError('');
     setSaving(true);
 

@@ -147,7 +147,9 @@ export default function RegisterPsychologistDocs() {
       return;
     }
 
-    const confirmed = window.confirm('¿Está seguro que desea reemplazar el documento seleccionado?');
+    const confirmed = window.confirm(
+      'Antes de reemplazar este documento, verificá que el archivo nuevo sea correcto. Al continuar se reemplazará el documento anterior y la cuenta puede quedar en espera de aprobación. ¿Querés continuar?'
+    );
     if (!confirmed) return;
 
     const actionId = `replace-${document.id}`;
@@ -177,7 +179,9 @@ export default function RegisterPsychologistDocs() {
   };
 
   const handleDeleteDocument = async (document) => {
-    const confirmed = window.confirm('¿Querés borrar este documento?');
+    const confirmed = window.confirm(
+      'Antes de borrar este documento, verificá que no sea obligatorio para mantener la cuenta aprobada. Si es requerido, la cuenta quedará en espera de aprobación hasta que el admin revise la documentación. ¿Querés continuar?'
+    );
     if (!confirmed) return;
 
     const actionId = `delete-${document.id}`;
