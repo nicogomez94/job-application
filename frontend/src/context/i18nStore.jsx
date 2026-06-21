@@ -973,7 +973,6 @@ const ES_TO_EN = {
   'Solo plan superior': 'Higher plan only',
   'No se requiere tarjeta de crédito. Los planes para psicólogos están bonificados.': 'No credit card is required. Plans for psychologists are covered.',
   'Próximamente: pagos seguros con': 'Coming soon: secure payments with',
-  '¡Plan': 'Plan',
   'activado! Tu perfil ya es visible para los pacientes.': 'activated! Your profile is now visible to patients.',
   'No se pudo cargar el listado de psicólogos': 'Could not load the psychologist listing',
   'No se pudo cargar el perfil del psicólogo': 'Could not load the psychologist profile',
