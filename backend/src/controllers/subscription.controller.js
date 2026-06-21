@@ -119,7 +119,9 @@ exports.cancelSubscription = async (req, res) => {
     });
   } catch (error) {
     console.error('Error en cancelSubscription:', error);
-    res.status(500).json({ error: 'Error al cancelar suscripción' });
+    res.status(error.statusCode || 500).json({
+      error: error.message || 'Error al cancelar suscripción',
+    });
   }
 };
 

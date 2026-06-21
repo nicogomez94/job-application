@@ -192,7 +192,29 @@ const updatePreapproval = (id, body) =>
     idempotencyKey: `preapproval-update-${id}-${Date.now()}`,
   });
 
-const cancelPreapproval = (id) => updatePreapproval(id, { status: 'canceled' });
+const isCancelledPreapproval = (preapproval) =>
+  ['cancelled', 'canceled'].includes(String(preapproval?.status || '').toLowerCase());
+
+const isInvalidPreapprovalStatusError = (error, status) =>
+  error?.statusCode === 400
+  && String(error?.message || '').toLowerCase().includes(`invalid preapproval status param: ${status}`);
+
+const cancelPreapproval = async (id) => {
+  const current = await getPreapproval(id);
+  if (isCancelledPreapproval(current)) return current;
+
+  try {
+    // La API productiva devuelve y acepta "cancelled" aunque parte de la
+    // documentación histórica de Mercado Pago todavía muestra "canceled".
+    return await updatePreapproval(id, { status: 'cancelled' });
+  } catch (error) {
+    // Conserva compatibilidad con cuentas/regiones que aún esperan "canceled".
+    if (isInvalidPreapprovalStatusError(error, 'cancelled')) {
+      return updatePreapproval(id, { status: 'canceled' });
+    }
+    throw error;
+  }
+};
 
 const getAuthorizedPayment = (id) =>
   mercadoPagoRequest(`/authorized_payments/${encodeURIComponent(id)}`);

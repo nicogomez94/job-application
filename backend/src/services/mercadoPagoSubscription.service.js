@@ -527,7 +527,7 @@ const cancelSubscription = async ({ accountType, subscription }) => {
   const updated = await updateLocalSubscription(accountType, subscription.id, {
     status: 'CANCELLED',
     paymentStatus: 'cancelled',
-    mercadoPagoStatus: 'canceled',
+    mercadoPagoStatus: 'cancelled',
     lastWebhookAt: new Date(),
   });
 
