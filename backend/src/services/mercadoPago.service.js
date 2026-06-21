@@ -2,17 +2,83 @@ const crypto = require('crypto');
 
 const API_BASE_URL = 'https://api.mercadopago.com';
 const DEFAULT_TIMEOUT_MS = 15000;
+const OAUTH_TOKEN_REFRESH_MARGIN_MS = 5 * 60 * 1000;
+
+let oauthTokenCache = null;
 
 const normalizeUrl = (value) => String(value || '').trim().replace(/\/+$/, '');
 
-const getAccessToken = () => {
-  const token = process.env.MERCADO_PAGO_ACCESS_TOKEN;
-  if (!token) {
-    const error = new Error('MERCADO_PAGO_ACCESS_TOKEN no está configurado.');
-    error.statusCode = 500;
+const getEnvironmentAccessToken = () => {
+  if (process.env.NODE_ENV === 'production') {
+    return process.env.MERCADO_PAGO_PRODUCTION_ACCESS_TOKEN
+      || process.env.MERCADO_PAGO_ACCESS_TOKEN;
+  }
+
+  return process.env.MERCADO_PAGO_DEVELOPMENT_ACCESS_TOKEN
+    || process.env.MERCADO_PAGO_ACCESS_TOKEN;
+};
+
+const getProductionOAuthCredentials = () => ({
+  clientId: process.env.MERCADO_PAGO_PRODUCTION_CLIENT_ID,
+  clientSecret: process.env.MERCADO_PAGO_PRODUCTION_CLIENT_SECRET,
+});
+
+const requestProductionAccessToken = async () => {
+  const { clientId, clientSecret } = getProductionOAuthCredentials();
+  if (!clientId || !clientSecret) return null;
+
+  if (
+    oauthTokenCache?.accessToken
+    && oauthTokenCache.expiresAt > Date.now() + OAUTH_TOKEN_REFRESH_MARGIN_MS
+  ) {
+    return oauthTokenCache.accessToken;
+  }
+
+  const response = await fetch(`${API_BASE_URL}/oauth/token`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      client_id: clientId,
+      client_secret: clientSecret,
+      grant_type: 'client_credentials',
+    }),
+  });
+
+  const data = await response.json().catch(() => null);
+  if (!response.ok || !data?.access_token) {
+    const error = new Error(
+      data?.message || data?.error || 'No se pudo obtener el Access Token de producción de Mercado Pago.',
+    );
+    error.statusCode = response.status || 502;
+    error.mercadoPagoResponse = data;
     throw error;
   }
-  return token;
+
+  const expiresInSeconds = Number(data.expires_in) || 21600;
+  oauthTokenCache = {
+    accessToken: data.access_token,
+    expiresAt: Date.now() + expiresInSeconds * 1000,
+  };
+
+  return oauthTokenCache.accessToken;
+};
+
+const getAccessToken = async () => {
+  if (process.env.NODE_ENV === 'production') {
+    const oauthToken = await requestProductionAccessToken();
+    if (oauthToken) return oauthToken;
+  }
+
+  const token = getEnvironmentAccessToken();
+  if (token) return token;
+
+  const error = new Error(
+    process.env.NODE_ENV === 'production'
+      ? 'Configurá MERCADO_PAGO_PRODUCTION_CLIENT_ID y MERCADO_PAGO_PRODUCTION_CLIENT_SECRET, o MERCADO_PAGO_PRODUCTION_ACCESS_TOKEN.'
+      : 'MERCADO_PAGO_DEVELOPMENT_ACCESS_TOKEN no está configurado.',
+  );
+  error.statusCode = 500;
+  throw error;
 };
 
 const mercadoPagoRequest = async (path, options = {}) => {
@@ -30,7 +96,7 @@ const mercadoPagoRequest = async (path, options = {}) => {
     const response = await fetch(`${API_BASE_URL}${path}`, {
       method,
       headers: {
-        Authorization: `Bearer ${getAccessToken()}`,
+        Authorization: `Bearer ${await getAccessToken()}`,
         'Content-Type': 'application/json',
         ...(idempotencyKey ? { 'X-Idempotency-Key': idempotencyKey } : {}),
       },
