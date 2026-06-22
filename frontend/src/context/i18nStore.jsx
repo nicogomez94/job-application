@@ -22,7 +22,11 @@ const ES_TO_EN = {
   'Sugerencias para Profesionales y Empresas': 'Tips for Professionals and Companies',
   'Sugerencias para los Empleadores y Profesionales': 'Suggestions for Employers and Professionals',
   'Registrar Empresa': 'Register Company',
+  Planes: 'Plans',
   'Planes y Precios': 'Plans and Pricing',
+  'Todos los planes son gratuitos por el momento y no requieren tarjeta.':
+    'All plans are currently free and require no card.',
+  'Ver planes': 'View plans',
   'Publicar Oferta': 'Post Job',
   'Publicar Ofertas Laborales': 'Post Job Offers',
   'Conectamos talento con oportunidades.': 'We connect talent with opportunities.',

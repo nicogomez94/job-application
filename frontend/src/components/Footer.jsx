@@ -38,7 +38,7 @@ export default function Footer() {
             <h3>{t('Empresas')}</h3>
             <ul className="footer-list">
               <li><Link to="/register/company">{t('Registrar Empresa')}</Link></li>
-              <li><Link to="/planes-y-precios">{t('Planes y Precios')}</Link></li>
+              <li><Link to="/planes-y-precios">{t('Planes')}</Link></li>
               <li><Link to="/company/jobs/create">{t('Publicar Ofertas Laborales')}</Link></li>
               <li><Link to="/quienes-somos">{t('Qui\u00e9nes Somos')}</Link></li>
             </ul>

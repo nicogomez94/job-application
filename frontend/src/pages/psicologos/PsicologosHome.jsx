@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../../context/authStore';
+import { psychologistService } from '../../services';
 import './PsicologosHome.css';
 
 const HERO_IMAGE = '/playa.jpeg';
@@ -79,32 +81,34 @@ const SPECIAL_GROUPS = [
   },
 ];
 
-const PLANS = [
+const FALLBACK_PLANS = [
   {
     id: 'MONTHLY',
     name: 'Plan 3 meses',
     subtitle: 'Ideal para empezar',
-    price: 30,
-    currency: 'USD',
+    price: null,
+    currency: null,
     duration: '3 meses',
+    isFreeMode: true,
     features: [
       'Perfil visible para pacientes',
       'Ideal para validar el servicio',
-      'Renovación automática cada 3 meses',
+      'No requiere tarjeta ni medio de pago',
     ],
     highlight: false,
   },
   {
     id: 'QUARTERLY',
     name: 'Plan 7 meses',
-    subtitle: 'La mejor relación precio-valor',
-    price: 50,
-    currency: 'USD',
+    subtitle: 'Más tiempo para recibir consultas',
+    price: null,
+    currency: null,
     duration: '7 meses',
+    isFreeMode: true,
     features: [
       'Mayor continuidad de publicaciones',
-      'Mejor costo por mes',
-      'Renovación automática cada 7 meses',
+      'Perfil visible para pacientes',
+      'No requiere tarjeta ni medio de pago',
     ],
     highlight: true,
     badge: 'Recomendado',
@@ -113,13 +117,14 @@ const PLANS = [
     id: 'ANNUAL',
     name: 'Plan 12 + 1',
     subtitle: 'Para mayor continuidad',
-    price: 80,
-    currency: 'USD',
+    price: null,
+    currency: null,
     duration: '13 meses',
+    isFreeMode: true,
     features: [
       '1 mes adicional incluido',
       'Cobertura anual extendida',
-      'Renovación automática cada 13 meses',
+      'No requiere tarjeta ni medio de pago',
     ],
     highlight: false,
   },
@@ -127,8 +132,33 @@ const PLANS = [
 
 export default function PsicologosHome() {
   const { isAuthenticated, userType } = useAuthStore();
+  const [plans, setPlans] = useState(FALLBACK_PLANS);
   const isPatient = isAuthenticated && userType === 'patient';
   const isPsychologist = isAuthenticated && userType === 'psychologist';
+  const arePlansFree = plans.length > 0 && plans.every((plan) => plan.isFreeMode);
+
+  useEffect(() => {
+    const loadPlans = async () => {
+      try {
+        const response = await psychologistService.getPlans();
+        const apiPlans = response.data?.plans || [];
+        if (apiPlans.length) {
+          setPlans(apiPlans.map((plan) => {
+            const fallback = FALLBACK_PLANS.find((item) => item.id === plan.id) || {};
+            return {
+              ...fallback,
+              ...plan,
+              subtitle: fallback.subtitle,
+            };
+          }));
+        }
+      } catch (error) {
+        console.error('No se pudieron cargar los planes para la portada de psicólogos:', error);
+      }
+    };
+
+    loadPlans();
+  }, []);
 
   return (
     <div className="psico-home">
@@ -225,11 +255,13 @@ export default function PsicologosHome() {
         <div className="psico-home-plans-inner">
           <h2 className="psico-home-plans-title">Planes para Psicólogos</h2>
           <p className="psico-home-plans-sub">
-            Elegí el plan que mejor se adapte a tu práctica profesional.
+            {arePlansFree
+              ? 'Todos los planes son gratuitos por el momento. Elegí el que mejor se adapte a tu práctica profesional.'
+              : 'Elegí el plan que mejor se adapte a tu práctica profesional.'}
           </p>
 
           <div className="psico-home-plans-grid">
-            {PLANS.map((plan) => (
+            {plans.map((plan) => (
               <div
                 key={plan.id}
                 className={`psico-home-plan-card ${plan.highlight ? 'psico-home-plan-card--highlight' : ''}`}
@@ -241,7 +273,7 @@ export default function PsicologosHome() {
                 <p className="psico-home-plan-subtitle">{plan.subtitle}</p>
                 <div className="psico-home-plan-price">
                   <span className="psico-home-plan-regular">
-                    USD {plan.price} / {plan.duration}
+                    {plan.isFreeMode ? 'Gratis' : `${plan.currency} ${plan.price} / ${plan.duration}`}
                   </span>
                 </div>
                 <ul className="psico-home-plan-features">
@@ -272,7 +304,9 @@ export default function PsicologosHome() {
           </div>
 
           <p className="psico-home-plans-note">
-            Los planes se cobran de forma recurrente por el período completo indicado.
+            {arePlansFree
+              ? 'La activación no requiere tarjeta ni medio de pago.'
+              : 'Los planes se cobran de forma recurrente por el período completo indicado.'}
           </p>
         </div>
       </section>

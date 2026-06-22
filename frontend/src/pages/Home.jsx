@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Briefcase, Building2, TrendingUp, MapPin, Languages, Briefcase as BriefcaseIcon, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import { useI18n } from '../context/i18nStore';
-import { categoryService } from '../services';
+import { categoryService, subscriptionService } from '../services';
 import { JOB_POSTING_LANGUAGE_OPTIONS } from '../constants/jobOfferLanguages';
 import './Home.css';
 
@@ -46,6 +46,7 @@ export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [homeFilters, setHomeFilters] = useState({ categoryId: '', location: '', postingLanguage: '', search: '' });
   const [availableCategories, setAvailableCategories] = useState([]);
+  const [subscriptionPlans, setSubscriptionPlans] = useState([]);
   const [heroRef, heroVisible] = useScrollAnimation();
   const [categoriesRef, categoriesVisible] = useScrollAnimation();
   const [featuresRef, featuresVisible] = useScrollAnimation();
@@ -69,6 +70,19 @@ export default function Home() {
     };
 
     loadCategories();
+  }, []);
+
+  useEffect(() => {
+    const loadSubscriptionPlans = async () => {
+      try {
+        const response = await subscriptionService.getPlans();
+        setSubscriptionPlans(response.data?.plans || []);
+      } catch (error) {
+        console.error('No se pudieron cargar los planes para la portada:', error);
+      }
+    };
+
+    loadSubscriptionPlans();
   }, []);
 
   const categories = availableCategories;
@@ -129,20 +143,20 @@ export default function Home() {
   if (homeFilters.search) jobsParams.set('search', homeFilters.search);
   const jobsSearch = jobsParams.toString();
   const jobsHref = jobsSearch ? `/jobs?${jobsSearch}` : '/jobs';
-  const compactPlans = [
+  const compactPlanMeta = [
     {
       id: 'MONTHLY',
       name: 'Plan 3 meses',
-      subtitle: 'Solo por tiempo limitado',
-      price: 'USD 50',
+      subtitle: 'Ideal para empezar',
+      paidSubtitle: 'Solo por tiempo limitado',
       period: '/ 3 meses',
-      feature: 'Renovaci\u00f3n paga al finalizar',
+      feature: 'Acceso completo durante el plan',
     },
     {
       id: 'QUARTERLY',
       name: 'Plan 7 meses',
-      subtitle: 'Mejor relación precio-tiempo',
-      price: 'USD 80',
+      subtitle: 'Más tiempo para contratar sin interrupciones',
+      paidSubtitle: 'Mejor relación precio-tiempo',
       period: '/ 7 meses',
       feature: 'Continuidad extendida para publicar',
       highlight: true,
@@ -151,12 +165,29 @@ export default function Home() {
     {
       id: 'ANNUAL',
       name: 'Plan 12 + 1',
-      subtitle: 'Pagás 12 meses y usás 13',
-      price: 'USD 120',
+      subtitle: 'Mayor continuidad para tu empresa',
+      paidSubtitle: 'Pagás 12 meses y usás 13',
       period: '/ 13 meses',
       feature: 'Incluye 1 mes adicional',
     },
   ];
+  const compactPlans = compactPlanMeta.map((meta) => {
+    const apiPlan = subscriptionPlans.find((plan) => plan.id === meta.id);
+    const isFreeMode = apiPlan?.isFreeMode ?? true;
+    const formattedPrice = !isFreeMode && apiPlan?.price != null
+      ? `${apiPlan.currency || ''} ${Number(apiPlan.price).toLocaleString('es-AR')}`.trim()
+      : 'Gratis';
+
+    return {
+      ...meta,
+      ...apiPlan,
+      subtitle: isFreeMode ? meta.subtitle : meta.paidSubtitle,
+      feature: isFreeMode ? meta.feature : (apiPlan?.features?.[0] || meta.feature),
+      price: formattedPrice,
+      isFreeMode,
+    };
+  });
+  const arePlansFree = compactPlans.every((plan) => plan.isFreeMode);
 
   return (
     <div className="home-container">
@@ -394,11 +425,17 @@ export default function Home() {
         <div className="home-stats-container">
           <div className="home-stats-header">
             <p className="home-stats-eyebrow">{t('Empresas')}</p>
-            <h2>{t('Planes y precios en versión resumida')}</h2>
+            <h2>{t(arePlansFree ? 'Planes disponibles' : 'Planes y precios en versión resumida')}</h2>
             <p>
-              {t('*Planes recurrentes por período completo, con cobro seguro por Mercado Pago.')}
-              <br />
-              {t('*Beneficios por calidad de servicios y referidos en planes pagos.')}
+              {arePlansFree
+                ? t('Todos los planes son gratuitos por el momento y no requieren tarjeta.')
+                : (
+                  <>
+                    {t('*Planes recurrentes por período completo, con cobro seguro por Mercado Pago.')}
+                    <br />
+                    {t('*Beneficios por calidad de servicios y referidos en planes pagos.')}
+                  </>
+                )}
             </p>
           </div>
 
@@ -422,7 +459,7 @@ export default function Home() {
 
           <div className="home-pricing-preview-cta">
             <Link to="/planes-y-precios" className="btn btn-outline home-pricing-preview-link">
-              Ver planes y precios
+              {t(arePlansFree ? 'Ver planes' : 'Ver planes y precios')}
             </Link>
           </div>
         </div>

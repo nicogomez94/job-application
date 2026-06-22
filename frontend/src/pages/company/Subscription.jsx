@@ -26,6 +26,7 @@ export default function CompanySubscription() {
   const [loading, setLoading] = useState(true);
   const [processingPlanId, setProcessingPlanId] = useState(null);
   const [cancellingId, setCancellingId] = useState(null);
+  const isFreeMode = plans.length > 0 && plans.every((plan) => plan.isFreeMode);
 
   const loadData = async () => {
     setLoading(true);
@@ -50,6 +51,20 @@ export default function CompanySubscription() {
   }, []);
 
   const handleActivatePlan = async (plan) => {
+    if (plan.isFreeMode) {
+      setProcessingPlanId(plan.id);
+      try {
+        await subscriptionService.create({ plan: plan.id });
+        toast.success(`Plan ${plan.name} activado`);
+        await loadData();
+      } catch (error) {
+        toast.error(error.response?.data?.error || 'No se pudo activar el plan');
+      } finally {
+        setProcessingPlanId(null);
+      }
+      return;
+    }
+
     if (!plan.billing?.configured) {
       toast.error('Este plan todavía no tiene monto ARS configurado para Mercado Pago.');
       return;
@@ -90,7 +105,7 @@ export default function CompanySubscription() {
   };
 
   const currentPlanLabel = PLAN_LABELS[status?.subscription?.plan] || status?.subscription?.plan || '-';
-  const pendingSubscription = status?.pendingSubscription;
+  const pendingSubscription = isFreeMode ? null : status?.pendingSubscription;
 
   if (loading) {
     return (
@@ -135,7 +150,9 @@ export default function CompanySubscription() {
               Vigencia: {formatDate(status.subscription?.startDate)} - {formatDate(status.subscription?.endDate)}
             </p>
             <p style={{ color: '#5e4d38', marginBottom: '0.8rem' }}>
-              Monto: {formatAmount(status.subscription?.amount, status.subscription?.currency)}
+              {isFreeMode
+                ? 'Plan gratuito'
+                : `Monto: ${formatAmount(status.subscription?.amount, status.subscription?.currency)}`}
             </p>
             <button className="btn" style={{ background: '#fee2e2', color: '#991b1b' }} onClick={handleCancel} disabled={cancellingId === status.subscription?.id}>
               {cancellingId === status.subscription?.id ? 'Cancelando...' : 'Cancelar suscripción'}
@@ -154,18 +171,30 @@ export default function CompanySubscription() {
           {plans.map((plan) => (
             <div key={plan.id} style={{ border: '1px solid #e7dcc6', borderRadius: '0.7rem', padding: '1rem' }}>
               <h3 style={{ marginBottom: '0.4rem' }}>{plan.name}</h3>
-              <p style={{ color: '#5e4d38', marginBottom: '0.4rem' }}>
-                Referencia: {formatAmount(plan.price, plan.currency)} / {plan.duration}
-              </p>
-              <p style={{ color: '#7e705c', fontSize: '0.9rem', marginBottom: '0.8rem' }}>
-                Mercado Pago: {formatBilling(plan.billing)}
-              </p>
+              {plan.isFreeMode ? (
+                <p style={{ color: '#16803f', fontWeight: 800, marginBottom: '0.8rem' }}>Gratis</p>
+              ) : (
+                <>
+                  <p style={{ color: '#5e4d38', marginBottom: '0.4rem' }}>
+                    Referencia: {formatAmount(plan.price, plan.currency)} / {plan.duration}
+                  </p>
+                  <p style={{ color: '#7e705c', fontSize: '0.9rem', marginBottom: '0.8rem' }}>
+                    Mercado Pago: {formatBilling(plan.billing)}
+                  </p>
+                </>
+              )}
               <button
                 className="btn btn-primary"
                 onClick={() => handleActivatePlan(plan)}
                 disabled={processingPlanId === plan.id || Boolean(pendingSubscription)}
               >
-                {processingPlanId === plan.id ? 'Redirigiendo...' : pendingSubscription ? 'Pago pendiente' : 'Pagar con Mercado Pago'}
+                {processingPlanId === plan.id
+                  ? (plan.isFreeMode ? 'Activando...' : 'Redirigiendo...')
+                  : pendingSubscription
+                    ? 'Pago pendiente'
+                    : plan.isFreeMode
+                      ? 'Seleccionar plan'
+                      : 'Pagar con Mercado Pago'}
               </button>
             </div>
           ))}
@@ -186,7 +215,9 @@ export default function CompanySubscription() {
                 <p style={{ color: '#6f604b', fontSize: '0.9rem' }}>
                   {formatDate(item.startDate)} a {formatDate(item.endDate)}
                 </p>
-                <p style={{ color: '#6f604b', fontSize: '0.9rem' }}>{formatAmount(item.amount, item.currency)}</p>
+                {!isFreeMode && (
+                  <p style={{ color: '#6f604b', fontSize: '0.9rem' }}>{formatAmount(item.amount, item.currency)}</p>
+                )}
               </div>
             ))}
           </div>

@@ -10,13 +10,26 @@ const {
   getWebhookDataId,
   verifyWebhookSignature,
 } = require('../services/mercadoPago.service');
+const { activateFreeCompanyPlan } = require('../services/freeSubscription.service');
 
-// Crear suscripción directa: reemplazada por checkout/webhook de Mercado Pago.
+// Activar un plan sin pago mientras el modo gratuito esté habilitado.
 exports.createSubscription = async (req, res) => {
-  return res.status(410).json({
-    error: 'La activación directa de planes fue reemplazada por Mercado Pago.',
-    message: 'Usá el checkout para iniciar el pago recurrente del plan.',
-  });
+  try {
+    const result = await activateFreeCompanyPlan({
+      companyId: req.user.id,
+      planId: req.body.plan,
+    });
+
+    return res.status(201).json({
+      message: 'Suscripción gratuita activada exitosamente',
+      ...result,
+    });
+  } catch (error) {
+    console.error('Error en createSubscription:', error);
+    return res.status(error.statusCode || 500).json({
+      error: error.message || 'Error al crear suscripción',
+    });
+  }
 };
 
 // Crear checkout recurrente de Mercado Pago para empresas

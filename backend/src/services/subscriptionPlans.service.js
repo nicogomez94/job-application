@@ -1,5 +1,8 @@
 const CURRENCY_ID = process.env.MERCADO_PAGO_CURRENCY_ID || 'ARS';
 
+const areSubscriptionPaymentsEnabled = () =>
+  /^(true|1|yes|on)$/i.test(String(process.env.SUBSCRIPTION_PAYMENTS_ENABLED || '').trim());
+
 const PLAN_DEFINITIONS = {
   company: {
     MONTHLY: {
@@ -20,6 +23,11 @@ const PLAN_DEFINITIONS = {
         'Renovación automática cada 3 meses',
         'Acceso a gestión de postulantes',
       ],
+      freeFeatures: [
+        'Acceso gratuito durante 3 meses',
+        'Publicación y gestión de postulantes',
+        'No requiere tarjeta ni medio de pago',
+      ],
     },
     QUARTERLY: {
       id: 'QUARTERLY',
@@ -39,6 +47,11 @@ const PLAN_DEFINITIONS = {
         'Renovación automática cada 7 meses',
         'Cobertura extendida para contrataciones',
       ],
+      freeFeatures: [
+        'Acceso gratuito durante 7 meses',
+        'Cobertura extendida para contrataciones',
+        'No requiere tarjeta ni medio de pago',
+      ],
     },
     ANNUAL: {
       id: 'ANNUAL',
@@ -57,6 +70,11 @@ const PLAN_DEFINITIONS = {
         'Pagás 12 meses y usás 13',
         'Renovación automática cada 13 meses',
         'Mayor continuidad anual',
+      ],
+      freeFeatures: [
+        'Acceso gratuito durante 13 meses',
+        'Mayor continuidad anual',
+        'No requiere tarjeta ni medio de pago',
       ],
     },
   },
@@ -79,6 +97,11 @@ const PLAN_DEFINITIONS = {
         'Ideal para validar el servicio',
         'Renovación automática cada 3 meses',
       ],
+      freeFeatures: [
+        'Perfil visible para pacientes durante 3 meses',
+        'Ideal para empezar',
+        'No requiere tarjeta ni medio de pago',
+      ],
     },
     QUARTERLY: {
       id: 'QUARTERLY',
@@ -98,6 +121,11 @@ const PLAN_DEFINITIONS = {
         'Mejor costo por mes',
         'Renovación automática cada 7 meses',
       ],
+      freeFeatures: [
+        'Perfil visible para pacientes durante 7 meses',
+        'Mayor continuidad de publicaciones',
+        'No requiere tarjeta ni medio de pago',
+      ],
     },
     ANNUAL: {
       id: 'ANNUAL',
@@ -116,6 +144,11 @@ const PLAN_DEFINITIONS = {
         '1 mes adicional incluido',
         'Cobertura anual extendida',
         'Renovación automática cada 13 meses',
+      ],
+      freeFeatures: [
+        'Perfil visible para pacientes durante 13 meses',
+        'Cobertura anual extendida',
+        'No requiere tarjeta ni medio de pago',
       ],
     },
   },
@@ -140,28 +173,32 @@ const getConfiguredAmount = (plan) => {
 };
 
 const toPublicPlan = (plan) => {
+  const paymentsEnabled = areSubscriptionPaymentsEnabled();
   const { amount, envKey } = getConfiguredAmount(plan);
 
   return {
     id: plan.id,
     name: plan.name,
-    price: plan.referencePrice,
-    currency: plan.referenceCurrency,
-    referencePrice: plan.referencePrice,
-    referenceCurrency: plan.referenceCurrency,
+    price: paymentsEnabled ? plan.referencePrice : null,
+    currency: paymentsEnabled ? plan.referenceCurrency : null,
+    referencePrice: paymentsEnabled ? plan.referencePrice : null,
+    referenceCurrency: paymentsEnabled ? plan.referenceCurrency : null,
     duration: plan.duration,
     durationMonths: plan.durationMonths,
     discount: plan.discount || undefined,
-    isFreeMode: false,
-    billing: {
-      amount,
-      currency: CURRENCY_ID,
-      frequency: plan.durationMonths,
-      frequencyType: 'months',
-      configured: Boolean(amount),
-      envKey,
-    },
-    features: plan.features,
+    isFreeMode: !paymentsEnabled,
+    paymentsEnabled,
+    billing: paymentsEnabled
+      ? {
+          amount,
+          currency: CURRENCY_ID,
+          frequency: plan.durationMonths,
+          frequencyType: 'months',
+          configured: Boolean(amount),
+          envKey,
+        }
+      : null,
+    features: paymentsEnabled ? plan.features : plan.freeFeatures,
   };
 };
 
@@ -185,6 +222,13 @@ const requirePlanBilling = (accountType, planId) => {
     throw error;
   }
 
+  if (!areSubscriptionPaymentsEnabled()) {
+    const error = new Error('Los pagos de suscripciones están desactivados. Activá el plan gratuito.');
+    error.statusCode = 409;
+    error.code = 'SUBSCRIPTION_PAYMENTS_DISABLED';
+    throw error;
+  }
+
   if (!plan.billing.configured) {
     const error = new Error('El monto en ARS de este plan no está configurado.');
     error.statusCode = 500;
@@ -197,6 +241,7 @@ const requirePlanBilling = (accountType, planId) => {
 
 module.exports = {
   CURRENCY_ID,
+  areSubscriptionPaymentsEnabled,
   getPlan,
   getPlans,
   requirePlanBilling,

@@ -6,6 +6,7 @@ const {
   createPsychologistCheckout,
 } = require('../services/mercadoPagoSubscription.service');
 const { getPlans: getPsychologistPlans } = require('../services/subscriptionPlans.service');
+const { activateFreePsychologistPlan } = require('../services/freeSubscription.service');
 const { handlePrismaError } = require('../utils/accountEmail');
 const { validateAndNormalizePhoneNumber } = require('../utils/phone');
 
@@ -398,10 +399,22 @@ exports.getSubscription = async (req, res) => {
 
 // ─── CREATE SUBSCRIPTION ──────────────────────────────────────────────────────
 exports.createSubscription = async (req, res) => {
-  return res.status(410).json({
-    error: 'La activación directa de planes fue reemplazada por Mercado Pago.',
-    message: 'Usá el checkout para iniciar el pago recurrente del plan.',
-  });
+  try {
+    const result = await activateFreePsychologistPlan({
+      psychologistId: req.user.id,
+      planId: req.body.plan,
+    });
+
+    return res.status(201).json({
+      message: 'Suscripción gratuita activada exitosamente',
+      ...result,
+    });
+  } catch (error) {
+    console.error('Error en createSubscription psychologist:', error);
+    return res.status(error.statusCode || 500).json({
+      error: error.message || 'Error al crear suscripción',
+    });
+  }
 };
 
 // ─── CREATE MERCADO PAGO CHECKOUT ────────────────────────────────────────────

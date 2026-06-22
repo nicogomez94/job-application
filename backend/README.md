@@ -54,6 +54,7 @@ JWT_SECRET="tu_secreto_jwt_super_seguro"
 RESET_PASSWORD_SECRET="tu_secreto_para_reset_password"
 GOOGLE_CLIENT_ID="tu_google_client_id"
 GOOGLE_CLIENT_SECRET="tu_google_client_secret"
+SUBSCRIPTION_PAYMENTS_ENABLED=false
 MERCADO_PAGO_DEVELOPMENT_ACCESS_TOKEN="tu_access_token_de_desarrollo"
 MERCADO_PAGO_DEVELOPMENT_PUBLIC_KEY="tu_public_key_de_desarrollo"
 MERCADO_PAGO_PRODUCTION_CLIENT_ID="tu_client_id_de_produccion"

@@ -130,7 +130,15 @@ router.post(
   psychologistController.createCheckout
 );
 
-router.post('/me/subscription', authenticatePsychologist, psychologistController.createSubscription);
+router.post(
+  '/me/subscription',
+  authenticatePsychologist,
+  [
+    body('plan').isIn(['MONTHLY', 'QUARTERLY', 'ANNUAL']).withMessage('Plan inválido'),
+    validate,
+  ],
+  psychologistController.createSubscription
+);
 
 router.put('/me/subscription/:id/cancel', authenticatePsychologist, psychologistController.cancelSubscription);
 

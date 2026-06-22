@@ -16,6 +16,7 @@ const PLAN_META = {
     badge: 'Recomendado',
     icon: Star,
     subtitle: 'La mejor relación precio-valor',
+    freeSubtitle: 'Más tiempo para contratar sin interrupciones',
   },
   ANNUAL: {
     highlight: false,
@@ -31,6 +32,7 @@ export default function SelectPlan() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const checkoutStatus = searchParams.get('checkout');
+  const isFreeMode = plans.length > 0 && plans.every((plan) => plan.isFreeMode);
 
   const formatBilling = (billing) => {
     if (!billing?.amount) return 'Monto en ARS pendiente de configuración';
@@ -71,6 +73,20 @@ export default function SelectPlan() {
   }, [navigate, checkoutStatus]);
 
   const handleSelectPlan = async (plan) => {
+    if (plan.isFreeMode) {
+      setActivating(plan.id);
+      try {
+        await subscriptionService.create({ plan: plan.id });
+        toast.success(`¡Plan ${plan.name} activado exitosamente!`);
+        navigate('/company/dashboard', { replace: true });
+      } catch (error) {
+        toast.error(error.response?.data?.error || 'No se pudo activar el plan');
+      } finally {
+        setActivating(null);
+      }
+      return;
+    }
+
     if (!plan.billing?.configured) {
       toast.error('Este plan todavía no tiene monto ARS configurado para Mercado Pago.');
       return;
@@ -108,6 +124,11 @@ export default function SelectPlan() {
         {/* Header */}
         <div className="select-plan-header">
           <h1 className="select-plan-title">Seleccione el plan que mejor se adapte a su empresa</h1>
+          {isFreeMode && (
+            <p className="select-plan-subtitle">
+              Por ahora, todos los planes son gratuitos y no requieren tarjeta.
+            </p>
+          )}
         </div>
 
         {/* Plan cards */}
@@ -131,16 +152,24 @@ export default function SelectPlan() {
                     <Icon size={24} />
                   </div>
                   <h2 className="select-plan-name">{plan.name}</h2>
-                  <p className="select-plan-subtitle-card">{meta.subtitle}</p>
+                  <p className="select-plan-subtitle-card">
+                    {plan.isFreeMode ? (meta.freeSubtitle || meta.subtitle) : meta.subtitle}
+                  </p>
                 </div>
 
                 <div className="select-plan-price-section">
-                  <div className="select-plan-original-price">
-                    Valor de referencia: ${plan.price?.toLocaleString('es-AR')} {plan.currency}/{plan.duration}
-                  </div>
-                  <div className="select-plan-billing-price">
-                    Mercado Pago: {formatBilling(plan.billing)}
-                  </div>
+                  {plan.isFreeMode ? (
+                    <div className="select-plan-free-label">Gratis</div>
+                  ) : (
+                    <>
+                      <div className="select-plan-original-price">
+                        Valor de referencia: ${plan.price?.toLocaleString('es-AR')} {plan.currency}/{plan.duration}
+                      </div>
+                      <div className="select-plan-billing-price">
+                        Mercado Pago: {formatBilling(plan.billing)}
+                      </div>
+                    </>
+                  )}
                   {plan.discount && (
                     <div className="select-plan-discount">{plan.discount}</div>
                   )}
@@ -161,9 +190,11 @@ export default function SelectPlan() {
                   disabled={activating !== null}
                 >
                   {isActivating ? (
-                    <span className="select-plan-btn-loading">Redirigiendo...</span>
+                    <span className="select-plan-btn-loading">
+                      {plan.isFreeMode ? 'Activando...' : 'Redirigiendo...'}
+                    </span>
                   ) : (
-                    'Pagar con Mercado Pago'
+                    plan.isFreeMode ? 'Seleccionar plan' : 'Pagar con Mercado Pago'
                   )}
                 </button>
               </div>
@@ -173,12 +204,16 @@ export default function SelectPlan() {
 
         {/* Footer note */}
         <div className="select-plan-footer">
-          <p>
-            El plan se activa automáticamente cuando Mercado Pago confirma la suscripción.
-          </p>
-          <p className="select-plan-footer-mp">
-            Pagos seguros y recurrentes con <strong>Mercado Pago</strong>.
-          </p>
+          {isFreeMode ? (
+            <p>La activación es inmediata y no requiere ningún medio de pago.</p>
+          ) : (
+            <>
+              <p>El plan se activa automáticamente cuando Mercado Pago confirma la suscripción.</p>
+              <p className="select-plan-footer-mp">
+                Pagos seguros y recurrentes con <strong>Mercado Pago</strong>.
+              </p>
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -10,41 +10,44 @@ const FALLBACK_PLANS = [
     id: 'MONTHLY',
     name: 'Plan 3 meses',
     subtitle: 'Ingreso inicial para nuevas empresas',
-    price: 50,
-    currency: 'USD',
+    price: null,
+    currency: null,
     duration: '3 meses',
+    isFreeMode: true,
     features: [
       'Publicación y gestión de postulantes',
       'Ideal para validar el servicio',
-      'Renovación paga al finalizar',
+      'Acceso completo durante el plan',
     ],
   },
   {
     id: 'QUARTERLY',
     name: 'Plan 7 meses',
     subtitle: 'Más tiempo para contratar sin interrupciones',
-    price: 80,
-    currency: 'USD',
+    price: null,
+    currency: null,
     duration: '7 meses',
+    isFreeMode: true,
     highlight: true,
     badge: 'Recomendado',
     features: [
       'Mayor continuidad de publicaciones',
-      'Mejor costo por mes',
-      'Renovación paga al finalizar',
+      'Más tiempo para encontrar profesionales',
+      'Acceso completo durante el plan',
     ],
   },
   {
     id: 'ANNUAL',
     name: 'Plan 12 + 1',
     subtitle: 'Pagás 12 meses y usás 13 meses',
-    price: 120,
-    currency: 'USD',
+    price: null,
+    currency: null,
     duration: '13 meses',
+    isFreeMode: true,
     features: [
       '1 mes adicional incluido',
       'Cobertura anual extendida',
-      'Renovación paga al finalizar',
+      'Acceso completo durante el plan',
     ],
   },
 ];
@@ -60,9 +63,21 @@ const PLAN_META = {
   ANNUAL: { icon: Zap, subtitle: 'Pagás 12 meses y usás 13 meses' },
 };
 
+const FREE_PLAN_SUBTITLES = {
+  MONTHLY: 'Ideal para empezar',
+  QUARTERLY: 'Más tiempo para contratar sin interrupciones',
+  ANNUAL: 'Mayor continuidad para tu empresa',
+};
+
 const PLAN_TEXT_TO_EN = {
   Empresas: 'Companies',
   'Planes y Precios': 'Plans and Pricing',
+  Planes: 'Plans',
+  Gratis: 'Free',
+  'Todos los planes son gratuitos por el momento. Elegí el que mejor se adapte a tu empresa.':
+    'All plans are currently free. Choose the one that best fits your company.',
+  'Todos los planes están bonificados y no requieren tarjeta ni medio de pago.':
+    'All plans are free and require no card or payment method.',
   'Elegí el plan que mejor se adapte al ritmo de contratación de tu empresa.':
     'Choose the plan that best fits your company hiring pace.',
   'Condiciones comerciales': 'Commercial terms',
@@ -91,6 +106,13 @@ const PLAN_TEXT_TO_EN = {
   'Acceso a gestión de applicants': 'Access to applicant management',
   'Ideal para validar el servicio': 'Ideal for validating the service',
   'Renovación paga al finalizar': 'Paid renewal at the end',
+  'Acceso completo durante el plan': 'Full access during the plan',
+  'Más tiempo para encontrar profesionales': 'More time to find professionals',
+  'Mayor continuidad para tu empresa': 'Greater continuity for your company',
+  'Acceso gratuito durante 3 meses': 'Free access for 3 months',
+  'Acceso gratuito durante 7 meses': 'Free access for 7 months',
+  'Acceso gratuito durante 13 meses': 'Free access for 13 months',
+  'No requiere tarjeta ni medio de pago': 'No card or payment method required',
   'Mayor continuidad de publicaciones': 'Greater posting continuity',
   'Mejor costo por mes': 'Better monthly cost',
   '1 mes adicional incluido': '1 additional month included',
@@ -154,36 +176,54 @@ export default function PlanesYPrecios() {
         return {
           ...plan,
           icon: meta.icon || Shield,
-          subtitle: meta.subtitle || plan.subtitle || 'Plan para empresas',
+          subtitle: plan.isFreeMode
+            ? (FREE_PLAN_SUBTITLES[plan.id] || plan.subtitle || 'Plan para empresas')
+            : (meta.subtitle || plan.subtitle || 'Plan para empresas'),
           highlight: Boolean(meta.highlight || plan.highlight),
           badge: meta.badge || plan.badge,
         };
       }),
     [plans]
   );
+  const displayedPlans = loading ? FALLBACK_PLANS : normalizedPlans;
+  const isFreeMode = displayedPlans.length > 0 && displayedPlans.every((plan) => plan.isFreeMode);
 
   return (
     <section className="pricing-page">
       <div className="pricing-container">
         <header className="pricing-header">
           <p className="pricing-eyebrow">{normalizePlanText('Empresas', language, t)}</p>
-          <h1>{normalizePlanText('Planes y Precios', language, t)}</h1>
-          <p>{normalizePlanText('Elegí el plan que mejor se adapte al ritmo de contratación de tu empresa.', language, t)}</p>
+          <h1>{normalizePlanText(isFreeMode ? 'Planes' : 'Planes y Precios', language, t)}</h1>
+          <p>
+            {normalizePlanText(
+              isFreeMode
+                ? 'Todos los planes son gratuitos por el momento. Elegí el que mejor se adapte a tu empresa.'
+                : 'Elegí el plan que mejor se adapte al ritmo de contratación de tu empresa.',
+              language,
+              t,
+            )}
+          </p>
         </header>
 
         <section className="pricing-conditions">
           <h2>{normalizePlanText('Condiciones comerciales', language, t)}</h2>
-          <p>{normalizePlanText('Condiciones comerciales solo por tiempo limitado.', language, t)}</p>
-          <ul>
-            <li>{normalizePlanText('Inscripción inicial: elegí un plan para activar la cuenta de empresa.', language, t)}</li>
-            <li>{normalizePlanText('Periodo de renovación: todas las renovaciones son pagas en cualquiera de sus formas.', language, t)}</li>
-            <li>{normalizePlanText('Reconocimiento a la calidad: el empleador mejor calificado podrá acceder a beneficios comerciales al renovar.', language, t)}</li>
-            <li>{normalizePlanText('Programa de referidos: los beneficios por referidos se aplican sobre renovaciones o nuevos períodos pagos.', language, t)}</li>
-          </ul>
+          {isFreeMode ? (
+            <p>{normalizePlanText('Todos los planes están bonificados y no requieren tarjeta ni medio de pago.', language, t)}</p>
+          ) : (
+            <>
+              <p>{normalizePlanText('Condiciones comerciales solo por tiempo limitado.', language, t)}</p>
+              <ul>
+                <li>{normalizePlanText('Inscripción inicial: elegí un plan para activar la cuenta de empresa.', language, t)}</li>
+                <li>{normalizePlanText('Periodo de renovación: todas las renovaciones son pagas en cualquiera de sus formas.', language, t)}</li>
+                <li>{normalizePlanText('Reconocimiento a la calidad: el empleador mejor calificado podrá acceder a beneficios comerciales al renovar.', language, t)}</li>
+                <li>{normalizePlanText('Programa de referidos: los beneficios por referidos se aplican sobre renovaciones o nuevos períodos pagos.', language, t)}</li>
+              </ul>
+            </>
+          )}
         </section>
 
         <div className="pricing-grid">
-          {(loading ? FALLBACK_PLANS : normalizedPlans).map((plan) => {
+          {displayedPlans.map((plan) => {
             const Icon = plan.icon || Shield;
             return (
               <article
@@ -198,10 +238,14 @@ export default function PlanesYPrecios() {
                 </div>
                 <h2>{normalizePlanText(plan.name, language, t)}</h2>
                 <p className="pricing-subtitle">{normalizePlanText(plan.subtitle, language, t)}</p>
-                <p className="pricing-value">
-                  {formatPrice(plan.price, plan.currency, language)}
-                  <span> / {normalizePlanText(plan.duration || '3 meses', language, t)}</span>
-                </p>
+                {plan.isFreeMode ? (
+                  <p className="pricing-value">{normalizePlanText('Gratis', language, t)}</p>
+                ) : (
+                  <p className="pricing-value">
+                    {formatPrice(plan.price, plan.currency, language)}
+                    <span> / {normalizePlanText(plan.duration || '3 meses', language, t)}</span>
+                  </p>
+                )}
                 <ul className="pricing-features">
                   {(plan.features || []).map((feature) => (
                     <li key={feature}>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Check, Star, Shield, Clock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { psychologistService } from '../../services';
@@ -7,7 +7,13 @@ import '../auth/SelectPlan.css';
 
 const PLAN_META = {
   MONTHLY: { highlight: false, icon: Clock, subtitle: 'Ideal para empezar' },
-  QUARTERLY: { highlight: true, badge: 'Recomendado', icon: Star, subtitle: 'La mejor relación precio-valor' },
+  QUARTERLY: {
+    highlight: true,
+    badge: 'Recomendado',
+    icon: Star,
+    subtitle: 'La mejor relación precio-valor',
+    freeSubtitle: 'Más tiempo para recibir consultas',
+  },
   ANNUAL: { highlight: false, icon: Shield, subtitle: 'Para mayor continuidad' },
 };
 
@@ -23,8 +29,10 @@ export default function SelectPsychologistPlan() {
   const [pendingSubscription, setPendingSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activating, setActivating] = useState(null);
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const checkoutStatus = searchParams.get('checkout');
+  const isFreeMode = plans.length > 0 && plans.every((plan) => plan.isFreeMode);
 
   const formatBilling = (billing) => {
     if (!billing?.amount) return 'Monto en ARS pendiente de configuración';
@@ -66,6 +74,20 @@ export default function SelectPsychologistPlan() {
   }, [checkoutStatus]);
 
   const handleSelectPlan = async (plan) => {
+    if (plan.isFreeMode) {
+      setActivating(plan.id);
+      try {
+        await psychologistService.createSubscription({ plan: plan.id });
+        toast.success(`¡Plan ${plan.name} activado! Tu perfil ya es visible para los pacientes.`);
+        navigate('/psicologo/dashboard', { replace: true });
+      } catch (error) {
+        toast.error(error.response?.data?.error || 'No se pudo activar el plan');
+      } finally {
+        setActivating(null);
+      }
+      return;
+    }
+
     if (!plan.billing?.configured) {
       toast.error('Este plan todavía no tiene monto ARS configurado para Mercado Pago.');
       return;
@@ -88,12 +110,14 @@ export default function SelectPsychologistPlan() {
     }
   };
 
-  const getButtonLabel = ({ isActivating, isCurrentPlan, isPendingPlan, isLowerOrSamePlan }) => {
-    if (isActivating) return <span className="select-plan-btn-loading">Redirigiendo...</span>;
+  const getButtonLabel = ({ plan, isActivating, isCurrentPlan, isPendingPlan, isLowerOrSamePlan }) => {
+    if (isActivating) {
+      return <span className="select-plan-btn-loading">{plan.isFreeMode ? 'Activando...' : 'Redirigiendo...'}</span>;
+    }
     if (isCurrentPlan) return 'Plan actual';
-    if (isPendingPlan || pendingSubscription) return 'Pago pendiente';
+    if (!plan.isFreeMode && (isPendingPlan || pendingSubscription)) return 'Pago pendiente';
     if (isLowerOrSamePlan) return 'Solo plan superior';
-    return 'Pagar con Mercado Pago';
+    return plan.isFreeMode ? 'Seleccionar plan' : 'Pagar con Mercado Pago';
   };
 
   if (loading) {
@@ -110,6 +134,11 @@ export default function SelectPsychologistPlan() {
       <div className="select-plan-container">
         <div className="select-plan-header">
           <h1 className="select-plan-title">Elegí tu plan de psicólogo</h1>
+          {isFreeMode && (
+            <p className="select-plan-subtitle">
+              Por ahora, todos los planes son gratuitos y no requieren tarjeta.
+            </p>
+          )}
         </div>
 
         <div className="select-plan-grid">
@@ -121,7 +150,9 @@ export default function SelectPsychologistPlan() {
             const isPendingPlan = pendingSubscription?.plan === plan.id;
             const isLowerOrSamePlan = currentSubscription
               && PLAN_LEVELS[plan.id] <= PLAN_LEVELS[currentSubscription.plan];
-            const disabled = activating !== null || Boolean(isLowerOrSamePlan) || Boolean(pendingSubscription);
+            const disabled = activating !== null
+              || Boolean(isLowerOrSamePlan)
+              || (!plan.isFreeMode && Boolean(pendingSubscription));
 
             return (
               <div
@@ -136,16 +167,24 @@ export default function SelectPsychologistPlan() {
                     <Icon size={24} />
                   </div>
                   <h2 className="select-plan-name">{plan.name}</h2>
-                  <p className="select-plan-subtitle-card">{meta.subtitle}</p>
+                  <p className="select-plan-subtitle-card">
+                    {plan.isFreeMode ? (meta.freeSubtitle || meta.subtitle) : meta.subtitle}
+                  </p>
                 </div>
 
                 <div className="select-plan-price-section">
-                  <div className="select-plan-original-price">
-                    Valor de referencia: ${plan.price?.toLocaleString('es-AR')} {plan.currency}/{plan.duration}
-                  </div>
-                  <div className="select-plan-billing-price">
-                    Mercado Pago: {formatBilling(plan.billing)}
-                  </div>
+                  {plan.isFreeMode ? (
+                    <div className="select-plan-free-label">Gratis</div>
+                  ) : (
+                    <>
+                      <div className="select-plan-original-price">
+                        Valor de referencia: ${plan.price?.toLocaleString('es-AR')} {plan.currency}/{plan.duration}
+                      </div>
+                      <div className="select-plan-billing-price">
+                        Mercado Pago: {formatBilling(plan.billing)}
+                      </div>
+                    </>
+                  )}
                   {plan.discount && (
                     <div className="select-plan-discount">{plan.discount}</div>
                   )}
@@ -166,6 +205,7 @@ export default function SelectPsychologistPlan() {
                   disabled={disabled}
                 >
                   {getButtonLabel({
+                    plan,
                     isActivating,
                     isCurrentPlan,
                     isPendingPlan,
@@ -178,12 +218,16 @@ export default function SelectPsychologistPlan() {
         </div>
 
         <div className="select-plan-footer">
-          <p>
-            El perfil se activa automáticamente cuando Mercado Pago confirma la suscripción.
-          </p>
-          <p className="select-plan-footer-mp">
-            Pagos seguros y recurrentes con <strong>Mercado Pago</strong>.
-          </p>
+          {isFreeMode ? (
+            <p>La activación es inmediata y no requiere ningún medio de pago.</p>
+          ) : (
+            <>
+              <p>El perfil se activa automáticamente cuando Mercado Pago confirma la suscripción.</p>
+              <p className="select-plan-footer-mp">
+                Pagos seguros y recurrentes con <strong>Mercado Pago</strong>.
+              </p>
+            </>
+          )}
         </div>
       </div>
     </div>

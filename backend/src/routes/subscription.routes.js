@@ -18,7 +18,10 @@ router.post('/checkout', [
   validate,
 ], subscriptionController.createCheckout);
 
-router.post('/', subscriptionController.createSubscription);
+router.post('/', [
+  body('plan').isIn(['MONTHLY', 'QUARTERLY', 'ANNUAL']).withMessage('Plan inválido'),
+  validate,
+], subscriptionController.createSubscription);
 
 router.get('/active', subscriptionController.getActiveSubscription);
 router.get('/history', subscriptionController.getCompanySubscriptions);
