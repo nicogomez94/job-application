@@ -117,6 +117,11 @@ export default function PatientDashboard() {
   };
 
   const handleProfileSubmit = async (data) => {
+    const confirmed = window.confirm(
+      'Antes de guardar, verificá que los datos modificados sean correctos. ¿Querés actualizar tu perfil?'
+    );
+    if (!confirmed) return;
+
     setSavingProfile(true);
     try {
       const payload = {
@@ -329,13 +334,14 @@ export default function PatientDashboard() {
                   <select
                     id="patient-edit-gender"
                     className="psico-form-select"
-                    {...register('gender')}
+                    {...register('gender', { required: 'El género es obligatorio' })}
                   >
                     <option value="">Seleccioná una opción</option>
                     <option value="Hombre">Hombre</option>
                     <option value="Mujer">Mujer</option>
                     <option value="Otro">Otro</option>
                   </select>
+                  {errors.gender && <span className="psico-login-error">{errors.gender.message}</span>}
                 </div>
 
                 <div className="psico-login-field">

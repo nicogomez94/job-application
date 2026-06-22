@@ -126,6 +126,10 @@ exports.updateProfile = async (req, res) => {
       if (isBlank(healthMinistryReg)) return res.status(400).json({ error: 'El Nro. Ministerio de Salud es obligatorio.' });
       if (isBlank(virtualConsultingAuthorization)) return res.status(400).json({ error: 'La Licencia Sanitaria Federal es obligatoria.' });
     }
+    if (current.registrationType === 'INTERNATIONAL') {
+      if (isBlank(licenseEntity)) return res.status(400).json({ error: 'La entidad que expide la licencia es obligatoria.' });
+      if (isBlank(licenseCountry)) return res.status(400).json({ error: 'El país de emisión de la licencia es obligatorio.' });
+    }
 
     const updated = await prisma.psychologist.update({
       where: { id: req.user.id },

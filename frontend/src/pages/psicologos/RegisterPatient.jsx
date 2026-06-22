@@ -57,6 +57,7 @@ export default function RegisterPatient() {
           <User size={36} strokeWidth={1.5} />
         </div>
         <h1>Crear cuenta de paciente</h1>
+        <p className="psico-free-account-note">Cuenta gratis</p>
         <p className="psico-login-subtitle">
           Registrate para contactar psicólogos en línea
         </p>

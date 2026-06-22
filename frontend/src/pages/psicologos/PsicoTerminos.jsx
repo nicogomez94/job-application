@@ -89,7 +89,7 @@ export default function PsicoTerminos() {
             <p>{isEn ? 'Unless expressly stated otherwise on the Platform:' : 'Salvo que se indique expresamente lo contrario en la Plataforma:'}</p>
             <ul className="terms-list">
               <li>{isEn ? 'All fees, rates, and payment conditions are determined directly between the user and the professional.' : 'Todos los honorarios, tarifas y condiciones de pago son determinados directamente entre el usuario y el profesional.'}</li>
-              <li>{isEn ? 'The Platform does not process, receive, hold, or administer payments.' : 'La Plataforma no procesa, recibe, retiene ni administra pagos.'}</li>
+              <li>{isEn ? 'The Platform only accepts payment from psychologists who wish to publish their professional profile. It does not receive, hold, or administer payments of any other kind.' : 'La plataforma solo acepta el pago del psicólogo interesado en publicar su perfil profesional. No recibe, retiene ni administra otros pagos de ninguna índole.'}</li>
               <li>{isEn ? 'The Platform is not responsible for refunds, cancellations, billing disputes, or financial claims.' : 'La Plataforma no es responsable de reembolsos, cancelaciones, disputas de facturación o reclamos financieros.'}</li>
               <li>{isEn ? 'Any financial transaction occurs exclusively between the user and the professional.' : 'Toda transacción económica ocurre exclusivamente entre el usuario y el profesional.'}</li>
             </ul>

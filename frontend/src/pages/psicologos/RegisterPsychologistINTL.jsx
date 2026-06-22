@@ -175,8 +175,10 @@ export default function RegisterPsychologistINTL() {
       if (!trimmed(form.universityDegree)) errors.universityDegree = 'Campo requerido';
       if (!trimmed(form.licenseNumber)) errors.licenseNumber = 'Campo requerido';
       else if (!TEXT_WITH_NUMBER_REGEX.test(trimmed(form.licenseNumber))) errors.licenseNumber = 'La licencia debe incluir números';
-      if (trimmed(form.licenseEntity) && !textLengthBetween(form.licenseEntity, 3, 120)) errors.licenseEntity = 'Entidad inválida';
-      if (trimmed(form.licenseCountry) && !NAME_REGEX.test(trimmed(form.licenseCountry))) errors.licenseCountry = 'País inválido';
+      if (!trimmed(form.licenseEntity)) errors.licenseEntity = 'Campo requerido';
+      else if (!textLengthBetween(form.licenseEntity, 3, 120)) errors.licenseEntity = 'Entidad inválida';
+      if (!trimmed(form.licenseCountry)) errors.licenseCountry = 'Campo requerido';
+      else if (!NAME_REGEX.test(trimmed(form.licenseCountry))) errors.licenseCountry = 'País inválido';
       if (!trimmed(form.degreeInstitution)) errors.degreeInstitution = 'Campo requerido';
       else if (!textLengthBetween(form.degreeInstitution, 3, 120)) errors.degreeInstitution = 'Institución inválida';
       if (!trimmed(form.sessionCost)) errors.sessionCost = 'Campo requerido';

@@ -56,7 +56,10 @@ exports.register = async (req, res) => {
     if (!acceptTerms || !acceptPrivacy || !acceptAgreement) {
       return res.status(400).json({ error: 'Debés aceptar los Términos y Condiciones, la Política de Privacidad y el Acuerdo de Aceptación.' });
     }
-    if (gender && !VALID_GENDERS.has(gender)) {
+    if (!gender) {
+      return res.status(400).json({ error: 'El género es obligatorio.' });
+    }
+    if (!VALID_GENDERS.has(gender)) {
       return res.status(400).json({ error: 'El género seleccionado es inválido.' });
     }
 
@@ -84,7 +87,7 @@ exports.register = async (req, res) => {
         consentMetadata: buildConsentMetadata({ role: 'patient', req }),
         firstName,
         lastName,
-        gender: gender || null,
+        gender,
         phone: normalizedPhone.value,
       },
       select: PATIENT_SELECT,
@@ -120,7 +123,10 @@ exports.updateProfile = async (req, res) => {
       return res.status(400).json({ error: 'El formato del email es inválido.' });
     }
 
-    if (gender && !VALID_GENDERS.has(gender)) {
+    if (!gender) {
+      return res.status(400).json({ error: 'El género es obligatorio.' });
+    }
+    if (!VALID_GENDERS.has(gender)) {
       return res.status(400).json({ error: 'El género seleccionado es inválido.' });
     }
 
@@ -141,7 +147,7 @@ exports.updateProfile = async (req, res) => {
       email: normalizedEmail,
       firstName,
       lastName,
-      gender: gender || null,
+      gender,
       phone: normalizedPhone.value,
     };
 

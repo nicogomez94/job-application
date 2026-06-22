@@ -403,7 +403,7 @@ Promoción: 2 sesiones al costo de una"
           onClick={handleDeleteAccount}
           disabled={deletingAccount}
         >
-          {deletingAccount ? 'Borrando perfil...' : 'Borrar perfil'}
+          {deletingAccount ? 'Eliminando registro...' : 'Eliminar registro'}
         </button>
       </div>
     </div>

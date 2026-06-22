@@ -58,6 +58,32 @@
   line-height: 1.6;
 }
 
+.select-plan-launch-label {
+  margin: 0 0 0.45rem;
+  color: #9a5d18;
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.select-plan-intro-list {
+  max-width: 570px;
+  margin: 0.9rem auto 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.32rem;
+  color: #5e4d38;
+  font-weight: 600;
+}
+
+.select-plan-intro-list li::before {
+  content: '•';
+  margin-right: 0.45rem;
+  color: #16803f;
+}
+
 /* Grid */
 .select-plan-grid {
   display: grid;
@@ -166,6 +192,18 @@
   margin-bottom: 1.5rem;
   padding-bottom: 1.5rem;
   border-bottom: 1px solid #f3ebde;
+}
+
+.select-plan-limited-offer {
+  width: fit-content;
+  margin: 0 0 0.75rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  background: #fff4d6;
+  color: #8a4b08;
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
 }
 
 .select-plan-original-price {

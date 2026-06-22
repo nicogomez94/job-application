@@ -160,6 +160,11 @@ export default function UserProfile() {
       return;
     }
 
+    const confirmed = window.confirm(
+      'Antes de guardar, verificá que los cambios de tu perfil profesional sean correctos. ¿Querés continuar?'
+    );
+    if (!confirmed) return;
+
     setPhoneError('');
     setSaving(true);
     try {

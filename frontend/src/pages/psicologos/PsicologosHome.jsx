@@ -99,7 +99,7 @@ const FALLBACK_PLANS = [
   },
   {
     id: 'QUARTERLY',
-    name: 'Plan 7 meses',
+    name: 'Plan 6 + 1 meses',
     subtitle: 'Más tiempo para recibir consultas',
     price: null,
     currency: null,
@@ -174,9 +174,12 @@ export default function PsicologosHome() {
               Buscar psicólogo
             </Link>
             {!isAuthenticated ? (
-              <Link to="/psicologos/registro-paciente" className="psico-home-hero-btn psico-home-hero-btn--solid">
-                Soy paciente →
-              </Link>
+              <div className="psico-home-patient-cta">
+                <Link to="/psicologos/registro-paciente" className="psico-home-hero-btn psico-home-hero-btn--solid">
+                  Soy paciente →
+                </Link>
+                <span>Inscripción gratis</span>
+              </div>
             ) : isPatient ? (
               <Link to="/psicologos/mi-cuenta" className="psico-home-hero-btn psico-home-hero-btn--solid">
                 Mis solicitudes →

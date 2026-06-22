@@ -24,7 +24,7 @@ const STATUS_LABELS = {
 
 const PLAN_LABELS = {
   MONTHLY: 'Plan 3 meses',
-  QUARTERLY: 'Plan 7 meses',
+  QUARTERLY: 'Plan 6 + 1 meses',
   ANNUAL: 'Plan 12 + 1',
   TRIAL: 'Prueba 2 meses',
 };

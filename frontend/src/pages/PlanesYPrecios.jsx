@@ -195,13 +195,9 @@ export default function PlanesYPrecios() {
           <p className="pricing-eyebrow">{normalizePlanText('Empresas', language, t)}</p>
           <h1>{normalizePlanText(isFreeMode ? 'Planes' : 'Planes y Precios', language, t)}</h1>
           <p>
-            {normalizePlanText(
-              isFreeMode
-                ? 'Todos los planes son gratuitos por el momento. Elegí el que mejor se adapte a tu empresa.'
-                : 'Elegí el plan que mejor se adapte al ritmo de contratación de tu empresa.',
-              language,
-              t,
-            )}
+            {isFreeMode
+              ? normalizePlanText('Todos los planes son gratuitos por el momento. Elegí el que mejor se adapte a tu empresa.', language, t)
+              : null}
           </p>
         </header>
 
@@ -238,8 +234,13 @@ export default function PlanesYPrecios() {
                 </div>
                 <h2>{normalizePlanText(plan.name, language, t)}</h2>
                 <p className="pricing-subtitle">{normalizePlanText(plan.subtitle, language, t)}</p>
+                <p className="pricing-limited-offer">
+                  {normalizePlanText('Solo por tiempo limitado.', language, t)}
+                </p>
                 {plan.isFreeMode ? (
-                  <p className="pricing-value">{normalizePlanText('Gratis', language, t)}</p>
+                  <p className={`pricing-value ${plan.id === 'MONTHLY' ? 'pricing-value-limited' : ''}`}>
+                    {normalizePlanText(plan.id === 'MONTHLY' ? 'Gratis por tiempo limitado!' : 'Gratis', language, t)}
+                  </p>
                 ) : (
                   <p className="pricing-value">
                     {formatPrice(plan.price, plan.currency, language)}

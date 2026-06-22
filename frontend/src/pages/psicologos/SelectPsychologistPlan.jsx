@@ -34,14 +34,14 @@ export default function SelectPsychologistPlan() {
   const checkoutStatus = searchParams.get('checkout');
   const isFreeMode = plans.length > 0 && plans.every((plan) => plan.isFreeMode);
 
-  const formatBilling = (billing) => {
-    if (!billing?.amount) return 'Monto en ARS pendiente de configuración';
+  const formatBilling = (plan) => {
+    if (!plan.billing?.amount) return 'Monto en ARS pendiente de configuración';
     const amount = new Intl.NumberFormat('es-AR', {
       style: 'currency',
-      currency: billing.currency || 'ARS',
+      currency: plan.billing.currency || 'ARS',
       maximumFractionDigits: 0,
-    }).format(Number(billing.amount));
-    return `${amount} cada ${billing.frequency} meses`;
+    }).format(Number(plan.billing.amount));
+    return `Valor de la inscripción por ${plan.duration}: ${amount}`;
   };
 
   useEffect(() => {
@@ -133,7 +133,13 @@ export default function SelectPsychologistPlan() {
     <div className="select-plan-page">
       <div className="select-plan-container">
         <div className="select-plan-header">
-          <h1 className="select-plan-title">Elegí tu plan de psicólogo</h1>
+          <p className="select-plan-launch-label">Planes Lanzamiento</p>
+          <h1 className="select-plan-title">Elegí tu plan de negocio</h1>
+          <ul className="select-plan-intro-list">
+            <li>El monto de suscripción es el único pago requerido.</li>
+            <li>Sin comisión de ningún tipo.</li>
+            <li>Sin límite de consultas.</li>
+          </ul>
           {isFreeMode && (
             <p className="select-plan-subtitle">
               Por ahora, todos los planes son gratuitos y no requieren tarjeta.
@@ -173,15 +179,13 @@ export default function SelectPsychologistPlan() {
                 </div>
 
                 <div className="select-plan-price-section">
+                  <div className="select-plan-limited-offer">{plan.offerLabel || 'Por tiempo limitado'}</div>
                   {plan.isFreeMode ? (
                     <div className="select-plan-free-label">Gratis</div>
                   ) : (
                     <>
-                      <div className="select-plan-original-price">
-                        Valor de referencia: ${plan.price?.toLocaleString('es-AR')} {plan.currency}/{plan.duration}
-                      </div>
                       <div className="select-plan-billing-price">
-                        Mercado Pago: {formatBilling(plan.billing)}
+                        {formatBilling(plan)}
                       </div>
                     </>
                   )}

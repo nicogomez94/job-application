@@ -94,6 +94,22 @@
   border-color: #8d1b55;
 }
 
+.psico-home-patient-cta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.psico-home-patient-cta > span {
+  padding: 0.34rem 0.65rem;
+  border-radius: 999px;
+  background: #ecfdf3;
+  color: #166534;
+  font-size: 0.82rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
 .psico-home-hero-notice {
   color: #fff;
   font-size: clamp(0.82rem, 1.05vw, 1.05rem);
@@ -524,6 +540,11 @@
   .psico-home-hero-btn {
     min-width: min(275px, 86vw);
     font-size: 1.45rem;
+  }
+
+  .psico-home-patient-cta {
+    flex-direction: column;
+    gap: 0.45rem;
   }
 
   .psico-home-hero-notice {

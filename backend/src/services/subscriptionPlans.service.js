@@ -1,7 +1,18 @@
 const CURRENCY_ID = process.env.MERCADO_PAGO_CURRENCY_ID || 'ARS';
 
-const areSubscriptionPaymentsEnabled = () =>
-  /^(true|1|yes|on)$/i.test(String(process.env.SUBSCRIPTION_PAYMENTS_ENABLED || '').trim());
+const isEnabled = (value) => /^(true|1|yes|on)$/i.test(String(value || '').trim());
+
+const areSubscriptionPaymentsEnabled = (accountType) => {
+  const accountKey = accountType === 'psychologist'
+    ? 'PSYCHOLOGIST_SUBSCRIPTION_PAYMENTS_ENABLED'
+    : accountType === 'company'
+      ? 'COMPANY_SUBSCRIPTION_PAYMENTS_ENABLED'
+      : null;
+  const accountValue = accountKey ? process.env[accountKey] : undefined;
+  return accountValue === undefined
+    ? isEnabled(process.env.SUBSCRIPTION_PAYMENTS_ENABLED)
+    : isEnabled(accountValue);
+};
 
 const PLAN_DEFINITIONS = {
   company: {
@@ -67,6 +78,7 @@ const PLAN_DEFINITIONS = {
         'MERCADO_PAGO_COMPANY_PLAN_13_MONTHS_MONTHLY_ARS',
       ],
       features: [
+        'Solo por tiempo limitado',
         'Pagás 12 meses y usás 13',
         'Renovación automática cada 13 meses',
         'Mayor continuidad anual',
@@ -82,10 +94,12 @@ const PLAN_DEFINITIONS = {
     MONTHLY: {
       id: 'MONTHLY',
       name: 'Plan 3 meses',
-      referencePrice: 30,
-      referenceCurrency: 'USD',
+      referencePrice: 40000,
+      referenceCurrency: 'ARS',
       duration: '3 meses',
       durationMonths: 3,
+      defaultBillingAmount: 40000,
+      offerLabel: 'Por tiempo limitado',
       discount: null,
       envKeys: [
         'MERCADO_PAGO_PSYCHOLOGIST_PLAN_3_MONTHS_ARS',
@@ -94,8 +108,8 @@ const PLAN_DEFINITIONS = {
       ],
       features: [
         'Perfil visible para pacientes',
-        'Ideal para validar el servicio',
-        'Renovación automática cada 3 meses',
+        'Sin comisión de ningún tipo',
+        'Sin límite de consultas',
       ],
       freeFeatures: [
         'Perfil visible para pacientes durante 3 meses',
@@ -105,11 +119,13 @@ const PLAN_DEFINITIONS = {
     },
     QUARTERLY: {
       id: 'QUARTERLY',
-      name: 'Plan 7 meses',
-      referencePrice: 50,
-      referenceCurrency: 'USD',
-      duration: '7 meses',
+      name: 'Plan 6 + 1 meses',
+      referencePrice: 75000,
+      referenceCurrency: 'ARS',
+      duration: '6 + 1 meses',
       durationMonths: 7,
+      defaultBillingAmount: 75000,
+      offerLabel: 'Por tiempo limitado',
       discount: 'Recomendado',
       envKeys: [
         'MERCADO_PAGO_PSYCHOLOGIST_PLAN_7_MONTHS_ARS',
@@ -118,8 +134,8 @@ const PLAN_DEFINITIONS = {
       ],
       features: [
         'Mayor continuidad de publicaciones',
-        'Mejor costo por mes',
-        'Renovación automática cada 7 meses',
+        'Sin comisión de ningún tipo',
+        'Sin límite de consultas',
       ],
       freeFeatures: [
         'Perfil visible para pacientes durante 7 meses',
@@ -130,10 +146,12 @@ const PLAN_DEFINITIONS = {
     ANNUAL: {
       id: 'ANNUAL',
       name: 'Plan 12 + 1',
-      referencePrice: 80,
-      referenceCurrency: 'USD',
-      duration: '13 meses',
+      referencePrice: 135000,
+      referenceCurrency: 'ARS',
+      duration: '12 + 1 meses',
       durationMonths: 13,
+      defaultBillingAmount: 135000,
+      offerLabel: 'Por tiempo limitado',
       discount: '1 mes adicional incluido',
       envKeys: [
         'MERCADO_PAGO_PSYCHOLOGIST_PLAN_13_MONTHS_ARS',
@@ -142,8 +160,8 @@ const PLAN_DEFINITIONS = {
       ],
       features: [
         '1 mes adicional incluido',
-        'Cobertura anual extendida',
-        'Renovación automática cada 13 meses',
+        'Sin comisión de ningún tipo',
+        'Sin límite de consultas',
       ],
       freeFeatures: [
         'Perfil visible para pacientes durante 13 meses',
@@ -162,6 +180,10 @@ const parseAmount = (rawValue) => {
 };
 
 const getConfiguredAmount = (plan) => {
+  if (plan.defaultBillingAmount) {
+    return { amount: parseAmount(plan.defaultBillingAmount), envKey: 'plan-default' };
+  }
+
   for (const envKey of plan.envKeys) {
     const amount = parseAmount(process.env[envKey]);
     if (amount) {
@@ -172,8 +194,8 @@ const getConfiguredAmount = (plan) => {
   return { amount: null, envKey: null };
 };
 
-const toPublicPlan = (plan) => {
-  const paymentsEnabled = areSubscriptionPaymentsEnabled();
+const toPublicPlan = (plan, accountType) => {
+  const paymentsEnabled = areSubscriptionPaymentsEnabled(accountType);
   const { amount, envKey } = getConfiguredAmount(plan);
 
   return {
@@ -186,6 +208,7 @@ const toPublicPlan = (plan) => {
     duration: plan.duration,
     durationMonths: plan.durationMonths,
     discount: plan.discount || undefined,
+    offerLabel: plan.offerLabel || undefined,
     isFreeMode: !paymentsEnabled,
     paymentsEnabled,
     billing: paymentsEnabled
@@ -205,13 +228,13 @@ const toPublicPlan = (plan) => {
 const getPlans = (accountType) => {
   const definitions = PLAN_DEFINITIONS[accountType];
   if (!definitions) return [];
-  return Object.values(definitions).map(toPublicPlan);
+  return Object.values(definitions).map((plan) => toPublicPlan(plan, accountType));
 };
 
 const getPlan = (accountType, planId) => {
   const plan = PLAN_DEFINITIONS[accountType]?.[planId];
   if (!plan) return null;
-  return toPublicPlan(plan);
+  return toPublicPlan(plan, accountType);
 };
 
 const requirePlanBilling = (accountType, planId) => {

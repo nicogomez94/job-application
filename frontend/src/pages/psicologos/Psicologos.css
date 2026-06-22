@@ -3057,17 +3057,28 @@
 
 .psico-delete-profile-btn {
   margin-top: 1rem;
-  border: none;
-  background: transparent;
-  color: #b91c1c;
+  border: 1px solid #991b1b;
+  border-radius: 0.65rem;
+  background: #b91c1c;
+  color: #fff;
   font-weight: 700;
   cursor: pointer;
-  padding: 0.5rem 0;
+  padding: 0.7rem 1rem;
 }
 
 .psico-delete-profile-btn:hover:not(:disabled) {
-  color: #991b1b;
-  text-decoration: underline;
+  background: #991b1b;
+}
+
+.psico-free-account-note {
+  width: fit-content;
+  margin: -0.25rem auto 0.75rem;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  background: #ecfdf3;
+  color: #166534;
+  font-size: 0.86rem;
+  font-weight: 800;
 }
 
 .psico-delete-profile-btn:disabled {

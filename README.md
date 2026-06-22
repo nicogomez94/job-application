@@ -480,15 +480,16 @@ VITE_GOOGLE_CLIENT_ID
 El sistema de suscripciones está preparado para activar pagos reales con Mercado Pago con cambios mínimos:
 
 #### Estado actual (modo gratuito / lanzamiento)
-- `SUBSCRIPTION_PAYMENTS_ENABLED=false` mantiene gratuitos los planes de empresas y psicólogos
+- `SUBSCRIPTION_PAYMENTS_ENABLED=false` define el modo general.
+- `COMPANY_SUBSCRIPTION_PAYMENTS_ENABLED` y `PSYCHOLOGIST_SUBSCRIPTION_PAYMENTS_ENABLED` permiten configurar cada sección por separado. En lanzamiento, Empresas permanece gratis y Psicología usa sus valores de inscripción.
 - Al registrarse o loguearse como empresa, se obliga a seleccionar un plan en `/register/company/plan`
 - Al hacer login, si la empresa no tiene suscripción activa, se redirige automáticamente a esa pantalla
 - El plan se activa con `amount: 0`, `paymentMethod: 'free'`, `paymentStatus: 'free'`
 - No se requiere tarjeta de crédito
 
 #### Para activar pagos con Mercado Pago
-1. Configurar las credenciales y los seis montos `MERCADO_PAGO_*_PLAN_*_ARS`.
-2. Cambiar `SUBSCRIPTION_PAYMENTS_ENABLED=true` en el backend.
+1. Configurar las credenciales y los montos `MERCADO_PAGO_*_PLAN_*_ARS` que no estén definidos en el catálogo.
+2. Activar `SUBSCRIPTION_PAYMENTS_ENABLED=true` globalmente o la variable específica de la sección.
 3. Reiniciar o redesplegar el servicio. El frontend volverá a mostrar precios y checkout automáticamente.
 
 El modelo de base de datos (`Subscription`) ya tiene los campos `paymentId`, `paymentStatus` y `paymentMethod` listos para almacenar la información del pago.
