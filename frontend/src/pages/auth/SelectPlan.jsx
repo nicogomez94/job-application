@@ -126,7 +126,7 @@ export default function SelectPlan() {
           <h1 className="select-plan-title">Seleccione el plan que mejor se adapte a su empresa</h1>
           {isFreeMode && (
             <p className="select-plan-subtitle">
-              Por ahora, todos los planes son gratuitos y no requieren tarjeta.
+              Planes 2 y 3 bonificados
             </p>
           )}
         </div>
@@ -159,7 +159,14 @@ export default function SelectPlan() {
 
                 <div className="select-plan-price-section">
                   {plan.isFreeMode ? (
-                    <div className="select-plan-free-label">Gratis</div>
+                    plan.id === 'MONTHLY' ? (
+                      <div className="select-plan-free-block">
+                        <div className="select-plan-free-label">Gratis</div>
+                        <p className="select-plan-free-note">
+                          Pasando los 3 meses, la plataforma le pedirá un plan de abono para continuar.
+                        </p>
+                      </div>
+                    ) : null
                   ) : (
                     <>
                       <div className="select-plan-original-price">

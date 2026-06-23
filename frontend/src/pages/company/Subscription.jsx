@@ -172,7 +172,14 @@ export default function CompanySubscription() {
             <div key={plan.id} style={{ border: '1px solid #e7dcc6', borderRadius: '0.7rem', padding: '1rem' }}>
               <h3 style={{ marginBottom: '0.4rem' }}>{plan.name}</h3>
               {plan.isFreeMode ? (
-                <p style={{ color: '#16803f', fontWeight: 800, marginBottom: '0.8rem' }}>Gratis</p>
+                plan.id === 'MONTHLY' ? (
+                  <div style={{ marginBottom: '0.8rem' }}>
+                    <p style={{ width: 'fit-content', background: '#16803f', color: '#fff', borderRadius: '999px', padding: '0.32rem 0.72rem', fontWeight: 900, textTransform: 'uppercase', marginBottom: '0.55rem' }}>Gratis</p>
+                    <p style={{ color: '#5e4d38', fontSize: '0.84rem', lineHeight: 1.45 }}>
+                      Pasando los 3 meses, la plataforma le pedirá un plan de abono para continuar.
+                    </p>
+                  </div>
+                ) : null
               ) : (
                 <>
                   <p style={{ color: '#5e4d38', marginBottom: '0.4rem' }}>

@@ -148,7 +148,7 @@ export default function Home() {
       id: 'MONTHLY',
       name: 'Plan 3 meses',
       subtitle: 'Ideal para empezar',
-      paidSubtitle: 'Solo por tiempo limitado',
+      paidSubtitle: 'Ingreso inicial para nuevas empresas',
       period: '/ 3 meses',
       feature: 'Acceso completo durante el plan',
     },
@@ -176,7 +176,7 @@ export default function Home() {
     const isFreeMode = apiPlan?.isFreeMode ?? true;
     const formattedPrice = !isFreeMode && apiPlan?.price != null
       ? `${apiPlan.currency || ''} ${Number(apiPlan.price).toLocaleString('es-AR')}`.trim()
-      : 'Gratis';
+      : (meta.id === 'MONTHLY' ? 'Gratis' : null);
 
     return {
       ...meta,
@@ -428,7 +428,7 @@ export default function Home() {
             <h2>{t(arePlansFree ? 'Planes disponibles' : 'Planes y precios en versión resumida')}</h2>
             <p>
               {arePlansFree
-                ? t('Todos los planes son gratuitos por el momento y no requieren tarjeta.')
+                ? t('Planes 2 y 3 bonificados')
                 : (
                   <>
                     {t('*Planes recurrentes por período completo, con cobro seguro por Mercado Pago.')}
@@ -448,10 +448,19 @@ export default function Home() {
                 {plan.badge ? <span className="home-pricing-preview-badge">{t(plan.badge)}</span> : null}
                 <h3>{t(plan.name)}</h3>
                 <p className="home-pricing-preview-subtitle">{t(plan.subtitle)}</p>
-                <p className="home-pricing-preview-price">
-                  {plan.price}
-                  <span>{t(plan.period)}</span>
-                </p>
+                {plan.price ? (
+                  <div className="home-pricing-preview-free-block">
+                    <p className={plan.isFreeMode ? 'home-pricing-preview-free-label' : 'home-pricing-preview-price'}>
+                      {t(plan.price)}
+                      {!plan.isFreeMode ? <span>{t(plan.period)}</span> : null}
+                    </p>
+                    {plan.isFreeMode && plan.id === 'MONTHLY' ? (
+                      <p className="home-pricing-preview-free-note">
+                        {t('Pasando los 3 meses, la plataforma le pedirá un plan de abono para continuar.')}
+                      </p>
+                    ) : null}
+                  </div>
+                ) : null}
                 <p className="home-pricing-preview-feature">{t(plan.feature)}</p>
               </article>
             ))}

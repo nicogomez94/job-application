@@ -142,7 +142,7 @@ export default function SelectPsychologistPlan() {
           </ul>
           {isFreeMode && (
             <p className="select-plan-subtitle">
-              Por ahora, todos los planes son gratuitos y no requieren tarjeta.
+              Planes 2 y 3 bonificados
             </p>
           )}
         </div>
@@ -179,9 +179,15 @@ export default function SelectPsychologistPlan() {
                 </div>
 
                 <div className="select-plan-price-section">
-                  <div className="select-plan-limited-offer">{plan.offerLabel || 'Por tiempo limitado'}</div>
                   {plan.isFreeMode ? (
-                    <div className="select-plan-free-label">Gratis</div>
+                    plan.id === 'MONTHLY' ? (
+                      <div className="select-plan-free-block">
+                        <div className="select-plan-free-label">Gratis</div>
+                        <p className="select-plan-free-note">
+                          Pasando los 3 meses, la plataforma le pedirá un plan de abono para continuar.
+                        </p>
+                      </div>
+                    ) : null
                   ) : (
                     <>
                       <div className="select-plan-billing-price">

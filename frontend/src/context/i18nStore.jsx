@@ -26,6 +26,9 @@ const ES_TO_EN = {
   'Planes y Precios': 'Plans and Pricing',
   'Todos los planes son gratuitos por el momento y no requieren tarjeta.':
     'All plans are currently free and require no card.',
+  'Planes 2 y 3 bonificados': 'Plans 2 and 3 are covered',
+  'Pasando los 3 meses, la plataforma le pedirá un plan de abono para continuar.':
+    'After 3 months, the platform will require a paid plan to continue.',
   'Ver planes': 'View plans',
   'Publicar Oferta': 'Post Job',
   'Publicar Ofertas Laborales': 'Post Job Offers',

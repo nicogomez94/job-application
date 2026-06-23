@@ -30,7 +30,6 @@ const PLAN_DEFINITIONS = {
         'MERCADO_PAGO_COMPANY_PLAN_3_MONTHS_MONTHLY_ARS',
       ],
       features: [
-        'Solo por tiempo limitado',
         'Renovación automática cada 3 meses',
         'Acceso a gestión de postulantes',
       ],
@@ -54,12 +53,11 @@ const PLAN_DEFINITIONS = {
         'MERCADO_PAGO_COMPANY_PLAN_7_MONTHS_MONTHLY_ARS',
       ],
       features: [
-        'Solo por tiempo limitado',
         'Renovación automática cada 7 meses',
         'Cobertura extendida para contrataciones',
       ],
       freeFeatures: [
-        'Acceso gratuito durante 7 meses',
+        'Acceso bonificado durante 7 meses',
         'Cobertura extendida para contrataciones',
         'No requiere tarjeta ni medio de pago',
       ],
@@ -78,13 +76,12 @@ const PLAN_DEFINITIONS = {
         'MERCADO_PAGO_COMPANY_PLAN_13_MONTHS_MONTHLY_ARS',
       ],
       features: [
-        'Solo por tiempo limitado',
         'Pagás 12 meses y usás 13',
         'Renovación automática cada 13 meses',
         'Mayor continuidad anual',
       ],
       freeFeatures: [
-        'Acceso gratuito durante 13 meses',
+        'Acceso bonificado durante 13 meses',
         'Mayor continuidad anual',
         'No requiere tarjeta ni medio de pago',
       ],
@@ -99,7 +96,6 @@ const PLAN_DEFINITIONS = {
       duration: '3 meses',
       durationMonths: 3,
       defaultBillingAmount: 40000,
-      offerLabel: 'Por tiempo limitado',
       discount: null,
       envKeys: [
         'MERCADO_PAGO_PSYCHOLOGIST_PLAN_3_MONTHS_ARS',
@@ -125,7 +121,6 @@ const PLAN_DEFINITIONS = {
       duration: '6 + 1 meses',
       durationMonths: 7,
       defaultBillingAmount: 75000,
-      offerLabel: 'Por tiempo limitado',
       discount: 'Recomendado',
       envKeys: [
         'MERCADO_PAGO_PSYCHOLOGIST_PLAN_7_MONTHS_ARS',
@@ -151,7 +146,6 @@ const PLAN_DEFINITIONS = {
       duration: '12 + 1 meses',
       durationMonths: 13,
       defaultBillingAmount: 135000,
-      offerLabel: 'Por tiempo limitado',
       discount: '1 mes adicional incluido',
       envKeys: [
         'MERCADO_PAGO_PSYCHOLOGIST_PLAN_13_MONTHS_ARS',

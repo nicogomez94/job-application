@@ -259,7 +259,7 @@ export default function PsicologosHome() {
           <h2 className="psico-home-plans-title">Planes para Psicólogos</h2>
           <p className="psico-home-plans-sub">
             {arePlansFree
-              ? 'Todos los planes son gratuitos por el momento. Elegí el que mejor se adapte a tu práctica profesional.'
+              ? 'Planes 2 y 3 bonificados. Elegí el que mejor se adapte a tu práctica profesional.'
               : 'Elegí el plan que mejor se adapte a tu práctica profesional.'}
           </p>
 
@@ -275,9 +275,20 @@ export default function PsicologosHome() {
                 <h3 className="psico-home-plan-name">{plan.name}</h3>
                 <p className="psico-home-plan-subtitle">{plan.subtitle}</p>
                 <div className="psico-home-plan-price">
-                  <span className="psico-home-plan-regular">
-                    {plan.isFreeMode ? 'Gratis' : `${plan.currency} ${plan.price} / ${plan.duration}`}
-                  </span>
+                  {plan.isFreeMode ? (
+                    plan.id === 'MONTHLY' ? (
+                      <div className="psico-home-plan-free-block">
+                        <span className="psico-home-plan-free-label">Gratis</span>
+                        <p className="psico-home-plan-free-note">
+                          Pasando los 3 meses, la plataforma le pedirá un plan de abono para continuar.
+                        </p>
+                      </div>
+                    ) : null
+                  ) : (
+                    <span className="psico-home-plan-regular">
+                      {`${plan.currency} ${plan.price} / ${plan.duration}`}
+                    </span>
+                  )}
                 </div>
                 <ul className="psico-home-plan-features">
                   {plan.features.map((f) => (

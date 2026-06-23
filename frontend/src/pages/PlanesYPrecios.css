@@ -23,21 +23,27 @@
   margin-bottom: 0.6rem;
 }
 
-.pricing-limited-offer {
+.pricing-free-label {
   width: fit-content;
   margin: 0 0 0.85rem;
-  padding: 0.24rem 0.55rem;
+  padding: 0.32rem 0.72rem;
   border-radius: 999px;
-  background: #fff4d6;
-  color: #8a4b08;
-  font-size: 0.75rem;
+  background: #16803f;
+  color: #fff;
+  font-size: 0.85rem;
   font-weight: 900;
   text-transform: uppercase;
 }
 
-.pricing-value-limited {
-  color: #237638;
-  font-size: 1.6rem;
+.pricing-free-block {
+  margin-bottom: 1rem;
+}
+
+.pricing-free-note {
+  margin: 0;
+  color: #5f4d35;
+  font-size: 0.86rem;
+  line-height: 1.45;
 }
 
 .pricing-header h1 {

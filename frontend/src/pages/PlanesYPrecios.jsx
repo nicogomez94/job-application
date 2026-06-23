@@ -74,15 +74,14 @@ const PLAN_TEXT_TO_EN = {
   'Planes y Precios': 'Plans and Pricing',
   Planes: 'Plans',
   Gratis: 'Free',
-  'Todos los planes son gratuitos por el momento. Elegí el que mejor se adapte a tu empresa.':
-    'All plans are currently free. Choose the one that best fits your company.',
-  'Todos los planes están bonificados y no requieren tarjeta ni medio de pago.':
-    'All plans are free and require no card or payment method.',
+  'Elegí el plan que mejor se adapte a tu empresa.':
+    'Choose the plan that best fits your company.',
+  'Planes 2 y 3 bonificados': 'Plans 2 and 3 are covered',
+  'Pasando los 3 meses, la plataforma le pedirá un plan de abono para continuar.':
+    'After 3 months, the platform will require a paid plan to continue.',
   'Elegí el plan que mejor se adapte al ritmo de contratación de tu empresa.':
     'Choose the plan that best fits your company hiring pace.',
   'Condiciones comerciales': 'Commercial terms',
-  'Condiciones comerciales solo por tiempo limitado.':
-    'Commercial terms for a limited time only.',
   'Inscripción inicial: elegí un plan para activar la cuenta de empresa.':
     'Initial registration: choose a plan to activate the company account.',
   'Periodo de renovación: todas las renovaciones son pagas en cualquiera de sus formas.':
@@ -110,8 +109,8 @@ const PLAN_TEXT_TO_EN = {
   'Más tiempo para encontrar profesionales': 'More time to find professionals',
   'Mayor continuidad para tu empresa': 'Greater continuity for your company',
   'Acceso gratuito durante 3 meses': 'Free access for 3 months',
-  'Acceso gratuito durante 7 meses': 'Free access for 7 months',
-  'Acceso gratuito durante 13 meses': 'Free access for 13 months',
+  'Acceso bonificado durante 7 meses': 'Covered access for 7 months',
+  'Acceso bonificado durante 13 meses': 'Covered access for 13 months',
   'No requiere tarjeta ni medio de pago': 'No card or payment method required',
   'Mayor continuidad de publicaciones': 'Greater posting continuity',
   'Mejor costo por mes': 'Better monthly cost',
@@ -196,26 +195,14 @@ export default function PlanesYPrecios() {
           <h1>{normalizePlanText(isFreeMode ? 'Planes' : 'Planes y Precios', language, t)}</h1>
           <p>
             {isFreeMode
-              ? normalizePlanText('Todos los planes son gratuitos por el momento. Elegí el que mejor se adapte a tu empresa.', language, t)
+              ? normalizePlanText('Elegí el plan que mejor se adapte a tu empresa.', language, t)
               : null}
           </p>
         </header>
 
         <section className="pricing-conditions">
           <h2>{normalizePlanText('Condiciones comerciales', language, t)}</h2>
-          {isFreeMode ? (
-            <p>{normalizePlanText('Todos los planes están bonificados y no requieren tarjeta ni medio de pago.', language, t)}</p>
-          ) : (
-            <>
-              <p>{normalizePlanText('Condiciones comerciales solo por tiempo limitado.', language, t)}</p>
-              <ul>
-                <li>{normalizePlanText('Inscripción inicial: elegí un plan para activar la cuenta de empresa.', language, t)}</li>
-                <li>{normalizePlanText('Periodo de renovación: todas las renovaciones son pagas en cualquiera de sus formas.', language, t)}</li>
-                <li>{normalizePlanText('Reconocimiento a la calidad: el empleador mejor calificado podrá acceder a beneficios comerciales al renovar.', language, t)}</li>
-                <li>{normalizePlanText('Programa de referidos: los beneficios por referidos se aplican sobre renovaciones o nuevos períodos pagos.', language, t)}</li>
-              </ul>
-            </>
-          )}
+          <p>{normalizePlanText('Planes 2 y 3 bonificados', language, t)}</p>
         </section>
 
         <div className="pricing-grid">
@@ -234,13 +221,17 @@ export default function PlanesYPrecios() {
                 </div>
                 <h2>{normalizePlanText(plan.name, language, t)}</h2>
                 <p className="pricing-subtitle">{normalizePlanText(plan.subtitle, language, t)}</p>
-                <p className="pricing-limited-offer">
-                  {normalizePlanText('Solo por tiempo limitado.', language, t)}
-                </p>
                 {plan.isFreeMode ? (
-                  <p className={`pricing-value ${plan.id === 'MONTHLY' ? 'pricing-value-limited' : ''}`}>
-                    {normalizePlanText(plan.id === 'MONTHLY' ? 'Gratis por tiempo limitado!' : 'Gratis', language, t)}
-                  </p>
+                  plan.id === 'MONTHLY' ? (
+                    <div className="pricing-free-block">
+                      <p className="pricing-free-label">
+                        {normalizePlanText('Gratis', language, t)}
+                      </p>
+                      <p className="pricing-free-note">
+                        {normalizePlanText('Pasando los 3 meses, la plataforma le pedirá un plan de abono para continuar.', language, t)}
+                      </p>
+                    </div>
+                  ) : null
                 ) : (
                   <p className="pricing-value">
                     {formatPrice(plan.price, plan.currency, language)}
