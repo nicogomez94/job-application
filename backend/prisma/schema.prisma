@@ -368,6 +368,7 @@ model Psychologist {
   subscriptions       PsychologistSubscription[]
   requests            PsychologistRequest[]
   patientBlocks       PsychologistPatientBlock[]
+  agendaEntries       PsychologistAgendaEntry[]
 
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
@@ -375,6 +376,23 @@ model Psychologist {
   @@index([status])
   @@index([country])
   @@map("psychologists")
+}
+
+model PsychologistAgendaEntry {
+  id              String        @id @default(uuid())
+  psychologist    Psychologist  @relation(fields: [psychologistId], references: [id], onDelete: Cascade)
+  psychologistId  String
+  title           String
+  patientName     String?
+  startsAt        DateTime
+  endsAt          DateTime
+  notes           String?       @db.Text
+  status          String        @default("SCHEDULED")
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([psychologistId, startsAt])
+  @@map("psychologist_agenda_entries")
 }
 
 model Patient {

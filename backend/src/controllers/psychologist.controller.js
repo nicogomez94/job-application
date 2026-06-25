@@ -513,6 +513,115 @@ exports.updateAvailability = async (req, res) => {
   }
 };
 
+// ─── PROFESSIONAL AGENDA ────────────────────────────────────────────────────
+const AGENDA_STATUSES = ['SCHEDULED', 'CONFIRMED', 'COMPLETED', 'CANCELLED'];
+
+const parseAgendaDates = (startsAt, endsAt) => {
+  const start = new Date(startsAt);
+  const end = new Date(endsAt);
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+    return { error: 'La fecha u hora de la cita es inválida.' };
+  }
+  if (end <= start) {
+    return { error: 'La hora de finalización debe ser posterior a la de inicio.' };
+  }
+  return { start, end };
+};
+
+exports.getAgendaEntries = async (req, res) => {
+  try {
+    const from = req.query.from ? new Date(req.query.from) : new Date();
+    const to = req.query.to ? new Date(req.query.to) : new Date(from.getTime() + 45 * 24 * 60 * 60 * 1000);
+
+    if (Number.isNaN(from.getTime()) || Number.isNaN(to.getTime()) || to <= from) {
+      return res.status(400).json({ error: 'El rango de fechas es inválido.' });
+    }
+
+    const entries = await prisma.psychologistAgendaEntry.findMany({
+      where: {
+        psychologistId: req.user.id,
+        startsAt: { lt: to },
+        endsAt: { gt: from },
+      },
+      orderBy: { startsAt: 'asc' },
+    });
+
+    res.json(entries);
+  } catch (error) {
+    console.error('Error en getAgendaEntries:', error);
+    res.status(500).json({ error: 'No se pudo cargar la agenda.' });
+  }
+};
+
+exports.createAgendaEntry = async (req, res) => {
+  try {
+    const { title, patientName, startsAt, endsAt, notes, status = 'SCHEDULED' } = req.body;
+    const parsed = parseAgendaDates(startsAt, endsAt);
+    if (parsed.error) return res.status(400).json({ error: parsed.error });
+
+    const entry = await prisma.psychologistAgendaEntry.create({
+      data: {
+        psychologistId: req.user.id,
+        title: trimmed(title),
+        patientName: trimmed(patientName) || null,
+        startsAt: parsed.start,
+        endsAt: parsed.end,
+        notes: trimmed(notes) || null,
+        status: AGENDA_STATUSES.includes(status) ? status : 'SCHEDULED',
+      },
+    });
+
+    res.status(201).json(entry);
+  } catch (error) {
+    console.error('Error en createAgendaEntry:', error);
+    res.status(500).json({ error: 'No se pudo guardar la cita.' });
+  }
+};
+
+exports.updateAgendaEntry = async (req, res) => {
+  try {
+    const { title, patientName, startsAt, endsAt, notes, status = 'SCHEDULED' } = req.body;
+    const parsed = parseAgendaDates(startsAt, endsAt);
+    if (parsed.error) return res.status(400).json({ error: parsed.error });
+
+    const existing = await prisma.psychologistAgendaEntry.findFirst({
+      where: { id: req.params.id, psychologistId: req.user.id },
+      select: { id: true },
+    });
+    if (!existing) return res.status(404).json({ error: 'La cita no existe.' });
+
+    const entry = await prisma.psychologistAgendaEntry.update({
+      where: { id: existing.id },
+      data: {
+        title: trimmed(title),
+        patientName: trimmed(patientName) || null,
+        startsAt: parsed.start,
+        endsAt: parsed.end,
+        notes: trimmed(notes) || null,
+        status: AGENDA_STATUSES.includes(status) ? status : 'SCHEDULED',
+      },
+    });
+
+    res.json(entry);
+  } catch (error) {
+    console.error('Error en updateAgendaEntry:', error);
+    res.status(500).json({ error: 'No se pudo actualizar la cita.' });
+  }
+};
+
+exports.deleteAgendaEntry = async (req, res) => {
+  try {
+    const result = await prisma.psychologistAgendaEntry.deleteMany({
+      where: { id: req.params.id, psychologistId: req.user.id },
+    });
+    if (!result.count) return res.status(404).json({ error: 'La cita no existe.' });
+    res.json({ message: 'Cita eliminada.' });
+  } catch (error) {
+    console.error('Error en deleteAgendaEntry:', error);
+    res.status(500).json({ error: 'No se pudo eliminar la cita.' });
+  }
+};
+
 // ─── GET PLANS ────────────────────────────────────────────────────────────────
 exports.getPlans = async (req, res) => {
   res.json({

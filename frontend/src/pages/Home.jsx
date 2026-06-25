@@ -47,7 +47,6 @@ export default function Home() {
   const [homeFilters, setHomeFilters] = useState({ categoryId: '', location: '', postingLanguage: '', search: '' });
   const [availableCategories, setAvailableCategories] = useState([]);
   const [subscriptionPlans, setSubscriptionPlans] = useState([]);
-  const [heroRef, heroVisible] = useScrollAnimation();
   const [categoriesRef, categoriesVisible] = useScrollAnimation();
   const [featuresRef, featuresVisible] = useScrollAnimation();
   const [ctaRef, ctaVisible] = useScrollAnimation();
@@ -191,7 +190,7 @@ export default function Home() {
 
   return (
     <div className="home-container">
-      <section ref={heroRef} className={`home-hero animate-on-scroll ${heroVisible ? 'animate-visible' : ''}`}>
+      <section className="home-hero">
         <div className="home-hero-content">
           <div className="home-hero-left">
             <h1 className="home-hero-title">

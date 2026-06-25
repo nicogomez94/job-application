@@ -89,6 +89,36 @@ router.put(
   psychologistController.updateAvailability
 );
 
+router.get('/me/agenda', authenticatePsychologist, psychologistController.getAgendaEntries);
+
+router.post(
+  '/me/agenda',
+  authenticatePsychologist,
+  [
+    body('title').trim().notEmpty().withMessage('El motivo de la cita es obligatorio'),
+    body('startsAt').isISO8601().withMessage('La fecha de inicio es inválida'),
+    body('endsAt').isISO8601().withMessage('La fecha de finalización es inválida'),
+    body('status').optional().isIn(['SCHEDULED', 'CONFIRMED', 'COMPLETED', 'CANCELLED']).withMessage('Estado inválido'),
+    validate,
+  ],
+  psychologistController.createAgendaEntry
+);
+
+router.put(
+  '/me/agenda/:id',
+  authenticatePsychologist,
+  [
+    body('title').trim().notEmpty().withMessage('El motivo de la cita es obligatorio'),
+    body('startsAt').isISO8601().withMessage('La fecha de inicio es inválida'),
+    body('endsAt').isISO8601().withMessage('La fecha de finalización es inválida'),
+    body('status').optional().isIn(['SCHEDULED', 'CONFIRMED', 'COMPLETED', 'CANCELLED']).withMessage('Estado inválido'),
+    validate,
+  ],
+  psychologistController.updateAgendaEntry
+);
+
+router.delete('/me/agenda/:id', authenticatePsychologist, psychologistController.deleteAgendaEntry);
+
 router.delete('/me/account', authenticatePsychologist, psychologistController.deleteAccount);
 
 router.post(

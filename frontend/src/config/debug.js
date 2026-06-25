@@ -147,6 +147,13 @@ export const DEBUG_FORM_DATA = {
     specialties: ['Psicología clínica y de la salud', 'Psicología social y comunitaria'],
     ageRanges: ['Adultos (mayor a 18 años)', 'Infanto-juvenil (hasta los 18 años)'],
   },
+  psychologistAgenda: {
+    title: 'Sesión de seguimiento',
+    patientName: 'Paciente de ejemplo',
+    startTime: '10:00',
+    endTime: '10:50',
+    notes: 'Revisar objetivos de la semana anterior.',
+  },
 };
 
 export const getDebugLoginData = (userType = 'user') =>

@@ -225,6 +225,10 @@ export const psychologistService = {
     const response = await api.put('/psychologists/me/availability', { isAvailable });
     return { ...response, data: repairMojibakeDeep(response.data) };
   },
+  getAgenda: (params) => api.get('/psychologists/me/agenda', { params }),
+  createAgendaEntry: (data) => api.post('/psychologists/me/agenda', data),
+  updateAgendaEntry: (id, data) => api.put(`/psychologists/me/agenda/${id}`, data),
+  deleteAgendaEntry: (id) => api.delete(`/psychologists/me/agenda/${id}`),
   uploadProfileImage: (file) => {
     const formData = new FormData();
     formData.append('psychologistProfile', file);
