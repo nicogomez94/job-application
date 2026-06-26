@@ -14,6 +14,14 @@ const areSubscriptionPaymentsEnabled = (accountType) => {
     : isEnabled(accountValue);
 };
 
+const SELECTABLE_PLAN_IDS = {
+  company: new Set(['MONTHLY']),
+  psychologist: new Set(['MONTHLY']),
+};
+
+const isPlanSelectable = (accountType, planId) =>
+  SELECTABLE_PLAN_IDS[accountType]?.has(planId) ?? true;
+
 const PLAN_DEFINITIONS = {
   company: {
     MONTHLY: {
@@ -203,6 +211,7 @@ const toPublicPlan = (plan, accountType) => {
     durationMonths: plan.durationMonths,
     discount: plan.discount || undefined,
     offerLabel: plan.offerLabel || undefined,
+    isSelectable: isPlanSelectable(accountType, plan.id),
     isFreeMode: !paymentsEnabled,
     paymentsEnabled,
     billing: paymentsEnabled
@@ -239,7 +248,14 @@ const requirePlanBilling = (accountType, planId) => {
     throw error;
   }
 
-  if (!areSubscriptionPaymentsEnabled()) {
+  if (!plan.isSelectable) {
+    const error = new Error('Este plan no está disponible por el momento.');
+    error.statusCode = 409;
+    error.code = 'PLAN_NOT_AVAILABLE';
+    throw error;
+  }
+
+  if (!areSubscriptionPaymentsEnabled(accountType)) {
     const error = new Error('Los pagos de suscripciones están desactivados. Activá el plan gratuito.');
     error.statusCode = 409;
     error.code = 'SUBSCRIPTION_PAYMENTS_DISABLED';

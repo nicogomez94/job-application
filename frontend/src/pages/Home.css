@@ -1195,6 +1195,36 @@
   transform: translateY(-2px);
 }
 
+.home-pricing-preview-card-unavailable {
+  background: rgba(244, 243, 241, 0.92);
+  border-color: rgba(215, 211, 205, 0.9);
+  box-shadow: 0 8px 20px rgba(57, 35, 12, 0.1);
+  filter: grayscale(1);
+  opacity: 0.72;
+}
+
+.home-pricing-preview-card-unavailable.home-pricing-preview-card-highlight {
+  border-color: rgba(207, 202, 194, 0.95);
+  box-shadow: 0 8px 20px rgba(57, 35, 12, 0.1);
+  transform: none;
+}
+
+.home-pricing-preview-card-unavailable .home-pricing-preview-badge {
+  background: #dfddd9;
+  color: #6f6962 !important;
+}
+
+.home-pricing-preview-card-unavailable h3,
+.home-pricing-preview-card-unavailable .home-pricing-preview-price {
+  color: #5f5a53;
+}
+
+.home-pricing-preview-card-unavailable .home-pricing-preview-subtitle,
+.home-pricing-preview-card-unavailable .home-pricing-preview-feature,
+.home-pricing-preview-card-unavailable .home-pricing-preview-free-note {
+  color: #756f67;
+}
+
 .home-pricing-preview-badge {
 position: absolute;
     top: -23px;

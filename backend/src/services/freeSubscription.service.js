@@ -30,6 +30,13 @@ const requireFreePlan = (accountType, planId) => {
     throw error;
   }
 
+  if (!plan.isSelectable) {
+    const error = new Error('Este plan no está disponible por el momento.');
+    error.statusCode = 409;
+    error.code = 'PLAN_NOT_AVAILABLE';
+    throw error;
+  }
+
   return plan;
 };
 

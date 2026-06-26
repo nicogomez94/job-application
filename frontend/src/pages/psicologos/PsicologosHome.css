@@ -335,6 +335,43 @@
   box-shadow: 0 6px 28px rgba(240, 128, 128, 0.3);
 }
 
+.psico-home-plan-card--unavailable {
+  color: #746d64;
+  border-color: #d7d3cd;
+  background: #f5f4f2;
+  box-shadow: 0 4px 16px rgba(70, 65, 58, 0.08);
+  filter: grayscale(1);
+  opacity: 0.72;
+}
+
+.psico-home-plan-card--unavailable:hover {
+  transform: none;
+}
+
+.psico-home-plan-card--unavailable.psico-home-plan-card--highlight {
+  border-color: #cfcac2;
+  box-shadow: 0 4px 16px rgba(70, 65, 58, 0.08);
+}
+
+.psico-home-plan-card--unavailable .psico-home-plan-badge {
+  background: #dfddd9;
+  color: #77716a;
+}
+
+.psico-home-plan-card--unavailable .psico-home-plan-name {
+  color: #5f5a53;
+}
+
+.psico-home-plan-card--unavailable .psico-home-plan-subtitle,
+.psico-home-plan-card--unavailable .psico-home-plan-free-note,
+.psico-home-plan-card--unavailable .psico-home-plan-features li {
+  color: #756f67;
+}
+
+.psico-home-plan-card--unavailable .psico-home-plan-check {
+  color: #7f7a73;
+}
+
 .psico-home-plan-badge {
   position: absolute;
   top: -12px;
@@ -474,6 +511,15 @@
 
 .psico-home-plan-btn--highlight:hover {
   background: #e06060;
+}
+
+.psico-home-plan-btn--disabled,
+.psico-home-plan-btn--disabled:hover,
+.psico-home-plan-btn--disabled.psico-home-plan-btn--highlight,
+.psico-home-plan-btn--disabled.psico-home-plan-btn--highlight:hover {
+  background: #c8c4bd;
+  color: #fff;
+  cursor: not-allowed;
 }
 
 .psico-home-plans-note {

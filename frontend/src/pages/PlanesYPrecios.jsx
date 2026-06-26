@@ -78,7 +78,7 @@ const PLAN_TEXT_TO_EN = {
     'Choose the plan that best fits your company.',
   'Planes 2 y 3 bonificados': 'Plans 2 and 3 are covered',
   'Pasando los 3 meses, la plataforma le pedirá un plan de abono para continuar.':
-    'After 3 months, the platform will require a paid plan to continue.',
+    'After 3 months, the platform will ask for a subscription plan to continue.',
   'Elegí el plan que mejor se adapte al ritmo de contratación de tu empresa.':
     'Choose the plan that best fits your company hiring pace.',
   'Condiciones comerciales': 'Commercial terms',
@@ -147,6 +147,8 @@ const formatPrice = (price, currency = 'ARS', language = 'es') =>
     currencyDisplay: language === 'en' ? 'code' : 'symbol',
   }).format(Number(price || 0));
 
+const isSelectablePlan = (plan) => plan.id === 'MONTHLY' && plan.isSelectable !== false;
+
 export default function PlanesYPrecios() {
   const { language, t } = useI18n();
   const [plans, setPlans] = useState([]);
@@ -208,10 +210,11 @@ export default function PlanesYPrecios() {
         <div className="pricing-grid">
           {displayedPlans.map((plan) => {
             const Icon = plan.icon || Shield;
+            const isUnavailable = !isSelectablePlan(plan);
             return (
               <article
                 key={plan.id}
-                className={`pricing-card ${plan.highlight ? 'pricing-card-highlight' : ''}`}
+                className={`pricing-card ${plan.highlight ? 'pricing-card-highlight' : ''} ${isUnavailable ? 'pricing-card-unavailable' : ''}`}
               >
                 {plan.badge && (
                   <span className="pricing-badge">{normalizePlanText(plan.badge, language, t)}</span>
@@ -246,9 +249,15 @@ export default function PlanesYPrecios() {
                     </li>
                   ))}
                 </ul>
-                <Link to="/register/company" className="pricing-cta">
-                  {normalizePlanText('Empezar ahora', language, t)}
-                </Link>
+                {isUnavailable ? (
+                  <span className="pricing-cta pricing-cta-disabled" aria-disabled="true">
+                    {normalizePlanText('Empezar ahora', language, t)}
+                  </span>
+                ) : (
+                  <Link to="/register/company" className="pricing-cta">
+                    {normalizePlanText('Empezar ahora', language, t)}
+                  </Link>
+                )}
               </article>
             );
           })}

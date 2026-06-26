@@ -28,7 +28,7 @@ const ES_TO_EN = {
     'All plans are currently free and require no card.',
   'Planes 2 y 3 bonificados': 'Plans 2 and 3 are covered',
   'Pasando los 3 meses, la plataforma le pedirá un plan de abono para continuar.':
-    'After 3 months, the platform will require a paid plan to continue.',
+    'After 3 months, the platform will ask for a subscription plan to continue.',
   'Ver planes': 'View plans',
   'Publicar Oferta': 'Post Job',
   'Publicar Ofertas Laborales': 'Post Job Offers',

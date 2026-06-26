@@ -104,6 +104,42 @@
   transform: translateY(-3px);
 }
 
+.pricing-card-unavailable {
+  color: #746d64;
+  border-color: #d7d3cd;
+  background: #f5f4f2;
+  box-shadow: 0 8px 20px rgba(70, 65, 58, 0.08);
+  filter: grayscale(1);
+  opacity: 0.72;
+}
+
+.pricing-card-unavailable.pricing-card-highlight {
+  border-color: #cfcac2;
+  box-shadow: 0 8px 20px rgba(70, 65, 58, 0.08);
+  transform: none;
+}
+
+.pricing-card-unavailable .pricing-badge,
+.pricing-card-unavailable .pricing-icon {
+  background: #dfddd9;
+  color: #77716a !important;
+}
+
+.pricing-card-unavailable h2,
+.pricing-card-unavailable .pricing-value {
+  color: #5f5a53;
+}
+
+.pricing-card-unavailable .pricing-subtitle,
+.pricing-card-unavailable .pricing-features,
+.pricing-card-unavailable .pricing-free-note {
+  color: #756f67;
+}
+
+.pricing-card-unavailable .pricing-features svg {
+  color: #7f7a73;
+}
+
 .pricing-badge {
   position: absolute;
   top: -12px;
@@ -201,6 +237,15 @@
 .pricing-cta:hover {
   background: #bf933f;
   transform: translateY(-1px);
+}
+
+.pricing-cta-disabled,
+.pricing-cta-disabled:hover {
+  background: #c8c4bd;
+  border-color: #bdb8b0;
+  color: #fff;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .pricing-bottom {

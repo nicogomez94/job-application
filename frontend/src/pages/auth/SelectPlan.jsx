@@ -25,6 +25,8 @@ const PLAN_META = {
   },
 };
 
+const isSelectablePlan = (plan) => plan.id === 'MONTHLY' && plan.isSelectable !== false;
+
 export default function SelectPlan() {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -73,6 +75,11 @@ export default function SelectPlan() {
   }, [navigate, checkoutStatus]);
 
   const handleSelectPlan = async (plan) => {
+    if (!isSelectablePlan(plan)) {
+      toast.error('Este plan no está disponible por el momento.');
+      return;
+    }
+
     if (plan.isFreeMode) {
       setActivating(plan.id);
       try {
@@ -137,11 +144,12 @@ export default function SelectPlan() {
             const meta = PLAN_META[plan.id] || {};
             const Icon = meta.icon || Clock;
             const isActivating = activating === plan.id;
+            const isUnavailable = !isSelectablePlan(plan);
 
             return (
               <div
                 key={plan.id}
-                className={`select-plan-card ${meta.highlight ? 'select-plan-card--highlight' : ''}`}
+                className={`select-plan-card ${meta.highlight ? 'select-plan-card--highlight' : ''} ${isUnavailable ? 'select-plan-card--unavailable' : ''}`}
               >
                 {meta.badge && (
                   <div className="select-plan-badge">{meta.badge}</div>
@@ -194,7 +202,7 @@ export default function SelectPlan() {
                 <button
                   className={`select-plan-btn ${meta.highlight ? 'select-plan-btn--highlight' : ''}`}
                   onClick={() => handleSelectPlan(plan)}
-                  disabled={activating !== null}
+                  disabled={activating !== null || isUnavailable}
                 >
                   {isActivating ? (
                     <span className="select-plan-btn-loading">

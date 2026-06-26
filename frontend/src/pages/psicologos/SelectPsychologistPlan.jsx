@@ -23,6 +23,8 @@ const PLAN_LEVELS = {
   ANNUAL: 3,
 };
 
+const isSelectablePlan = (plan) => plan.id === 'MONTHLY' && plan.isSelectable !== false;
+
 export default function SelectPsychologistPlan() {
   const [plans, setPlans] = useState([]);
   const [currentSubscription, setCurrentSubscription] = useState(null);
@@ -74,6 +76,11 @@ export default function SelectPsychologistPlan() {
   }, [checkoutStatus]);
 
   const handleSelectPlan = async (plan) => {
+    if (!isSelectablePlan(plan)) {
+      toast.error('Este plan no está disponible por el momento.');
+      return;
+    }
+
     if (plan.isFreeMode) {
       setActivating(plan.id);
       try {
@@ -154,16 +161,18 @@ export default function SelectPsychologistPlan() {
             const isActivating = activating === plan.id;
             const isCurrentPlan = currentSubscription?.plan === plan.id;
             const isPendingPlan = pendingSubscription?.plan === plan.id;
+            const isUnavailable = !isSelectablePlan(plan);
             const isLowerOrSamePlan = currentSubscription
               && PLAN_LEVELS[plan.id] <= PLAN_LEVELS[currentSubscription.plan];
             const disabled = activating !== null
+              || isUnavailable
               || Boolean(isLowerOrSamePlan)
               || (!plan.isFreeMode && Boolean(pendingSubscription));
 
             return (
               <div
                 key={plan.id}
-                className={`select-plan-card ${meta.highlight ? 'select-plan-card--highlight' : ''} ${isCurrentPlan ? 'select-plan-card--current' : ''}`}
+                className={`select-plan-card ${meta.highlight ? 'select-plan-card--highlight' : ''} ${isCurrentPlan ? 'select-plan-card--current' : ''} ${isUnavailable ? 'select-plan-card--unavailable' : ''}`}
               >
                 {meta.badge && <div className="select-plan-badge">{meta.badge}</div>}
                 {isCurrentPlan && <div className="select-plan-current-badge">Plan actual</div>}

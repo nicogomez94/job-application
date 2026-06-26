@@ -5,6 +5,7 @@ import { psychologistService } from '../../services';
 import './PsicologosHome.css';
 
 const HERO_IMAGE = '/playa.jpeg';
+const isSelectablePlan = (plan) => plan.id === 'MONTHLY' && plan.isSelectable !== false;
 
 const IMG_EMBARAZADAS = '/psico-embarazadas.jpeg';
 const IMG_MOVILIDAD = '/psico-movilidad.jpeg';
@@ -264,57 +265,73 @@ export default function PsicologosHome() {
           </p>
 
           <div className="psico-home-plans-grid">
-            {plans.map((plan) => (
-              <div
-                key={plan.id}
-                className={`psico-home-plan-card ${plan.highlight ? 'psico-home-plan-card--highlight' : ''}`}
-              >
-                {plan.badge && (
-                  <span className="psico-home-plan-badge">{plan.badge}</span>
-                )}
-                <h3 className="psico-home-plan-name">{plan.name}</h3>
-                <p className="psico-home-plan-subtitle">{plan.subtitle}</p>
-                <div className="psico-home-plan-price">
-                  {plan.isFreeMode ? (
-                    plan.id === 'MONTHLY' ? (
-                      <div className="psico-home-plan-free-block">
-                        <span className="psico-home-plan-free-label">Gratis</span>
-                        <p className="psico-home-plan-free-note">
-                          Pasando los 3 meses, la plataforma le pedirá un plan de abono para continuar.
-                        </p>
-                      </div>
-                    ) : null
-                  ) : (
-                    <span className="psico-home-plan-regular">
-                      {`${plan.currency} ${plan.price} / ${plan.duration}`}
-                    </span>
+            {plans.map((plan) => {
+              const isUnavailable = !isSelectablePlan(plan);
+
+              return (
+                <div
+                  key={plan.id}
+                  className={`psico-home-plan-card ${plan.highlight ? 'psico-home-plan-card--highlight' : ''} ${isUnavailable ? 'psico-home-plan-card--unavailable' : ''}`}
+                >
+                  {plan.badge && (
+                    <span className="psico-home-plan-badge">{plan.badge}</span>
                   )}
+                  <h3 className="psico-home-plan-name">{plan.name}</h3>
+                  <p className="psico-home-plan-subtitle">{plan.subtitle}</p>
+                  <div className="psico-home-plan-price">
+                    {plan.isFreeMode ? (
+                      plan.id === 'MONTHLY' ? (
+                        <div className="psico-home-plan-free-block">
+                          <span className="psico-home-plan-free-label">Gratis</span>
+                          <p className="psico-home-plan-free-note">
+                            Pasando los 3 meses, la plataforma le pedirá un plan de abono para continuar.
+                          </p>
+                        </div>
+                      ) : null
+                    ) : (
+                      <span className="psico-home-plan-regular">
+                        {`${plan.currency} ${plan.price} / ${plan.duration}`}
+                      </span>
+                    )}
+                  </div>
+                  <ul className="psico-home-plan-features">
+                    {plan.features.map((f) => (
+                      <li key={f}>
+                        <span className="psico-home-plan-check">✓</span>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  {isPsychologist ? (
+                    isUnavailable ? (
+                      <span className={`psico-home-plan-btn psico-home-plan-btn--disabled ${plan.highlight ? 'psico-home-plan-btn--highlight' : ''}`} aria-disabled="true">
+                        Ver mi plan
+                      </span>
+                    ) : (
+                      <Link
+                        to="/psicologo/plan"
+                        className={`psico-home-plan-btn ${plan.highlight ? 'psico-home-plan-btn--highlight' : ''}`}
+                      >
+                        Ver mi plan
+                      </Link>
+                    )
+                  ) : !isAuthenticated ? (
+                    isUnavailable ? (
+                      <span className={`psico-home-plan-btn psico-home-plan-btn--disabled ${plan.highlight ? 'psico-home-plan-btn--highlight' : ''}`} aria-disabled="true">
+                        Comenzar
+                      </span>
+                    ) : (
+                      <Link
+                        to="/register/psicologo"
+                        className={`psico-home-plan-btn ${plan.highlight ? 'psico-home-plan-btn--highlight' : ''}`}
+                      >
+                        Comenzar
+                      </Link>
+                    )
+                  ) : null}
                 </div>
-                <ul className="psico-home-plan-features">
-                  {plan.features.map((f) => (
-                    <li key={f}>
-                      <span className="psico-home-plan-check">✓</span>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                {isPsychologist ? (
-                  <Link
-                    to="/psicologo/plan"
-                    className={`psico-home-plan-btn ${plan.highlight ? 'psico-home-plan-btn--highlight' : ''}`}
-                  >
-                    Ver mi plan
-                  </Link>
-                ) : !isAuthenticated ? (
-                  <Link
-                    to="/register/psicologo"
-                    className={`psico-home-plan-btn ${plan.highlight ? 'psico-home-plan-btn--highlight' : ''}`}
-                  >
-                    Comenzar
-                  </Link>
-                ) : null}
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <p className="psico-home-plans-note">

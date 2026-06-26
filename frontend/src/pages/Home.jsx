@@ -7,6 +7,7 @@ import { JOB_POSTING_LANGUAGE_OPTIONS } from '../constants/jobOfferLanguages';
 import './Home.css';
 
 const heroImageMain = '/herohome.png';
+const isSelectablePlan = (plan) => plan.id === 'MONTHLY' && plan.isSelectable !== false;
 
 // Hook personalizado para animaciones de scroll
 const useScrollAnimation = () => {
@@ -442,7 +443,7 @@ export default function Home() {
             {compactPlans.map((plan) => (
               <article
                 key={plan.id}
-                className={`home-pricing-preview-card ${plan.highlight ? 'home-pricing-preview-card-highlight' : ''}`}
+                className={`home-pricing-preview-card ${plan.highlight ? 'home-pricing-preview-card-highlight' : ''} ${!isSelectablePlan(plan) ? 'home-pricing-preview-card-unavailable' : ''}`}
               >
                 {plan.badge ? <span className="home-pricing-preview-badge">{t(plan.badge)}</span> : null}
                 <h3>{t(plan.name)}</h3>

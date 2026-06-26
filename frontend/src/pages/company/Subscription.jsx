@@ -18,6 +18,7 @@ const PLAN_LABELS = {
   QUARTERLY: 'Plan 7 meses',
   ANNUAL: 'Plan 12 + 1',
 };
+const isSelectablePlan = (plan) => plan.id === 'MONTHLY' && plan.isSelectable !== false;
 
 export default function CompanySubscription() {
   const [plans, setPlans] = useState([]);
@@ -51,6 +52,11 @@ export default function CompanySubscription() {
   }, []);
 
   const handleActivatePlan = async (plan) => {
+    if (!isSelectablePlan(plan)) {
+      toast.error('Este plan no está disponible por el momento.');
+      return;
+    }
+
     if (plan.isFreeMode) {
       setProcessingPlanId(plan.id);
       try {
@@ -168,43 +174,58 @@ export default function CompanySubscription() {
       <div className="card" id="planes-pago" style={{ marginBottom: '1rem' }}>
         <h2 style={{ marginBottom: '0.8rem' }}>Planes disponibles</h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '1rem' }}>
-          {plans.map((plan) => (
-            <div key={plan.id} style={{ border: '1px solid #e7dcc6', borderRadius: '0.7rem', padding: '1rem' }}>
-              <h3 style={{ marginBottom: '0.4rem' }}>{plan.name}</h3>
-              {plan.isFreeMode ? (
-                plan.id === 'MONTHLY' ? (
-                  <div style={{ marginBottom: '0.8rem' }}>
-                    <p style={{ width: 'fit-content', background: '#16803f', color: '#fff', borderRadius: '999px', padding: '0.32rem 0.72rem', fontWeight: 900, textTransform: 'uppercase', marginBottom: '0.55rem' }}>Gratis</p>
-                    <p style={{ color: '#5e4d38', fontSize: '0.84rem', lineHeight: 1.45 }}>
-                      Pasando los 3 meses, la plataforma le pedirá un plan de abono para continuar.
-                    </p>
-                  </div>
-                ) : null
-              ) : (
-                <>
-                  <p style={{ color: '#5e4d38', marginBottom: '0.4rem' }}>
-                    Referencia: {formatAmount(plan.price, plan.currency)} / {plan.duration}
-                  </p>
-                  <p style={{ color: '#7e705c', fontSize: '0.9rem', marginBottom: '0.8rem' }}>
-                    Mercado Pago: {formatBilling(plan.billing)}
-                  </p>
-                </>
-              )}
-              <button
-                className="btn btn-primary"
-                onClick={() => handleActivatePlan(plan)}
-                disabled={processingPlanId === plan.id || Boolean(pendingSubscription)}
+          {plans.map((plan) => {
+            const isUnavailable = !isSelectablePlan(plan);
+
+            return (
+              <div
+                key={plan.id}
+                style={{
+                  border: `1px solid ${isUnavailable ? '#d7d3cd' : '#e7dcc6'}`,
+                  borderRadius: '0.7rem',
+                  padding: '1rem',
+                  background: isUnavailable ? '#f5f4f2' : '#fff',
+                  filter: isUnavailable ? 'grayscale(1)' : undefined,
+                  opacity: isUnavailable ? 0.72 : 1,
+                }}
               >
-                {processingPlanId === plan.id
-                  ? (plan.isFreeMode ? 'Activando...' : 'Redirigiendo...')
-                  : pendingSubscription
-                    ? 'Pago pendiente'
-                    : plan.isFreeMode
-                      ? 'Seleccionar plan'
-                      : 'Pagar con Mercado Pago'}
-              </button>
-            </div>
-          ))}
+                <h3 style={{ marginBottom: '0.4rem', color: isUnavailable ? '#5f5a53' : undefined }}>{plan.name}</h3>
+                {plan.isFreeMode ? (
+                  plan.id === 'MONTHLY' ? (
+                    <div style={{ marginBottom: '0.8rem' }}>
+                      <p style={{ width: 'fit-content', background: '#16803f', color: '#fff', borderRadius: '999px', padding: '0.32rem 0.72rem', fontWeight: 900, textTransform: 'uppercase', marginBottom: '0.55rem' }}>Gratis</p>
+                      <p style={{ color: '#5e4d38', fontSize: '0.84rem', lineHeight: 1.45 }}>
+                        Pasando los 3 meses, la plataforma le pedirá un plan de abono para continuar.
+                      </p>
+                    </div>
+                  ) : null
+                ) : (
+                  <>
+                    <p style={{ color: isUnavailable ? '#756f67' : '#5e4d38', marginBottom: '0.4rem' }}>
+                      Referencia: {formatAmount(plan.price, plan.currency)} / {plan.duration}
+                    </p>
+                    <p style={{ color: isUnavailable ? '#756f67' : '#7e705c', fontSize: '0.9rem', marginBottom: '0.8rem' }}>
+                      Mercado Pago: {formatBilling(plan.billing)}
+                    </p>
+                  </>
+                )}
+                <button
+                  className="btn btn-primary"
+                  onClick={() => handleActivatePlan(plan)}
+                  disabled={processingPlanId === plan.id || Boolean(pendingSubscription) || isUnavailable}
+                  style={isUnavailable ? { background: '#c8c4bd', borderColor: '#bdb8b0', cursor: 'not-allowed' } : undefined}
+                >
+                  {processingPlanId === plan.id
+                    ? (plan.isFreeMode ? 'Activando...' : 'Redirigiendo...')
+                    : pendingSubscription
+                      ? 'Pago pendiente'
+                      : plan.isFreeMode
+                        ? 'Seleccionar plan'
+                        : 'Pagar con Mercado Pago'}
+                </button>
+              </div>
+            );
+          })}
         </div>
       </div>
 
