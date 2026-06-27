@@ -31,6 +31,13 @@ export default function PsicoLogin() {
       const response = await psychologistAuthService.login(data);
       const { psychologist, token } = response.data;
       setAuth(psychologist, 'psychologist', token);
+
+      if (psychologist?.emailVerified !== true) {
+        toast('Revisá tu correo y confirmá tu email para continuar.');
+        navigate('/verificar-email');
+        return;
+      }
+
       toast.success('¡Bienvenido!');
 
       const status = psychologist?.status;

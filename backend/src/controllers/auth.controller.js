@@ -15,6 +15,21 @@ const {
 } = require('../utils/accountEmail');
 const { validateAndNormalizePhoneNumber } = require('../utils/phone');
 const { isValidEmail } = require('../utils/emailValidation');
+const {
+  sendVerificationForAccount,
+  requestVerificationEmail,
+  confirmEmailVerification,
+} = require('../services/emailVerification.service');
+
+const sendInitialVerification = async (account, type) => {
+  try {
+    await sendVerificationForAccount({ id: account.id, type, email: account.email });
+    return true;
+  } catch (error) {
+    console.error(`[email-verification] No se pudo enviar el correo inicial a ${type}:`, error.message);
+    return false;
+  }
+};
 
 // ==================== USUARIOS ====================
 
@@ -64,17 +79,20 @@ exports.registerUser = async (req, res) => {
         firstName: true,
         lastName: true,
         phone: true,
+        emailVerified: true,
         createdAt: true,
       },
     });
 
     // Generar token
     const token = generateToken({ id: user.id, type: 'user' });
+    const verificationEmailSent = await sendInitialVerification(user, 'user');
 
     res.status(201).json({
-      message: 'Usuario registrado exitosamente',
+      message: 'Usuario registrado. Confirmá tu email para continuar.',
       user,
       token,
+      verificationEmailSent,
     });
   } catch (error) {
     console.error('Error en registerUser:', error);
@@ -167,17 +185,20 @@ exports.registerCompany = async (req, res) => {
         industry: true,
         size: true,
         isActive: true,
+        emailVerified: true,
         createdAt: true,
       },
     });
 
     // Generar token
     const token = generateToken({ id: company.id, type: 'company' });
+    const verificationEmailSent = await sendInitialVerification(company, 'company');
 
     res.status(201).json({
-      message: 'Empresa registrada exitosamente. Elegí un plan para activar la cuenta.',
+      message: 'Empresa registrada. Confirmá tu email para continuar.',
       company,
       token,
+      verificationEmailSent,
     });
   } catch (error) {
     console.error('Error en registerCompany:', error);
@@ -382,6 +403,38 @@ exports.resetPassword = async (req, res) => {
   }
 };
 
+exports.requestEmailVerification = async (req, res) => {
+  try {
+    const { email, userType } = req.body;
+    await requestVerificationEmail({ email, type: userType });
+
+    res.json({
+      message: 'Si la cuenta existe y todavía no está verificada, recibirás un nuevo enlace.',
+    });
+  } catch (error) {
+    console.error('Error al reenviar confirmación de email:', error);
+    res.status(500).json({ error: 'No se pudo enviar el email de confirmación' });
+  }
+};
+
+exports.verifyEmail = async (req, res) => {
+  try {
+    const result = await confirmEmailVerification(req.query.token);
+    if (!result) {
+      return res.status(400).json({ error: 'El enlace de confirmación es inválido o expiró' });
+    }
+
+    res.json({
+      message: 'Email confirmado correctamente',
+      account: result,
+      type: result.type,
+    });
+  } catch (error) {
+    console.error('Error al confirmar email:', error);
+    res.status(500).json({ error: 'No se pudo confirmar el email' });
+  }
+};
+
 // ==================== PERFIL ====================
 
 // Obtener perfil del usuario autenticado
@@ -396,6 +449,8 @@ exports.getProfile = async (req, res) => {
         select: {
           id: true,
           email: true,
+          emailVerified: true,
+          emailVerifiedAt: true,
           firstName: true,
           lastName: true,
           phone: true,
@@ -421,6 +476,8 @@ exports.getProfile = async (req, res) => {
         select: {
           id: true,
           email: true,
+          emailVerified: true,
+          emailVerifiedAt: true,
           companyName: true,
           companyLogo: true,
           description: true,
@@ -440,6 +497,8 @@ exports.getProfile = async (req, res) => {
         select: {
           id: true,
           email: true,
+          emailVerified: true,
+          emailVerifiedAt: true,
           firstName: true,
           lastName: true,
           gender: true,
@@ -455,6 +514,8 @@ exports.getProfile = async (req, res) => {
         select: {
           id: true,
           email: true,
+          emailVerified: true,
+          emailVerifiedAt: true,
           firstName: true,
           lastName: true,
           phone: true,

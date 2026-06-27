@@ -9,6 +9,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   console.log('🌱 Iniciando seed de la base de datos...');
+  const seededVerifiedAt = new Date();
 
   // Crear admin por defecto
   const adminPassword = await bcrypt.hash('admin123', 10);
@@ -43,12 +44,14 @@ async function main() {
   const userPassword = await bcrypt.hash('user123', 10);
   const user = await prisma.user.upsert({
     where: { email: 'juan.perez@example.com' },
-    update: {},
+    update: { emailVerified: true, emailVerifiedAt: seededVerifiedAt },
     create: {
       email: 'juan.perez@example.com',
       password: userPassword,
       firstName: 'Juan',
       lastName: 'Pérez',
+      emailVerified: true,
+      emailVerifiedAt: seededVerifiedAt,
       phone: '+54 9 11 1234-5678',
       title: 'Desarrollador Full Stack',
       bio: 'Desarrollador con 5 años de experiencia en React, Node.js y PostgreSQL',
@@ -79,11 +82,13 @@ async function main() {
   const companyPassword = await bcrypt.hash('company123', 10);
   const company = await prisma.company.upsert({
     where: { email: 'rrhh@techcorp.com' },
-    update: {},
+    update: { emailVerified: true, emailVerifiedAt: seededVerifiedAt },
     create: {
       email: 'rrhh@techcorp.com',
       password: companyPassword,
       companyName: 'TechCorp Argentina',
+      emailVerified: true,
+      emailVerifiedAt: seededVerifiedAt,
       description: 'Empresa líder en desarrollo de software y soluciones tecnológicas',
       website: 'https://techcorp.com.ar',
       location: 'Buenos Aires, Argentina',
@@ -388,10 +393,14 @@ async function main() {
       update: {
         ...psychologistData,
         password: psychologistPassword,
+        emailVerified: true,
+        emailVerifiedAt: seededVerifiedAt,
       },
       create: {
         ...psychologistData,
         password: psychologistPassword,
+        emailVerified: true,
+        emailVerifiedAt: seededVerifiedAt,
       },
     });
 

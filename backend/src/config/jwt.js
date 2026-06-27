@@ -12,6 +12,14 @@ const generatePasswordResetToken = (
   return jwt.sign({ ...payload, purpose: 'password_reset' }, secret, { expiresIn });
 };
 
+const generateEmailVerificationToken = (
+  payload,
+  expiresIn = process.env.EMAIL_VERIFICATION_TOKEN_EXPIRES_IN || '24h',
+) => {
+  const secret = process.env.EMAIL_VERIFICATION_SECRET || process.env.JWT_SECRET;
+  return jwt.sign({ ...payload, purpose: 'email_verification' }, secret, { expiresIn });
+};
+
 const verifyToken = (token) => {
   try {
     return jwt.verify(token, process.env.JWT_SECRET);
@@ -33,9 +41,24 @@ const verifyPasswordResetToken = (token) => {
   }
 };
 
+const verifyEmailVerificationToken = (token) => {
+  try {
+    const secret = process.env.EMAIL_VERIFICATION_SECRET || process.env.JWT_SECRET;
+    const decoded = jwt.verify(token, secret);
+    if (decoded.purpose !== 'email_verification') {
+      return null;
+    }
+    return decoded;
+  } catch (error) {
+    return null;
+  }
+};
+
 module.exports = {
   generateToken,
   verifyToken,
   generatePasswordResetToken,
   verifyPasswordResetToken,
+  generateEmailVerificationToken,
+  verifyEmailVerificationToken,
 };

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { body } = require('express-validator');
+const { body, query } = require('express-validator');
 const validate = require('../middlewares/validator.middleware');
 const authController = require('../controllers/auth.controller');
 const { authenticate } = require('../middlewares/auth.middleware');
@@ -101,6 +101,19 @@ const resetPasswordValidation = [
   validate,
 ];
 
+const resendEmailVerificationValidation = [
+  body('email').trim().normalizeEmail().custom(isValidEmail).withMessage(EMAIL_VALIDATION_MESSAGE),
+  body('userType')
+    .isIn(['user', 'company', 'patient', 'psychologist'])
+    .withMessage('Tipo de usuario inválido'),
+  validate,
+];
+
+const verifyEmailValidation = [
+  query('token').notEmpty().withMessage('El token de confirmación es requerido'),
+  validate,
+];
+
 // ==================== USUARIOS ====================
 
 // Registro y login usuario
@@ -129,6 +142,8 @@ router.post('/admin/login', loginValidation, authController.loginAdmin);
 // Recuperación de clave
 router.post('/recover-password', recoverPasswordValidation, authController.requestPasswordRecovery);
 router.post('/reset-password', resetPasswordValidation, authController.resetPassword);
+router.post('/resend-verification', resendEmailVerificationValidation, authController.requestEmailVerification);
+router.get('/verify-email', verifyEmailValidation, authController.verifyEmail);
 
 // ==================== PERFIL ====================
 

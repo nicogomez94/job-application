@@ -3,7 +3,7 @@ const router = express.Router();
 const { body } = require('express-validator');
 const validate = require('../middlewares/validator.middleware');
 const companyController = require('../controllers/company.controller');
-const { authenticateCompany } = require('../middlewares/auth.middleware');
+const { authenticateCompany, authenticateCompanyAccount } = require('../middlewares/auth.middleware');
 const upload = require('../config/upload');
 const { EMAIL_VALIDATION_MESSAGE, isValidEmail } = require('../utils/emailValidation');
 
@@ -14,16 +14,15 @@ const updateProfileValidation = [
   validate,
 ];
 
-// Rutas protegidas para empresas
+// El logo forma parte del alta inicial. Las demás funciones requieren email verificado.
+router.post('/upload/logo', authenticateCompanyAccount, upload.single('companyLogo'), companyController.uploadLogo);
+router.delete('/account', authenticateCompanyAccount, companyController.deleteAccount);
+
 router.use(authenticateCompany);
 
 // Perfil
 router.get('/profile', companyController.getProfile);
 router.put('/profile', updateProfileValidation, companyController.updateProfile);
-router.delete('/account', companyController.deleteAccount);
-
-// Upload logo
-router.post('/upload/logo', upload.single('companyLogo'), companyController.uploadLogo);
 
 // Suscripción
 router.get('/subscription/status', companyController.checkSubscription);

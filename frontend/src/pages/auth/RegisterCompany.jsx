@@ -100,7 +100,7 @@ export default function RegisterCompany() {
       };
 
       const response = await authService.registerCompany(payload);
-      const { company, token } = response.data;
+      const { company, token, verificationEmailSent } = response.data;
       setAuth(company, 'company', token);
 
       if (formData.logo) {
@@ -112,8 +112,12 @@ export default function RegisterCompany() {
         }
       }
 
-      toast.success('Empresa registrada. Elegí un plan para activar la cuenta.');
-      navigate('/register/company/plan');
+      toast.success(
+        verificationEmailSent
+          ? 'Empresa registrada. Te enviamos un enlace para confirmar tu email.'
+          : 'Empresa registrada. Reenviá el enlace desde la próxima pantalla.',
+      );
+      navigate('/verificar-email');
     } catch (error) {
       toast.error(error.response?.data?.error || 'No se pudo registrar la empresa');
     } finally {

@@ -9,6 +9,8 @@ export const authService = {
   loginUser: (data) => api.post('/auth/user/login', data),
   requestPasswordRecovery: (data) => api.post('/auth/recover-password', data),
   resetPassword: (data) => api.post('/auth/reset-password', data),
+  verifyEmail: (token) => api.get('/auth/verify-email', { params: { token } }),
+  resendEmailVerification: (data) => api.post('/auth/resend-verification', data),
 
   // Empresas
   registerCompany: (data) => api.post('/auth/company/register', data),

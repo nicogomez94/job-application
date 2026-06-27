@@ -243,7 +243,7 @@ export default function RegisterUser() {
       };
 
       const response = await authService.registerUser(payload);
-      const { user, token } = response.data;
+      const { user, token, verificationEmailSent } = response.data;
 
       setAuth(user, 'user', token);
 
@@ -289,8 +289,12 @@ export default function RegisterUser() {
         );
       }
 
-      toast.success('Cuenta creada exitosamente');
-      navigate('/user/dashboard');
+      toast.success(
+        verificationEmailSent
+          ? 'Cuenta creada. Te enviamos un enlace para confirmar tu email.'
+          : 'Cuenta creada. Reenviá el enlace de confirmación desde la próxima pantalla.',
+      );
+      navigate('/verificar-email');
     } catch (error) {
       console.error('Error al crear cuenta de profesional:', error);
       toast.error(getReadableRegisterError(error));

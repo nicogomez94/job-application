@@ -15,6 +15,7 @@ const {
   authorizeRole,
   optionalAuthenticate,
   authenticatePsychologist,
+  authenticatePsychologistAccount,
   authenticateAdmin,
   authenticatePatient,
 } = require('../middlewares/auth.middleware');
@@ -80,7 +81,7 @@ router.get('/me/profile', authenticatePsychologist, psychologistController.getPr
 
 router.put(
   '/me/profile',
-  authenticatePsychologist,
+  authenticatePsychologistAccount,
   [
     body('contactEmail')
       .optional({ nullable: true, checkFalsy: true })

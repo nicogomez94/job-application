@@ -40,10 +40,14 @@ export default function RegisterPatient() {
         acceptPrivacy: data.acceptPrivacy,
         acceptAgreement: data.acceptAgreement,
       });
-      const { patient, token } = res.data;
+      const { patient, token, verificationEmailSent } = res.data;
       setAuth(patient, 'patient', token);
-      toast.success('¡Cuenta creada! Ya podés buscar un psicólogo.');
-      navigate('/psicologos/buscar');
+      toast.success(
+        verificationEmailSent
+          ? 'Cuenta creada. Te enviamos un enlace para confirmar tu email.'
+          : 'Cuenta creada. Reenviá el enlace desde la próxima pantalla.',
+      );
+      navigate('/verificar-email');
     } catch (error) {
       toast.error(error.response?.data?.error || 'Error al crear la cuenta');
     } finally {

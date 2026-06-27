@@ -74,6 +74,13 @@ export default function Login({
       const userData = user || company || admin || psychologist;
       
       setAuth(userData, userType, token);
+
+      if (userType !== 'admin' && userData?.emailVerified !== true) {
+        toast('Revisá tu correo y confirmá tu email para continuar.');
+        navigate('/verificar-email');
+        return;
+      }
+
       toast.success('¡Bienvenido!');
 
       if (userType === 'user') {
@@ -369,4 +376,3 @@ export default function Login({
     </div>
   );
 }
-

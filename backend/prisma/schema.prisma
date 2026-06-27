@@ -20,6 +20,9 @@ model User {
   phone         String?
   profileImage  String?
   googleId      String?       @unique
+  emailVerified Boolean       @default(false)
+  emailVerifiedAt DateTime?
+  emailVerificationSentAt DateTime?
   
   // Datos profesionales
   title         String?       // Ej: "Desarrollador Full Stack"
@@ -54,6 +57,9 @@ model Company {
   description   String?       @db.Text
   website       String?
   googleId      String?       @unique
+  emailVerified Boolean       @default(false)
+  emailVerifiedAt DateTime?
+  emailVerificationSentAt DateTime?
   
   location      String?
   industry      String?       // Industria/Sector
@@ -296,6 +302,9 @@ model Psychologist {
   id                  String              @id @default(uuid())
   email               String              @unique
   password            String
+  emailVerified       Boolean             @default(false)
+  emailVerifiedAt     DateTime?
+  emailVerificationSentAt DateTime?
 
   // Registration type
   registrationType    RegistrationType
@@ -399,6 +408,9 @@ model Patient {
   id                  String                @id @default(uuid())
   email               String                @unique
   password            String
+  emailVerified       Boolean               @default(false)
+  emailVerifiedAt     DateTime?
+  emailVerificationSentAt DateTime?
   acceptTerms         Boolean               @default(false)
   acceptPrivacy       Boolean               @default(false)
   acceptAgreement     Boolean               @default(false)

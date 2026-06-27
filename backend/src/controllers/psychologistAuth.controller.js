@@ -9,6 +9,7 @@ const {
 } = require('../utils/accountEmail');
 const { buildConsentMetadata } = require('../utils/legalAcceptance');
 const { isValidEmail } = require('../utils/emailValidation');
+const { sendVerificationForAccount } = require('../services/emailVerification.service');
 
 // ─── REGISTER ───────────────────────────────────────────────────────────────
 exports.register = async (req, res) => {
@@ -62,6 +63,7 @@ exports.register = async (req, res) => {
       select: {
         id: true,
         email: true,
+        emailVerified: true,
         acceptTerms: true,
         acceptPrivacy: true,
         acceptAgreement: true,
@@ -75,11 +77,23 @@ exports.register = async (req, res) => {
     });
 
     const token = generateToken({ id: psychologist.id, type: 'psychologist' });
+    let verificationEmailSent = true;
+    try {
+      await sendVerificationForAccount({
+        id: psychologist.id,
+        type: 'psychologist',
+        email: psychologist.email,
+      });
+    } catch (mailError) {
+      verificationEmailSent = false;
+      console.error('[email-verification] No se pudo enviar al psicólogo:', mailError.message);
+    }
 
     res.status(201).json({
-      message: 'Registro iniciado. Por favor cargá tu documentación.',
+      message: 'Registro iniciado. Confirmá tu email para continuar.',
       psychologist,
       token,
+      verificationEmailSent,
     });
   } catch (error) {
     console.error('Error en register psychologist:', error);

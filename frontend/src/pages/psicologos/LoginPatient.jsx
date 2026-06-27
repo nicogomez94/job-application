@@ -35,6 +35,13 @@ export default function LoginPatient() {
       const res = await patientAuthService.login(data);
       const { patient, token } = res.data;
       setAuth(patient, 'patient', token);
+
+      if (patient?.emailVerified !== true) {
+        toast('Revisá tu correo y confirmá tu email para continuar.');
+        navigate('/verificar-email', { replace: true });
+        return;
+      }
+
       toast.success('¡Bienvenido/a!');
       navigate(from, { replace: true });
     } catch (error) {

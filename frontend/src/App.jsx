@@ -21,6 +21,7 @@ import RegisterCompany from './pages/auth/RegisterCompany';
 import SelectPlan from './pages/auth/SelectPlan';
 import OAuthCallback from './pages/auth/OAuthCallback';
 import ResetPassword from './pages/auth/ResetPassword';
+import VerifyEmail from './pages/auth/VerifyEmail';
 
 // User Dashboard
 import UserDashboard from './pages/user/Dashboard';
@@ -71,7 +72,7 @@ import PsicoLogin from './pages/auth/PsicoLogin';
 import AcceptanceAgreementPatient from './pages/psicologos/AcceptanceAgreementPatient';
 
 function ProtectedRoute({ children, allowedTypes }) {
-  const { isAuthenticated, userType } = useAuthStore();
+  const { isAuthenticated, userType, user } = useAuthStore();
 
   if (!isAuthenticated) {
     if (allowedTypes?.length === 1 && allowedTypes[0] === 'admin') {
@@ -88,6 +89,10 @@ function ProtectedRoute({ children, allowedTypes }) {
 
   if (allowedTypes && !allowedTypes.includes(userType)) {
     return <Navigate to="/" replace />;
+  }
+
+  if (userType !== 'admin' && user?.emailVerified !== true) {
+    return <Navigate to="/verificar-email" replace />;
   }
 
   return children;
@@ -129,6 +134,7 @@ function App() {
         />
         <Route path="auth/callback" element={<OAuthCallback />} />
         <Route path="reset-password" element={<ResetPassword />} />
+        <Route path="verificar-email" element={<VerifyEmail />} />
 
         {/* User Routes */}
         <Route

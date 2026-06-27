@@ -41,22 +41,40 @@ const authorizeRole = (...allowedTypes) => {
   };
 };
 
+const requireVerifiedEmail = (req, res, next) => {
+  if (!req.user || req.user.type === 'admin') return next();
+
+  if (req.user.emailVerified !== true) {
+    return res.status(403).json({
+      code: 'EMAIL_NOT_VERIFIED',
+      error: 'Tenés que confirmar tu email para acceder a esta función',
+    });
+  }
+
+  next();
+};
+
+const authenticateUserAccount = [authenticate, authorizeRole('user')];
+const authenticatePatientAccount = [authenticate, authorizeRole('patient')];
+const authenticateCompanyAccount = [authenticate, authorizeRole('company')];
+const authenticatePsychologistAccount = [authenticate, authorizeRole('psychologist')];
+
 // Middleware específico para usuarios
 const authenticateUser = [
-  authenticate,
-  authorizeRole('user')
+  ...authenticateUserAccount,
+  requireVerifiedEmail,
 ];
 
 // Middleware específico para pacientes
 const authenticatePatient = [
-  authenticate,
-  authorizeRole('patient')
+  ...authenticatePatientAccount,
+  requireVerifiedEmail,
 ];
 
 // Middleware específico para empresas
 const authenticateCompany = [
-  authenticate,
-  authorizeRole('company')
+  ...authenticateCompanyAccount,
+  requireVerifiedEmail,
 ];
 
 // Middleware específico para administradores
@@ -108,8 +126,8 @@ const checkActiveSubscription = async (req, res, next) => {
 
 // Middleware específico para psicólogos
 const authenticatePsychologist = [
-  authenticate,
-  authorizeRole('psychologist')
+  ...authenticatePsychologistAccount,
+  requireVerifiedEmail,
 ];
 
 // Middleware para verificar si el psicólogo tiene suscripción activa
@@ -149,6 +167,11 @@ module.exports = {
   authenticateCompany,
   authenticateAdmin,
   authenticatePsychologist,
+  authenticateUserAccount,
+  authenticatePatientAccount,
+  authenticateCompanyAccount,
+  authenticatePsychologistAccount,
+  requireVerifiedEmail,
   checkActiveSubscription,
   checkActivePsychologistSubscription,
 };

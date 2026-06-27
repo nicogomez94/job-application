@@ -27,6 +27,15 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    if (error.response?.status === 403 && error.response?.data?.code === 'EMAIL_NOT_VERIFIED') {
+      useAuthStore.getState().updateUser({ emailVerified: false });
+      if (window.location.pathname !== '/verificar-email') {
+        window.history.pushState({}, '', '/verificar-email');
+        window.dispatchEvent(new PopStateEvent('popstate'));
+      }
+      return Promise.reject(error);
+    }
+
     if (error.response?.status === 401) {
       const requestUrl = String(error.config?.url || '');
 

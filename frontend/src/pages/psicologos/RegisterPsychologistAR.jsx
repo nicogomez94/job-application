@@ -347,7 +347,12 @@ export default function RegisterPsychologistAR() {
         );
       }
 
-      navigate('/register/psicologo/documentos');
+      toast.success(
+        regData.verificationEmailSent
+          ? 'Te enviamos un enlace para confirmar tu email.'
+          : 'Reenviá el enlace de confirmación desde la próxima pantalla.',
+      );
+      navigate('/verificar-email');
     } catch (err) {
       if (!registrationDone) {
         toast.error('Ocurrió un error inesperado al registrarse. Intentá nuevamente.');

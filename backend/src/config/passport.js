@@ -147,9 +147,18 @@ passport.use(
                 firstName,
                 lastName,
                 profileImage: googlePhoto,
+                emailVerified: true,
+                emailVerifiedAt: new Date(),
               },
             });
           }
+        }
+
+        if (!user.emailVerified) {
+          user = await prisma.user.update({
+            where: { id: user.id },
+            data: { emailVerified: true, emailVerifiedAt: new Date() },
+          });
         }
 
         return done(null, user);
@@ -226,9 +235,18 @@ passport.use(
                 email: googleEmail,
                 companyName: profile.displayName || googleEmail.split('@')[0],
                 companyLogo: googlePhoto,
+                emailVerified: true,
+                emailVerifiedAt: new Date(),
               },
             });
           }
+        }
+
+        if (!company.emailVerified) {
+          company = await prisma.company.update({
+            where: { id: company.id },
+            data: { emailVerified: true, emailVerifiedAt: new Date() },
+          });
         }
 
         return done(null, company);

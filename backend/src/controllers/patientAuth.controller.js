@@ -12,10 +12,13 @@ const {
 const { buildConsentMetadata } = require('../utils/legalAcceptance');
 const { validateAndNormalizePhoneNumber } = require('../utils/phone');
 const { isValidEmail } = require('../utils/emailValidation');
+const { sendVerificationForAccount } = require('../services/emailVerification.service');
 
 const PATIENT_SELECT = {
   id: true,
   email: true,
+  emailVerified: true,
+  emailVerifiedAt: true,
   acceptTerms: true,
   acceptPrivacy: true,
   acceptAgreement: true,
@@ -94,11 +97,19 @@ exports.register = async (req, res) => {
     });
 
     const token = generateToken({ id: patient.id, type: 'patient' });
+    let verificationEmailSent = true;
+    try {
+      await sendVerificationForAccount({ id: patient.id, type: 'patient', email: patient.email });
+    } catch (mailError) {
+      verificationEmailSent = false;
+      console.error('[email-verification] No se pudo enviar al paciente:', mailError.message);
+    }
 
     res.status(201).json({
-      message: 'Paciente registrado exitosamente',
+      message: 'Paciente registrado. Confirmá tu email para continuar.',
       patient,
       token,
+      verificationEmailSent,
     });
   } catch (error) {
     console.error('Error en register patient:', error);
@@ -134,6 +145,15 @@ exports.updateProfile = async (req, res) => {
       return res.status(400).json({ error: normalizedPhone.error });
     }
 
+    const currentPatient = await prisma.patient.findUnique({
+      where: { id: req.user.id },
+      select: { email: true, password: true },
+    });
+    if (!currentPatient) {
+      return res.status(404).json({ error: 'Paciente no encontrado' });
+    }
+    const emailChanged = normalizeEmail(currentPatient.email) !== normalizedEmail;
+
     const existingAccount = await findAccountByEmail(prisma, normalizedEmail, {
       excludeType: 'patient',
       excludeId: req.user.id,
@@ -148,6 +168,9 @@ exports.updateProfile = async (req, res) => {
       lastName,
       gender,
       phone: normalizedPhone.value,
+      ...(emailChanged
+        ? { emailVerified: false, emailVerifiedAt: null, emailVerificationSentAt: null }
+        : {}),
     };
 
     if (newPassword) {
@@ -158,10 +181,6 @@ exports.updateProfile = async (req, res) => {
         return res.status(400).json({ error: 'Ingresá tu contraseña actual para cambiarla.' });
       }
 
-      const currentPatient = await prisma.patient.findUnique({
-        where: { id: req.user.id },
-        select: { password: true },
-      });
       const passwordMatch = await bcrypt.compare(currentPassword, currentPatient?.password || '');
       if (!passwordMatch) {
         return res.status(400).json({ error: 'La contraseña actual es incorrecta.' });
@@ -176,7 +195,24 @@ exports.updateProfile = async (req, res) => {
       select: PATIENT_SELECT,
     });
 
-    res.json({ message: 'Datos actualizados exitosamente', patient });
+    let verificationEmailSent = null;
+    if (emailChanged) {
+      verificationEmailSent = true;
+      try {
+        await sendVerificationForAccount({ id: patient.id, type: 'patient', email: patient.email });
+      } catch (mailError) {
+        verificationEmailSent = false;
+        console.error('[email-verification] No se pudo reenviar al paciente:', mailError.message);
+      }
+    }
+
+    res.json({
+      message: emailChanged
+        ? 'Datos actualizados. Confirmá tu nuevo email para continuar.'
+        : 'Datos actualizados exitosamente',
+      patient,
+      verificationEmailSent,
+    });
   } catch (error) {
     console.error('Error en updateProfile patient:', error);
     const userMessage = error?.code?.startsWith('P')
