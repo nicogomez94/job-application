@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import { CheckCircle, Clock, XCircle, MessageCircle, Mail, Trash2, Ban, Camera, Unlock, Edit3, Save, X, User, Users, Phone, Lock } from 'lucide-react';
+import { EMAIL_VALIDATION_MESSAGE, isValidEmail } from '../../utils/emailValidation';
 import toast from 'react-hot-toast';
 import { psychologistRequestService, patientAuthService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
@@ -417,7 +418,7 @@ export default function PatientDashboard() {
                     autoComplete="email"
                     {...register('email', {
                       required: 'El email es obligatorio',
-                      pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Email inválido' },
+                      validate: (value) => isValidEmail(value) || EMAIL_VALIDATION_MESSAGE,
                     })}
                   />
                   {errors.email && <span className="psico-login-error">{errors.email.message}</span>}

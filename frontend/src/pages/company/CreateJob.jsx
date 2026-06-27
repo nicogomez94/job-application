@@ -8,6 +8,7 @@ import PhoneNumberInput from '../../components/PhoneNumberInput';
 import { JOB_POSTING_LANGUAGE_OPTIONS } from '../../constants/jobOfferLanguages';
 import { useI18n } from '../../context/i18nStore';
 import { getPhoneValidationMessage, normalizePhoneNumber } from '../../utils/phoneNumber';
+import { EMAIL_VALIDATION_MESSAGE, isValidOptionalEmail } from '../../utils/emailValidation';
 import './JobForm.css';
 
 const getInitialForm = () =>
@@ -91,6 +92,10 @@ export default function CreateJob() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!isValidOptionalEmail(formData.contactEmail)) {
+      toast.error(EMAIL_VALIDATION_MESSAGE);
+      return;
+    }
     const nextWhatsappError = getPhoneValidationMessage(formData.whatsappNumber);
     if (nextWhatsappError) {
       setWhatsappError(nextWhatsappError);

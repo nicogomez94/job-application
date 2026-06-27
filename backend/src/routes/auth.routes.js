@@ -7,6 +7,7 @@ const { authenticate } = require('../middlewares/auth.middleware');
 const passport = require('../config/passport');
 const { generateToken } = require('../config/jwt');
 const { getDefaultFrontendUrl } = require('../config/frontend');
+const { EMAIL_VALIDATION_MESSAGE, isValidEmail } = require('../utils/emailValidation');
 
 const getFrontendBaseUrl = () => getDefaultFrontendUrl();
 
@@ -63,7 +64,7 @@ const handleOAuthCallback = (strategyName, accountType) => (req, res, next) => {
 
 // Validaciones
 const registerUserValidation = [
-  body('email').trim().normalizeEmail().isEmail().withMessage('Email inválido'),
+  body('email').trim().normalizeEmail().custom(isValidEmail).withMessage(EMAIL_VALIDATION_MESSAGE),
   body('password').isLength({ min: 6 }).withMessage('La contraseña debe tener al menos 6 caracteres'),
   body('firstName').notEmpty().withMessage('El nombre es requerido'),
   body('lastName').notEmpty().withMessage('El apellido es requerido'),
@@ -71,20 +72,20 @@ const registerUserValidation = [
 ];
 
 const registerCompanyValidation = [
-  body('email').trim().normalizeEmail().isEmail().withMessage('Email inválido'),
+  body('email').trim().normalizeEmail().custom(isValidEmail).withMessage(EMAIL_VALIDATION_MESSAGE),
   body('password').isLength({ min: 6 }).withMessage('La contraseña debe tener al menos 6 caracteres'),
   body('companyName').notEmpty().withMessage('El nombre de la empresa es requerido'),
   validate,
 ];
 
 const loginValidation = [
-  body('email').trim().normalizeEmail().isEmail().withMessage('Email inválido'),
+  body('email').trim().normalizeEmail().custom(isValidEmail).withMessage(EMAIL_VALIDATION_MESSAGE),
   body('password').notEmpty().withMessage('La contraseña es requerida'),
   validate,
 ];
 
 const recoverPasswordValidation = [
-  body('email').trim().normalizeEmail().isEmail().withMessage('Email inválido'),
+  body('email').trim().normalizeEmail().custom(isValidEmail).withMessage(EMAIL_VALIDATION_MESSAGE),
   body('userType')
     .optional()
     .isIn(['user', 'company', 'patient', 'psychologist', 'admin'])

@@ -3,6 +3,7 @@ const router = express.Router();
 const { body } = require('express-validator');
 const validate = require('../middlewares/validator.middleware');
 const upload = require('../config/upload');
+const { EMAIL_VALIDATION_MESSAGE, isValidEmail } = require('../utils/emailValidation');
 
 const psychologistAuthController = require('../controllers/psychologistAuth.controller');
 const patientAuthController = require('../controllers/patientAuth.controller');
@@ -24,7 +25,7 @@ const {
 router.post(
   '/auth/register',
   [
-    body('email').isEmail().normalizeEmail().withMessage('Email inválido'),
+    body('email').trim().normalizeEmail().custom(isValidEmail).withMessage(EMAIL_VALIDATION_MESSAGE),
     body('password').isLength({ min: 6 }).withMessage('La contraseña debe tener al menos 6 caracteres'),
     body('firstName').notEmpty().withMessage('El nombre es obligatorio'),
     body('lastName').notEmpty().withMessage('El apellido es obligatorio'),
@@ -37,7 +38,7 @@ router.post(
 router.post(
   '/auth/login',
   [
-    body('email').isEmail().normalizeEmail().withMessage('Email inválido'),
+    body('email').trim().normalizeEmail().custom(isValidEmail).withMessage(EMAIL_VALIDATION_MESSAGE),
     body('password').notEmpty().withMessage('La contraseña es obligatoria'),
     validate,
   ],
@@ -49,7 +50,7 @@ router.post(
 router.post(
   '/patients/auth/register',
   [
-    body('email').isEmail().normalizeEmail().withMessage('Email inválido'),
+    body('email').trim().normalizeEmail().custom(isValidEmail).withMessage(EMAIL_VALIDATION_MESSAGE),
     body('password').isLength({ min: 6 }).withMessage('La contraseña debe tener al menos 6 caracteres'),
     body('firstName').notEmpty().withMessage('El nombre es obligatorio'),
     body('lastName').notEmpty().withMessage('El apellido es obligatorio'),
@@ -62,7 +63,7 @@ router.post(
 router.post(
   '/patients/auth/login',
   [
-    body('email').isEmail().normalizeEmail().withMessage('Email inválido'),
+    body('email').trim().normalizeEmail().custom(isValidEmail).withMessage(EMAIL_VALIDATION_MESSAGE),
     body('password').notEmpty().withMessage('La contraseña es obligatoria'),
     validate,
   ],
@@ -77,7 +78,20 @@ router.get('/plans', psychologistController.getPlans);
 
 router.get('/me/profile', authenticatePsychologist, psychologistController.getProfile);
 
-router.put('/me/profile', authenticatePsychologist, psychologistController.updateProfile);
+router.put(
+  '/me/profile',
+  authenticatePsychologist,
+  [
+    body('contactEmail')
+      .optional({ nullable: true, checkFalsy: true })
+      .trim()
+      .normalizeEmail()
+      .custom(isValidEmail)
+      .withMessage(EMAIL_VALIDATION_MESSAGE),
+    validate,
+  ],
+  psychologistController.updateProfile
+);
 
 router.put(
   '/me/availability',
@@ -199,7 +213,7 @@ router.put(
   '/patients/me/profile',
   authenticatePatient,
   [
-    body('email').isEmail().normalizeEmail().withMessage('Email inválido'),
+    body('email').trim().normalizeEmail().custom(isValidEmail).withMessage(EMAIL_VALIDATION_MESSAGE),
     body('firstName').notEmpty().withMessage('El nombre es obligatorio'),
     body('lastName').notEmpty().withMessage('El apellido es obligatorio'),
     body('gender').notEmpty().withMessage('El género es obligatorio').isIn(['Hombre', 'Mujer', 'Otro']).withMessage('Género inválido'),

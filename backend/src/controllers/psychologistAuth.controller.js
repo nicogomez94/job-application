@@ -8,6 +8,7 @@ const {
   handlePrismaError,
 } = require('../utils/accountEmail');
 const { buildConsentMetadata } = require('../utils/legalAcceptance');
+const { isValidEmail } = require('../utils/emailValidation');
 
 // ─── REGISTER ───────────────────────────────────────────────────────────────
 exports.register = async (req, res) => {
@@ -30,8 +31,7 @@ exports.register = async (req, res) => {
     if (password.length < 6) {
       return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres.' });
     }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.trim())) {
+    if (!isValidEmail(email)) {
       return res.status(400).json({ error: 'El formato del email es inválido.' });
     }
     if (!acceptTerms || !acceptPrivacy || !acceptAgreement) {

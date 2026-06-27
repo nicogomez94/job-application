@@ -9,6 +9,7 @@ import { DEBUG_MODE, getDebugLoginData } from '../../config/debug';
 import { API_BASE_URL } from '../../services/apiBaseUrl';
 import { Briefcase, Mail, Lock } from 'lucide-react';
 import PasswordInput from '../../components/PasswordInput';
+import { EMAIL_VALIDATION_MESSAGE, isValidEmail } from '../../utils/emailValidation';
 import './Login.css';
 
 
@@ -132,6 +133,12 @@ export default function Login({
       return;
     }
 
+    if (!isValidEmail(trimmedEmail)) {
+      setRecoveryStatus('error');
+      setRecoveryStatusMessage(EMAIL_VALIDATION_MESSAGE);
+      return;
+    }
+
     setRecoveryStatus('loading');
     setRecoveryStatusMessage('Enviando solicitud...');
     setRecoveryLoading(true);
@@ -191,10 +198,7 @@ export default function Login({
                   type="email"
                   {...register('email', {
                     required: 'El email es requerido',
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: 'Email inválido',
-                    },
+                    validate: (value) => isValidEmail(value) || EMAIL_VALIDATION_MESSAGE,
                   })}
                   className="input login-input-with-icon"
                   placeholder={emailPlaceholder}
@@ -365,5 +369,4 @@ export default function Login({
     </div>
   );
 }
-
 

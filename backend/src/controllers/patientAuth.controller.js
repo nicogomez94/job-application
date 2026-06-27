@@ -11,6 +11,7 @@ const {
 } = require('../utils/accountEmail');
 const { buildConsentMetadata } = require('../utils/legalAcceptance');
 const { validateAndNormalizePhoneNumber } = require('../utils/phone');
+const { isValidEmail } = require('../utils/emailValidation');
 
 const PATIENT_SELECT = {
   id: true,
@@ -49,8 +50,7 @@ exports.register = async (req, res) => {
     if (password.length < 6) {
       return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres.' });
     }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.trim())) {
+    if (!isValidEmail(email)) {
       return res.status(400).json({ error: 'El formato del email es inválido.' });
     }
     if (!acceptTerms || !acceptPrivacy || !acceptAgreement) {
@@ -118,8 +118,7 @@ exports.updateProfile = async (req, res) => {
     }
 
     const normalizedEmail = normalizeEmail(email);
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(normalizedEmail)) {
+    if (!isValidEmail(normalizedEmail)) {
       return res.status(400).json({ error: 'El formato del email es inválido.' });
     }
 

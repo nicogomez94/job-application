@@ -4,6 +4,7 @@ const { body } = require('express-validator');
 const validate = require('../middlewares/validator.middleware');
 const jobOfferController = require('../controllers/jobOffer.controller');
 const { authenticateCompany, checkActiveSubscription } = require('../middlewares/auth.middleware');
+const { EMAIL_VALIDATION_MESSAGE, isValidEmail } = require('../utils/emailValidation');
 
 const POSTING_LANGUAGE_OPTIONS = ['es', 'en', 'pt', 'fr', 'de', 'it'];
 
@@ -15,6 +16,12 @@ const createJobOfferValidation = [
   body('categoryId').notEmpty().withMessage('La categoría es requerida'),
   body('requirements').isArray().withMessage('Los requisitos deben ser un array'),
   body('responsibilities').isArray().withMessage('Las responsabilidades deben ser un array'),
+  body('contactEmail')
+    .optional({ nullable: true, checkFalsy: true })
+    .trim()
+    .normalizeEmail()
+    .custom(isValidEmail)
+    .withMessage(EMAIL_VALIDATION_MESSAGE),
   body('postingLanguage')
     .optional()
     .customSanitizer((value) => (typeof value === 'string' ? value.trim().toLowerCase() : value))

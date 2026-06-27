@@ -7,6 +7,7 @@ import { DEBUG_FORM_DATA, DEBUG_MODE } from '../../config/debug';
 import PasswordInput from '../../components/PasswordInput';
 import PhoneNumberInput from '../../components/PhoneNumberInput';
 import { digitsOnly, getPhoneValidationMessage, normalizePhoneNumber } from '../../utils/phoneNumber';
+import { isValidEmail, isValidOptionalEmail } from '../../utils/emailValidation';
 import './Psicologos.css';
 
 const SPECIALTIES = [
@@ -76,13 +77,10 @@ const initial = {
 const getInitialForm = () => (DEBUG_MODE ? { ...DEBUG_FORM_DATA.registerPsychologistAR } : { ...initial });
 
 const currentYear = new Date().getFullYear();
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const NAME_REGEX = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s'-]{2,}$/;
 const TEXT_WITH_NUMBER_REGEX = /^(?=.*\d)[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s./-]{3,}$/;
 
 const trimmed = (value) => String(value || '').trim();
-
-const isValidOptionalEmail = (value) => !trimmed(value) || EMAIL_REGEX.test(trimmed(value));
 
 const isValidCuitCuil = (value) => {
   if (!trimmed(value)) return true;
@@ -168,7 +166,7 @@ export default function RegisterPsychologistAR() {
     if (step === 0) {
       const errors = {};
       if (!trimmed(form.email)) errors.email = 'Campo requerido';
-      else if (!EMAIL_REGEX.test(trimmed(form.email))) errors.email = 'Email inválido';
+      else if (!isValidEmail(form.email)) errors.email = 'Ingresá un email con un dominio válido';
       if (!form.password) errors.password = 'Campo requerido';
       else if (form.password.length < 6) errors.password = 'Mínimo 6 caracteres';
       if (!form.confirmPassword) errors.confirmPassword = 'Campo requerido';

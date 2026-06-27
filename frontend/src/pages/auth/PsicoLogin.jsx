@@ -7,6 +7,7 @@ import { authService, psychologistAuthService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
 import { getDebugLoginData, DEBUG_MODE } from '../../config/debug';
 import PasswordInput from '../../components/PasswordInput';
+import { EMAIL_VALIDATION_MESSAGE, isValidEmail } from '../../utils/emailValidation';
 import '../psicologos/Psicologos.css';
 import './PsicoLogin.css';
 import './Login.css';
@@ -70,6 +71,12 @@ export default function PsicoLogin() {
       return;
     }
 
+    if (!isValidEmail(trimmedEmail)) {
+      setRecoveryStatus('error');
+      setRecoveryStatusMessage(EMAIL_VALIDATION_MESSAGE);
+      return;
+    }
+
     setRecoveryLoading(true);
     setRecoveryStatus('loading');
     setRecoveryStatusMessage('Enviando link de recuperación...');
@@ -108,7 +115,7 @@ export default function PsicoLogin() {
               autoComplete="email"
               {...register('email', {
                 required: 'El email es obligatorio',
-                pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Email inválido' },
+                validate: (value) => isValidEmail(value) || EMAIL_VALIDATION_MESSAGE,
               })}
             />
             {errors.email && <span className="psico-login-error">{errors.email.message}</span>}

@@ -6,6 +6,7 @@ import { useAuthStore } from '../../context/authStore';
 import { useI18n } from '../../context/i18nStore';
 import { DEBUG_FORM_DATA, DEBUG_MODE } from '../../config/debug';
 import PasswordInput from '../../components/PasswordInput';
+import { EMAIL_VALIDATION_MESSAGE, isValidEmail } from '../../utils/emailValidation';
 import './Register.css';
 
 const isValidImageFile = (file) => {
@@ -69,6 +70,11 @@ export default function RegisterCompany() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!isValidEmail(formData.email)) {
+      toast.error(EMAIL_VALIDATION_MESSAGE);
+      return;
+    }
 
     if (!acceptedLegal) {
       toast.error('Debés aceptar los términos y condiciones y las políticas de privacidad para continuar');

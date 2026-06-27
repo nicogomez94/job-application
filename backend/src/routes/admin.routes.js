@@ -5,6 +5,7 @@ const validate = require('../middlewares/validator.middleware');
 const adminController = require('../controllers/admin.controller');
 const psychologistController = require('../controllers/psychologist.controller');
 const { authenticateAdmin } = require('../middlewares/auth.middleware');
+const { EMAIL_VALIDATION_MESSAGE, isValidEmail } = require('../utils/emailValidation');
 
 // Todas las rutas requieren autenticación de admin
 router.use(authenticateAdmin);
@@ -48,7 +49,7 @@ router.post('/psychologists/:id/reject', [
 
 // ==================== ADMINISTRADORES ====================
 router.post('/admins', [
-  body('email').isEmail().withMessage('Email inválido'),
+  body('email').trim().normalizeEmail().custom(isValidEmail).withMessage(EMAIL_VALIDATION_MESSAGE),
   body('password').isLength({ min: 6 }).withMessage('La contraseña debe tener al menos 6 caracteres'),
   body('firstName').notEmpty().withMessage('El nombre es requerido'),
   body('lastName').notEmpty().withMessage('El apellido es requerido'),

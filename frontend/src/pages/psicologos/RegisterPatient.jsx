@@ -8,6 +8,7 @@ import { useAuthStore } from '../../context/authStore';
 import PasswordInput from '../../components/PasswordInput';
 import PhoneNumberInput from '../../components/PhoneNumberInput';
 import { getPhoneValidationMessage, normalizePhoneNumber } from '../../utils/phoneNumber';
+import { EMAIL_VALIDATION_MESSAGE, isValidEmail } from '../../utils/emailValidation';
 import './Psicologos.css';
 import '../auth/PsicoLogin.css';
 
@@ -143,7 +144,7 @@ export default function RegisterPatient() {
               autoComplete="email"
               {...register('email', {
                 required: 'El email es obligatorio',
-                pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Email inválido' },
+                validate: (value) => isValidEmail(value) || EMAIL_VALIDATION_MESSAGE,
               })}
             />
             {errors.email && <span className="psico-login-error">{errors.email.message}</span>}

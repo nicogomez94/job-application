@@ -6,6 +6,7 @@ import { psychologistService } from '../../services';
 import { useAuthStore } from '../../context/authStore';
 import PhoneNumberInput from '../../components/PhoneNumberInput';
 import { getPhoneValidationMessage, normalizePhoneNumber } from '../../utils/phoneNumber';
+import { EMAIL_VALIDATION_MESSAGE, isValidOptionalEmail } from '../../utils/emailValidation';
 import './Psicologos.css';
 
 const listToText = (value) => (Array.isArray(value) ? value.join(', ') : '');
@@ -143,6 +144,11 @@ export default function PsychologistEditProfile() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (!isValidOptionalEmail(form.contactEmail)) {
+      toast.error(EMAIL_VALIDATION_MESSAGE);
+      return;
+    }
 
     const nextPhoneError = getPhoneValidationMessage(form.phone);
     if (nextPhoneError) {
