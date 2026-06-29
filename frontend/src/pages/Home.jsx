@@ -451,7 +451,14 @@ export default function Home() {
                 {plan.price ? (
                   <div className="home-pricing-preview-free-block">
                     <p className={plan.isFreeMode ? 'home-pricing-preview-free-label' : 'home-pricing-preview-price'}>
-                      {t(plan.price)}
+                      <span className={plan.isFreeMode ? 'home-pricing-preview-free-pill' : undefined}>
+                        {t(plan.price)}
+                      </span>
+                      {plan.isFreeMode ? (
+                        <span className="home-pricing-preview-free-limited">
+                          {t('(Por tiempo limitado)')}
+                        </span>
+                      ) : null}
                       {!plan.isFreeMode ? <span>{t(plan.period)}</span> : null}
                     </p>
                     {plan.isFreeMode && plan.id === 'MONTHLY' ? (

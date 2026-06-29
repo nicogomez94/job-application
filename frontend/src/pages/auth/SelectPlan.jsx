@@ -169,7 +169,10 @@ export default function SelectPlan() {
                   {plan.isFreeMode ? (
                     plan.id === 'MONTHLY' ? (
                       <div className="select-plan-free-block">
-                        <div className="select-plan-free-label">Gratis</div>
+                        <div className="select-plan-free-heading">
+                          <div className="select-plan-free-label">Gratis</div>
+                          <span className="select-plan-free-limited">(Por tiempo limitado)</span>
+                        </div>
                         <p className="select-plan-free-note">
                           Pasando los 3 meses, la plataforma le pedirá un plan de abono para continuar.
                         </p>

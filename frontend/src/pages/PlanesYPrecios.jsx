@@ -74,6 +74,7 @@ const PLAN_TEXT_TO_EN = {
   'Planes y Precios': 'Plans and Pricing',
   Planes: 'Plans',
   Gratis: 'Free',
+  '(Por tiempo limitado)': '(For a limited time)',
   'Elegí el plan que mejor se adapte a tu empresa.':
     'Choose the plan that best fits your company.',
   'Planes 2 y 3 bonificados': 'Plans 2 and 3 are covered',
@@ -227,9 +228,14 @@ export default function PlanesYPrecios() {
                 {plan.isFreeMode ? (
                   plan.id === 'MONTHLY' ? (
                     <div className="pricing-free-block">
-                      <p className="pricing-free-label">
-                        {normalizePlanText('Gratis', language, t)}
-                      </p>
+                      <div className="pricing-free-heading">
+                        <p className="pricing-free-label">
+                          {normalizePlanText('Gratis', language, t)}
+                        </p>
+                        <span className="pricing-free-limited">
+                          {normalizePlanText('(Por tiempo limitado)', language, t)}
+                        </span>
+                      </div>
                       <p className="pricing-free-note">
                         {normalizePlanText('Pasando los 3 meses, la plataforma le pedirá un plan de abono para continuar.', language, t)}
                       </p>

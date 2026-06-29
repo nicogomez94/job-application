@@ -282,7 +282,10 @@ export default function PsicologosHome() {
                     {plan.isFreeMode ? (
                       plan.id === 'MONTHLY' ? (
                         <div className="psico-home-plan-free-block">
-                          <span className="psico-home-plan-free-label">Gratis</span>
+                          <div className="psico-home-plan-free-heading">
+                            <span className="psico-home-plan-free-label">Gratis</span>
+                            <span className="psico-home-plan-free-limited">(Por tiempo limitado)</span>
+                          </div>
                           <p className="psico-home-plan-free-note">
                             Pasando los 3 meses, la plataforma le pedirá un plan de abono para continuar.
                           </p>

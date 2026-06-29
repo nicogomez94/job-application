@@ -193,7 +193,10 @@ export default function CompanySubscription() {
                 {plan.isFreeMode ? (
                   plan.id === 'MONTHLY' ? (
                     <div style={{ marginBottom: '0.8rem' }}>
-                      <p style={{ width: 'fit-content', background: '#16803f', color: '#fff', borderRadius: '999px', padding: '0.32rem 0.72rem', fontWeight: 900, textTransform: 'uppercase', marginBottom: '0.55rem' }}>Gratis</p>
+                      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.55rem' }}>
+                        <p style={{ width: 'fit-content', background: '#16803f', color: '#fff', borderRadius: '999px', padding: '0.32rem 0.72rem', fontWeight: 900, textTransform: 'uppercase', margin: 0 }}>Gratis</p>
+                        <span style={{ color: '#6f604b', fontSize: '0.8rem', fontWeight: 700 }}>(Por tiempo limitado)</span>
+                      </div>
                       <p style={{ color: '#5e4d38', fontSize: '0.84rem', lineHeight: 1.45 }}>
                         Pasando los 3 meses, la plataforma le pedirá un plan de abono para continuar.
                       </p>

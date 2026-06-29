@@ -416,6 +416,14 @@
   gap: 0.55rem;
 }
 
+.psico-home-plan-free-heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
 .psico-home-plan-free-label {
   width: fit-content;
   padding: 0.32rem 0.72rem;
@@ -426,6 +434,12 @@
   font-weight: 900;
   line-height: 1;
   text-transform: uppercase;
+}
+
+.psico-home-plan-free-limited {
+  color: #6f604b;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .psico-home-plan-free-note {

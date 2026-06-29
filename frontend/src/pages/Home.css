@@ -1274,8 +1274,16 @@ position: absolute;
 }
 
 .home-pricing-preview-free-label {
-  width: fit-content;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   margin: 0 0 0.55rem;
+  color: #6f604b;
+}
+
+.home-pricing-preview-free-pill {
+  width: fit-content;
   padding: 0.32rem 0.72rem;
   border-radius: 999px;
   background: #16803f;
@@ -1284,6 +1292,13 @@ position: absolute;
   font-weight: 900;
   line-height: 1;
   text-transform: uppercase;
+}
+
+.home-pricing-preview-free-limited {
+  color: #6f604b;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
 .home-pricing-preview-free-note {

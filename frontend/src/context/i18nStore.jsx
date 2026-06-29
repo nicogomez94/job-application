@@ -24,6 +24,7 @@ const ES_TO_EN = {
   'Registrar Empresa': 'Register Company',
   Planes: 'Plans',
   'Planes y Precios': 'Plans and Pricing',
+  '(Por tiempo limitado)': '(For a limited time)',
   'Todos los planes son gratuitos por el momento y no requieren tarjeta.':
     'All plans are currently free and require no card.',
   'Planes 2 y 3 bonificados': 'Plans 2 and 3 are covered',
